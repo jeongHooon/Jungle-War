@@ -1571,7 +1571,7 @@ void CMiniMapShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	m_nTree = (xObjects * yObjects * zObjects);
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Terrain/Base_Texture.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Num.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -3001,7 +3001,7 @@ void CItemEatUIShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComm
 	CUIMesh *pCubeMesh[1];
 
 	for (int i = 0; i<m_nTree; ++i)
-		pCubeMesh[i] = new CUIMesh(pd3dDevice, pd3dCommandList,0.3, 0.4, -0.15, 0);
+		pCubeMesh[i] = new CUIMesh(pd3dDevice, pd3dCommandList, 0.3, 0.4, -0.15, 0);
 
 	m_ppTree = new CRotatingObject*;
 

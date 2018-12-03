@@ -935,14 +935,14 @@ CMiniMapMesh::CMiniMapMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	CTexturedVertex pVertices[6];
 	int i = 0;
 
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(1.0, -0.4, 0), XMFLOAT2(1.0f, 1.0f));
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.4, -0.4, 0), XMFLOAT2(0.0f, 1.0f));
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.4, -1.0, 0), XMFLOAT2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.8, -0.6, 0), XMFLOAT2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.6, -0.6, 0), XMFLOAT2(0.0f, 1.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.6, -0.8, 0), XMFLOAT2(0.0f, 0.0f));
 
 
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(1.0, -0.4, 0), XMFLOAT2(1.0f, 1.0f));
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.4, -1.0, 0), XMFLOAT2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(1.0, -1.0, 0), XMFLOAT2(1.0f, 0.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.8, -0.6, 0), XMFLOAT2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.6, -0.8, 0), XMFLOAT2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.8, -0.8, 0), XMFLOAT2(1.0f, 0.0f));
 
 	m_pd3dVertexBuffer = CreateBufferResource(pd3dDevice, pd3dCommandList, pVertices, m_nStride * m_nVertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dVertexUploadBuffer);
 
@@ -1007,17 +1007,17 @@ CItemUIMesh::CItemUIMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd
 	CTexturedVertex pVertices[6];
 	int i = 0;
 
-	float startXposition = 0.2 + 0.2 * index;
+	float startXposition = -0.2 + 0.1 * index;
 
 
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition, 1, 0), XMFLOAT2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition + 0.2, 1, 0), XMFLOAT2(1.0f, 0.0f));
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition + 0.2, 0.75, 0), XMFLOAT2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition, -0.5, 0), XMFLOAT2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition + 0.2, -0.5, 0), XMFLOAT2(1.0f, 0.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition + 0.2, -0.7, 0), XMFLOAT2(1.0f, 1.0f));
 
 
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition, 1, 0), XMFLOAT2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition + 0.2, 0.75, 0), XMFLOAT2(1.0f, 1.0f));
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition, 0.75, 0), XMFLOAT2(0.0f, 1.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition, -0.5, 0), XMFLOAT2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition + 0.2, -0.7, 0), XMFLOAT2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition, -0.7, 0), XMFLOAT2(0.0f, 1.0f));
 
 
 	m_pd3dVertexBuffer = CreateBufferResource(pd3dDevice, pd3dCommandList, pVertices, m_nStride * m_nVertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dVertexUploadBuffer);
@@ -1046,7 +1046,7 @@ CItemBlackUIMesh::CItemBlackUIMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	CTexturedVertex pVertices[6];
 	int i = 0;
 
-	float startXposition = 0.2;
+	float startXposition = 2;	// 1보다 높게해서 안보이는곳에 그리게 했음. 수정해야함.
 
 
 	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition, 1, 0), XMFLOAT2(0.0f, 0.0f));
