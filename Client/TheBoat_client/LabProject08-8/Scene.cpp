@@ -182,12 +182,16 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	// UI
 
-	m_nUIShaders = 9;
+	m_nUIShaders = 12;
 	m_ppUIShaders = new CShader*[m_nUIShaders];
 
 	CMiniMapShader *pMiniMapShader = new CMiniMapShader();
 	pMiniMapShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pMiniMapShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CAlphaMapShader *pAlphaMapShader = new CAlphaMapShader();
+	pAlphaMapShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pAlphaMapShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
 	CHpBarShader *pHpBarShader = new CHpBarShader();
 	pHpBarShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
@@ -217,17 +221,26 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pItemEatUIShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pItemEatUIShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
+	CGunUIShader_1 *pGunUIShader_1 = new CGunUIShader_1();
+	pGunUIShader_1->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pGunUIShader_1->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CGunUIShader_2 *pGunUIShader_2 = new CGunUIShader_2();
+	pGunUIShader_2->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pGunUIShader_2->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
 	m_ppUIShaders[0] = pMiniMapShader;
 	m_ppUIShaders[1] = pTreeShader;
 	m_ppUIShaders[2] = pHpBarShader;
-	
 	m_ppUIShaders[3] = pItemUIShader;
 	m_ppUIShaders[4] = pItemUIShader_1;
 	m_ppUIShaders[5] = pItemUIShader_2;
 	m_ppUIShaders[6] = pItemUIShader_3;
 	m_ppUIShaders[7] = pItemUIShader_4;
-
 	m_ppUIShaders[8] = pItemEatUIShader;
+	m_ppUIShaders[9] = pAlphaMapShader;
+	m_ppUIShaders[10] = pGunUIShader_1;
+	m_ppUIShaders[11] = pGunUIShader_2;
 
 
 	BuildLightsAndMaterials();

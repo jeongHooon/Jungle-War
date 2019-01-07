@@ -542,6 +542,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case '4':
 			itemUI[3] = !itemUI[3];
 			break;
+		case 'm':
+		case 'M':
+			alphaMapOn = !alphaMapOn;
+			break;
 		}
 
 		break;
@@ -1097,19 +1101,30 @@ void CGameFramework::FrameAdvance()
 	}
 
 	
-	m_pScene->m_ppUIShaders[0]->Render(m_pd3dCommandList, m_pCamera);
-	
-	if(m_pCamera->GetMode() == SPACESHIP_CAMERA)
-		m_pScene->m_ppUIShaders[1]->Render(m_pd3dCommandList, m_pCamera);// UI렌더 바꿔야함.
+	m_pScene->m_ppUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 미니맵
+
 	//printf("%f", playerHp);
 	m_pScene->m_ppUIShaders[2]->Render(m_pd3dCommandList, m_pCamera, playerHp);
 	m_pScene->m_ppUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//아이템 검은색
 	for (int i = 0; i < 4; ++i) {
 		if(itemUI[i] == true)
 			m_pScene->m_ppUIShaders[i + 4]->Render(m_pd3dCommandList, m_pCamera);
-		if(itemUI[3] == true)
-			m_pScene->m_ppUIShaders[8]->Render(m_pd3dCommandList, m_pCamera);
 	}
+
+	if (itemUI[3] == true)
+		m_pScene->m_ppUIShaders[8]->Render(m_pd3dCommandList, m_pCamera);
+	
+	m_pScene->m_ppUIShaders[10]->Render(m_pd3dCommandList, m_pCamera); // 총
+	m_pScene->m_ppUIShaders[11]->Render(m_pd3dCommandList, m_pCamera); // 총
+
+	if (m_pCamera->GetMode() == SPACESHIP_CAMERA)
+		m_pScene->m_ppUIShaders[1]->Render(m_pd3dCommandList, m_pCamera);// UI렌더 바꿔야함.
+
+	if (alphaMapOn == true)
+	m_pScene->m_ppUIShaders[9]->Render(m_pd3dCommandList, m_pCamera); // 맵
+	
+
+
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;

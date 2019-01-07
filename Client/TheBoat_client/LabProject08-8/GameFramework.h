@@ -74,6 +74,7 @@ public:
 
 private:
 	bool						itemUI[4] = {};
+	bool						alphaMapOn = false;
 	HINSTANCE					m_hInstance;
 	HWND						m_hWnd; 
 

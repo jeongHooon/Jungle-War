@@ -183,7 +183,7 @@ void CPlayer::Update(float fTimeElapsed)
 	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
 	if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
 	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
-	if (nCurrentCameraMode == FIRST_PERSON_CAMERA) m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - 15 * GetLookVector().x, GetPosition().y + 25, GetPosition().z - 15 * GetLookVector().z));	// 1인칭 카메라 움직이기
+	if (nCurrentCameraMode == FIRST_PERSON_CAMERA) m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - 15 * GetLookVector().x, GetPosition().y + 30, GetPosition().z - 15 * GetLookVector().z));	// 1인칭 카메라 움직이기
 	if (nCurrentCameraMode == SPACESHIP_CAMERA) m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, GetPosition().y + 15, GetPosition().z));	// 줌 카메라 움직이기
 
 	m_pCamera->RegenerateViewMatrix();

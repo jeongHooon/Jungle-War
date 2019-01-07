@@ -283,6 +283,14 @@ public:
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+class CAlphaMapMesh : public CMesh
+{
+public:
+	CAlphaMapMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, float fWidth, float fHeight, float fDepth);
+	virtual ~CAlphaMapMesh();
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class CHpBarMesh : public CMesh
 {
 public:
@@ -302,4 +310,11 @@ class CItemBlackUIMesh : public CMesh
 public:
 	CItemBlackUIMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int index, float fHeight, float fDepth);
 	virtual ~CItemBlackUIMesh();
+};
+
+class CGunUIMesh : public CMesh
+{
+public:
+	CGunUIMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int index, float fHeight, float fDepth);
+	virtual ~CGunUIMesh();
 };
