@@ -1139,3 +1139,35 @@ CGunUIMesh::CGunUIMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3d
 CGunUIMesh::~CGunUIMesh()
 {
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CNumMesh::CNumMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int index, float fHeight, float fDepth) : CMesh(pd3dDevice, pd3dCommandList)
+{
+	m_nVertices = 6;
+	m_nStride = sizeof(CTexturedVertex);
+	m_nOffset = 0;
+	m_nSlot = 0;
+	m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+	CTexturedVertex pVertices[6];
+	int i = 0;
+
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(-0.5, -0.7, 0), XMFLOAT2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(-0.3, -0.7, 0), XMFLOAT2(1.0f, 0.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(-0.3, -0.98, 0), XMFLOAT2(1.0f, 1.0f));
+
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(-0.5, -0.7, 0), XMFLOAT2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(-0.3, -0.98, 0), XMFLOAT2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(-0.5, -0.98, 0), XMFLOAT2(0.0f, 1.0f));
+
+
+	m_pd3dVertexBuffer = CreateBufferResource(pd3dDevice, pd3dCommandList, pVertices, m_nStride * m_nVertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dVertexUploadBuffer);
+
+	m_d3dVertexBufferView.BufferLocation = m_pd3dVertexBuffer->GetGPUVirtualAddress();
+	m_d3dVertexBufferView.StrideInBytes = m_nStride;
+	m_d3dVertexBufferView.SizeInBytes = m_nStride * m_nVertices;
+}
+
+CNumMesh::~CNumMesh()
+{
+}

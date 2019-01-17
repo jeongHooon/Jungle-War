@@ -242,6 +242,15 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppUIShaders[10] = pGunUIShader_1;
 	m_ppUIShaders[11] = pGunUIShader_2;
 
+	// Number
+	m_nNumShaders = 1;
+	m_ppNumShaders = new CShader*[m_nNumShaders];
+
+	CNumShader_1 *pNumShader_1 = new CNumShader_1();
+	pNumShader_1->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pNumShader_1->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	m_ppNumShaders[0] = pNumShader_1;
 
 	BuildLightsAndMaterials();
 
@@ -277,10 +286,17 @@ void CScene::ReleaseObjects()
 	if (m_pLights) delete m_pLights;
 	if (m_pMaterials) delete m_pMaterials;
 	if (m_pBuildings) delete m_pBuildings;
+
 	if (m_ppUIShaders)
 	{
 		for (int i = 0; i < m_nUIShaders; i++) delete m_ppUIShaders[i];
 		delete[] m_ppUIShaders;
+	}
+
+	if (m_ppNumShaders)
+	{
+		for (int i = 0; i < m_nNumShaders; i++) delete m_ppNumShaders[i];
+		delete[] m_ppNumShaders;
 	}
 }
 
@@ -295,6 +311,8 @@ void CScene::ReleaseUploadBuffers()
 	if (m_pSkyBox) m_pSkyBox->ReleaseUploadBuffers();
 
 	for (int i = 0; i < m_nUIShaders; i++) m_ppUIShaders[i]->ReleaseUploadBuffers();
+
+	for (int i = 0; i < m_nNumShaders; i++) m_ppNumShaders[i]->ReleaseUploadBuffers();
 	
 }
 
@@ -509,7 +527,7 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 		m_pPlayer[i]->SetScale(0.25, 0.25, 0.25);	// 캐릭터 크기 조정
 	}
 
-	for (int i = 0; i < m_nObjects; i++) m_ppUIShaders[i]->AnimateObjects(fTimeElapsed, pCamera);
+	//for (int i = 0; i < m_nObjects; i++) m_ppUIShaders[i]->AnimateObjects(fTimeElapsed, pCamera);
 }
 
 void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
@@ -536,5 +554,8 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	for (int i = 1; i < m_nShaders; i++) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->UpdateTransform(NULL);
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Render(pd3dCommandList, pCamera);
+
+	// 총알 숫자
+	for (int i = 1; i < m_nNumShaders; i++) m_ppNumShaders[i]->Render(pd3dCommandList, pCamera);
 }
 

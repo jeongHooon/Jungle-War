@@ -688,3 +688,96 @@ public:
 	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob **ppd3dShaderBlob);
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
 };
+
+class CNumShader_1 : public CTexturedShader
+{
+protected:
+	CRotatingObject * *m_ppTree = 0;
+	int								m_nTree = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CNumShader_1();
+	virtual ~CNumShader_1();
+
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual D3D12_BLEND_DESC CreateBlendState();
+	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob **ppd3dShaderBlob);
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
+};
+
+class CNumShader_2 : public CTexturedShader
+{
+protected:
+	CRotatingObject * *m_ppTree = 0;
+	int								m_nTree = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CNumShader_2();
+	virtual ~CNumShader_2();
+
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual D3D12_BLEND_DESC CreateBlendState();
+	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob **ppd3dShaderBlob);
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
+};
+
+class CNumShader_3 : public CTexturedShader
+{
+protected:
+	CRotatingObject * *m_ppTree = 0;
+	int								m_nTree = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CNumShader_3();
+	virtual ~CNumShader_3();
+
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual D3D12_BLEND_DESC CreateBlendState();
+	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob **ppd3dShaderBlob);
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
+};

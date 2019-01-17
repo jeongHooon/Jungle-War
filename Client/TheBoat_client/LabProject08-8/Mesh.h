@@ -318,3 +318,10 @@ public:
 	CGunUIMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int index, float fHeight, float fDepth);
 	virtual ~CGunUIMesh();
 };
+
+class CNumMesh : public CMesh
+{
+public:
+	CNumMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int index, float fHeight, float fDepth);
+	virtual ~CNumMesh();
+};
