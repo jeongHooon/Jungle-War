@@ -38,6 +38,7 @@ protected:
 	LPVOID						m_pCameraUpdatedContext = NULL;
 
 	int							playerHp = 100;
+	int							playerBullet = 40;
 
 	CCamera						*m_pCamera = NULL;
 	int animation_status = 0;
@@ -75,6 +76,8 @@ public:
 	float GetYaw() const { return(m_fYaw); }
 	float GetPitch() const { return(m_fPitch); }
 	float GetRoll() const { return(m_fRoll); }
+	int	  GetPlayerBullet() { return(playerBullet); }
+	void  MinusPlayerBullet() { --playerBullet; }
 
 	CCamera *GetCamera() { return(m_pCamera); }
 	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }

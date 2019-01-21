@@ -319,6 +319,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		if (CShader::shootBullet == 0) {
 			CShader::shootBullet = 1;
 			sndPlaySound(L"../Assets/Sounds/RifleSound.wav", SND_ASYNC);	// 사운드
+			m_pPlayer[my_client_id]->MinusPlayerBullet();
 			m_pPlayer[my_client_id]->ActiveShot();
 		}
 		else
@@ -1100,7 +1101,8 @@ void CGameFramework::FrameAdvance()
 			m_pPlayer[i]->Render(m_pd3dCommandList, m_pCamera);
 	}
 
-	
+	// UI 렌더
+
 	m_pScene->m_ppUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 미니맵
 
 	//printf("%f", playerHp);
@@ -1123,8 +1125,11 @@ void CGameFramework::FrameAdvance()
 	if (alphaMapOn == true)
 	m_pScene->m_ppUIShaders[9]->Render(m_pd3dCommandList, m_pCamera); // 맵
 	
-
-
+	// 숫자 시작
+	cout << m_pPlayer[my_client_id]->GetPlayerBullet() << endl;
+	if(m_pPlayer[my_client_id]->GetPlayerBullet() / 10 > 0)
+		m_pScene->m_ppUIShaders[11 + m_pPlayer[my_client_id]->GetPlayerBullet() / 10]->Render(m_pd3dCommandList, m_pCamera); // 앞 숫자
+	
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;

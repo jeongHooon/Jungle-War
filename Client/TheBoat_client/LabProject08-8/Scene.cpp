@@ -182,7 +182,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	// UI
 
-	m_nUIShaders = 12;
+	m_nUIShaders = 16;
 	m_ppUIShaders = new CShader*[m_nUIShaders];
 
 	CMiniMapShader *pMiniMapShader = new CMiniMapShader();
@@ -229,6 +229,25 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pGunUIShader_2->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pGunUIShader_2->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
+	// 숫자 시작
+	// 앞자리
+	CNumShader_1 *pNumShader_1 = new CNumShader_1();
+	pNumShader_1->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pNumShader_1->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CNumShader_2 *pNumShader_2 = new CNumShader_2();
+	pNumShader_2->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pNumShader_2->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CNumShader_3 *pNumShader_3 = new CNumShader_3();
+	pNumShader_3->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pNumShader_3->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CNumShader_4 *pNumShader_4 = new CNumShader_4();
+	pNumShader_4->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pNumShader_4->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+
 	m_ppUIShaders[0] = pMiniMapShader;
 	m_ppUIShaders[1] = pTreeShader;
 	m_ppUIShaders[2] = pHpBarShader;
@@ -241,16 +260,10 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppUIShaders[9] = pAlphaMapShader;
 	m_ppUIShaders[10] = pGunUIShader_1;
 	m_ppUIShaders[11] = pGunUIShader_2;
-
-	// Number
-	m_nNumShaders = 1;
-	m_ppNumShaders = new CShader*[m_nNumShaders];
-
-	CNumShader_1 *pNumShader_1 = new CNumShader_1();
-	pNumShader_1->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
-	pNumShader_1->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
-
-	m_ppNumShaders[0] = pNumShader_1;
+	m_ppUIShaders[12] = pNumShader_1;
+	m_ppUIShaders[13] = pNumShader_2;
+	m_ppUIShaders[14] = pNumShader_3;
+	m_ppUIShaders[15] = pNumShader_4;
 
 	BuildLightsAndMaterials();
 
@@ -293,11 +306,6 @@ void CScene::ReleaseObjects()
 		delete[] m_ppUIShaders;
 	}
 
-	if (m_ppNumShaders)
-	{
-		for (int i = 0; i < m_nNumShaders; i++) delete m_ppNumShaders[i];
-		delete[] m_ppNumShaders;
-	}
 }
 
 void CScene::ReleaseUploadBuffers()
@@ -312,7 +320,6 @@ void CScene::ReleaseUploadBuffers()
 
 	for (int i = 0; i < m_nUIShaders; i++) m_ppUIShaders[i]->ReleaseUploadBuffers();
 
-	for (int i = 0; i < m_nNumShaders; i++) m_ppNumShaders[i]->ReleaseUploadBuffers();
 	
 }
 
@@ -555,7 +562,5 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->UpdateTransform(NULL);
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Render(pd3dCommandList, pCamera);
 
-	// 총알 숫자
-	for (int i = 1; i < m_nNumShaders; i++) m_ppNumShaders[i]->Render(pd3dCommandList, pCamera);
 }
 
