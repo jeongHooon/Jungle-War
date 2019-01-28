@@ -1129,7 +1129,9 @@ void CGameFramework::FrameAdvance()
 	cout << m_pPlayer[my_client_id]->GetPlayerBullet() << endl;
 	if(m_pPlayer[my_client_id]->GetPlayerBullet() / 10 > 0)
 		m_pScene->m_ppUIShaders[11 + m_pPlayer[my_client_id]->GetPlayerBullet() / 10]->Render(m_pd3dCommandList, m_pCamera); // 앞 숫자
-	
+	if (m_pPlayer[my_client_id]->GetPlayerBullet() > 0)
+		m_pScene->m_ppUIShaders[16 + m_pPlayer[my_client_id]->GetPlayerBullet() % 10]->Render(m_pd3dCommandList, m_pCamera); // 뒷 숫자
+
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;

@@ -182,7 +182,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	// UI
 
-	m_nUIShaders = 16;
+	m_nUIShaders = 26;
 	m_ppUIShaders = new CShader*[m_nUIShaders];
 
 	CMiniMapShader *pMiniMapShader = new CMiniMapShader();
@@ -247,6 +247,47 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pNumShader_4->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pNumShader_4->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
+	// µÞÀÚ¸®
+	CNumShader0 *pNumShader0 = new CNumShader0();
+	pNumShader0->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pNumShader0->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CNumShader1 *pNumShader1 = new CNumShader1();
+	pNumShader1->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pNumShader1->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CNumShader2 *pNumShader2 = new CNumShader2();
+	pNumShader2->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pNumShader2->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CNumShader3 *pNumShader3 = new CNumShader3();
+	pNumShader3->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pNumShader3->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CNumShader4 *pNumShader4 = new CNumShader4();
+	pNumShader4->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pNumShader4->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CNumShader5 *pNumShader5 = new CNumShader5();
+	pNumShader5->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pNumShader5->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CNumShader6 *pNumShader6 = new CNumShader6();
+	pNumShader6->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pNumShader6->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CNumShader7 *pNumShader7 = new CNumShader7();
+	pNumShader7->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pNumShader7->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CNumShader8 *pNumShader8 = new CNumShader8();
+	pNumShader8->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pNumShader8->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CNumShader9 *pNumShader9 = new CNumShader9();
+	pNumShader9->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pNumShader9->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
 
 	m_ppUIShaders[0] = pMiniMapShader;
 	m_ppUIShaders[1] = pTreeShader;
@@ -264,6 +305,16 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppUIShaders[13] = pNumShader_2;
 	m_ppUIShaders[14] = pNumShader_3;
 	m_ppUIShaders[15] = pNumShader_4;
+	m_ppUIShaders[16] = pNumShader0;
+	m_ppUIShaders[17] = pNumShader1;
+	m_ppUIShaders[18] = pNumShader2;
+	m_ppUIShaders[19] = pNumShader3;
+	m_ppUIShaders[20] = pNumShader4;
+	m_ppUIShaders[21] = pNumShader5;
+	m_ppUIShaders[22] = pNumShader6;
+	m_ppUIShaders[23] = pNumShader7;
+	m_ppUIShaders[24] = pNumShader8;
+	m_ppUIShaders[25] = pNumShader9;
 
 	BuildLightsAndMaterials();
 
