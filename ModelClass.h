@@ -2,7 +2,7 @@
 
 class TextureClass;
 
-class ModelClass : public AlignedAllocationPolicy<16>
+class ModelClass
 {
 private:
 	struct VertexType
@@ -38,8 +38,8 @@ private:
 	void ReleaseTexture();
 
 private:
-	ID3D11Buffer* m_vertexBuffer = nullptr;
-	ID3D11Buffer* m_instanceBuffer = nullptr;
+	//ID3D11Buffer* m_vertexBuffer = nullptr;
+	//ID3D11Buffer* m_instanceBuffer = nullptr;
 	int m_vertexCount = 0;
 	int m_instanceCount = 0;
 	TextureClass* m_Texture = nullptr;
