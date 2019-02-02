@@ -1,2 +1,2 @@
-# 2018_THE_BOAT
-KPU_Park Jeong Hoon_Shin Sang Woo_Oh Geon Graduation Final Project
+# 2019_Jungle War
+KPU_Park Jeong Hoon_Lee Su Jin_Lee Byeong Cheol_Shin Sang Woo Graduation Final Project
