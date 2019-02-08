@@ -97,10 +97,18 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	vertexBufferDesc.MiscFlags = 0;
 	vertexBufferDesc.StructureByteStride = 0;
 
-	// subresource 구조에 정점 데이터에 대한 포인터를 제공합니다.
 	D3D11_SUBRESOURCE_DATA vertexData;
 	vertexData.pSysMem = vertices;
 	vertexData.SysMemPitch = 0;
 	vertexData.SysMemSlicePitch = 0;
+
+	if (FAILED(device->CreateBuffer(&vertexBufferDesc, &vertexData, &m_vertexBuffer)))
+	{
+		return false;
+	}
+
+	// 이제 버텍스 버퍼가 생성되고로드 된 버텍스 배열을 해제한다.
+	delete [] vertices;
+	vertices = 0;
 
 }
