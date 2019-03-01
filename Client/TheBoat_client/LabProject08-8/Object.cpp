@@ -641,7 +641,7 @@ void CRevolvingObject::Animate(float fTimeElapsed)
 //
 CApacheHellicopter::CApacheHellicopter(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature)
 {
-	LoadGeometryFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Apache.txt");
+	//LoadGeometryFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Apache.txt");
 	m_pRotorFrame = FindFrame(_T("rotor"));
 }
 
@@ -697,7 +697,7 @@ void CGunshipHellicopter::Animate(float fTimeElapsed)
 //
 CFlyerShip::CFlyerShip(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature)
 {
-	LoadGeometryFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Flyer.txt");
+	//LoadGeometryFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Flyer.txt");
 }
 
 CFlyerShip::~CFlyerShip()
