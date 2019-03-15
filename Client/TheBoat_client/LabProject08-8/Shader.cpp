@@ -1639,6 +1639,7 @@ void CMiniMapShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 {
 	for (int j = 0; j < m_nTree; j++)
 	{
+		m_ppTree[j]->SetPosition(XMFLOAT3(m_ppTree[j]->GetPosition().x + 10000, m_ppTree[j]->GetPosition().y, m_ppTree[j]->GetPosition().z));	// UI위치 이동시키려고 했지만 실패....
 		m_ppTree[j]->Animate(fTimeElapsed);
 	}
 }
@@ -6441,7 +6442,6 @@ D3D12_SHADER_BYTECODE CNumShader9::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
 {
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PS_UI", "ps_5_1", ppd3dShaderBlob));
 }
-
 
 void CNumShader9::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
 {
