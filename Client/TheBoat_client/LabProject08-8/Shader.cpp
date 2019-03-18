@@ -483,7 +483,7 @@ CObjectsShader::~CObjectsShader()
 
 void CObjectsShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nObjects, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -524,12 +524,12 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	m_nObjects = (xObjects * 2 + 1) * (yObjects * 2 + 1) * (zObjects * 2 + 1);
 
 	CTexture *pTextures = new CTexture(6, RESOURCE_TEXTURE2DARRAY, 0);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Building.dds", 0);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Building.dds", 1);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Building.dds", 4);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Building.dds", 3);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Building.dds", 2);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Building.dds", 5);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 0);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 1);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 4);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 3);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 2);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 5);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -874,7 +874,7 @@ void CFlowerShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *
 
 void CFlowerShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -1069,7 +1069,7 @@ void CBulletShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *
 
 void CBulletShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nBullet, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -1256,7 +1256,7 @@ void CParticleShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera
 
 void CParticleShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nParticle, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -1303,7 +1303,7 @@ D3D12_BLEND_DESC CParticleShader::CreateBlendState()
 	return(d3dBlendDesc);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// µµÆ®
+// ë„íŠ¸
 
 
 CTreeShader::CTreeShader() {
@@ -1467,7 +1467,7 @@ void CTreeShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 
 void CTreeShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -1514,7 +1514,7 @@ D3D12_BLEND_DESC CTreeShader::CreateBlendState()
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ¹Ì´Ï¸Ê
+// ë¯¸ë‹ˆë§µ
 
 CMiniMapShader::CMiniMapShader() {
 }
@@ -1639,7 +1639,7 @@ void CMiniMapShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 {
 	for (int j = 0; j < m_nTree; j++)
 	{
-		m_ppTree[j]->SetPosition(XMFLOAT3(m_ppTree[j]->GetPosition().x + 10000, m_ppTree[j]->GetPosition().y, m_ppTree[j]->GetPosition().z));	// UIÀ§Ä¡ ÀÌµ¿½ÃÅ°·Á°í ÇßÁö¸¸ ½ÇÆÐ....
+		m_ppTree[j]->SetPosition(XMFLOAT3(m_ppTree[j]->GetPosition().x + 10000, m_ppTree[j]->GetPosition().y, m_ppTree[j]->GetPosition().z));	// UIìœ„ì¹˜ ì´ë™ì‹œí‚¤ë ¤ê³  í–ˆì§€ë§Œ ì‹¤íŒ¨....
 		m_ppTree[j]->Animate(fTimeElapsed);
 	}
 }
@@ -1672,7 +1672,7 @@ void CMiniMapShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera 
 
 void CMiniMapShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -1714,7 +1714,7 @@ D3D12_BLEND_DESC CMiniMapShader::CreateBlendState()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ¾ËÆÄ ¸Ê
+// ì•ŒíŒŒ ë§µ
 
 CAlphaMapShader::CAlphaMapShader() {
 }
@@ -1871,7 +1871,7 @@ void CAlphaMapShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera
 
 void CAlphaMapShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -1913,7 +1913,7 @@ D3D12_BLEND_DESC CAlphaMapShader::CreateBlendState()
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Hp¹Ù
+// Hpë°”
 
 CHpBarShader::CHpBarShader() {
 }
@@ -2074,7 +2074,7 @@ void CHpBarShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *p
 
 void CHpBarShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -2117,7 +2117,7 @@ D3D12_BLEND_DESC CHpBarShader::CreateBlendState()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ¾ÆÀÌÅÛ Ç¥½Ã
+// ì•„ì´í…œ í‘œì‹œ
 
 CItemUIShader::CItemUIShader() {
 }
@@ -2277,7 +2277,7 @@ void CItemUIShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *
 
 void CItemUIShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -2478,7 +2478,7 @@ void CItemUIShader_1::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera
 
 void CItemUIShader_1::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -2679,7 +2679,7 @@ void CItemUIShader_2::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera
 
 void CItemUIShader_2::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -2880,7 +2880,7 @@ void CItemUIShader_3::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera
 
 void CItemUIShader_3::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -3081,7 +3081,7 @@ void CItemUIShader_4::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera
 
 void CItemUIShader_4::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -3283,7 +3283,7 @@ void CItemEatUIShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamer
 
 void CItemEatUIShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -3484,7 +3484,7 @@ void CGunUIShader_1::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera 
 
 void CGunUIShader_1::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -3685,7 +3685,7 @@ void CGunUIShader_2::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera 
 
 void CGunUIShader_2::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -3728,10 +3728,10 @@ D3D12_BLEND_DESC CGunUIShader_2::CreateBlendState()
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///// ÃÑ¾Ë ¼ýÀÚ ¶ç¿ì±â
+///// ì´ì•Œ ìˆ«ìž ë„ìš°ê¸°
 ////////////////////////////////////////////////////////////
 
-/// ¾Õ¼ýÀÚ 1
+/// ì•žìˆ«ìž 1
 CNumShader_1::CNumShader_1() {
 }
 CNumShader_1::~CNumShader_1() {
@@ -3895,7 +3895,7 @@ void CNumShader_1::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *p
 
 void CNumShader_1::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -3936,7 +3936,7 @@ D3D12_BLEND_DESC CNumShader_1::CreateBlendState()
 	return(d3dBlendDesc);
 }
 
-// ¾Õ¼ýÀÚ2
+// ì•žìˆ«ìž2
 CNumShader_2::CNumShader_2() {
 }
 CNumShader_2::~CNumShader_2() {
@@ -4100,7 +4100,7 @@ void CNumShader_2::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *p
 
 void CNumShader_2::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -4142,7 +4142,7 @@ D3D12_BLEND_DESC CNumShader_2::CreateBlendState()
 }
 
 
-// ¾Õ¼ýÀÚ3
+// ì•žìˆ«ìž3
 CNumShader_3::CNumShader_3() {
 }
 CNumShader_3::~CNumShader_3() {
@@ -4306,7 +4306,7 @@ void CNumShader_3::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *p
 
 void CNumShader_3::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -4348,7 +4348,7 @@ D3D12_BLEND_DESC CNumShader_3::CreateBlendState()
 }
 
 
-// ¾Õ¼ýÀÚ4
+// ì•žìˆ«ìž4
 CNumShader_4::CNumShader_4() {
 }
 CNumShader_4::~CNumShader_4() {
@@ -4512,7 +4512,7 @@ void CNumShader_4::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *p
 
 void CNumShader_4::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -4554,7 +4554,7 @@ D3D12_BLEND_DESC CNumShader_4::CreateBlendState()
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
-// µÞÀÚ¸® ¼ýÀÚ
+// ë’·ìžë¦¬ ìˆ«ìž
 
 
 CNumShader0::CNumShader0() {
@@ -4720,7 +4720,7 @@ void CNumShader0::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 
 void CNumShader0::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -4925,7 +4925,7 @@ void CNumShader1::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 
 void CNumShader1::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -5130,7 +5130,7 @@ void CNumShader2::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 
 void CNumShader2::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -5172,7 +5172,7 @@ D3D12_BLEND_DESC CNumShader2::CreateBlendState()
 }
 
 
-// µÞ¼ýÀÚ3
+// ë’·ìˆ«ìž3
 CNumShader3::CNumShader3() {
 }
 CNumShader3::~CNumShader3() {
@@ -5336,7 +5336,7 @@ void CNumShader3::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 
 void CNumShader3::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -5378,7 +5378,7 @@ D3D12_BLEND_DESC CNumShader3::CreateBlendState()
 }
 
 
-// µÞ¼ýÀÚ4
+// ë’·ìˆ«ìž4
 CNumShader4::CNumShader4() {
 }
 CNumShader4::~CNumShader4() {
@@ -5542,7 +5542,7 @@ void CNumShader4::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 
 void CNumShader4::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -5747,7 +5747,7 @@ void CNumShader5::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 
 void CNumShader5::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -5952,7 +5952,7 @@ void CNumShader6::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 
 void CNumShader6::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -6157,7 +6157,7 @@ void CNumShader7::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 
 void CNumShader7::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -6199,7 +6199,7 @@ D3D12_BLEND_DESC CNumShader7::CreateBlendState()
 }
 
 
-// µÞ¼ýÀÚ3
+// ë’·ìˆ«ìž3
 CNumShader8::CNumShader8() {
 }
 CNumShader8::~CNumShader8() {
@@ -6363,7 +6363,7 @@ void CNumShader8::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 
 void CNumShader8::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
@@ -6405,7 +6405,7 @@ D3D12_BLEND_DESC CNumShader8::CreateBlendState()
 }
 
 
-// µÞ¼ýÀÚ4
+// ë’·ìˆ«ìž4
 CNumShader9::CNumShader9() {
 }
 CNumShader9::~CNumShader9() {
@@ -6568,7 +6568,7 @@ void CNumShader9::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 
 void CNumShader9::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ì˜ ë°°ìˆ˜
 	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
