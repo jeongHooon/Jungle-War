@@ -384,8 +384,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			KeyBuffer[VK_RIGHT] = true;
 			//keysend();
 			int retval;
-			memcpy(&CTS.KeyBuffer, &KeyBuffer, sizeof(KeyBuffer));
-			memcpy(&CTS.ClientID, &myID, sizeof(myID));
+			//memcpy(&CTS.KeyBuffer, &KeyBuffer, sizeof(KeyBuffer));
+			//memcpy(&CTS.ClientID, &myID, sizeof(myID));
+			CTS.KeyBuffer[VK_RIGHT] = true;
+			CTS.ClientID = myID;
 			// 데이터 보내기
 			retval = send(sock, (char *)&CTS, sizeof(CTS), 0);
 			if (retval == SOCKET_ERROR) {

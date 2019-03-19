@@ -42,7 +42,7 @@ struct Client{
 	int id; // 0 ,1
 	int x,y;
 	SOCKET s;
-	bool keyBuffer[256];
+	BOOL keyBuffer[256];
 
 };
 #pragma pack()
@@ -190,7 +190,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			//else if (CTS.ClientID == 2) memcpy(&P2KeyBuffer, &CTS.KeyBuffer, sizeof(CTS.KeyBuffer));
 
 			memcpy(&cl[CTS.ClientID].keyBuffer, &CTS.KeyBuffer, sizeof(CTS.KeyBuffer));
-
+			memcpy(&cl[CTS.ClientID].id, &CTS.ClientID, sizeof(&CTS.ClientID));
+			cout << "CTS"<<CTS.KeyBuffer[VK_RIGHT] << endl;
+			cout << "cl" << cl[CTS.ClientID].keyBuffer[VK_RIGHT] << endl;
 			
 			//cout << "1¹ø" << P1KeyBuffer[VK_LEFT] << endl;
 			//cout << "2¹ø" << P2KeyBuffer[VK_LEFT] << endl;
@@ -221,7 +223,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 				if (character2Pos.y > 0)
 					character2Pos.y -= 100;*/
 
-			cout << cl[CTS.ClientID].keyBuffer[VK_LEFT] << endl;
+			cout << cl[CTS.ClientID].keyBuffer[VK_RIGHT] << endl;
 			if (cl[CTS.ClientID].keyBuffer[VK_LEFT])
 				if (cl[CTS.ClientID].x > 0)
 					cl[CTS.ClientID].x -= 100;
@@ -237,12 +239,12 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 				
 			for (int i = 0; i < MAX_CLIENT; ++i)
 			{
-				if (cl[i].id == 0)
+				if (cl[i].id == 1)
 				{
 					STC.x1 = cl[i].x;
 					STC.y1 = cl[i].y;
 				}
-				else if(cl[i].id == 1)
+				else if(cl[i].id == 2)
 				{
 					STC.x2 = cl[i].x;
 					STC.y2 = cl[i].y;
