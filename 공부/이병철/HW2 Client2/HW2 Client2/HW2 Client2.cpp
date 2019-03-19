@@ -185,6 +185,24 @@ DWORD WINAPI ClientMain(LPVOID arg)
 				err_display("recv()11");
 				exit(1);
 			}
+			if (tmp == 1)
+			{
+				retval = recvn(sock, (char *)&character1Pos, sizeof(character1Pos), 0);
+				if (retval == SOCKET_ERROR)
+				{
+					err_display("recv()11");
+					exit(1);
+				}
+			}
+			else
+			{
+				retval = recvn(sock, (char *)&character2Pos, sizeof(character2Pos), 0);
+				if (retval == SOCKET_ERROR)
+				{
+					err_display("recv()11");
+					exit(1);
+				}
+			}
 
 			myID = tmp;
 			if (myID != 0)
@@ -218,10 +236,15 @@ DWORD WINAPI ClientMain(LPVOID arg)
 				break;
 			}
 
-			memcpy(&character1Pos.x, &STC.x1, sizeof(STC.x1));
-			memcpy(&character1Pos.y, &STC.y1, sizeof(STC.y1));
-			memcpy(&character2Pos.x, &STC.x2, sizeof(STC.x2));
-			memcpy(&character2Pos.y, &STC.y2, sizeof(STC.y2));
+			//memcpy(&character1Pos.x, &STC.x1, sizeof(STC.x1));
+			//memcpy(&character1Pos.y, &STC.y1, sizeof(STC.y1));
+			//memcpy(&character2Pos.x, &STC.x2, sizeof(STC.x2));
+			//memcpy(&character2Pos.y, &STC.y2, sizeof(STC.y2));
+
+			character1Pos.x = STC.x1;
+			character1Pos.y = STC.y1;
+			character2Pos.x = STC.x2;
+			character2Pos.y = STC.y2;
 		}
 	}
 	
@@ -339,30 +362,63 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 		case VK_LEFT:
 		{
-			int retval;
-
 			//if (character1Pos.x > 0)character1Pos.x -= 100;
 			KeyBuffer[VK_LEFT] = true;
-			keysend();
+			//keysend();
+			int retval;
+			//memcpy(&CTS.KeyBuffer, &KeyBuffer, sizeof(KeyBuffer));
+			//memcpy(&CTS.ClientID, &myID, sizeof(myID));
+			CTS.KeyBuffer[VK_LEFT] = true;
+			CTS.ClientID = myID;
+			
+			// 데이터 보내기
+			retval = send(sock, (char *)&CTS, sizeof(CTS), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()22");
+			}
 			break;
 		}
 			break;
 		case VK_RIGHT: {
 			//if (character1Pos.x < BOARDSIZE - 100)character1Pos.x += 100;
 			KeyBuffer[VK_RIGHT] = true;
-			keysend();
+			//keysend();
+			int retval;
+			memcpy(&CTS.KeyBuffer, &KeyBuffer, sizeof(KeyBuffer));
+			memcpy(&CTS.ClientID, &myID, sizeof(myID));
+			// 데이터 보내기
+			retval = send(sock, (char *)&CTS, sizeof(CTS), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()22");
+			}
 		}
 			break;
 		case VK_DOWN: {
 			//if (character1Pos.y < BOARDSIZE - 100)character1Pos.y += 100;
 			KeyBuffer[VK_DOWN] = true;
-			keysend();
+			//keysend();
+			int retval;
+			memcpy(&CTS.KeyBuffer, &KeyBuffer, sizeof(KeyBuffer));
+			memcpy(&CTS.ClientID, &myID, sizeof(myID));
+			// 데이터 보내기
+			retval = send(sock, (char *)&CTS, sizeof(CTS), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()22");
+			}
 		}
 					  break;
 		case VK_UP: {
 			//if (character1Pos.y >0)character1Pos.y -= 100;
 			KeyBuffer[VK_UP] = true;
-			keysend();
+			//keysend();
+			int retval;
+			memcpy(&CTS.KeyBuffer, &KeyBuffer, sizeof(KeyBuffer));
+			memcpy(&CTS.ClientID, &myID, sizeof(myID));
+			// 데이터 보내기
+			retval = send(sock, (char *)&CTS, sizeof(CTS), 0);
+			if (retval == SOCKET_ERROR) {
+				err_display("send()22");
+			}
 		}
 					break;
 		case VK_SPACE:

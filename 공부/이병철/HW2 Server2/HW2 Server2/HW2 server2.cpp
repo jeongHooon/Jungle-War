@@ -30,18 +30,24 @@ POINT character1Pos = { 400,0 }; //캐릭터 초기 위치 값
 POINT character2Pos = { 400,700 }; //캐릭터 초기 위치 값
 
 #pragma pack(1)
+struct Init {
+	int id;
+	POINT PlayerPos;
+};
+#pragma pack()
+
+#pragma pack(1)
 struct Client{
 
 	int id; // 0 ,1
 	int x,y;
 	SOCKET s;
-	bool keyBuffer[20];
+	bool keyBuffer[256];
 
 };
 #pragma pack()
 Client cl[MAX_CLIENT];
 
-//cl[i].s 
 #pragma pack(1)
 struct Server_recv_Struct {
 	BOOL KeyBuffer[256];
@@ -138,6 +144,27 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 						err_display("send()11");
 						exit(1);
 					}
+
+					if (ClientCount == 1)
+					{
+						retval = send(cl[ClientCount - 1].s, (char*)&character1Pos, sizeof(character1Pos), 0);
+						if (retval == SOCKET_ERROR)
+						{
+							err_display("send()Pos1");
+							exit(1);
+						}
+					}
+					else
+					{
+						retval = send(cl[ClientCount - 1].s, (char*)&character2Pos, sizeof(character2Pos), 0);
+						if (retval == SOCKET_ERROR)
+						{
+							err_display("send()Pos1");
+							exit(1);
+						}
+					}
+					
+
 					++sendCount;
 					break;
 				}
@@ -153,7 +180,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		else
 		{
 			//cout << "recv 진입";
-			retval = recvn(cl[ClientCount - 1].s, (char *)&CTS, sizeof(CTS), 0);
+			retval = recvn(client_sock, (char *)&CTS, sizeof(CTS), 0);
 			if (retval == SOCKET_ERROR)
 			{
 				err_display("recv()22");
@@ -164,6 +191,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 			memcpy(&cl[CTS.ClientID].keyBuffer, &CTS.KeyBuffer, sizeof(CTS.KeyBuffer));
 
+			
 			//cout << "1번" << P1KeyBuffer[VK_LEFT] << endl;
 			//cout << "2번" << P2KeyBuffer[VK_LEFT] << endl;
 
@@ -192,6 +220,8 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			if (P2KeyBuffer[VK_UP])
 				if (character2Pos.y > 0)
 					character2Pos.y -= 100;*/
+
+			cout << cl[CTS.ClientID].keyBuffer[VK_LEFT] << endl;
 			if (cl[CTS.ClientID].keyBuffer[VK_LEFT])
 				if (cl[CTS.ClientID].x > 0)
 					cl[CTS.ClientID].x -= 100;
