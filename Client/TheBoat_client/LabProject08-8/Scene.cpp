@@ -229,8 +229,8 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pGunUIShader_2->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pGunUIShader_2->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
-	// º˝¿⁄ Ω√¿€
-	// æ’¿⁄∏Æ
+	// Ïà´Ïûê ÏãúÏûë
+	// ÏïûÏûêÎ¶¨
 	CNumShader_1 *pNumShader_1 = new CNumShader_1();
 	pNumShader_1->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pNumShader_1->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
@@ -247,7 +247,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pNumShader_4->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pNumShader_4->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
-	// µﬁ¿⁄∏Æ
+	// Îí∑ÏûêÎ¶¨
 	CNumShader0 *pNumShader0 = new CNumShader0();
 	pNumShader0->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pNumShader0->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
@@ -517,12 +517,12 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 
 void CScene::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(LIGHTS) + 255) & ~255); //256¿« πËºˆ
+	UINT ncbElementBytes = ((sizeof(LIGHTS) + 255) & ~255); //256Ïùò Î∞∞Ïàò
 	m_pd3dcbLights = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbLights->Map(0, NULL, (void **)&m_pcbMappedLights);
 
-	UINT ncbMaterialBytes = ((sizeof(MATERIALS) + 255) & ~255); //256¿« πËºˆ
+	UINT ncbMaterialBytes = ((sizeof(MATERIALS) + 255) & ~255); //256Ïùò Î∞∞Ïàò
 	m_pd3dcbMaterials = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbMaterialBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbMaterials->Map(0, NULL, (void **)&m_pcbMappedMaterials);
@@ -581,8 +581,8 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 	}
 
 	for (int i = 0; i < 4; ++i) {
-		//m_pPlayer[i]->SetScale(0.093, 0.093, 0.093);	// ƒ≥∏Ø≈Õ ≈©±‚ ¡∂¡§
-		m_pPlayer[i]->SetScale(0.25, 0.25, 0.25);	// ƒ≥∏Ø≈Õ ≈©±‚ ¡∂¡§
+		//m_pPlayer[i]->SetScale(0.093, 0.093, 0.093);	// Ï∫êÎ¶≠ÌÑ∞ ÌÅ¨Í∏∞ Ï°∞Ï†ï
+		m_pPlayer[i]->SetScale(0.25, 0.25, 0.25);	// Ï∫êÎ¶≠ÌÑ∞ ÌÅ¨Í∏∞ Ï°∞Ï†ï
 	}
 
 	//for (int i = 0; i < m_nObjects; i++) m_ppUIShaders[i]->AnimateObjects(fTimeElapsed, pCamera);
@@ -609,7 +609,7 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
 	if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
 	
-	if (m_pBuildings) m_pBuildings->Render(pd3dCommandList, pCamera);
+	//if (m_pBuildings) m_pBuildings->Render(pd3dCommandList, pCamera);
 	
 	for (int i = 1; i < m_nShaders; i++) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->UpdateTransform(NULL);
