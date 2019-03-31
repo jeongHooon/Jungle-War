@@ -27,7 +27,9 @@ CPlayer::CPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dComman
 }
 
 void CPlayer::GetKeyInput(int key) {
-	//printf("[æ÷¥œ∏ﬁ¿Ãº«] : %d≈∞ ¥©∏ß\n",key);
+	printf("[Ïï†ÎãàÎ©îÏù¥ÏÖò] : %dÌÇ§ ÎàÑÎ¶Ñ\n",key);
+	
+	//check
 	animation_status = key;
 }
 
@@ -40,7 +42,7 @@ CPlayer::~CPlayer()
 
 ID3D12Resource *CPlayer::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
-	UINT ncbElementBytes = ((sizeof(CB_PLAYER_INFO) + 255) & ~255); //256¿« πËºˆ
+	UINT ncbElementBytes = ((sizeof(CB_PLAYER_INFO) + 255) & ~255); //256Ïùò Î∞∞Ïàò
 	m_pd3dcbPlayer = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
 	m_pd3dcbPlayer->Map(0, NULL, (void **)&m_pcbMappedPlayer);
@@ -166,6 +168,8 @@ void CPlayer::Update(float fTimeElapsed)
 	m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Gravity, fTimeElapsed, false));
 	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
 	float fMaxVelocityXZ = m_fMaxVelocityXZ * fTimeElapsed;
+	//float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
+	//float fMaxVelocityXZ = m_fMaxVelocityXZ ;
 	if (fLength > m_fMaxVelocityXZ)
 	{
 		m_xmf3Velocity.x *= (fMaxVelocityXZ / fLength);
@@ -183,8 +187,8 @@ void CPlayer::Update(float fTimeElapsed)
 	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
 	if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
 	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
-	if (nCurrentCameraMode == FIRST_PERSON_CAMERA) m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - 15 * GetLookVector().x, GetPosition().y + 30, GetPosition().z - 15 * GetLookVector().z));	// 1¿Œƒ™ ƒ´∏ﬁ∂Û øÚ¡˜¿Ã±‚
-	if (nCurrentCameraMode == SPACESHIP_CAMERA) m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, GetPosition().y + 15, GetPosition().z));	// ¡‹ ƒ´∏ﬁ∂Û øÚ¡˜¿Ã±‚
+	if (nCurrentCameraMode == FIRST_PERSON_CAMERA) m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - 15 * GetLookVector().x, GetPosition().y + 30, GetPosition().z - 15 * GetLookVector().z));	// 1Ïù∏Ïπ≠ Ïπ¥Î©îÎùº ÏõÄÏßÅÏù¥Í∏∞
+	if (nCurrentCameraMode == SPACESHIP_CAMERA) m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, GetPosition().y + 15, GetPosition().z));	// Ï§å Ïπ¥Î©îÎùº ÏõÄÏßÅÏù¥Í∏∞
 
 	m_pCamera->RegenerateViewMatrix();
 
@@ -260,7 +264,7 @@ void CPlayer::Animate(float fTimeElapsed)
 	m_xmf4x4ToParentTransform._31 = m_xmf3Look.x; m_xmf4x4ToParentTransform._32 = m_xmf3Look.y; m_xmf4x4ToParentTransform._33 = m_xmf3Look.z;
 	m_xmf4x4ToParentTransform._41 = m_xmf3Position.x; m_xmf4x4ToParentTransform._42 = m_xmf3Position.y; m_xmf4x4ToParentTransform._43 = m_xmf3Position.z;
 
-	//// ƒ≥∏Ø≈Õ »∏¿¸
+	//// Ï∫êÎ¶≠ÌÑ∞ ÌöåÏ†Ñ
 	//XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(90.0f), 0.0, 0.0f);
 	//m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
 }
