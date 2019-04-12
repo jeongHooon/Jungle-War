@@ -1,0 +1,65 @@
+From 96c3444faf3fb02c714214f06338aae2d03b6ba6 Mon Sep 17 00:00:00 2001
+From: Sang Woo <jay1024@naver.com>
+Date: Sun, 24 Mar 2019 22:41:40 +0900
+Subject: [PATCH] =?UTF-8?q?UI=20=EC=95=A0=EB=8B=88=EB=A9=94=EC=9D=B4?=
+ =?UTF-8?q?=EC=85=98(=EC=9D=B4=EB=8F=99)=20=EC=8B=9C=EB=8F=84=EC=A4=91...?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ .../LabProject08-8/LabProject08-8.vcxproj               |  2 +-
+ Client/TheBoat_client/LabProject08-8/Shader.cpp         | 17 +++++++++--------
+ 2 files changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/Client/TheBoat_client/LabProject08-8/LabProject08-8.vcxproj b/Client/TheBoat_client/LabProject08-8/LabProject08-8.vcxproj
+index e5d3f27..dd0683f 100644
+--- a/Client/TheBoat_client/LabProject08-8/LabProject08-8.vcxproj
++++ b/Client/TheBoat_client/LabProject08-8/LabProject08-8.vcxproj
+@@ -23,7 +23,7 @@
+     <ProjectGuid>{2DACAA6E-CAD6-43DC-8844-B42287D8CB3C}</ProjectGuid>
+     <Keyword>Win32Proj</Keyword>
+     <RootNamespace>LabProject088</RootNamespace>
+-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
++    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+   </PropertyGroup>
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+diff --git a/Client/TheBoat_client/LabProject08-8/Shader.cpp b/Client/TheBoat_client/LabProject08-8/Shader.cpp
+index 68fa473..2e87cb4 100644
+--- a/Client/TheBoat_client/LabProject08-8/Shader.cpp
++++ b/Client/TheBoat_client/LabProject08-8/Shader.cpp
+@@ -1622,6 +1622,15 @@ void CMiniMapShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
+ 	}
+ }
+ 
++
++void CMiniMapShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
++{
++	for (int j = 0; j < m_nTree; j++)
++	{
++		m_ppTree[j]->SetPosition(XMFLOAT3(m_ppTree[j]->GetPosition().x + 10000, m_ppTree[j]->GetPosition().y, m_ppTree[j]->GetPosition().z));
++	}
++}
++
+ void CMiniMapShader::ReleaseObjects()
+ {
+ 	if (m_ppTree)
+@@ -1635,14 +1644,6 @@ void CMiniMapShader::ReleaseObjects()
+ #endif
+ }
+ 
+-void CMiniMapShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
+-{
+-	for (int j = 0; j < m_nTree; j++)
+-	{
+-		m_ppTree[j]->SetPosition(XMFLOAT3(m_ppTree[j]->GetPosition().x + 10000, m_ppTree[j]->GetPosition().y, m_ppTree[j]->GetPosition().z));	// UI위치 이동시키려고 했지만 실패....
+-		m_ppTree[j]->Animate(fTimeElapsed);
+-	}
+-}
+ 
+ void CMiniMapShader::ReleaseUploadBuffers()
+ {
+-- 
+2.15.1.windows.2
+
