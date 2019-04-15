@@ -1126,7 +1126,7 @@ void CGameFramework::FrameAdvance()
 	m_pScene->m_ppUIShaders[9]->Render(m_pd3dCommandList, m_pCamera); // 맵
 	
 	// 숫자 시작
-	cout << m_pPlayer[my_client_id]->GetPlayerBullet() << endl;
+	//cout << "총알 "<<m_pPlayer[my_client_id]->GetPlayerBullet() << endl;
 	if(m_pPlayer[my_client_id]->GetPlayerBullet() / 10 > 0)
 		m_pScene->m_ppUIShaders[11 + m_pPlayer[my_client_id]->GetPlayerBullet() / 10]->Render(m_pd3dCommandList, m_pCamera); // 앞 숫자
 	if (m_pPlayer[my_client_id]->GetPlayerBullet() > 0)

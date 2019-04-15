@@ -10,7 +10,6 @@
 CPlayer* CGameFramework::m_pPlayer[];
 int CGameFramework::my_client_id;
 XMFLOAT3 CGameFramework::buildingPos[];
-//CCamera* CGameFramework::m_pCamera;
 
 CShader::CShader()
 {
