@@ -71,6 +71,7 @@ public:
 	static CPlayer				*m_pPlayer[4];
 	static CCamera				*m_pCamera;
 	float						playerHp = 100;
+	bool						gameMode = false;
 
 private:
 	bool						itemUI[4] = {};

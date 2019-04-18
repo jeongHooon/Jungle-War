@@ -547,6 +547,9 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case 'M':
 			alphaMapOn = !alphaMapOn;
 			break;
+		case '0':
+			gameMode = !gameMode;
+			break;
 		}
 
 		break;
@@ -1124,6 +1127,8 @@ void CGameFramework::FrameAdvance()
 
 	if (alphaMapOn == true)
 	m_pScene->m_ppUIShaders[9]->Render(m_pd3dCommandList, m_pCamera); // 맵
+
+	
 	
 	// 숫자 시작
 	//cout << "총알 "<<m_pPlayer[my_client_id]->GetPlayerBullet() << endl;
@@ -1131,6 +1136,12 @@ void CGameFramework::FrameAdvance()
 		m_pScene->m_ppUIShaders[11 + m_pPlayer[my_client_id]->GetPlayerBullet() / 10]->Render(m_pd3dCommandList, m_pCamera); // 앞 숫자
 	if (m_pPlayer[my_client_id]->GetPlayerBullet() > 0)
 		m_pScene->m_ppUIShaders[16 + m_pPlayer[my_client_id]->GetPlayerBullet() % 10]->Render(m_pd3dCommandList, m_pCamera); // 뒷 숫자
+
+
+	if (gameMode == true)
+		m_pScene->m_ppMainUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 메인화면
+
+	// 렌더
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
