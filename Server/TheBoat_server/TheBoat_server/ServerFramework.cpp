@@ -3,7 +3,7 @@
 #include "CHeightMapImage.h"
 #include "Building.h"
 #include "Object.h"
-
+#include "Tree.h"
 void ErrorDisplay(const char* msg, int err_no) {
 	WCHAR *lpMsgBuf;
 	FormatMessage(
@@ -111,7 +111,7 @@ void ServerFramework::InitServer() {
 	input_buffer[7] = XMFLOAT3{ 3071.f,height_map->GetHeight(3071.f,1906.f) ,1906.f };
 	input_buffer[8] = XMFLOAT3{ 3251.f,height_map->GetHeight(3251.f,2721.f) ,2721.f };
 	input_buffer[9] = XMFLOAT3{ 2106.f,height_map->GetHeight(2106.f,3322.f) ,3322.f };
-
+	
 	input_extents[0] = XMFLOAT3{ 100,100,100 };
 	input_extents[1] = XMFLOAT3{ 100,100,100 };
 	input_extents[2] = XMFLOAT3{ 100,100,100 };
@@ -127,9 +127,15 @@ void ServerFramework::InitServer() {
 	for (int i = 0; i < OBJECT_BUILDING; ++i) {
 		input_extents[0] = XMFLOAT3{ 100,100,100 };
 		building[i] = new Building;
-		building[i]->SetPosition(input_buffer[i], input_extents[i]);
+		building[i]->SetPosition(input_buffer[i], input_extents[0]);
 	}
-
+	XMFLOAT3 input_buffer2[OBJECT_TREE];
+	for (int i = 0; i < OBJECT_TREE; ++i) {
+		tree[i] = new Tree;
+		XMFLOAT3 buffer2 = XMFLOAT3{ static_cast<float>(rand() % 4000), 0.f, static_cast<float>(rand() % 4000) };
+		buffer2.y = height_map->GetHeight(buffer2.x, buffer2.z);
+		//building[i]->SetPosition(buffer2, (*XMFLOAT3)(0,0,0));
+	}
 	//for (int i = 0; i < OBJECT_BUILDING; ++i) {
 	//	building[i] = new Building;
 	//	XMFLOAT3 input_buffer = XMFLOAT3{ static_cast<float>(rand() % 4000), 0.f, static_cast<float>(rand() % 4000) };
