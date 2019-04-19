@@ -376,7 +376,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 	case WM_KEYDOWN: {
 		if (wParam == VK_SHIFT) {
 			if (is_pushed[CS_KEY_PRESS_SHIFT] == false) {
-				printf("[WM_KEYUP] : Shift 키 입력\n");
+				//printf("[WM_KEYUP] : Shift 키 입력\n");
 				isRun = true;
 				if (charstate == 3) {
 					m_pPlayer[my_client_id]->GetKeyInput(1);
@@ -462,7 +462,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				else if (charstate == 3) {
 					m_pPlayer[my_client_id]->GetKeyInput(6);
 					charstate = 6;
-				printf("215\n");
+					printf("215\n");
 				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(6);
@@ -550,6 +550,12 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case '0':
 			gameMode = !gameMode;
 			break;
+		case 'Q':
+			if (is_pushed[CS_KEY_PRESS_Q] == false) {
+				server_mgr.SendPacket(CS_KEY_PRESS_Q, m_pPlayer[my_client_id]->GetLook());
+				is_pushed[CS_KEY_PRESS_Q] = true;
+			}
+			break;
 		}
 		//
 		break;
@@ -561,7 +567,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		}
 		else if (wParam == VK_SHIFT) {
 			printf("[WM_KEYUP] : Shift 키 놓음\n");
-			if(is_pushed[CS_KEY_PRESS_UP] == false)
+			if (is_pushed[CS_KEY_PRESS_UP] == false)
 				m_pPlayer[my_client_id]->GetKeyInput(0);
 			else
 				m_pPlayer[my_client_id]->GetKeyInput(3);
@@ -704,6 +710,27 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				is_pushed[CS_KEY_PRESS_2] = false;
 			}
 			break;
+		case 'Q':
+			if (is_pushed[CS_KEY_PRESS_Q] == true) {
+				printf("[WM_KEYDOWN] : Q키 놓음 \n");
+				server_mgr.SendPacket(CS_KEY_RELEASE_Q);
+				is_pushed[CS_KEY_PRESS_Q] = false;
+			}
+			break;
+		case VK_UP:
+			--mainScreenSelect;
+			if (mainScreenSelect < 0)
+				mainScreenSelect = 2;
+			break;
+		case VK_DOWN:
+			++mainScreenSelect;
+			if (mainScreenSelect > 2)
+				mainScreenSelect = 0;
+			break;
+		case VK_RETURN:
+			if (gameMode == 0 && mainScreenSelect == 1)
+				++gameMode;
+			break;
 		}
 		switch (wParam)
 		{
@@ -780,7 +807,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 			XMFLOAT3 read_buf;
 			server_mgr.ReadPacket();
 			if (first_recv) {
-				printf("드루와\n"); 
+				printf("드루와\n");
 				first_recv = false;
 				my_client_id = server_mgr.ReturnCameraID();
 				m_pCamera = m_pPlayer[my_client_id]->GetCamera();
@@ -811,12 +838,12 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 
 
 			//printf("상태 : %d\n",server_mgr.ReturnPlayerPosStatus(server_mgr.GetClientID()).player_status);
-			
+
 			if (server_mgr.GetClientID() != my_client_id) {
 				m_pPlayer[server_mgr.GetClientID()]->GetKeyInput(server_mgr.ReturnPlayerPosStatus(server_mgr.GetClientID()).player_status);
 				//printf("AA %d\n", server_mgr.ReturnPlayerPosStatus(server_mgr.GetClientID()).player_status);
 			}
-			
+
 			m_pScene->m_ppShaders[2]->SetPosition(server_mgr.GetBullet().id,
 				XMFLOAT3(server_mgr.GetBullet().x, server_mgr.GetBullet().y, server_mgr.GetBullet().z));
 
@@ -898,7 +925,7 @@ void CGameFramework::BuildObjects()
 #endif
 #ifdef _WITH_GUNSHIP_MODEL
 	for (int i = 0; i < 4; ++i)
-		m_pPlayer[i]->SetPosition(XMFLOAT3(30 * i, - 100.0f, 0.0f));
+		m_pPlayer[i]->SetPosition(XMFLOAT3(30 * i, -100.0f, 0.0f));
 	//	m_pPlayer->Rotate(0.0f, 0.0f, 0.0f);
 #endif
 
@@ -940,11 +967,11 @@ void CGameFramework::ProcessInput()
 		if (pKeysBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
 		if (pKeysBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
 		/*if (pKeysBuffer[VK_SPACE] & 0xF0) {	// 총알발사
-			if (CShader::shootBullet == 0)
-				CShader::shootBullet = 1;
+		if (CShader::shootBullet == 0)
+		CShader::shootBullet = 1;
 		}
 		else
-			CShader::shootBullet = 0;*/
+		CShader::shootBullet = 0;*/
 
 		float cxDelta = 0.0f, cyDelta = 0.0f;
 
@@ -1091,8 +1118,8 @@ void CGameFramework::FrameAdvance()
 
 	m_pd3dCommandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
 
-	m_pScene->Render(m_pd3dCommandList, m_pCamera);			
-	
+	m_pScene->Render(m_pd3dCommandList, m_pCamera);
+
 
 #ifdef _WITH_PLAYER_TOP
 	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
@@ -1106,41 +1133,45 @@ void CGameFramework::FrameAdvance()
 
 	// UI 렌더
 
-	m_pScene->m_ppUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 미니맵
+	if (gameMode == 1) {
+		m_pScene->m_ppUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 미니맵
 
-	//printf("%f", playerHp);
-	m_pScene->m_ppUIShaders[2]->Render(m_pd3dCommandList, m_pCamera, playerHp);
-	m_pScene->m_ppUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//아이템 검은색
-	for (int i = 0; i < 4; ++i) {
-		if(itemUI[i] == true)
-			m_pScene->m_ppUIShaders[i + 4]->Render(m_pd3dCommandList, m_pCamera);
+																		  //printf("%f", playerHp);
+		m_pScene->m_ppUIShaders[2]->Render(m_pd3dCommandList, m_pCamera, playerHp);
+		m_pScene->m_ppUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//아이템 검은색
+		for (int i = 0; i < 4; ++i) {
+			if (itemUI[i] == true)
+				m_pScene->m_ppUIShaders[i + 4]->Render(m_pd3dCommandList, m_pCamera);
+		}
+
+		if (itemUI[3] == true)
+			m_pScene->m_ppUIShaders[8]->Render(m_pd3dCommandList, m_pCamera);
+
+		m_pScene->m_ppUIShaders[10]->Render(m_pd3dCommandList, m_pCamera); // 총
+		m_pScene->m_ppUIShaders[11]->Render(m_pd3dCommandList, m_pCamera); // 총
+
+		if (m_pCamera->GetMode() == SPACESHIP_CAMERA)
+			m_pScene->m_ppUIShaders[1]->Render(m_pd3dCommandList, m_pCamera);// UI렌더 바꿔야함.
+
+		if (alphaMapOn == true)
+			m_pScene->m_ppUIShaders[9]->Render(m_pd3dCommandList, m_pCamera); // 맵
+
+
+
+																			  // 숫자 시작
+																			  //cout << "총알 "<<m_pPlayer[my_client_id]->GetPlayerBullet() << endl;
+		if (m_pPlayer[my_client_id]->GetPlayerBullet() / 10 > 0)
+			m_pScene->m_ppUIShaders[11 + m_pPlayer[my_client_id]->GetPlayerBullet() / 10]->Render(m_pd3dCommandList, m_pCamera); // 앞 숫자
+		if (m_pPlayer[my_client_id]->GetPlayerBullet() > 0)
+			m_pScene->m_ppUIShaders[16 + m_pPlayer[my_client_id]->GetPlayerBullet() % 10]->Render(m_pd3dCommandList, m_pCamera); // 뒷 숫자
 	}
-
-	if (itemUI[3] == true)
-		m_pScene->m_ppUIShaders[8]->Render(m_pd3dCommandList, m_pCamera);
-	
-	m_pScene->m_ppUIShaders[10]->Render(m_pd3dCommandList, m_pCamera); // 총
-	m_pScene->m_ppUIShaders[11]->Render(m_pd3dCommandList, m_pCamera); // 총
-
-	if (m_pCamera->GetMode() == SPACESHIP_CAMERA)
-		m_pScene->m_ppUIShaders[1]->Render(m_pd3dCommandList, m_pCamera);// UI렌더 바꿔야함.
-
-	if (alphaMapOn == true)
-	m_pScene->m_ppUIShaders[9]->Render(m_pd3dCommandList, m_pCamera); // 맵
-
-	
-	
-	// 숫자 시작
-	//cout << "총알 "<<m_pPlayer[my_client_id]->GetPlayerBullet() << endl;
-	if(m_pPlayer[my_client_id]->GetPlayerBullet() / 10 > 0)
-		m_pScene->m_ppUIShaders[11 + m_pPlayer[my_client_id]->GetPlayerBullet() / 10]->Render(m_pd3dCommandList, m_pCamera); // 앞 숫자
-	if (m_pPlayer[my_client_id]->GetPlayerBullet() > 0)
-		m_pScene->m_ppUIShaders[16 + m_pPlayer[my_client_id]->GetPlayerBullet() % 10]->Render(m_pd3dCommandList, m_pCamera); // 뒷 숫자
-
-
-	if (gameMode == true)
+	else if (gameMode == 0) {
 		m_pScene->m_ppMainUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 메인화면
-
+		if (mainScreenSelect == 1)
+			m_pScene->m_ppMainUIShaders[1]->Render(m_pd3dCommandList, m_pCamera); // 메인화면 선택창
+		if (mainScreenSelect == 2)
+			m_pScene->m_ppMainUIShaders[2]->Render(m_pd3dCommandList, m_pCamera); // 메인화면 선택창
+	}
 	// 렌더
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;

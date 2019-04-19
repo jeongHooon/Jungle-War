@@ -12,15 +12,12 @@
 // 본인 클라이언트 및 서버에서 사용
 //#define RUN_SPEED				2.78f
 // 위치 테스트용
-#define RUN_SPEED				7.0f
+#define RUN_SPEED				16.0f
 #define METER_PER_PIXEL			0.243f
-#define WALK_SPEED				1.67f
+#define WALK_SPEED				10.0f
 
 // Object 갯수 정리 
 #define OBJECT_BUILDING			10
-
-
-
 
 // Server To Client
 #define SC_ENTER_PLAYER			1
@@ -73,6 +70,10 @@
 #define CS_KEY_PRESS_CROUCH			22
 #define CS_KEY_RELEASE_CROUCH		23
 
+//=============================
+#define CS_KEY_PRESS_Q 24
+#define CS_KEY_RELEASE_Q 25
+//=============================
 #define CS_PLAYER_READY		100
 #define CS_PLAYER_READY_CANCLE 101
 #define CS_PLAYER_TEAM_SELECT	102
@@ -209,6 +210,13 @@ struct CS_PACKET_LOOK_VECTOR {
 	BYTE type;
 	DirectX::XMVECTOR look_vector;
 };
+
+//===============================================
+struct CS_PACKET_Q_BUTTON {
+	BYTE size;
+	BYTE type;
+};
+//===============================================
 
 struct SC_PACKET_REMOVE_PLAYER {
 	BYTE size;

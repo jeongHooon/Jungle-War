@@ -74,6 +74,7 @@ public:
 	bool						gameMode = false;
 
 private:
+	int							mainScreenSelect = 0;
 	bool						itemUI[4] = {};
 	bool						alphaMapOn = false;
 	HINSTANCE					m_hInstance;
