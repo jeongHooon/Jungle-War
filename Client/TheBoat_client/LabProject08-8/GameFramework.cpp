@@ -551,7 +551,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			gameMode = !gameMode;
 			break;
 		}
-
+		//
 		break;
 	}
 	case WM_KEYUP:
