@@ -288,7 +288,6 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pNumShader9->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pNumShader9->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
-
 	m_ppUIShaders[0] = pMiniMapShader;
 	m_ppUIShaders[1] = pTreeShader;
 	m_ppUIShaders[2] = pHpBarShader;
@@ -315,6 +314,16 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppUIShaders[23] = pNumShader7;
 	m_ppUIShaders[24] = pNumShader8;
 	m_ppUIShaders[25] = pNumShader9;
+
+	// 메인화면
+	m_nMainUIShaders = 1;
+	m_ppMainUIShaders = new CShader*[m_nMainUIShaders];
+
+	CMainScreenShader *pMainScreenShader = new CMainScreenShader();
+	pMainScreenShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pMainScreenShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	m_ppMainUIShaders[0] = pMainScreenShader;
 
 	BuildLightsAndMaterials();
 
@@ -357,6 +366,11 @@ void CScene::ReleaseObjects()
 		delete[] m_ppUIShaders;
 	}
 
+	if (m_ppMainUIShaders)
+	{
+		for (int i = 0; i < m_nMainUIShaders; i++) delete m_ppMainUIShaders[i];
+		delete[] m_ppMainUIShaders;
+	}
 }
 
 void CScene::ReleaseUploadBuffers()
@@ -370,6 +384,7 @@ void CScene::ReleaseUploadBuffers()
 	if (m_pSkyBox) m_pSkyBox->ReleaseUploadBuffers();
 
 	for (int i = 0; i < m_nUIShaders; i++) m_ppUIShaders[i]->ReleaseUploadBuffers();
+	for (int i = 0; i < m_nMainUIShaders; i++) m_ppMainUIShaders[i]->ReleaseUploadBuffers();
 
 	
 }
@@ -614,6 +629,5 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	for (int i = 1; i < m_nShaders; i++) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->UpdateTransform(NULL);
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Render(pd3dCommandList, pCamera);
-
 }
 
