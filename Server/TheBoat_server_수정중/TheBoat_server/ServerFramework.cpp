@@ -15,7 +15,6 @@ void ErrorDisplay(const char* msg, int err_no) {
 	printf("%s", msg);
 	wprintf(L"에러%s\n", lpMsgBuf);
 	LocalFree(lpMsgBuf);
-
 }
 
 ServerFramework::ServerFramework()
@@ -184,6 +183,7 @@ void ServerFramework::AcceptPlayer() {
 	clients[client_id].is_ready = false;
 	clients[client_id].is_running = false;
 	clients[client_id].is_crouch = false;
+	clients[client_id].is_q = false;
 	ZeroMemory(&clients[client_id].overlapped_ex.wsa_over, sizeof(WSAOVERLAPPED));
 	clients[client_id].overlapped_ex.is_recv = true;
 	clients[client_id].overlapped_ex.wsabuf.buf = clients[client_id].overlapped_ex.io_buffer;
@@ -288,6 +288,9 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	case CS_KEY_PRESS_2:
 		printf("[ProcessPacket] :: 권총 무기 선택\n");
 		break;
+	case CS_KEY_PRESS_Q:
+		printf("[ProcessPacket] :: Q누름 (오브젝트)\n");
+		break;
 
 	case CS_KEY_PRESS_SHIFT:
 		clients[cl_id].is_running = true;
@@ -313,6 +316,8 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	case CS_KEY_RELEASE_1:
 		break;
 	case CS_KEY_RELEASE_2:
+		break;
+	case CS_KEY_RELEASE_Q:
 		break;
 	case CS_KEY_RELEASE_SHIFT:
 		clients[cl_id].is_running = false;
@@ -369,7 +374,6 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 			packets.player_status = 3;
 			if (clients[cl_id].is_running)
 				packets.player_status = 1;
-
 		}
 		else if ((clients[cl_id].is_move_left)) {
 			packets.player_status = 6;

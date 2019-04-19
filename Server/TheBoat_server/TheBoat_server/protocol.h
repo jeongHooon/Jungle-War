@@ -73,6 +73,10 @@
 #define CS_KEY_PRESS_CROUCH			22
 #define CS_KEY_RELEASE_CROUCH		23
 
+//=============================
+#define CS_KEY_PRESS_Q 24
+#define CS_KEY_RELEASE_Q 25
+
 #define CS_PLAYER_READY		100
 #define CS_PLAYER_READY_CANCLE 101
 #define CS_PLAYER_TEAM_SELECT	102
@@ -209,6 +213,13 @@ struct CS_PACKET_LOOK_VECTOR {
 	BYTE type;
 	DirectX::XMVECTOR look_vector;
 };
+
+//===============================================
+struct CS_PACKET_Q_BUTTON {
+	BYTE size;
+	BYTE type;
+};
+//===============================================
 
 struct SC_PACKET_REMOVE_PLAYER {
 	BYTE size;

@@ -376,7 +376,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 	case WM_KEYDOWN: {
 		if (wParam == VK_SHIFT) {
 			if (is_pushed[CS_KEY_PRESS_SHIFT] == false) {
-				printf("[WM_KEYUP] : Shift 키 입력\n");
+				//printf("[WM_KEYUP] : Shift 키 입력\n");
 				isRun = true;
 				if (charstate == 3) {
 					m_pPlayer[my_client_id]->GetKeyInput(1);
@@ -550,6 +550,12 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case '0':
 			gameMode = !gameMode;
 			break;
+		case 'Q':
+			if (is_pushed[CS_KEY_PRESS_Q] == false) {
+				server_mgr.SendPacket(CS_KEY_PRESS_Q);
+				is_pushed[CS_KEY_PRESS_Q] = true;
+			}
+			break;
 		}
 
 		break;
@@ -702,6 +708,13 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				printf("[WM_KEYDOWN] : 2키 놓음 \n");
 				server_mgr.SendPacket(CS_KEY_RELEASE_2);
 				is_pushed[CS_KEY_PRESS_2] = false;
+			}
+			break;
+		case 'Q':
+			if (is_pushed[CS_KEY_PRESS_Q] == true) {
+				printf("[WM_KEYDOWN] : Q키 놓음 \n");
+				server_mgr.SendPacket(CS_KEY_RELEASE_Q);
+				is_pushed[CS_KEY_PRESS_Q] = false;
 			}
 			break;
 		}
