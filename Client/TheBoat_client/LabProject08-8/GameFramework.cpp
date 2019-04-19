@@ -552,7 +552,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case 'Q':
 			if (is_pushed[CS_KEY_PRESS_Q] == false) {
-				server_mgr.SendPacket(CS_KEY_PRESS_Q);
+				server_mgr.SendPacket(CS_KEY_PRESS_Q, m_pPlayer[my_client_id]->GetLook());
 				is_pushed[CS_KEY_PRESS_Q] = true;
 			}
 			break;

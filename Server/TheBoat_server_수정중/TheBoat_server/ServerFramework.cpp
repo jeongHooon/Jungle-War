@@ -290,6 +290,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		break;
 	case CS_KEY_PRESS_Q:
 		printf("[ProcessPacket] :: Q누름 (오브젝트)\n");
+		clients[cl_id].is_q = true;
 		break;
 
 	case CS_KEY_PRESS_SHIFT:
@@ -318,6 +319,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	case CS_KEY_RELEASE_2:
 		break;
 	case CS_KEY_RELEASE_Q:
+		clients[cl_id].is_q = false;
 		break;
 	case CS_KEY_RELEASE_SHIFT:
 		clients[cl_id].is_running = false;

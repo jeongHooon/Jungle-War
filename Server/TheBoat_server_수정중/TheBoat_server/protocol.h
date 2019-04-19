@@ -19,9 +19,6 @@
 // Object °¹¼ö Á¤¸® 
 #define OBJECT_BUILDING			10
 
-
-
-
 // Server To Client
 #define SC_ENTER_PLAYER			1
 #define SC_POS					2

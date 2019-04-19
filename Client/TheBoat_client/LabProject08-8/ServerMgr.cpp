@@ -322,10 +322,10 @@ void ServerMgr::SendPacket(int type) {
 		packet_buffer->type = CS_KEY_RELEASE_2;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
-	/*case CS_KEY_RELEASE_Q:
+	case CS_KEY_RELEASE_Q:
 		packet_buffer->type = CS_KEY_RELEASE_Q;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
-		break;*/
+		break;
 
 
 
@@ -417,6 +417,7 @@ void ServerMgr::SendPacket(int type, XMFLOAT3& xmvector) {
 		break;
 	case CS_KEY_PRESS_Q:
 		packet_buffer->type = CS_KEY_PRESS_Q;
+		packet_buffer->look_vec = xmvector;
 		printf("Q보내기전\n");
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		printf("Q보낸후\n");
@@ -459,10 +460,10 @@ void ServerMgr::SendPacket(int type, XMFLOAT3& xmvector) {
 		packet_buffer->type = CS_KEY_RELEASE_2;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
-	/*case CS_KEY_RELEASE_Q:
+	case CS_KEY_RELEASE_Q:
 		packet_buffer->type = CS_KEY_RELEASE_Q;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
-		break;*/
+		break;
 
 
 	case CS_LEFT_BUTTON_DOWN:

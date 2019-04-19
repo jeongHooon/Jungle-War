@@ -12,9 +12,9 @@
 // 본인 클라이언트 및 서버에서 사용
 //#define RUN_SPEED				2.78f
 // 위치 테스트용
-#define RUN_SPEED				7.0f
+#define RUN_SPEED				16.0f
 #define METER_PER_PIXEL			0.243f
-#define WALK_SPEED				1.67f
+#define WALK_SPEED				10.0f
 
 // Object 갯수 정리 
 #define OBJECT_BUILDING			10
