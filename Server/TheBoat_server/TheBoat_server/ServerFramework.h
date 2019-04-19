@@ -2,6 +2,7 @@
 
 class CHeightMapImage;
 class Building;
+class Tree;
 
 struct Event {
 	int id;
@@ -57,6 +58,9 @@ class ServerFramework
 	// Building obejct´Â ÃÑ 10°³
 	//Object* object_mother;
 	Building* building[OBJECT_BUILDING];
+
+	//Tree
+	Tree* tree[OBJECT_TREE];
 
 public:
 	void InitServer();
