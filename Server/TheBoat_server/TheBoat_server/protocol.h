@@ -19,7 +19,7 @@
 // Object °¹¼ö Á¤¸® 
 #define OBJECT_BUILDING			10
 
-
+#define OBJECT_TREE             100
 
 
 // Server To Client
