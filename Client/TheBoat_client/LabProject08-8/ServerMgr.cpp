@@ -279,9 +279,7 @@ void ServerMgr::SendPacket(int type) {
 		break;
 	case CS_KEY_PRESS_Q:
 		packet_buffer->type = CS_KEY_PRESS_Q;
-		printf("Q보내기전\n");
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
-		printf("Q보냄\n");
 		break;
 
 
@@ -418,9 +416,7 @@ void ServerMgr::SendPacket(int type, XMFLOAT3& xmvector) {
 	case CS_KEY_PRESS_Q:
 		packet_buffer->type = CS_KEY_PRESS_Q;
 		packet_buffer->look_vec = xmvector;
-		printf("Q보내기전\n");
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
-		printf("Q보낸후\n");
 		break;
 
 

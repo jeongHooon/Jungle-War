@@ -139,7 +139,8 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	XMFLOAT3 xmf3Scale(8.0f, 2.f, 8.0f);
 	XMFLOAT4 xmf4Color(1.0f, 1.0f, 1.0f, 0.0f);
-#ifdef _WITH_TERRAIN_PARTITION
+#ifdef _WITH_
+	_PARTITION
 	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("../Assets/Image/Terrain/HeightMap.raw"), 513, 513, 17, 17, xmf3Scale, xmf4Color);
 #else
 	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("../Assets/Image/Terrain/terrain11.raw"), 513, 513, 513, 513, xmf3Scale, xmf4Color);
@@ -316,14 +317,24 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppUIShaders[25] = pNumShader9;
 
 	// 메인화면
-	m_nMainUIShaders = 1;
+	m_nMainUIShaders = 3;
 	m_ppMainUIShaders = new CShader*[m_nMainUIShaders];
 
 	CMainScreenShader *pMainScreenShader = new CMainScreenShader();
 	pMainScreenShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pMainScreenShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
+	CMainScreenCheckShader *pMainScreenCheckShader = new CMainScreenCheckShader();
+	pMainScreenCheckShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pMainScreenCheckShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CMainScreenCheck_1Shader *pMainScreenCheck_1Shader = new CMainScreenCheck_1Shader();
+	pMainScreenCheck_1Shader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pMainScreenCheck_1Shader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
 	m_ppMainUIShaders[0] = pMainScreenShader;
+	m_ppMainUIShaders[1] = pMainScreenCheckShader;
+	m_ppMainUIShaders[2] = pMainScreenCheck_1Shader;
 
 	BuildLightsAndMaterials();
 

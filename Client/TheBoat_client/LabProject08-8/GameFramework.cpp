@@ -710,12 +710,28 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				is_pushed[CS_KEY_PRESS_2] = false;
 			}
 			break;
+<<<<<<< .merge_file_a21656
 		case 'Q':
 			if (is_pushed[CS_KEY_PRESS_Q] == true) {
 				printf("[WM_KEYDOWN] : Q키 놓음 \n");
 				server_mgr.SendPacket(CS_KEY_RELEASE_Q);
 				is_pushed[CS_KEY_PRESS_Q] = false;
 			}
+=======
+		case VK_UP:
+			--mainScreenSelect;
+			if (mainScreenSelect < 0)
+				mainScreenSelect = 2;
+			break;
+		case VK_DOWN:
+			++mainScreenSelect;
+			if (mainScreenSelect > 2 )
+				mainScreenSelect = 0;
+			break;
+		case VK_RETURN:
+			if (gameMode == 0 && mainScreenSelect == 1)
+				++gameMode;
+>>>>>>> .merge_file_a11072
 			break;
 		}
 		switch (wParam)
@@ -1119,41 +1135,45 @@ void CGameFramework::FrameAdvance()
 
 	// UI 렌더
 
-	m_pScene->m_ppUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 미니맵
+	if (gameMode == 1) {
+		m_pScene->m_ppUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 미니맵
 
-	//printf("%f", playerHp);
-	m_pScene->m_ppUIShaders[2]->Render(m_pd3dCommandList, m_pCamera, playerHp);
-	m_pScene->m_ppUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//아이템 검은색
-	for (int i = 0; i < 4; ++i) {
-		if(itemUI[i] == true)
-			m_pScene->m_ppUIShaders[i + 4]->Render(m_pd3dCommandList, m_pCamera);
+		//printf("%f", playerHp);
+		m_pScene->m_ppUIShaders[2]->Render(m_pd3dCommandList, m_pCamera, playerHp);
+		m_pScene->m_ppUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//아이템 검은색
+		for (int i = 0; i < 4; ++i) {
+			if (itemUI[i] == true)
+				m_pScene->m_ppUIShaders[i + 4]->Render(m_pd3dCommandList, m_pCamera);
+		}
+
+		if (itemUI[3] == true)
+			m_pScene->m_ppUIShaders[8]->Render(m_pd3dCommandList, m_pCamera);
+
+		m_pScene->m_ppUIShaders[10]->Render(m_pd3dCommandList, m_pCamera); // 총
+		m_pScene->m_ppUIShaders[11]->Render(m_pd3dCommandList, m_pCamera); // 총
+
+		if (m_pCamera->GetMode() == SPACESHIP_CAMERA)
+			m_pScene->m_ppUIShaders[1]->Render(m_pd3dCommandList, m_pCamera);// UI렌더 바꿔야함.
+
+		if (alphaMapOn == true)
+			m_pScene->m_ppUIShaders[9]->Render(m_pd3dCommandList, m_pCamera); // 맵
+
+
+
+			// 숫자 시작
+			//cout << "총알 "<<m_pPlayer[my_client_id]->GetPlayerBullet() << endl;
+		if (m_pPlayer[my_client_id]->GetPlayerBullet() / 10 > 0)
+			m_pScene->m_ppUIShaders[11 + m_pPlayer[my_client_id]->GetPlayerBullet() / 10]->Render(m_pd3dCommandList, m_pCamera); // 앞 숫자
+		if (m_pPlayer[my_client_id]->GetPlayerBullet() > 0)
+			m_pScene->m_ppUIShaders[16 + m_pPlayer[my_client_id]->GetPlayerBullet() % 10]->Render(m_pd3dCommandList, m_pCamera); // 뒷 숫자
 	}
-
-	if (itemUI[3] == true)
-		m_pScene->m_ppUIShaders[8]->Render(m_pd3dCommandList, m_pCamera);
-	
-	m_pScene->m_ppUIShaders[10]->Render(m_pd3dCommandList, m_pCamera); // 총
-	m_pScene->m_ppUIShaders[11]->Render(m_pd3dCommandList, m_pCamera); // 총
-
-	if (m_pCamera->GetMode() == SPACESHIP_CAMERA)
-		m_pScene->m_ppUIShaders[1]->Render(m_pd3dCommandList, m_pCamera);// UI렌더 바꿔야함.
-
-	if (alphaMapOn == true)
-	m_pScene->m_ppUIShaders[9]->Render(m_pd3dCommandList, m_pCamera); // 맵
-
-	
-	
-	// 숫자 시작
-	//cout << "총알 "<<m_pPlayer[my_client_id]->GetPlayerBullet() << endl;
-	if(m_pPlayer[my_client_id]->GetPlayerBullet() / 10 > 0)
-		m_pScene->m_ppUIShaders[11 + m_pPlayer[my_client_id]->GetPlayerBullet() / 10]->Render(m_pd3dCommandList, m_pCamera); // 앞 숫자
-	if (m_pPlayer[my_client_id]->GetPlayerBullet() > 0)
-		m_pScene->m_ppUIShaders[16 + m_pPlayer[my_client_id]->GetPlayerBullet() % 10]->Render(m_pd3dCommandList, m_pCamera); // 뒷 숫자
-
-
-	if (gameMode == true)
+	else if (gameMode == 0) {
 		m_pScene->m_ppMainUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 메인화면
-
+		if(mainScreenSelect == 1)
+			m_pScene->m_ppMainUIShaders[1]->Render(m_pd3dCommandList, m_pCamera); // 메인화면 선택창
+		if(mainScreenSelect == 2)
+			m_pScene->m_ppMainUIShaders[2]->Render(m_pd3dCommandList, m_pCamera); // 메인화면 선택창
+	}
 	// 렌더
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
