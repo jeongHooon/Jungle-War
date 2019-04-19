@@ -326,9 +326,25 @@ public:
 	virtual ~CNumMesh();
 };
 
+// 메인화면
+
 class CMainScreenMesh : public CMesh
 {
 public:
 	CMainScreenMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int index, float fHeight, float fDepth);
 	virtual ~CMainScreenMesh();
+};
+
+class CMainScreenCheckMesh : public CMesh
+{
+public:
+	CMainScreenCheckMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int index, float fHeight, float fDepth);
+	virtual ~CMainScreenCheckMesh();
+};
+
+class CMainScreenCheck_1Mesh : public CMesh
+{
+public:
+	CMainScreenCheck_1Mesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int index, float fHeight, float fDepth);
+	virtual ~CMainScreenCheck_1Mesh();
 };
