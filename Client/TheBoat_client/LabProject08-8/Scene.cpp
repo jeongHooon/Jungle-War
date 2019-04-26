@@ -157,7 +157,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	m_pBuildings = pBuildingShader;
 
-	m_nShaders = 4;
+	m_nShaders = 5;
 	m_ppShaders = new CShader*[m_nShaders];
 
 	CTreeShader *pTreeShader = new CTreeShader();
@@ -176,10 +176,15 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pParticleShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pParticleShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
+	CObjectsShader *pObjectsShader = new CObjectsShader();
+	pObjectsShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
 	m_ppShaders[0] = pTreeShader;
 	m_ppShaders[1] = pFlowerShader;
 	m_ppShaders[2] = pBulletShader;
 	m_ppShaders[3] = pParticleShader;
+	m_ppShaders[4] = pObjectsShader;
 
 	// UI
 

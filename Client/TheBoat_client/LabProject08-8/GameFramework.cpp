@@ -1131,9 +1131,16 @@ void CGameFramework::FrameAdvance()
 			m_pPlayer[i]->Render(m_pd3dCommandList, m_pCamera);
 	}
 
-	// UI 렌더
 
-	if (gameMode == 1) {
+	
+	if (gameMode == 0) {
+		m_pScene->m_ppMainUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 메인화면
+		if (mainScreenSelect == 1)
+			m_pScene->m_ppMainUIShaders[1]->Render(m_pd3dCommandList, m_pCamera); // 메인화면 선택창
+		if (mainScreenSelect == 2)
+			m_pScene->m_ppMainUIShaders[2]->Render(m_pd3dCommandList, m_pCamera); // 메인화면 선택창
+	}
+	else if (gameMode == 1) { // UI 렌더
 		m_pScene->m_ppUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 미니맵
 
 																		  //printf("%f", playerHp);
@@ -1165,13 +1172,7 @@ void CGameFramework::FrameAdvance()
 		if (m_pPlayer[my_client_id]->GetPlayerBullet() > 0)
 			m_pScene->m_ppUIShaders[16 + m_pPlayer[my_client_id]->GetPlayerBullet() % 10]->Render(m_pd3dCommandList, m_pCamera); // 뒷 숫자
 	}
-	else if (gameMode == 0) {
-		m_pScene->m_ppMainUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 메인화면
-		if (mainScreenSelect == 1)
-			m_pScene->m_ppMainUIShaders[1]->Render(m_pd3dCommandList, m_pCamera); // 메인화면 선택창
-		if (mainScreenSelect == 2)
-			m_pScene->m_ppMainUIShaders[2]->Render(m_pd3dCommandList, m_pCamera); // 메인화면 선택창
-	}
+	
 	// 렌더
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
