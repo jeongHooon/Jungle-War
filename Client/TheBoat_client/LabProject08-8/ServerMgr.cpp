@@ -277,6 +277,10 @@ void ServerMgr::SendPacket(int type) {
 		packet_buffer->type = CS_KEY_PRESS_2;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
+	case CS_KEY_PRESS_Q:
+		packet_buffer->type = CS_KEY_PRESS_Q;
+		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
+		break;
 
 
 	case CS_KEY_RELEASE_UP:
@@ -316,6 +320,11 @@ void ServerMgr::SendPacket(int type) {
 		packet_buffer->type = CS_KEY_RELEASE_2;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
+	case CS_KEY_RELEASE_Q:
+		packet_buffer->type = CS_KEY_RELEASE_Q;
+		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
+		break;
+
 
 
 	case CS_LEFT_BUTTON_DOWN:
@@ -404,6 +413,11 @@ void ServerMgr::SendPacket(int type, XMFLOAT3& xmvector) {
 		packet_buffer->type = CS_KEY_PRESS_2;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
+	case CS_KEY_PRESS_Q:
+		packet_buffer->type = CS_KEY_PRESS_Q;
+		packet_buffer->look_vec = xmvector;
+		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
+		break;
 
 
 	case CS_KEY_RELEASE_UP:
@@ -440,6 +454,10 @@ void ServerMgr::SendPacket(int type, XMFLOAT3& xmvector) {
 		break;
 	case CS_KEY_RELEASE_2:
 		packet_buffer->type = CS_KEY_RELEASE_2;
+		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
+		break;
+	case CS_KEY_RELEASE_Q:
+		packet_buffer->type = CS_KEY_RELEASE_Q;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
 
