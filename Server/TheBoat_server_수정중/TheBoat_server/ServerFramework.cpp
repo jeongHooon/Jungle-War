@@ -280,6 +280,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		break;
 	case CS_KEY_PRESS_CROUCH:
 		clients[cl_id].is_crouch = true;
+		printf("clients[cl_id].is_crouch %d\n", clients[cl_id].is_crouch);
 		break;
 
 	case CS_KEY_PRESS_1:
@@ -371,7 +372,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 			clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false) {
 			packets.player_status = 0;
 		}
-		// 걷는 상황
+		// 걷는 상황 // 가만 0 총 2 앞런 1 앞 3 뒤 4 오 5 왼 6  크라우치 7 오뒤 8 왼뒤 9 뒤런 10
 		else if ((clients[cl_id].is_move_foward )) {
 			packets.player_status = 3;
 			if (clients[cl_id].is_running)
@@ -382,13 +383,17 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		}
 		else if ((clients[cl_id].is_move_backward)) {
 			packets.player_status = 4;
+			if (clients[cl_id].is_running)
+				packets.player_status = 10;
 		}
 		else if (( clients[cl_id].is_move_right )) {
 			packets.player_status = 5;
 		}
-		else if ((clients[cl_id].is_crouch)) {
+		//////////////////////////
+		if ((clients[cl_id].is_crouch)) {
 			packets.player_status = 7;
 		}
+		//////////////////////////
 		for (int i = 0; i < MAXIMUM_PLAYER; ++i) {
 			if (clients[i].in_use == true) {
 				SendPacket(i, &packets);
@@ -559,6 +564,7 @@ void ServerFramework::WorkerThread() {
 					packets.player_status = 5;
 				}
 				else if ((clients[client_id].is_crouch)) {
+					printf("크라우치 들어왔어\n");
 					packets.player_status = 7;
 				}
 				//packets.player_status = clients[client_id].is_running;
