@@ -85,7 +85,7 @@ D3D12_RASTERIZER_DESC CShader::CreateRasterizerState()
 	D3D12_RASTERIZER_DESC d3dRasterizerDesc;
 	::ZeroMemory(&d3dRasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));
 	d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
-	d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+	d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
 	d3dRasterizerDesc.FrontCounterClockwise = FALSE;
 	d3dRasterizerDesc.DepthBias = 0;
 	d3dRasterizerDesc.DepthBiasClamp = 0.0f;
@@ -517,8 +517,8 @@ void CObjectsShader::ReleaseShaderVariables()
 void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
 {
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
-
-	int xObjects = 1, yObjects = 1, zObjects = 1, i = 0;
+	pTerrainCopy = pTerrain;
+	int xObjects = 10, yObjects = 1, zObjects = 1, i = 0;
 
 	m_nObjects = (xObjects * 2 + 1) * (yObjects * 2 + 1) * (zObjects * 2 + 1);
 
@@ -564,10 +564,11 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 #ifndef _WITH_BATCH_MATERIAL
 				pRotatingObject->SetMaterial(pCubeMaterial);
 #endif
-				float xPosition = 2000, zPosition = 2000;
+				float xPosition = 500 + x * 30;
+				float zPosition = 1000 + z * 30;
 				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
-				pRotatingObject->SetPosition(XMFLOAT3(0,0,0));
-				pRotatingObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
+				pRotatingObject->SetPosition(xPosition, fHeight + (y * 3.0f * fyPitch) + 6.0f, zPosition);
+				pRotatingObject->SetRotationAxis(XMFLOAT3(0.0f, 0.0f, 0.0f));
 				pRotatingObject->SetRotationSpeed(10.0f * (i % 10));
 				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
 				m_ppObjects[i++] = pRotatingObject;
@@ -591,14 +592,12 @@ void CObjectsShader::ReleaseObjects()
 
 void CObjectsShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 {
-	for (int i = 0; i<10; ++i)
-		m_ppObjects[i]->SetPosition(CGameFramework::buildingPos[i]);
-
-	for (int j = 0; j < m_nObjects; j++)
-	{
-		m_ppObjects[j]->Animate(fTimeElapsed);
-	}
 	
+	for (int i = 0; i < 10; ++i) {
+		float fHeight = pTerrainCopy->GetHeight(CGameFramework::m_pPlayer[0]->GetPosition().x + 30 * i, CGameFramework::m_pPlayer[0]->GetPosition().z);
+		m_ppObjects[i]->SetPosition(XMFLOAT3(CGameFramework::m_pPlayer[0]->GetPosition().x + 30 * i, fHeight + 5, CGameFramework::m_pPlayer[0]->GetPosition().z));
+		m_ppObjects[i]->Animate(fTimeElapsed);
+	}
 }
 
 void CObjectsShader::ReleaseUploadBuffers()
