@@ -839,9 +839,11 @@ void ServerFramework::WorkerThread() {
 
 			//clients[client_id].y = height_map->GetHeight(clients[client_id].x, clients[client_id].z);
 
-			boxes[box_player_id][box_counter[box_player_id]].x = clients[box_player_id].x + 30 * clients[box_player_id].look_vec.x;
+			boxes[box_player_id][box_counter[box_player_id]].x =
+				clients[box_player_id].x + 30 * clients[box_player_id].look_vec.x;
 		
-			boxes[box_player_id][box_counter[box_player_id]].z = clients[box_player_id].z + 30 * clients[box_player_id].look_vec.z;
+			boxes[box_player_id][box_counter[box_player_id]].z = 
+				clients[box_player_id].z + 30 * clients[box_player_id].look_vec.z;
 
 			boxes[box_player_id][box_counter[box_player_id]].y =
 				height_map->GetHeight(boxes[box_player_id][box_counter[box_player_id]].x,
@@ -850,8 +852,6 @@ void ServerFramework::WorkerThread() {
 			boxes[box_player_id][box_counter[box_player_id]].look_vec = clients[box_player_id].look_vec;
 			boxes[box_player_id][box_counter[box_player_id]].in_use = true;
 			box_counter[box_player_id]++;
-			//bullet_times[box_player_id] = 0;
-
 			
 		}
 		else if (overlapped_buffer->command == SS_BOX_UPDATE) {
@@ -860,39 +860,6 @@ void ServerFramework::WorkerThread() {
 			// j 가 플레이어가 발사한 총알
 			for (int i = 0; i < MAXIMUM_PLAYER; ++i) {
 				for (int j = 0; j < MAX_BOX_SIZE; ++j) {
-					//bullet_lock.lock();
-					//if (boxes[i][j].in_use) {
-					//	boxes[i][j].x = boxes[i][j].look_vec.x * (AR_SPEED * overlapped_buffer->elapsed_time);
-					//	boxes[i][j].y = boxes[i][j].look_vec.y * (AR_SPEED * overlapped_buffer->elapsed_time);
-					//	boxes[i][j].z = boxes[i][j].look_vec.z * (AR_SPEED * overlapped_buffer->elapsed_time);
-
-					//	//XMFLOAT3(m_pPlayer[my_client_id]->GetPosition().x + 30 * m_pPlayer[my_client_id]->GetLook().x, 
-					//	//  m_pPlayer[my_client_id]->GetPosition().y + m_pPlayer[my_client_id]->GetLook().y,
-					//	//	m_pPlayer[my_client_id]->GetPosition().z + 30 * m_pPlayer[my_client_id]->GetLook().z))
-					//	////printf("총알 진행중\n");
-
-					//	boxes[i][j].SetOOBB(
-					//		XMFLOAT3(boxes[i][j].x, boxes[i][j].y, boxes[i][j].z),
-					//		XMFLOAT3(OBB_SCALE_BOX_X, OBB_SCALE_BOX_Y, OBB_SCALE_BOX_Z),
-					//		XMFLOAT4(0, 0, 0, 1));
-					//}
-					//if (bullets[i][j].x >= 4000.f || bullets[i][j].x <= 0) {
-					//	bullets[i][j].in_use = false;
-					//	//bullet_lock.unlock();
-					//	continue;
-					//}
-					//if (bullets[i][j].y >= 4000.f || bullets[i][j].y <= 0) {
-					//	bullets[i][j].in_use = false;
-					//	//bullet_lock.unlock();
-					//	continue;
-					//}
-					//if (bullets[i][j].z >= 4000.f || bullets[i][j].z <= 0) {
-					//	bullets[i][j].in_use = false;
-					//	//bullet_lock.unlock();
-					//	continue;
-					//}
-
-					//여기서 보내줘야지~
 					if (boxes[i][j].in_use) {
 						SC_PACKET_BOX packets;
 						packets.id = i;
@@ -902,10 +869,10 @@ void ServerFramework::WorkerThread() {
 						packets.x = boxes[i][j].x;
 						packets.y = boxes[i][j].y;
 						packets.z = boxes[i][j].z;
-						// 해당 플레이어에게만 보내야함
+						
 						SendPacket(i, &packets);
+						SendPacket(i + 1, &packets);
 					}
-					//bullet_lock.unlock();
 				}
 			}
 		}
