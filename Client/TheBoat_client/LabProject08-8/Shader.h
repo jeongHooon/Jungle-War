@@ -49,7 +49,7 @@ public:
 
 	virtual void ReleaseUploadBuffers();
 	virtual void SetBoxPosition(int index, XMFLOAT3 input) { }
-	virtual XMFLAOT3 GetBoxPosition(int index) { }
+	virtual XMFLOAT3 GetBoxPosition(int index) { }
 
 	virtual void OnPrepareRender(ID3D12GraphicsCommandList *pd3dCommandList);
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);

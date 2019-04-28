@@ -156,6 +156,7 @@ struct CS_PACKET_KEYUP {
 	BYTE size;
 	BYTE type;
 	DirectX::XMFLOAT3 look_vec;
+	DirectX::XMFLOAT3 box_pos;
 };
 struct CS_PACKET_KEYDOWN {
 	BYTE size;

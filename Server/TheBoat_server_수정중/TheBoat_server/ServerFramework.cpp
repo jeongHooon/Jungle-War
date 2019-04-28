@@ -836,9 +836,17 @@ void ServerFramework::WorkerThread() {
 				//printf("ÃÑ¾Ë ÃÊ±âÈ­\n");
 				//break;
 			}
-			boxes[box_player_id][box_counter[box_player_id]].x = clients[box_player_id].x;
-			boxes[box_player_id][box_counter[box_player_id]].y = clients[box_player_id].y;
-			boxes[box_player_id][box_counter[box_player_id]].z = clients[box_player_id].z;
+
+			//clients[client_id].y = height_map->GetHeight(clients[client_id].x, clients[client_id].z);
+
+			boxes[box_player_id][box_counter[box_player_id]].x = clients[box_player_id].x + 30 * clients[box_player_id].look_vec.x;
+		
+			boxes[box_player_id][box_counter[box_player_id]].z = clients[box_player_id].z + 30 * clients[box_player_id].look_vec.z;
+
+			boxes[box_player_id][box_counter[box_player_id]].y =
+				height_map->GetHeight(boxes[box_player_id][box_counter[box_player_id]].x,
+					boxes[box_player_id][box_counter[box_player_id]].z);
+
 			boxes[box_player_id][box_counter[box_player_id]].look_vec = clients[box_player_id].look_vec;
 			boxes[box_player_id][box_counter[box_player_id]].in_use = true;
 			box_counter[box_player_id]++;
