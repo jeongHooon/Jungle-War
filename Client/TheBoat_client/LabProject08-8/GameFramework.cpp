@@ -553,13 +553,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case 'Q':
 			if (is_pushed[CS_KEY_PRESS_Q] == false) {
-				
-				CScene::m_pBuildings->SetBoxPosition(boxIndex, XMFLOAT3(m_pPlayer[my_client_id]->GetPosition().x + 30 * m_pPlayer[my_client_id]->GetLook().x, m_pPlayer[my_client_id]->GetPosition().y + m_pPlayer[my_client_id]->GetLook().y, m_pPlayer[my_client_id]->GetPosition().z + 30 * m_pPlayer[my_client_id]->GetLook().z));
-				server_mgr.SendPacket(CS_KEY_PRESS_Q, CScene::m_pBuildings->GetBoxPosition(boxIndex));
-				++boxIndex;
-				if (boxIndex > 9)
-					boxIndex = 0;
-
+				server_mgr.SendPacket(CS_KEY_PRESS_Q, m_pPlayer[my_client_id]->GetLook());
 				is_pushed[CS_KEY_PRESS_Q] = true;
 			}
 			break;
@@ -855,6 +849,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 			m_pScene->m_ppShaders[2]->SetPosition(server_mgr.GetBullet().id,
 				XMFLOAT3(server_mgr.GetBullet().x, server_mgr.GetBullet().y, server_mgr.GetBullet().z));
 
+			//m_pScene->m_pBuildings->SetBoxPosition(server_mgr.GetBox().id)
 
 			// 아이템생성
 			if (server_mgr.IsItemGen()) {
