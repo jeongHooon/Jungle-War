@@ -82,9 +82,15 @@ CMeshTextured::CMeshTextured(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList
 	A = new UploadBuffer<Vertex1>(pd3dDevice, nVertices, true);
 	m_nStride = sizeof(Vertex1);
 	m_nVertices = nVertices;
-
-	CTexturedVertex *pVertices = new CTexturedVertex[m_nVertices];
-	for (UINT i = 0; i < m_nVertices; i++) pVertices[i] = CTexturedVertex(pxmf3Positions[i], pxmf2UVs[i]);
+	/*CTexturedVertex *pVertices = new CTexturedVertex[m_nVertices];
+		for (UINT i = 0; i < m_nVertices; i++) pVertices[i] = CTexturedVertex(pxmf3Positions[i], pxmf2UVs[i]);*/
+	Vertex1* v = new Vertex1[nVertices];
+	for (int i = 0; i < nVertices; ++i)
+	{
+		v[i].pos = pxmf3Positions[i];
+		v[i].texCoord = pxmf2UVs[i];
+	}
+	A->CopyData(0, v[0], m_nVertices);
 
 	m_d3dVertexBufferView.BufferLocation = A->mUploadBuffer->GetGPUVirtualAddress();
 	m_d3dVertexBufferView.StrideInBytes = m_nStride;
