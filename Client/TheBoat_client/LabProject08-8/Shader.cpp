@@ -597,6 +597,10 @@ void CObjectsShader::SetBoxPosition(int index, XMFLOAT3 input) {
 
 }
 
+XMFLOAT3 CObjectsShader::GetBoxPosition(int index) {
+	return m_ppObjects[index]->GetPosition();
+}
+
 void CObjectsShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 {
 	
