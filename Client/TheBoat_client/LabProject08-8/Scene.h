@@ -102,9 +102,10 @@ public:
 
 	CShader						**m_ppMainUIShaders = NULL;
 	int							m_nMainUIShaders = 0;
-protected:
-	CShader						*m_pBuildings = NULL;
 
+	static CShader				*m_pBuildings;
+
+protected:
 	LIGHTS						*m_pLights = NULL;
 
 	ID3D12Resource				*m_pd3dcbLights = NULL;

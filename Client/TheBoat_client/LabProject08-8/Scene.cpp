@@ -642,7 +642,9 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	
 	if (m_pBuildings) m_pBuildings->Render(pd3dCommandList, pCamera);
 	
-	for (int i = 1; i < m_nShaders; i++) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
+	for (int i = 1; i < m_nShaders; i++) 
+		if(i!=3)
+			m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->UpdateTransform(NULL);
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Render(pd3dCommandList, pCamera);
 }

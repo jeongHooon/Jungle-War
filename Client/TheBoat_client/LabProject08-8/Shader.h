@@ -48,12 +48,15 @@ public:
 	virtual void ReleaseObjects() { }
 
 	virtual void ReleaseUploadBuffers();
+	virtual void SetBoxPosition(int index, XMFLOAT3 input) { }
 
 	virtual void OnPrepareRender(ID3D12GraphicsCommandList *pd3dCommandList);
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera, float hp);
 
 	virtual void SetPosition(int id, XMFLOAT3 input);
+
+
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUDescriptorHandleForHeapStart() { return(m_pd3dCbvSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart()); }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUDescriptorHandleForHeapStart() { return(m_pd3dCbvSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart()); }
@@ -159,6 +162,8 @@ public:
 	virtual void ReleaseUploadBuffers();
 
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+
+	virtual void SetBoxPosition(int index, XMFLOAT3 input);
 
 protected:
 	CHeightMapTerrain * pTerrainCopy;
