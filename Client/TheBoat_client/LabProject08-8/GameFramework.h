@@ -72,6 +72,7 @@ public:
 	static CCamera				*m_pCamera;
 	float						playerHp = 100;
 	bool						gameMode = true;
+	int							boxIndex = 0;
 
 private:
 	int							mainScreenSelect = 0;

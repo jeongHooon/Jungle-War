@@ -546,7 +546,7 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	pCubeMaterial->SetTexture(pTexture);
 	pCubeMaterial->SetReflection(1);
 #endif
-	CCubeMeshIlluminatedTextured *pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 7.5f, 7.5f, 7.5f);
+	CCubeMeshIlluminatedTextured *pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 20, 20, 20);
 
 	m_ppObjects = new CGameObject*[m_nObjects];
 
@@ -567,10 +567,11 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 				float xPosition = 500 + x * 30;
 				float zPosition = 1000 + z * 30;
 				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
-				pRotatingObject->SetPosition(xPosition, fHeight + (y * 3.0f * fyPitch) + 6.0f, zPosition);
+				pRotatingObject->SetPosition(0, -900, 0);
 				pRotatingObject->SetRotationAxis(XMFLOAT3(0.0f, 0.0f, 0.0f));
 				pRotatingObject->SetRotationSpeed(10.0f * (i % 10));
 				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+				pRotatingObject->SetScale(2.0, 2.0, 2.0);
 				m_ppObjects[i++] = pRotatingObject;
 			}
 		}
@@ -590,12 +591,16 @@ void CObjectsShader::ReleaseObjects()
 #endif
 }
 
+void CObjectsShader::SetBoxPosition(int index, XMFLOAT3 input) {
+	float fHeight = pTerrainCopy->GetHeight(input.x, input.z);
+	m_ppObjects[index]->SetPosition(input.x, fHeight + 5, input.z);
+
+}
+
 void CObjectsShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 {
 	
 	for (int i = 0; i < 10; ++i) {
-		float fHeight = pTerrainCopy->GetHeight(CGameFramework::m_pPlayer[0]->GetPosition().x + 30 * i, CGameFramework::m_pPlayer[0]->GetPosition().z);
-		m_ppObjects[i]->SetPosition(XMFLOAT3(CGameFramework::m_pPlayer[0]->GetPosition().x + 30 * i, fHeight + 5, CGameFramework::m_pPlayer[0]->GetPosition().z));
 		m_ppObjects[i]->Animate(fTimeElapsed);
 	}
 }
