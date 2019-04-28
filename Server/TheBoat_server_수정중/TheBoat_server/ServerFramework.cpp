@@ -74,7 +74,6 @@ void ServerFramework::InitServer() {
 
 	// OOBB 셋
 	for (int i = 0; i < MAXIMUM_PLAYER; ++i) {
-		//clients[i].SetOOBB(XMFLOAT3(0, 0, 0), XMFLOAT3(10.f, 10.f, 10.f), XMFLOAT4(0, 0, 0, 1));
 		clients[i].SetOOBB(XMFLOAT3(clients[i].x, clients[i].y, clients[i].z), XMFLOAT3(OBB_SCALE_PLAYER_X, OBB_SCALE_PLAYER_Y, OBB_SCALE_PLAYER_Z), XMFLOAT4(0, 0, 0, 1));
 		//printf("[%d]플레이어의 OBB : [%f, %f, %f], Extents [%f, %f, %f] \n", i,
 		//	clients[i].bounding_box.Center.x,
@@ -93,6 +92,15 @@ void ServerFramework::InitServer() {
 			bullets[j][i].SetOOBB(XMFLOAT3(bullets[j][i].x, bullets[j][i].y, bullets[j][i].z),
 				XMFLOAT3(OBB_SCALE_BULLET_X, OBB_SCALE_BULLET_Y, OBB_SCALE_BULLET_Z),
 				XMFLOAT4(0, 0, 0, 1)); 
+		}
+	}
+
+	// Box OBB
+	for (int j = 0; j < MAXIMUM_PLAYER; ++j) {
+		for (int i = 0; i < MAX_BOX_SIZE; ++i) {
+			boxes[j][i].SetOOBB(XMFLOAT3(boxes[j][i].x, boxes[j][i].y, boxes[j][i].z),
+				XMFLOAT3(OBB_SCALE_BOX_X, OBB_SCALE_BOX_Y, OBB_SCALE_BOX_Z),
+				XMFLOAT4(0, 0, 0, 1));
 		}
 	}
 
@@ -289,10 +297,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	case CS_KEY_PRESS_2:
 		printf("[ProcessPacket] :: 권총 무기 선택\n");
 		break;
-	case CS_KEY_PRESS_Q:
-		printf("[ProcessPacket] :: Q누름 (오브젝트)\n");
-		clients[cl_id].is_q = true;
-		break;
+	
 
 	case CS_KEY_PRESS_SHIFT:
 		clients[cl_id].is_running = true;
@@ -319,9 +324,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		break;
 	case CS_KEY_RELEASE_2:
 		break;
-	case CS_KEY_RELEASE_Q:
-		clients[cl_id].is_q = false;
-		break;
+	
 	case CS_KEY_RELEASE_SHIFT:
 		clients[cl_id].is_running = false;
 		break;
@@ -342,10 +345,21 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		ol_ex[6].shooter_player_id = cl_id;
 		//ol_ex[6].elapsed_time = elapsed_time.count();
 		PostQueuedCompletionStatus(iocp_handle, 0, 6, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[6]));
-
 		break;
 	case CS_LEFT_BUTTON_UP:
 		clients[cl_id].is_left_click = false;
+		break;
+
+	case CS_KEY_PRESS_Q:
+		printf("[ProcessPacket] :: Q누름 (오브젝트)\n");
+		clients[cl_id].is_q = true;
+		ol_ex[7].command = SS_BOX_GENERATE;
+		//ol_ex[7].shooter_player_id = cl_id;
+		//ol_ex[7].elapsed_time = elapsed_time.count();
+		PostQueuedCompletionStatus(iocp_handle, 0, 6, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[7]));
+		break;
+	case CS_KEY_RELEASE_Q:
+		clients[cl_id].is_q = false;
 		break;
 
 	case CS_MOUSE_MOVE: {
@@ -452,6 +466,16 @@ void ServerFramework::GameStart() {
 				XMFLOAT4(0, 0, 0, 1));
 		}
 	}
+
+	// BOX의 OBB
+	for (int j = 0; j < MAXIMUM_PLAYER; ++j) {
+		for (int i = 0; i < MAX_BOX_SIZE; ++i) {
+			boxes[j][i].SetOOBB(XMFLOAT3(boxes[j][i].x, boxes[j][i].y, boxes[j][i].z),
+				XMFLOAT3(OBB_SCALE_BOX_X, OBB_SCALE_BOX_Y, OBB_SCALE_BOX_Z),
+				XMFLOAT4(0, 0, 0, 1));
+		}
+	}
+
 	for (int i = 0; i < MAXIMUM_PLAYER; ++i) {
 		ol_ex[i].command = SC_PLAYER_MOVE;
 		PostQueuedCompletionStatus(iocp_handle, 0, i, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[i]));

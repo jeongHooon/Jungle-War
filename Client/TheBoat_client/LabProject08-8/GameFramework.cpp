@@ -318,7 +318,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 
 		if (CShader::shootBullet == 0) {
 			CShader::shootBullet = 1;
-			sndPlaySound(L"../Assets/Sounds/RifleSound.wav", SND_ASYNC);	// 사운드
+			sndPlaySound(L"../Assets/Sounds/RifleSound1.wav", SND_ASYNC);	// 사운드
 			m_pPlayer[my_client_id]->MinusPlayerBullet();
 			m_pPlayer[my_client_id]->ActiveShot();
 		}

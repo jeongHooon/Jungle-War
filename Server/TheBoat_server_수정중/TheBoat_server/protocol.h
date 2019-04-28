@@ -8,6 +8,7 @@
 #define	WM_SOCKET			WM_USER + 1
 #define CLIENT_BUF_SIZE		1024
 #define MAX_BULLET_SIZE			30
+#define MAX_BOX_SIZE			10
 
 // 본인 클라이언트 및 서버에서 사용
 //#define RUN_SPEED				2.78f
@@ -41,6 +42,9 @@
 #define SS_PLAYER_READY			16
 #define SS_PLAYER_MOVE			17
 #define SS_ITEM_GEN				18	// Event
+#define SS_BOX_GENERATE			19
+#define SS_BOX_UPDATE			20
+
 
 
 // Client To Server
@@ -225,6 +229,16 @@ struct SC_PACKET_REMOVE_PLAYER {
 };
 
 struct SC_PACKET_BULLET {
+	BYTE size;
+	BYTE type;
+	WORD id;
+	WORD bullet_id;
+	DirectX::XMFLOAT3 pos;
+
+	float x, y, z;
+};
+
+struct SC_PACKET_BOX {
 	BYTE size;
 	BYTE type;
 	WORD id;
