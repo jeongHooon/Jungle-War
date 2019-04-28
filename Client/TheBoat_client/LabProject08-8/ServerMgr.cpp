@@ -90,6 +90,11 @@ void ServerMgr::ReadPacket() {
 Bullet ServerMgr::GetBullet() {
 	return bullets[recvd_bullet_id];
 }
+
+Box ServerMgr::GetBox() {
+	return boxes[recvd_box_id];
+}
+
 int ServerMgr::GetClientID() {
 	return clients_id;
 }
@@ -159,6 +164,18 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		bullets[packets->bullet_id].x = packets->x;
 		bullets[packets->bullet_id].y = packets->y;
 		bullets[packets->bullet_id].z = packets->z;
+
+		//printf("[Bullet] %d 플레이어 총알 ID[%d] \n", clients_id, packets->bullet_id);
+		break;
+	}
+	case SC_BOX_POS: {
+		SC_PACKET_BOX* packets = reinterpret_cast<SC_PACKET_BOX*>(ptr);
+		clients_id = packets->id;
+		recvd_bullet_id = packets->box_id;
+		boxes[packets->box_id].id = packets->box_id;
+		boxes[packets->box_id].x = packets->x;
+		boxes[packets->box_id].y = packets->y;
+		boxes[packets->box_id].z = packets->z;
 
 		//printf("[Bullet] %d 플레이어 총알 ID[%d] \n", clients_id, packets->bullet_id);
 		break;

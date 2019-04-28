@@ -343,6 +343,11 @@ struct Bullet {
 	int id;
 	float x, y, z;
 };
+struct Box {
+	bool in_use = false;
+	int id;
+	float x, y, z;
+};
 struct Vertex1 //Overloaded Vertex Structure 
 {
 	Vertex1() {}

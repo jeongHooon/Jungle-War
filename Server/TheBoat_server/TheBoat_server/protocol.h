@@ -8,6 +8,7 @@
 #define	WM_SOCKET			WM_USER + 1
 #define CLIENT_BUF_SIZE		1024
 #define MAX_BULLET_SIZE			30
+#define MAX_BOX_SIZE			10
 
 // 본인 클라이언트 및 서버에서 사용
 //#define RUN_SPEED				2.78f
@@ -18,9 +19,6 @@
 
 // Object 갯수 정리 
 #define OBJECT_BUILDING			10
-
-#define OBJECT_TREE             100
-
 
 // Server To Client
 #define SC_ENTER_PLAYER			1
@@ -36,6 +34,8 @@
 #define SC_ITEM_GEN				10	// Actually Item gen packet
 #define SC_BUILDING_GEN			11
 
+#define SC_BOX_POS			21
+
 // Server To Server
 #define SS_COLLISION			12
 #define SS_PLAYER_POS_UPDATE	13
@@ -44,6 +44,9 @@
 #define SS_PLAYER_READY			16
 #define SS_PLAYER_MOVE			17
 #define SS_ITEM_GEN				18	// Event
+#define SS_BOX_GENERATE			19
+#define SS_BOX_UPDATE			20
+
 
 
 // Client To Server
@@ -76,7 +79,7 @@
 //=============================
 #define CS_KEY_PRESS_Q 24
 #define CS_KEY_RELEASE_Q 25
-
+//=============================
 #define CS_PLAYER_READY		100
 #define CS_PLAYER_READY_CANCLE 101
 #define CS_PLAYER_TEAM_SELECT	102
@@ -232,6 +235,16 @@ struct SC_PACKET_BULLET {
 	BYTE type;
 	WORD id;
 	WORD bullet_id;
+	DirectX::XMFLOAT3 pos;
+
+	float x, y, z;
+};
+
+struct SC_PACKET_BOX {
+	BYTE size;
+	BYTE type;
+	WORD id;
+	WORD box_id;
 	DirectX::XMFLOAT3 pos;
 
 	float x, y, z;

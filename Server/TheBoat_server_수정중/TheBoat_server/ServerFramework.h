@@ -51,6 +51,8 @@ class ServerFramework
 	mutex bullet_lock;
 	// 플레이어별 몇 번째 총알까지 발사했는지 저장하는 변수
 	int bullet_counter[MAXIMUM_PLAYER] = { 0 };
+	int box_counter[MAXIMUM_PLAYER] = { 0 };
+
 
 
 	// 플레이어마다 bullet 시간을 가지고 있다. 

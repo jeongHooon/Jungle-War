@@ -20,6 +20,9 @@ class ServerMgr
 	Bullet bullets[MAX_BULLET_SIZE] = { 0 };
 	int recvd_bullet_id = 0;
 
+	Box boxes[MAX_BOX_SIZE] = { 0 };
+	int recvd_box_id = 0;
+
 	bool first_set_id = true;
 
 	char send_buffer[CLIENT_BUF_SIZE] = { 0 };
@@ -58,6 +61,7 @@ public:
 	int GetClientID();
 	int ReturnCameraID();
 	Bullet GetBullet();
+	Box GetBox();
 	SPlayer ReturnPlayerPosStatus(int client_id);
 	XMFLOAT3 ReturnLookVector();
 	XMFLOAT3 ReturnCollsionPosition(bool* is_collide);
