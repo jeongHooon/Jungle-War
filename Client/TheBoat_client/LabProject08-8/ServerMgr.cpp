@@ -171,7 +171,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 	case SC_BOX_POS: {
 		SC_PACKET_BOX* packets = reinterpret_cast<SC_PACKET_BOX*>(ptr);
 		clients_id = packets->id;
-		recvd_bullet_id = packets->box_id;
+		recvd_box_id = packets->box_id;
 		boxes[packets->box_id].id = packets->box_id;
 		boxes[packets->box_id].x = packets->x;
 		boxes[packets->box_id].y = packets->y;
