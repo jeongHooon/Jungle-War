@@ -870,8 +870,10 @@ void ServerFramework::WorkerThread() {
 						packets.y = boxes[i][j].y;
 						packets.z = boxes[i][j].z;
 						
-						SendPacket(i, &packets);
-						SendPacket(i + 1, &packets);
+						for (int k = 0; k < MAXIMUM_PLAYER; ++k)
+							if(clients[k].in_use)
+								SendPacket(k, &packets);
+						//SendPacket(i + 1, &packets);
 					}
 				}
 			}
