@@ -1,4 +1,0 @@
-Dev. Overlapped Model2 
-Understand IOCP
-
-and DeadReckoning
