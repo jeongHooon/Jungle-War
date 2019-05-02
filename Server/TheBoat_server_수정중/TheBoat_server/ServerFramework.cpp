@@ -65,22 +65,24 @@ void ServerFramework::InitServer() {
 
 	client_lock.lock();
 
+	/*
 	clients[0].x = 600.f;
 	clients[0].z = 850.f;
 
-	clients[1].x = 600.f;
-	clients[1].z = 950.f;
+	clients[1].x = 1700.f;
+	clients[1].z = 1000.f;
 
-	clients[2].x = 1700.f;
-	clients[2].z = 1000.f;
+	clients[2].x = 600.f;  
+	clients[2].z = 950.f;
 
 	clients[3].x = 1700.f;
 	clients[3].z = 900.f;
+	*/
 
 
 	for (int i = 0; i < MAXIMUM_PLAYER; ++i) {
-		/*clients[i].x = 450.f;
-		clients[i].z = 800.f;*/
+		clients[i].x = 450.f;
+		clients[i].z = 800.f;
 
 		clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
 		clients[i].hp = 100.f;
@@ -862,7 +864,7 @@ void ServerFramework::WorkerThread() {
 
 			boxes[box_player_id][box_counter[box_player_id]].y =
 				height_map->GetHeight(boxes[box_player_id][box_counter[box_player_id]].x,
-					boxes[box_player_id][box_counter[box_player_id]].z);
+					boxes[box_player_id][box_counter[box_player_id]].z + 200.f) ;
 
 			boxes[box_player_id][box_counter[box_player_id]].look_vec = clients[box_player_id].look_vec;
 			boxes[box_player_id][box_counter[box_player_id]].in_use = true;

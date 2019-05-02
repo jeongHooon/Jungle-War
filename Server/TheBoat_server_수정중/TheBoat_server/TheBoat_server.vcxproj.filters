@@ -25,7 +25,7 @@
     <Filter Include="02. Building">
       <UniqueIdentifier>{5544e93e-7dda-4269-a256-9efbc7661202}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03. HeightMapImage">
+    <Filter Include="02. Building\03. HeightMapImage">
       <UniqueIdentifier>{56ed8f75-cd54-481e-911c-0d332ca60e4d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -43,7 +43,7 @@
       <Filter>stdafx</Filter>
     </ClInclude>
     <ClInclude Include="CHeightMapImage.h">
-      <Filter>03. HeightMapImage</Filter>
+      <Filter>02. Building\03. HeightMapImage</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>01. Obejct</Filter>
@@ -63,7 +63,7 @@
       <Filter>stdafx</Filter>
     </ClCompile>
     <ClCompile Include="CHeightMapImage.cpp">
-      <Filter>03. HeightMapImage</Filter>
+      <Filter>02. Building\03. HeightMapImage</Filter>
     </ClCompile>
     <ClCompile Include="Object.cpp">
       <Filter>01. Obejct</Filter>
