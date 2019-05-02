@@ -64,9 +64,24 @@ void ServerFramework::InitServer() {
 	height_map = new CHeightMapImage(file_name, 513, 513, xmf3Scale);
 
 	client_lock.lock();
+
+	clients[0].x = 600.f;
+	clients[0].z = 850.f;
+
+	clients[1].x = 600.f;
+	clients[1].z = 950.f;
+
+	clients[2].x = 1700.f;
+	clients[2].z = 1000.f;
+
+	clients[3].x = 1700.f;
+	clients[3].z = 900.f;
+
+
 	for (int i = 0; i < MAXIMUM_PLAYER; ++i) {
-		clients[i].x = 450.f;
-		clients[i].z = 800.f;
+		/*clients[i].x = 450.f;
+		clients[i].z = 800.f;*/
+
 		clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
 		clients[i].hp = 100.f;
 	}
@@ -855,9 +870,6 @@ void ServerFramework::WorkerThread() {
 			
 		}
 		else if (overlapped_buffer->command == SS_BOX_UPDATE) {
-			
-			// i 가 플레이어
-			// j 가 플레이어가 발사한 총알
 			for (int i = 0; i < MAXIMUM_PLAYER; ++i) {
 				for (int j = 0; j < MAX_BOX_SIZE; ++j) {
 					if (boxes[i][j].in_use) {
