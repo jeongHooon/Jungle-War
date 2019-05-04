@@ -167,6 +167,19 @@ void ServerFramework::AcceptPlayer() {
 	printf("[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
 		inet_ntoa(c_addr.sin_addr), ntohs(c_addr.sin_port));
 
+	/*
+	// 명령어 세팅
+	cmd->command = ComLoginREQ; // 로긴을 한다는 명령어
+	// 데이터 세팅
+	strncpy_s((char *)login->userid, maxUserIDLen, userid, maxUserIDLen);
+	// strcpy는 문제가 생기면 한없이 복사하므로
+	// 제한된 길이만큼만 복하사느 strncpy가 안전
+	// 단, 지정된 문자보다 길어진다면 지정된 글자만큼만
+	// 복사하며 끝에 '\0'을 붙이지 않으므로 수동으로
+	// 붙여줘야 한다.
+	*/
+
+
 	int client_id = -1;
 	client_lock.lock();
 	for (int i = 0; i < MAXIMUM_PLAYER; ++i) {
