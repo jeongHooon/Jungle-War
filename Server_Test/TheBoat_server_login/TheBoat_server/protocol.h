@@ -101,7 +101,8 @@ enum SubWeapons {
 struct SC_PACKET_ENTER_PLAYER {
 	BYTE size;
 	BYTE type;
-	WORD id;
+	WORD id;      
+	char myid[256];    // 입력받은 id
 	float x, y, z;
 	// 건물 크기 보낼 때만 사용
 	float hp;
@@ -112,6 +113,7 @@ struct SC_PACKET_LOOCVEC {
 	BYTE size;
 	BYTE type;
 	WORD id;
+	char myid[256];    // 입력받은 id
 	DirectX::XMFLOAT3 look_vec;
 	int player_status;
 };
@@ -120,6 +122,7 @@ struct SC_PACKET_POS {
 	BYTE size;
 	BYTE type;
 	WORD id;
+	char myid[256];    // 입력받은 id
 	int player_status;
 	float x, y, z;
 };
@@ -128,6 +131,7 @@ struct SC_PACKET_COLLISION {
 	BYTE size;
 	BYTE type;
 	WORD client_id;
+	char myid[256];    // 입력받은 id
 	float x, y, z;
 	float hp;
 };
@@ -149,6 +153,7 @@ struct CS_PACKET_BIGGEST {
 	BYTE size;
 	BYTE type;
 	WORD id;
+	char myid[256];    // 입력받은 id
 	bool player_in[4];
 };
 
@@ -229,12 +234,14 @@ struct SC_PACKET_REMOVE_PLAYER {
 	BYTE size;
 	BYTE type;
 	WORD client_id;
+	char myid[256];    // 입력받은 id
 };
 
 struct SC_PACKET_BULLET {
 	BYTE size;
 	BYTE type;
 	WORD id;
+	char myid[256];    // 입력받은 id
 	WORD bullet_id;
 	DirectX::XMFLOAT3 pos;
 
@@ -245,6 +252,7 @@ struct SC_PACKET_BOX {
 	BYTE size;
 	BYTE type;
 	WORD id;
+	char myid[256];    // 입력받은 id
 	WORD box_id;
 	DirectX::XMFLOAT3 pos;
 
