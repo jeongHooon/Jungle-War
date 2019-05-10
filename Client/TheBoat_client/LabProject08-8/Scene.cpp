@@ -160,7 +160,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_nShaders = 5;
 	m_ppShaders = new CShader*[m_nShaders];
 
-	CTreeShader *pTreeShader = new CTreeShader();
+	CRedDotShader *pTreeShader = new CRedDotShader();
 	pTreeShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pTreeShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
