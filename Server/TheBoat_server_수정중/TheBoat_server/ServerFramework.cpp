@@ -65,7 +65,7 @@ void ServerFramework::InitServer() {
 
 	client_lock.lock();
 
-	/*
+	/*66
 	clients[0].x = 600.f;
 	clients[0].z = 850.f;
 
@@ -375,10 +375,8 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		ol_ex[7].command = SS_BOX_GENERATE;
 		ol_ex[7].box_player_id = cl_id;
 		//ol_ex[7].elapsed_time = elapsed_time.count();
-		if (clients[cl_id].box_count < MAX_BOX_SIZE) {
-			++clients[cl_id].box_count;
-			PostQueuedCompletionStatus(iocp_handle, 0, 6, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[7]));
-		}
+		PostQueuedCompletionStatus(iocp_handle, 0, 6, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[7]));
+	
 		break;
 	case CS_KEY_RELEASE_Q:
 		clients[cl_id].is_q = false;
@@ -957,34 +955,54 @@ void ServerFramework::WorkerThread() {
 			}
 		}
 		else if (overlapped_buffer->command == SS_BOX_GENERATE) {
-			int box_player_id = overlapped_buffer->box_player_id;
-			if (box_counter[box_player_id] > MAX_BULLET_SIZE - 2) {
-				for (int d = 0; d < MAX_BULLET_SIZE; ++d) {
-					boxes[box_player_id][d].in_use = false;
+			if (clients[overlapped_buffer->box_player_id].box_count < MAX_BOX_SIZE) {
+				int box_player_id = overlapped_buffer->box_player_id;
+				/*if (box_counter[box_player_id] > MAX_BOX_SIZE - 2) {
+					for (int d = 0; d < MAX_BOX_SIZE; ++d) {
+						boxes[box_player_id][d].in_use = false;
+					}
+					box_counter[box_player_id] = 0;
+				}*/
+
+				//clients[client_id].y = height_map->GetHeight(clients[client_id].x, clients[client_id].z);
+
+				boxes[box_player_id][box_counter[box_player_id]].x =
+					clients[box_player_id].x + 30 * clients[box_player_id].look_vec.x;
+
+				boxes[box_player_id][box_counter[box_player_id]].z =
+					clients[box_player_id].z + 30 * clients[box_player_id].look_vec.z;
+
+				boxes[box_player_id][box_counter[box_player_id]].y =
+					height_map->GetHeight(boxes[box_player_id][box_counter[box_player_id]].x,
+						boxes[box_player_id][box_counter[box_player_id]].z + 200.f);
+
+				boxes[box_player_id][box_counter[box_player_id]].look_vec = clients[box_player_id].look_vec;
+				boxes[box_player_id][box_counter[box_player_id]].in_use = true;
+				box_counter[box_player_id]++;
+				++clients[overlapped_buffer->box_player_id].box_count;
+
+				for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
+					for (int j = 0; j < MAX_BOX_SIZE; ++j) {
+						if (boxes[i][j].in_use) {
+							SC_PACKET_BOX packets;
+							packets.id = i;
+							packets.size = sizeof(SC_PACKET_BOX);
+							packets.type = SC_BOX_POS;
+							packets.box_id = j;
+							packets.x = boxes[i][j].x;
+							packets.y = boxes[i][j].y;
+							packets.z = boxes[i][j].z;
+
+							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+								if (clients[k].in_use)
+									SendPacket(k, &packets);
+						}
+					}
 				}
-				box_counter[box_player_id] = 0;
-				//break;
 			}
-
-			//clients[client_id].y = height_map->GetHeight(clients[client_id].x, clients[client_id].z);
-
-			boxes[box_player_id][box_counter[box_player_id]].x =
-				clients[box_player_id].x + 30 * clients[box_player_id].look_vec.x;
-		
-			boxes[box_player_id][box_counter[box_player_id]].z = 
-				clients[box_player_id].z + 30 * clients[box_player_id].look_vec.z;
-
-			boxes[box_player_id][box_counter[box_player_id]].y =
-				height_map->GetHeight(boxes[box_player_id][box_counter[box_player_id]].x,
-					boxes[box_player_id][box_counter[box_player_id]].z + 200.f) ;
-
-			boxes[box_player_id][box_counter[box_player_id]].look_vec = clients[box_player_id].look_vec;
-			boxes[box_player_id][box_counter[box_player_id]].in_use = true;
-			box_counter[box_player_id]++;
-			
 		}
 		else if (overlapped_buffer->command == SS_BOX_UPDATE) {
-			for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
+			/*for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 				for (int j = 0; j < MAX_BOX_SIZE; ++j) {
 					if (boxes[i][j].in_use) {
 						SC_PACKET_BOX packets;
@@ -1001,7 +1019,7 @@ void ServerFramework::WorkerThread() {
 								SendPacket(k, &packets);
 					}
 				}
-			}
+			}*/
 		}
 		// Send로 인해 할당된 영역 반납
 		else {
@@ -1067,9 +1085,9 @@ void ServerFramework::Update(duration<float>& elapsed_time) {
 	ol_ex[7].elapsed_time = elapsed_time.count();
 	PostQueuedCompletionStatus(iocp_handle, 0, 7, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[7]));
 
-	ol_ex[8].command = SS_BOX_UPDATE;
-	ol_ex[8].elapsed_time = elapsed_time.count();
-	PostQueuedCompletionStatus(iocp_handle, 0, 7, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[8]));
+	//ol_ex[8].command = SS_BOX_UPDATE;
+	//ol_ex[8].elapsed_time = elapsed_time.count();
+	//PostQueuedCompletionStatus(iocp_handle, 0, 7, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[8]));
 }
 
 void ServerFramework::TimerSend(duration<float>& elapsed_time) {

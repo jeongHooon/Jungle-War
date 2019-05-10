@@ -518,7 +518,7 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 {
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
 	pTerrainCopy = pTerrain;
-	int xObjects = 10, yObjects = 1, zObjects = 1, i = 0;
+	int xObjects = MAX_BOX_SIZE, yObjects = MAX_PLAYER_SIZE, zObjects = 1, i = 0;
 
 	m_nObjects = (xObjects * 2 + 1) * (yObjects * 2 + 1) * (zObjects * 2 + 1);
 
@@ -626,7 +626,7 @@ void CObjectsShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera 
 	if (m_pMaterial) m_pMaterial->UpdateShaderVariables(pd3dCommandList);
 #endif
 
-	for (int j = 0; j < 10; j++)
+	for (int j = 0; j < MAX_PLAYER_SIZE * MAX_BOX_SIZE; j++)
 	{
 		if (m_ppObjects[j]) m_ppObjects[j]->Render(pd3dCommandList, pCamera);
 	}
