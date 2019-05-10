@@ -172,7 +172,11 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		SC_PACKET_BOX* packets = reinterpret_cast<SC_PACKET_BOX*>(ptr);
 		clients_id = packets->id;
 		recvd_box_id = packets->box_id;
-		boxes[packets->box_id].id = packets->box_id;
+		//boxes[clients_id][recvd_box_id].id = packets->box_id;
+		//boxes[clients_id][recvd_box_id].x = packets->x;
+		//boxes[clients_id][recvd_box_id].y = packets->y;
+		//boxes[clients_id][recvd_box_id].z = packets->z;
+		boxes[packets->box_id].id = clients_id * 10 + recvd_box_id;    // 클라 * 10(십의자리 인덱스) + 박스
 		boxes[packets->box_id].x = packets->x;
 		boxes[packets->box_id].y = packets->y;
 		boxes[packets->box_id].z = packets->z;
