@@ -4,7 +4,7 @@
 #define SERVER_PORT			4000
 #define MAX_BUFFER_SIZE		4000
 #define MAX_PACKET_SIZE		256
-#define MAXIMUM_PLAYER		4
+#define MAX_PLAYER_SIZE		4
 #define	WM_SOCKET			WM_USER + 1
 #define CLIENT_BUF_SIZE		1024
 #define MAX_BULLET_SIZE			30
@@ -46,6 +46,7 @@
 #define SS_ITEM_GEN				18	// Event
 #define SS_BOX_GENERATE			19
 #define SS_BOX_UPDATE			20
+#define SS_COLLISION_BTOB		21
 
 
 
