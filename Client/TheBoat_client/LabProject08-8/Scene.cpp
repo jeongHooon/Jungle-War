@@ -164,7 +164,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pTreeShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pTreeShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
-	CFlowerShader *pFlowerShader = new CFlowerShader();
+	CTreeShader *pFlowerShader = new CTreeShader();
 	pFlowerShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pFlowerShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
@@ -643,7 +643,6 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	if (m_pBuildings) m_pBuildings->Render(pd3dCommandList, pCamera);
 	
 	for (int i = 1; i < m_nShaders; i++) 
-		if(i!=3)
 			m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->UpdateTransform(NULL);
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Render(pd3dCommandList, pCamera);

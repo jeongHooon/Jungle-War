@@ -719,6 +719,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			if (is_pushed[CS_KEY_PRESS_Q] == true) {
 				printf("[WM_KEYDOWN] : Q키 놓음 \n");
 				server_mgr.SendPacket(CS_KEY_RELEASE_Q);
+				cout << m_pPlayer[my_client_id]->GetPosition().x << "    " << m_pPlayer[my_client_id]->GetPosition().z << endl;
 				is_pushed[CS_KEY_PRESS_Q] = false;
 				
 			}

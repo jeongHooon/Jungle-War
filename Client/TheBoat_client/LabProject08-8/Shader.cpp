@@ -7305,7 +7305,7 @@ void CTreeShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	pCubeMaterial->SetTexture(pTexture);
 	pCubeMaterial->SetReflection(1);
 #endif
-	CCubeMeshIlluminatedTextured *pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 20, 20, 20);
+	CCubeMeshIlluminatedTextured *pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 20, 100, 20);
 
 	m_ppObjects = new CGameObject*[m_nObjects];
 
@@ -7323,14 +7323,44 @@ void CTreeShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 #ifndef _WITH_BATCH_MATERIAL
 				pRotatingObject->SetMaterial(pCubeMaterial);
 #endif
-				float xPosition = 500 + x * 30;
-				float zPosition = 1000 + z * 30;
+				float xPosition;
+				float zPosition;
+				if (i == 0) xPosition = 680, zPosition = 925;
+				else if (i == 1) xPosition = 715, zPosition = 853;
+				else if (i == 2) xPosition = 641, zPosition = 858;
+				else if (i == 3) xPosition = 641, zPosition = 858;
+				else if (i == 4) xPosition = 639, zPosition = 794;
+				else if (i == 5) xPosition = 577, zPosition = 800;
+				else if (i == 6) xPosition = 516, zPosition = 822;
+				else if (i == 7) xPosition = 463, zPosition = 875;
+				else if (i == 8) xPosition = 487, zPosition = 951;
+				else if (i == 9) xPosition = 538, zPosition = 969;
+				else if (i == 10) xPosition = 465, zPosition = 766;
+				else if (i == 11) xPosition = 518, zPosition = 757;
+				else if (i == 12) xPosition = 436, zPosition = 795;
+				else if (i == 13) xPosition = 426, zPosition = 729;
+				else if (i == 14) xPosition = 385, zPosition = 876;
+				else if (i == 15) xPosition = 396, zPosition = 968;
+				else if (i == 16) xPosition = 338, zPosition = 970;
+				else if (i == 17) xPosition = 390, zPosition = 1048;
+				else if (i == 18) xPosition = 469, zPosition = 1106;
+				else if (i == 19) xPosition = 563, zPosition = 1078;
+				else if (i == 20) xPosition = 653, zPosition = 1029;
+				else if (i == 21) xPosition = 706, zPosition = 1080;
+				else if (i == 22) xPosition = 737, zPosition = 1036;
+				else if (i == 23) xPosition = 778, zPosition = 957;
+				else if (i == 24) xPosition = 667, zPosition = 1257;
+				else if (i == 25) xPosition = 574, zPosition = 1272;
+				else if (i == 26) xPosition = 484, zPosition = 1269;
+				else if (i == 27) xPosition = 504, zPosition = 1139;
+				else if (i == 28) xPosition = 602, zPosition = 1122;
+				else if (i == 29) xPosition = 851, zPosition = 984;
 				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
-				pRotatingObject->SetPosition(0, -900, 0);
+				pRotatingObject->SetPosition(xPosition, fHeight, zPosition);
 				pRotatingObject->SetRotationAxis(XMFLOAT3(0.0f, 0.0f, 0.0f));
 				pRotatingObject->SetRotationSpeed(10.0f * (i % 10));
 				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
-				pRotatingObject->SetScale(2.0, 2.0, 2.0);
+				pRotatingObject->SetScale(2.0, 15.0, 2.0);
 				m_ppObjects[i++] = pRotatingObject;
 			}
 		}
