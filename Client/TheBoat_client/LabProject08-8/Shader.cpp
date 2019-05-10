@@ -7144,7 +7144,7 @@ void CMainScreenCheck_1Shader::ReleaseObjects()
 	if (m_pMaterial) delete m_pMaterial;
 #endif
 }
-
+//
 void CMainScreenCheck_1Shader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 {
 	for (int j = 0; j < m_nTree; j++)
