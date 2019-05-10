@@ -213,7 +213,7 @@ public:
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-class CTreeShader : public CTexturedShader
+class CRedDotShader : public CTexturedShader
 {
 protected:
 	CRotatingObject *				*m_ppTree = 0;
@@ -228,8 +228,8 @@ protected:
 	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
 
 public:
-	CTreeShader();
-	virtual ~CTreeShader();
+	CRedDotShader();
+	virtual ~CRedDotShader();
 
 	void		 SetRedDot(int input) { setRedDot = input; }
 	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
@@ -1226,4 +1226,42 @@ public:
 	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
 	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob **ppd3dShaderBlob);
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
+};
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+#define _WITH_BATCH_MATERIAL
+
+class CTreeShader : public CIlluminatedTexturedShader
+{
+public:
+	CTreeShader();
+	virtual ~CTreeShader();
+
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext = NULL);
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseObjects();
+
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+
+	virtual void ReleaseUploadBuffers();
+
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+
+	virtual void SetBoxPosition(int index, XMFLOAT3 input);
+
+protected:
+	CHeightMapTerrain * pTerrainCopy;
+	CGameObject * *m_ppObjects = 0;
+	int								m_nObjects = 0;
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
 };
