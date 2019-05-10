@@ -412,6 +412,8 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				printf("[WM_KEYUP] : Space 키 입력\n");
 				server_mgr.SendPacket(CS_KEY_PRESS_SPACE);
 				is_pushed[CS_KEY_PRESS_SPACE] = true;
+				m_pPlayer[my_client_id]->GetKeyInput(15);
+				charstate = 15;
 			}
 		}
 		if (wParam == VK_F5) {
@@ -605,6 +607,8 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			printf("[WM_KEYUP] : Space 키 놓음\n");
 			server_mgr.SendPacket(CS_KEY_RELEASE_SPACE);
 			is_pushed[CS_KEY_PRESS_SPACE] = false;
+			m_pPlayer[my_client_id]->GetKeyInput(0);
+			charstate = 0;
 		}
 
 		switch (key_buffer) {

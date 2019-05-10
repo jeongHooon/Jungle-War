@@ -464,8 +464,8 @@ void CGameObject::LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, ID3D12Gra
 	LoadMD5Anim(L"../Assets/Model/Soldier_WalkBack.MD5ANIM", NewMD5Model);//4
 	LoadMD5Anim(L"../Assets/Model/Soldier_WalkRight.MD5ANIM", NewMD5Model);//5
 	LoadMD5Anim(L"../Assets/Model/Soldier_WalkLeft.MD5ANIM", NewMD5Model);//6
-	//LoadMD5Anim(L"../Assets/Model/Soldier_Crouch.MD5ANIM", NewMD5Model);//7
-	LoadMD5Anim(L"../Assets/Model/jumpM.MD5ANIM", NewMD5Model);//7
+	LoadMD5Anim(L"../Assets/Model/Soldier_Crouch.MD5ANIM", NewMD5Model);//7
+	
 	LoadMD5Anim(L"../Assets/Model/wbr.MD5ANIM", NewMD5Model);//8
 	LoadMD5Anim(L"../Assets/Model/wbl.MD5ANIM", NewMD5Model);//9
 	LoadMD5Anim(L"../Assets/Model/RunBack.MD5ANIM", NewMD5Model);//10
@@ -473,12 +473,12 @@ void CGameObject::LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, ID3D12Gra
 	LoadMD5Anim(L"../Assets/Model/RunBackRight.MD5ANIM", NewMD5Model);//12
 	LoadMD5Anim(L"../Assets/Model/RunLeft.MD5ANIM", NewMD5Model);//13
 	LoadMD5Anim(L"../Assets/Model/RunRight.MD5ANIM", NewMD5Model);//14
-
+	LoadMD5Anim(L"../Assets/Model/jumpM.MD5ANIM", NewMD5Model);//15
 	LoadMD5Anim(L"../Assets/Model/jump1.MD5ANIM", NewMD5Model);//7
 	LoadMD5Anim(L"../Assets/Model/jump2.MD5ANIM", NewMD5Model);//7
 	LoadMD5Anim(L"../Assets/Model/jump3.MD5ANIM", NewMD5Model);//7
-	//LoadMD5Anim(L"../Assets/Model/CrouchShot.MD5ANIM", NewMD5Model);//15
-	//LoadMD5Anim(L"../Assets/Model/CrouchWalk.MD5ANIM", NewMD5Model);//16
+	//LoadMD5Anim(L"../Assets/Model/CrouchShot.MD5ANIM", NewMD5Model); //15
+	//LoadMD5Anim(L"../Assets/Model/CrouchWalk.MD5ANIM", NewMD5Model); //16
 	
 	//LoadMD5Anim(L"../Assets/Model/WarriorAttack.MD5ANIM", NewMD5Model);
 	if (m_ppMeshes[0])
