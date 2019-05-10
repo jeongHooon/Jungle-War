@@ -1000,7 +1000,7 @@ void CGameFramework::ProcessInput()
 						m_pPlayer[my_client_id]->Rotate(cyDelta, cxDelta, 0.0f);
 				}
 				if (dwDirection) {
-					for (int i = 0; i < MAXIMUM_PLAYER; ++i) {
+					for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 						// 중요
 						m_pPlayer[i]->Move(dwDirection, WALK_SPEED * METER_PER_PIXEL * m_GameTimer.GetTimeElapsed(), false);
 					}
@@ -1016,7 +1016,7 @@ void CGameFramework::ProcessInput()
 						m_pPlayer[my_client_id]->Rotate(cyDelta, 0.0f, -cxDelta);
 				}
 				if (dwDirection) {
-					for (int i = 0; i < MAXIMUM_PLAYER; ++i) {
+					for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 						// 중요
 						m_pPlayer[i]->Move(dwDirection, WALK_SPEED * METER_PER_PIXEL * m_GameTimer.GetTimeElapsed(), false);
 					}
@@ -1024,7 +1024,7 @@ void CGameFramework::ProcessInput()
 			}
 		}
 	}
-	for (int i = 0; i < MAXIMUM_PLAYER; ++i) {
+	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pPlayer[i]->Update(m_GameTimer.GetTimeElapsed());
 	}
 }
