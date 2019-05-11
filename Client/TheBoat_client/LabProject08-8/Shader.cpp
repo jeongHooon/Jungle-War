@@ -7324,32 +7324,7 @@ void CTreeShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	int xObjects = MAX_BOX_SIZE, yObjects = 3, zObjects = 1, i = 0;
 
 	m_nObjects = (xObjects ) * (yObjects ) * (zObjects );
-	CTexture *pTextures = new CTexture(6, RESOURCE_TEXTURE2DARRAY, 0);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 0);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 1);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 4);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 3);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 2);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 5);
 
-	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
-
-	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 6);
-	CreateShaderVariables(pd3dDevice, pd3dCommandList);
-	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
-	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTextures, 5, false);
-
-#ifdef _WITH_BATCH_MATERIAL
-	m_pMaterial = new CMaterial();
-	m_pMaterial->SetTexture(pTextures);
-	m_pMaterial->SetReflection(1);
-#else
-	CMaterial *pCubeMaterial = new CMaterial();
-	pCubeMaterial->SetTexture(pTexture);
-	pCubeMaterial->SetReflection(1);
-#endif
-
-	////
 	CMesh *soldier = NULL;
 	ID3D12RootSignature *a = NULL;
 	Model3D SoldierModel;
@@ -7358,6 +7333,39 @@ void CTreeShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	//
 	LoadMD5Model(pd3dDevice, pd3dCommandList, a, L"../Assets/Model/Soldier_Mesh.MD5MESH", SoldierModel, meshSRV, textureNameArray1, soldier);
 	//CGameObject *TreeObject = NULL;
+	m_pMaterial = new CMaterial();
+	CTexture *pTextures = new CTexture(6, RESOURCE_TEXTURE2DARRAY, 0);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 0);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 1);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 4);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 3);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 2);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 5);
+
+	m_pMaterial->SetTexture(pTextures);
+
+
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+	//CGameObject *A;
+	//ID3D12Resource *pd3dcbResource = A->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTextures, 5, false);
+
+//#ifdef _WITH_BATCH_MATERIAL
+//	m_pMaterial = new CMaterial();
+//	m_pMaterial->SetTexture(pTextures);
+//	m_pMaterial->SetReflection(1);
+//#else
+//	CMaterial *pCubeMaterial = new CMaterial();
+//	pCubeMaterial->SetTexture(pTexture);
+//	pCubeMaterial->SetReflection(1);
+//#endif
+
+	////
+	
 
 	CCubeMeshIlluminatedTextured *pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 20, 100, 20);
 	
@@ -7373,7 +7381,7 @@ void CTreeShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 			for (int z = 0; z < zObjects; z++)
 			{
 				pRotatingObject = new CRotatingObject(1);
-				pRotatingObject->SetMesh(0, soldier);
+				pRotatingObject->SetMesh(0, pCubeMesh);
 #ifndef _WITH_BATCH_MATERIAL
 				pRotatingObject->SetMaterial(pCubeMaterial);
 #endif
@@ -7412,8 +7420,8 @@ void CTreeShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 				
 				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
 				pRotatingObject->SetPosition(xPosition, fHeight, zPosition);
-				pRotatingObject->SetRotationAxis(XMFLOAT3(0.0f, 0.0f, 0.0f));
-				pRotatingObject->SetRotationSpeed(10.0f * (i % 10));
+				pRotatingObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
+				pRotatingObject->SetRotationSpeed(10.0f * (i % 10)+3.0f);
 				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
 				pRotatingObject->SetScale(2.0, 15.0, 2.0);
 				m_ppObjects[i++] = pRotatingObject;
