@@ -131,7 +131,7 @@ public:
 	int								m_nMeshes;
 
 	CMaterial						*m_pMaterial = NULL;
-
+	
 	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dCbvGPUDescriptorHandle;
 	XMFLOAT3						look;
 

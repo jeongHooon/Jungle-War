@@ -440,21 +440,16 @@ void CGameObject::Rotate(XMFLOAT4 *pxmf4Quaternion)
 void CGameObject::LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, UINT nFrame, ModelSubset ModelData)
 {
 	CMesh *pMesh = NULL;
-	CMaterial *pMaterial = NULL;
+	CMesh *pMesh1 = NULL;
+	
 	printf("%d", m_nReferences);
 
 	ResizeMeshes(2);
 
-	/*LoadMD5Model(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/66.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
-	LoadMD5Anim(L"../Assets/Model/898.MD5ANIM", NewMD5Model);
-	LoadMD5Anim(L"../Assets/Model/24.MD5ANIM", NewMD5Model);*/
-	/*LoadMD5Model(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/idle3.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
-	LoadMD5Anim(L"../Assets/Model/idle3.MD5ANIM", NewMD5Model);
-	LoadMD5Anim(L"../Assets/Model/run.MD5ANIM", NewMD5Model);*/
+	
 	LoadMD5Model(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Soldier_Mesh.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
 	SetMesh(0, pMesh);
 	//AddRef();
-	CMesh *pMesh1 = NULL;
 	LoadMD5Model(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Soldier_Rifle.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh1);
 	SetMesh(1, pMesh1);
 	LoadMD5Anim(L"../Assets/Model/1241.MD5ANIM", NewMD5Model);//0
@@ -481,18 +476,19 @@ void CGameObject::LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, ID3D12Gra
 	//LoadMD5Anim(L"../Assets/Model/CrouchWalk.MD5ANIM", NewMD5Model); //16
 	
 	//LoadMD5Anim(L"../Assets/Model/WarriorAttack.MD5ANIM", NewMD5Model);
-	if (m_ppMeshes[0])
+	/*if (m_ppMeshes[0])
 		printf("mesh0\n");
 	if (m_ppMeshes[1])
 		printf("mesh1\n");
 
-	printf("%d\n", m_nReferences);
-	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	printf("%d\n", m_nReferences);*/
+
+	m_pMaterial = new CMaterial();
+	CTexture *pTexture = new CTexture(2, RESOURCE_TEXTURE2D, 0);
 	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Model/demo_soldier1.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Model/warrior.dds", 1);
 
-
-	pMaterial = new CMaterial();
-	pMaterial->SetTexture(pTexture);
+	m_pMaterial->SetTexture(pTexture);
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
 	ID3D12Resource *pd3dcbResource = CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -507,14 +503,14 @@ void CGameObject::LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, ID3D12Gra
 
 	SetCbvGPUDescriptorHandle(pShader->GetGPUCbvDescriptorStartHandle());
 
-	pMaterial->SetShader(pShader);
+	m_pMaterial->SetShader(pShader);
 
 	/*if (pMesh)
 	SetMesh(0, pMesh);
 	else
 	ResizeMeshes(0);*/
 
-	if (pMaterial) SetMaterial(pMaterial);
+	//if (m_pMaterial) SetMaterial(m_pMaterial);
 }
 void CGameObject::PrintFrameInfo(CGameObject *pGameObject, CGameObject *pParent)
 {

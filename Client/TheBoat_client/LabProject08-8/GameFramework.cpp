@@ -360,11 +360,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		//	mouse_moving_counter = 0;
 		//}
 		
-<<<<<<< HEAD
-		server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook()); // 마우스 룩벡터
-=======
 		server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
->>>>>>> a1883e0b7baff6a6d3f1b67ce940b33fee896422
 
 		//mouse_moving_counter++;
 
@@ -455,7 +451,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					m_pPlayer[my_client_id]->GetKeyInput(3);
 					charstate = 3;
 				}
-				//server_mgr.SendPacket(CS_KEY_PRESS_UP, XMFLOAT3(0,0,1));
 				server_mgr.SendPacket(CS_KEY_PRESS_UP, m_pPlayer[my_client_id]->GetLook());
 				//printf("Look Vector : %lf, %lf, %lf\n", m_pPlayer[my_client_id]->GetLook().x, m_pPlayer[my_client_id]->GetLook().y, m_pPlayer[my_client_id]->GetLook().z);
 				//printf("w를 눌렀는데 my_client_id는 이거임  %d  \n", my_client_id);
@@ -728,7 +723,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			if (is_pushed[CS_KEY_PRESS_Q] == true) {
 				printf("[WM_KEYDOWN] : Q키 놓음 \n");
 				server_mgr.SendPacket(CS_KEY_RELEASE_Q);
-				//cout << m_pPlayer[my_client_id]->GetPosition().x << "    " << m_pPlayer[my_client_id]->GetPosition().z << endl;
+				cout << m_pPlayer[my_client_id]->GetPosition().x << "    " << m_pPlayer[my_client_id]->GetPosition().z << endl;
 				is_pushed[CS_KEY_PRESS_Q] = false;
 				
 			}
@@ -1024,8 +1019,8 @@ void CGameFramework::ProcessInput()
 				if (cxDelta || cyDelta)
 				{
 					if (pKeysBuffer[VK_RBUTTON] & 0xF0)
-
-						m_pPlayer[my_client_id]->Rotate(cyDelta, cxDelta, 0.0f);
+						;
+						//m_pPlayer[my_client_id]->Rotate(cyDelta, cxDelta, 0.0f);
 					else
 						m_pPlayer[my_client_id]->Rotate(cyDelta, 0.0f, -cxDelta);
 				}
