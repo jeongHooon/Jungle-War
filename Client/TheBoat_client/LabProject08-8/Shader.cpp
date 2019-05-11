@@ -620,10 +620,6 @@ void CObjectsShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 		}
 		case INTERSECTS:
 		{
-			cout << "contain" << endl;
-			//cout << m_ppObjects[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x << "      " << m_ppObjects[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z;
-			//cout << "Me : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook().x << "    " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook().z << endl;
-			
 			if ((m_ppObjects[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x) * (m_ppObjects[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x)
 				< (m_ppObjects[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z) * (m_ppObjects[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z)) {
 				if (m_ppObjects[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z > 0) { m_ppObjects[i]->look = XMFLOAT3(0, 0, -1); }
@@ -633,14 +629,11 @@ void CObjectsShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 				if (m_ppObjects[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x > 0) { m_ppObjects[i]->look = XMFLOAT3(-1, 0, 0); }
 				else { m_ppObjects[i]->look = XMFLOAT3(1, 0, 0); }
 			}
-			//cout << "Box :  " << m_ppObjects[i]->look.x << "   " << m_ppObjects[i]->look.z << endl;
-			//Vector3::DotProduct
 			XMFLOAT3 xmf3Result;
 			XMFLOAT3 xmf3Result_1;
 			XMStoreFloat3(&xmf3Result_1, XMVector3Dot(XMLoadFloat3(&CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook()), XMLoadFloat3(&m_ppObjects[i]->look)));
 			XMStoreFloat3(&xmf3Result, XMVector3Dot(XMLoadFloat3(&m_ppObjects[i]->look), XMLoadFloat3(&xmf3Result_1))); 
 			CGameFramework::sendLook = XMFLOAT3(Vector3::Subtract(CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook(), xmf3Result));
-			//cout << "충돌할때SendLook" << CGameFramework::sendLook.x << "   " << CGameFramework::sendLook.z <<endl;
 			check = true;
 			break;
 		}

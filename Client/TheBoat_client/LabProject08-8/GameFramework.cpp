@@ -350,39 +350,11 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		m_pCamera = m_pPlayer[my_client_id]->ChangeCamera(FIRST_PERSON_CAMERA, m_GameTimer.GetTimeElapsed());	// 마우스 우클시 카메라 변환
 		break;
 	case WM_MOUSEMOVE:
-		//printf("마우스 벡터 x : %f, y : %f, z : %f \n", 
-		//	m_pPlayer[my_client_id]->GetLook().x, m_pPlayer[my_client_id]->GetLook().y, m_pPlayer[my_client_id]->GetLook().z);
-		//if (mouse_moving_counter > 100) {
-		//	printf("마우스 벡터 x : %f, y : %f, z : %f \n", 
-		//		m_pPlayer[my_client_id]->GetLook().x, m_pPlayer[my_client_id]->GetLook().y, m_pPlayer[my_client_id]->GetLook().z);
-
-		//	//server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
-		//	mouse_moving_counter = 0;
-		//}
-		
-<<<<<<< HEAD
-		/*cout << "SendLook" << sendLook.x << "   " << sendLook.z << endl;
-		cout << "PlayerLook" << m_pPlayer[my_client_id]->GetLook().x << "   " << m_pPlayer[my_client_id]->GetLook().z << endl;
-		*/
 		if (boxBound==1)
 			server_mgr.SendPacket(CS_MOUSE_MOVE, sendLook);
 		else
 			server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
 		boxBound = 0;
-		//server_mgr.SendPacket(CS_MOUSE_MOVE, sendLook);
-		/*cout << boxBound << endl;
-		if (boxBound == 1) {
-			server_mgr.SendPacket(CS_MOUSE_MOVE, sendLook);
-			cout << "씨빨" << endl;
-		}
-		else
-			server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());*/
-		//cout << "PlayerLook" << m_pPlayer[my_client_id]->GetLook().x << "   " << m_pPlayer[my_client_id]->GetLook().z << endl;
-			 // 마우스 룩벡터
-=======
-		server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
-
->>>>>>> 08cec0c9d14abf586ab5eb1cde0995c7d875cbfb
 		//mouse_moving_counter++;
 
 		//원래는 이거만 있어씀
@@ -1040,8 +1012,7 @@ void CGameFramework::ProcessInput()
 				if (cxDelta || cyDelta)
 				{
 					if (pKeysBuffer[VK_RBUTTON] & 0xF0)
-						;
-						//m_pPlayer[my_client_id]->Rotate(cyDelta, cxDelta, 0.0f);
+						m_pPlayer[my_client_id]->Rotate(cyDelta, cxDelta, 0.0f);
 					else
 						m_pPlayer[my_client_id]->Rotate(cyDelta, 0.0f, -cxDelta);
 				}
