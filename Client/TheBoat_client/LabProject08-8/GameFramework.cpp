@@ -360,7 +360,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		//	mouse_moving_counter = 0;
 		//}
 		
-<<<<<<< HEAD
+
 		/*cout << "SendLook" << sendLook.x << "   " << sendLook.z << endl;
 		cout << "PlayerLook" << m_pPlayer[my_client_id]->GetLook().x << "   " << m_pPlayer[my_client_id]->GetLook().z << endl;
 		*/
@@ -379,10 +379,9 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 			server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());*/
 		//cout << "PlayerLook" << m_pPlayer[my_client_id]->GetLook().x << "   " << m_pPlayer[my_client_id]->GetLook().z << endl;
 			 // 마우스 룩벡터
-=======
+
 		server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
 
->>>>>>> 08cec0c9d14abf586ab5eb1cde0995c7d875cbfb
 		//mouse_moving_counter++;
 
 		//원래는 이거만 있어씀
