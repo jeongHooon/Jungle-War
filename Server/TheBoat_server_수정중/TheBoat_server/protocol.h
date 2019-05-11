@@ -137,6 +137,7 @@ struct SC_PACKET_COLLISION_BB {
 	BYTE size;
 	BYTE type;
 	WORD client_id;
+	WORD box_id;
 	float x, y, z;
 	float hp;
 };

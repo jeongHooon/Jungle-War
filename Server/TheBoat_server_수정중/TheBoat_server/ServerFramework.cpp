@@ -757,7 +757,8 @@ void ServerFramework::WorkerThread() {
 							boxes[j].hp -= 25.f;
 							//
 							packets.hp = boxes[j].hp;
-
+							packets.box_id = j;
+																								
 							if (boxes[j].hp < 0)
 								boxes[j].in_use = false;
 
@@ -1007,6 +1008,7 @@ void ServerFramework::WorkerThread() {
 							packets.x = boxes[i * MAX_BOX_SIZE + j].x;
 							packets.y = boxes[i * MAX_BOX_SIZE + j].y;
 							packets.z = boxes[i * MAX_BOX_SIZE + j].z;
+			
 
 								for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
 									if (clients[k].in_use)

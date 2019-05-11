@@ -37,7 +37,11 @@ class ServerMgr
 	XMFLOAT3 sc_look_vec;
 
 	XMFLOAT3 collision_pos;
-	float client_hp[4] = { 0 };
+	float client_hp[MAX_PLAYER_SIZE] = { 0 };
+
+	XMFLOAT3 collision_box_pos;
+	float box_hp[MAX_PLAYER_SIZE * MAX_BOX_SIZE] = { 0 };
+
 	int camera_id = 0;
 	string server_ip;
 
@@ -49,6 +53,7 @@ class ServerMgr
 	XMFLOAT3 building_extents[OBJECT_BUILDING];
 
 	bool s_is_collide = false;
+	bool box_is_collide = false;
 public:
 	void IPInput();
 	void Initialize(HWND& hwnd);

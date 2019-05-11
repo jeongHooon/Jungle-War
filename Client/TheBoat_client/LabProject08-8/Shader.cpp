@@ -638,6 +638,7 @@ void CObjectsShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 			break;
 		}
 		case CONTAINS:
+		
 			break;
 		}
 	}

@@ -346,6 +346,7 @@ struct Bullet {
 struct Box {
 	bool in_use = false;
 	int id;
+	float hp;
 	float x, y, z;
 };
 struct Vertex1 //Overloaded Vertex Structure 
