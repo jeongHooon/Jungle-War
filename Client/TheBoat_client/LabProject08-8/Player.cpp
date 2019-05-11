@@ -264,6 +264,8 @@ void CPlayer::Animate(float fTimeElapsed)
 	m_xmf4x4ToParentTransform._31 = m_xmf3Look.x; m_xmf4x4ToParentTransform._32 = m_xmf3Look.y; m_xmf4x4ToParentTransform._33 = m_xmf3Look.z;
 	m_xmf4x4ToParentTransform._41 = m_xmf3Position.x; m_xmf4x4ToParentTransform._42 = m_xmf3Position.y; m_xmf4x4ToParentTransform._43 = m_xmf3Position.z;
 
+	SetOOBB(GetPosition(), XMFLOAT3(5, 10, 5), XMFLOAT4(0, 0, 0, 1));
+
 	//// 캐릭터 회전
 	//XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(90.0f), 0.0, 0.0f);
 	//m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);

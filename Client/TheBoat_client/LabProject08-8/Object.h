@@ -133,12 +133,15 @@ public:
 	CMaterial						*m_pMaterial = NULL;
 
 	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dCbvGPUDescriptorHandle;
+	XMFLOAT3						look;
 
 protected:
 	ID3D12Resource					*m_pd3dcbGameObject = NULL;
 	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObject = NULL;
 
 public:
+	
+
 	void SetMesh(int nIndex, CMesh *pMesh);
 	void SetShader(CShader *pShader);
 	void SetMaterial(CMaterial *pMaterial);
@@ -161,6 +164,9 @@ public:
 
 	virtual void BuildMaterials(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList) { }
 	virtual void ReleaseUploadBuffers();
+
+	BoundingOrientedBox bounding_box;
+	virtual void SetOOBB(XMFLOAT3 xmCenter, XMFLOAT3 xmExtents, XMFLOAT4 xmOrientation) { }
 
 	XMFLOAT3 GetPosition();
 	XMFLOAT3 GetLook();
@@ -214,7 +220,7 @@ private:
 public:
 	void SetRotationSpeed(float fRotationSpeed) { m_fRotationSpeed = fRotationSpeed; }
 	void SetRotationAxis(XMFLOAT3 xmf3RotationAxis) { m_xmf3RotationAxis = xmf3RotationAxis; }
-
+	void SetOOBB(XMFLOAT3 xmCenter, XMFLOAT3 xmExtents, XMFLOAT4 xmOrientation) { bounding_box = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation); }
 	virtual void Animate(float fTimeElapsed);
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera = NULL);
 };

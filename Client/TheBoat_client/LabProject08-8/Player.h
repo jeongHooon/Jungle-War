@@ -107,6 +107,11 @@ public:
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera = NULL);
 	virtual void Animate(float fTimeElapsed);
 
+	BoundingOrientedBox bounding_box;
+	void SetOOBB(XMFLOAT3 xmCenter, XMFLOAT3 xmExtents, XMFLOAT4 xmOrientation) {
+		bounding_box = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation);
+	}
+
 protected:
 	ID3D12Resource					*m_pd3dcbPlayer = NULL;
 	CB_PLAYER_INFO					*m_pcbMappedPlayer = NULL;

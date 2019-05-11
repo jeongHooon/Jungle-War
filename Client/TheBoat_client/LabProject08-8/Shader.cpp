@@ -553,6 +553,7 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	float fxPitch = 12.0f * 2.5f, fyPitch = 12.0f * 2.5f, fzPitch = 12.0f * 2.5f;
 
 	CRotatingObject *pRotatingObject = NULL;
+	
 	for (int x = -xObjects; x <= xObjects; x++)
 	{
 		for (int y = -yObjects; y <= yObjects; y++)
@@ -564,7 +565,7 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 #ifndef _WITH_BATCH_MATERIAL
 				pRotatingObject->SetMaterial(pCubeMaterial);
 #endif
-				float xPosition = 500 + x * 30;
+				float xPosition = x * 30;
 				float zPosition = 1000 + z * 30;
 				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
 				pRotatingObject->SetPosition(0, -900, 0);
@@ -572,6 +573,7 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 				pRotatingObject->SetRotationSpeed(10.0f * (i % 10));
 				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
 				pRotatingObject->SetScale(2.0, 2.0, 2.0);
+				pRotatingObject->SetOOBB(pRotatingObject->GetPosition(), XMFLOAT3(20, 20, 20), XMFLOAT4(0, 0, 0, 1));
 				m_ppObjects[i++] = pRotatingObject;
 			}
 		}
@@ -594,15 +596,47 @@ void CObjectsShader::ReleaseObjects()
 void CObjectsShader::SetBoxPosition(int index, XMFLOAT3 input) {
 	float fHeight = pTerrainCopy->GetHeight(input.x, input.z);
 	m_ppObjects[index]->SetPosition(input.x, fHeight + 5, input.z);
-
+	m_ppObjects[index]->SetOOBB(m_ppObjects[index]->GetPosition(), XMFLOAT3(10, 10, 10), XMFLOAT4(0, 0, 0, 1));
 }
 
 
 void CObjectsShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 {
 	
-	for (int i = 0; i < 10; ++i) {
+	for (int i = 0; i < MAX_BOX_SIZE * MAX_PLAYER_SIZE; ++i) {
 		m_ppObjects[i]->Animate(fTimeElapsed);
+	}
+
+	//충돌체크
+	for (int i = 0; i < MAX_PLAYER_SIZE * MAX_BOX_SIZE; ++i) {
+		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_ppObjects[i]->bounding_box);
+		switch (containType)
+		{
+		case DISJOINT:
+		{
+			break;
+		}
+		case INTERSECTS:
+		{
+			//Vector3::DotProduct(xmf3player, xmf3Look) 내적
+			cout << m_ppObjects[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x << "      " << m_ppObjects[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z;
+			cout << "   나의 룩벡터 : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook().x << "    " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook().z;
+			
+			if ((m_ppObjects[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x) * (m_ppObjects[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x)
+				< (m_ppObjects[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z) * (m_ppObjects[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z)) {
+				if (m_ppObjects[i]->GetPosition().z > 0) { m_ppObjects[i]->look = XMFLOAT3(0, 0, -1); }
+				else { m_ppObjects[i]->look = XMFLOAT3(0, 0, 1); }
+			}
+			else {
+				if (m_ppObjects[i]->GetPosition().x > 0) { m_ppObjects[i]->look = XMFLOAT3(-1, 0, 0); }
+				else { m_ppObjects[i]->look = XMFLOAT3(1, 0, 0); }
+			}
+			cout << "상자 룩벡터 :  " << m_ppObjects[i]->look.x << "   " << m_ppObjects[i]->look.z << endl;
+			break;
+		}
+		case CONTAINS:
+			break;
+		}
 	}
 }
 
@@ -610,7 +644,7 @@ void CObjectsShader::ReleaseUploadBuffers()
 {
 	if (m_ppObjects)
 	{
-		for (int j = 0; j < m_nObjects; j++) if (m_ppObjects[j]) m_ppObjects[j]->ReleaseUploadBuffers();
+		for (int j = 0; j < MAX_BOX_SIZE * MAX_PLAYER_SIZE; j++) if (m_ppObjects[j]) m_ppObjects[j]->ReleaseUploadBuffers();
 	}
 
 #ifdef _WITH_BATCH_MATERIAL
@@ -630,6 +664,10 @@ void CObjectsShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera 
 	{
 		if (m_ppObjects[j]) m_ppObjects[j]->Render(pd3dCommandList, pCamera);
 	}
+}
+
+void CObjectsShader::BoundCheck(XMFLOAT3 playerPosition, float playerSize) {
+	
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

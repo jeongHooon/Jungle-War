@@ -50,6 +50,7 @@ public:
 	virtual void ReleaseUploadBuffers();
 	virtual void SetBoxPosition(int index, XMFLOAT3 input) { }
 	virtual void SetBoxPosition(XMFLOAT3 input) { }
+	virtual void BoundCheck(XMFLOAT3 playerPosition, float playersize) { }
 
 	virtual void OnPrepareRender(ID3D12GraphicsCommandList *pd3dCommandList);
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
@@ -165,6 +166,8 @@ public:
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
 
 	virtual void SetBoxPosition(int index, XMFLOAT3 input);
+
+	virtual void BoundCheck(XMFLOAT3 playerPosition, float playerSize);
 
 protected:
 	CHeightMapTerrain * pTerrainCopy;
