@@ -1,6 +1,15 @@
 #include "stdafx.h"
 #include "ServerMgr.h"
 
+#define maxuserIDLen 20
+#define maxPasswdLen 20
+
+char userid[256];
+char passwd[256];
+
+
+
+
 void ServerMgr::ErrorDisplay(const char* msg, int err_no) {
 	_wsetlocale(LC_ALL, L"korean");
 	WCHAR *lpMsgBuf;
@@ -34,14 +43,13 @@ void ServerMgr::Initialize(HWND& hwnd) {
 	ServerAddr.sin_family = AF_INET;
 	ServerAddr.sin_port = htons(SERVER_PORT);
 	// 아이피
-//	ServerAddr.sin_addr.s_addr = inet_addr(server_ip.c_str());
+	ServerAddr.sin_addr.s_addr = inet_addr(server_ip.c_str());
 
 	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	//ServerAddr.sin_addr.s_addr = inet_addr("192.168.101.211");
 
 	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	//ServerAddr.sin_addr.s_addr = inet_addr("110.5.195.3");
-
 
 	int retval = WSAConnect(sock, (sockaddr *)&ServerAddr, sizeof(ServerAddr), NULL, NULL, NULL, NULL);
 	if (retval == SOCKET_ERROR) {
@@ -55,6 +63,11 @@ void ServerMgr::Initialize(HWND& hwnd) {
 	recv_wsabuf.buf = recv_buffer;
 	recv_wsabuf.len = CLIENT_BUF_SIZE;
 	printf("server_mgr 초기화\n");
+	cout << "id 입력 : ";
+	cin >> userid;
+	cout << "비밀번호 입력 : ";
+	cin >> passwd;
+
 }
 
 void ServerMgr::ReadPacket() {
@@ -86,6 +99,7 @@ void ServerMgr::ReadPacket() {
 
 	}
 }
+
 Bullet ServerMgr::GetBullet() {
 	return bullets[recvd_bullet_id];
 }
@@ -94,42 +108,57 @@ Box ServerMgr::GetBox() {
 	return boxes[recvd_box_id];
 }
 
-string ServerMgr::GetClientID() {
+int ServerMgr::GetClientID() {
 	return clients_id;
 }
 
+void ServerMgr::SendLoginREQ(SOCKET toServer) {
+
+}
 void ServerMgr::ProcessPacket(char* ptr) {
 	static bool first_time = true;
 	switch (ptr[1]) {
 	case SC_ENTER_PLAYER: {
 		SC_PACKET_ENTER_PLAYER * packets = reinterpret_cast<SC_PACKET_ENTER_PLAYER*>(ptr);
-		
-//		char userid[256];
-//		char passwd[256];
-		cout << "id 입력 : ";
-		cin >> clients_id;
-//		cout << "암호 입력 : ";
-//		cin >> passwd;
 
 		if (first_set_id) {
 			clients_id = packets->id;
-//			camera_id = packets->id;
+			camera_id = packets->id;
 			first_set_id = false;
 		}
-//		sc_vec_buff[packets->id].pos.x = packets->x;
-//		sc_vec_buff[packets->id].pos.y = packets->y;
-//		sc_vec_buff[packets->id].pos.z = packets->z;
-//		client_hp[packets->id] = packets->hp;
-		printf("[SC_ENTER_PLAYER] : %c 플레이어 입장\n", packets->id);
+	
+	//	strncpy_s((char *)client_myid[packets->id], 20, passwd, 20);
+		// strcpy는 문제가 생기면 한없이 복사하므로
+		// 제한된 길이만큼만 복사하는 strncpy가 안전
+
+		strncpy_s((char *)packets->userid, maxuserIDLen, userid, maxuserIDLen);
+
+//		strncpy_s((char *)client_myid[packets->id], maxuserIDLen, userid, maxuserIDLen);
+		
+		packets->userid[maxuserIDLen - 1] = '\0';  //가장 끝자리에 '\0'을 붙여준다.
+
+		strncpy_s((char *)packets->passwd, maxPasswdLen, passwd, maxPasswdLen);
+		packets->passwd[maxPasswdLen - 1] = '\0';
+
+		sc_vec_buff[packets->id].pos.x = packets->x;
+		sc_vec_buff[packets->id].pos.y = packets->y;
+		sc_vec_buff[packets->id].pos.z = packets->z;
+		client_hp[packets->id] = packets->hp;
+		client_myid[packets->id] = packets->userid;
+
+//		strncpy_s((char *)client_myid[packets->id], 20, packets->userid, 20);
+
+		printf("[SC_ENTER_PLAYER] : %d 플레이어 입장\n", packets->id);
+		printf("%d 플레이어의 id : %s \n", packets->id, client_myid[packets->id]);
 
 		break;
 	}
+
 	case SC_BUILDING_GEN: {
 		SC_PACKET_ENTER_PLAYER* packets = reinterpret_cast<SC_PACKET_ENTER_PLAYER*>(ptr);
 		building_pos[packets->id].x = packets->x;
 		building_pos[packets->id].y = packets->y;
 		building_pos[packets->id].z = packets->z;
-		
 
 		building_extents[packets->id].x = packets->size_x;
 		building_extents[packets->id].y = packets->size_y;
@@ -143,7 +172,6 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		//	building_extents[packets->id].z);
 		break;
 	}
-
 	case SC_POS: {
 		SC_PACKET_POS* packets = reinterpret_cast<SC_PACKET_POS*>(ptr);
 		clients_id = packets->id;
@@ -180,7 +208,11 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		SC_PACKET_BOX* packets = reinterpret_cast<SC_PACKET_BOX*>(ptr);
 		clients_id = packets->id;
 		recvd_box_id = packets->box_id;
-		boxes[packets->box_id].id = packets->box_id;
+		//boxes[clients_id][recvd_box_id].id = packets->box_id;
+		//boxes[clients_id][recvd_box_id].x = packets->x;
+		//boxes[clients_id][recvd_box_id].y = packets->y;
+		//boxes[clients_id][recvd_box_id].z = packets->z;
+		boxes[packets->box_id].id = clients_id * 10 + recvd_box_id;    // 클라 * 10(십의자리 인덱스) + 박스
 		boxes[packets->box_id].x = packets->x;
 		boxes[packets->box_id].y = packets->y;
 		boxes[packets->box_id].z = packets->z;
@@ -223,10 +255,17 @@ void ServerMgr::ProcessPacket(char* ptr) {
 	}
 	}
 }
+
 float ServerMgr::GetPlayerHP(int p_n) {
 	return client_hp[p_n];
-
 }
+
+//여기-----------------------
+char ServerMgr::GetPlayerID(int p_i) {
+	return *client_myid[p_i];
+}
+//---------------------------
+
 bool ServerMgr::IsItemGen() {
 	return is_item_gen;
 }
@@ -246,7 +285,6 @@ void ServerMgr::ReturnBuildingExtents(XMFLOAT3* input_building_extents) {
 		input_building_extents[i].z = building_extents[i].z;
 	}
 }
-
 
 XMFLOAT3 ServerMgr::ReturnItemPosition() {
 	is_item_gen = false;
@@ -439,11 +477,10 @@ void ServerMgr::SendPacket(int type, XMFLOAT3& xmvector) {
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
 	case CS_KEY_PRESS_Q:
-		packet_buffer->type = CS_KEY_PRESS_Q;
+//		packet_buffer->type = CS_KEY_PRESS_Q;
 //		packet_buffer->box_pos = xmvector;
-		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
+//		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
-
 
 	case CS_KEY_RELEASE_UP:
 		packet_buffer->type = CS_KEY_RELEASE_UP;
@@ -524,6 +561,7 @@ void ServerMgr::ClientError() {
 
 SPlayer ServerMgr::ReturnPlayerPosStatus(int client_id) {
 	return sc_vec_buff[client_id];
+
 }
 
 XMFLOAT3 ServerMgr::ReturnLookVector() {

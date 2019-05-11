@@ -196,6 +196,18 @@ void ServerMgr::ProcessPacket(char* ptr) {
 
 		break;
 	}
+	case SC_COLLSION_BB: {
+		SC_PACKET_COLLISION_BB* packets = reinterpret_cast<SC_PACKET_COLLISION_BB*>(ptr);
+		collision_box_pos.x = packets->x;
+		collision_box_pos.y = packets->y;
+		collision_box_pos.z = packets->z;
+		box_is_collide = true;
+		box_hp[packets->box_id] = packets->hp;
+		printf("%d 플레이어의 충돌지점 x : %f, y : %f, z : %f, 체력 : %f \n", packets->client_id, collision_box_pos.x,
+			collision_box_pos.y, collision_box_pos.z, box_hp[packets->client_id]);
+
+		break;
+	}
 	case SC_COLLSION_BDP: {	// building to player
 		SC_PACKET_COLLISION* packets = reinterpret_cast<SC_PACKET_COLLISION*>(ptr);
 		collision_pos.x = packets->x;

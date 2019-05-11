@@ -21,6 +21,7 @@
 #define OBJECT_BUILDING			10
 
 // Server To Client
+#define SC_LOGIN_PLAYER			0
 #define SC_ENTER_PLAYER			1
 #define SC_POS					2
 #define SC_REMOVE_PLAYER		3
@@ -46,7 +47,7 @@
 #define SS_ITEM_GEN				18	// Event
 #define SS_BOX_GENERATE			19
 #define SS_BOX_UPDATE			20
-#define SS_COLLISION_BB			21
+#define SS_COLLISION_BTOB		21
 
 
 
@@ -103,6 +104,8 @@ struct SC_PACKET_ENTER_PLAYER {
 	BYTE size;
 	BYTE type;
 	WORD id;
+	char userid[20];
+	BYTE passwd[20];
 	float x, y, z;
 	// 건물 크기 보낼 때만 사용
 	float hp;
@@ -132,16 +135,6 @@ struct SC_PACKET_COLLISION {
 	float x, y, z;
 	float hp;
 };
-
-struct SC_PACKET_COLLISION_BB {
-	BYTE size;
-	BYTE type;
-	WORD client_id;
-	WORD box_id;
-	float x, y, z;
-	float hp;
-};
-
 
 struct SC_PAKCET_CLIENT_BUILDING_COLLSION {
 

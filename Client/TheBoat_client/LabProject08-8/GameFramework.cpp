@@ -328,7 +328,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		}
 		else
 			CShader::shootBullet = 0;
-		
+
 		//server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
 		server_mgr.SendPacket(CS_LEFT_BUTTON_DOWN, m_pPlayer[my_client_id]->GetLook());
 		break;
@@ -350,9 +350,9 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		m_pCamera = m_pPlayer[my_client_id]->ChangeCamera(FIRST_PERSON_CAMERA, m_GameTimer.GetTimeElapsed());	// 마우스 우클시 카메라 변환
 		break;
 	case WM_MOUSEMOVE:
-		if (boxBound==1)
+		if (boxBound == 1) 
 			server_mgr.SendPacket(CS_MOUSE_MOVE, sendLook);
-		else
+		else 
 			server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
 		boxBound = 0;
 		break;
