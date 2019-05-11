@@ -30,12 +30,15 @@ private:
 	XMFLOAT3 building_pos[OBJECT_BUILDING];
 	XMFLOAT3 buliding_extents[OBJECT_BUILDING];
 
+
 	// √—æÀ √Êµπ«¡∑π¿”
 	bool is_collide = false;
 	int collide_frame = 100;
 public:
 	static int my_client_id;
 	static XMFLOAT3 buildingPos[OBJECT_BUILDING];
+	// ∑Ë∫§≈Õ
+	static XMFLOAT3 sendLook;
 	int charstate = 0;
 	bool isRun = false;
 public:
@@ -70,6 +73,7 @@ public:
 
 	static CPlayer				*m_pPlayer[4];
 	static CCamera				*m_pCamera;
+	static int					boxBound;
 	float						playerHp = 100;
 	bool						gameMode = true;
 	int							boxIndex = 0;

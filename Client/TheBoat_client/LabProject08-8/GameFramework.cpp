@@ -360,12 +360,24 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		//	mouse_moving_counter = 0;
 		//}
 		
-<<<<<<< HEAD
-		server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook()); // 마우스 룩벡터
-=======
-		server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
->>>>>>> a1883e0b7baff6a6d3f1b67ce940b33fee896422
-
+		/*cout << "SendLook" << sendLook.x << "   " << sendLook.z << endl;
+		cout << "PlayerLook" << m_pPlayer[my_client_id]->GetLook().x << "   " << m_pPlayer[my_client_id]->GetLook().z << endl;
+		*/
+		if (boxBound==1)
+			server_mgr.SendPacket(CS_MOUSE_MOVE, sendLook);
+		else
+			server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
+		boxBound = 0;
+		//server_mgr.SendPacket(CS_MOUSE_MOVE, sendLook);
+		/*cout << boxBound << endl;
+		if (boxBound == 1) {
+			server_mgr.SendPacket(CS_MOUSE_MOVE, sendLook);
+			cout << "씨빨" << endl;
+		}
+		else
+			server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());*/
+		//cout << "PlayerLook" << m_pPlayer[my_client_id]->GetLook().x << "   " << m_pPlayer[my_client_id]->GetLook().z << endl;
+			 // 마우스 룩벡터
 		//mouse_moving_counter++;
 
 		//원래는 이거만 있어씀

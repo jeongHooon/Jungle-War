@@ -10,6 +10,8 @@
 CPlayer* CGameFramework::m_pPlayer[];
 int CGameFramework::my_client_id;
 XMFLOAT3 CGameFramework::buildingPos[];
+XMFLOAT3 CGameFramework::sendLook;
+int CGameFramework::boxBound;
 
 CShader::CShader()
 {
@@ -606,7 +608,7 @@ void CObjectsShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 	for (int i = 0; i < MAX_BOX_SIZE * MAX_PLAYER_SIZE; ++i) {
 		m_ppObjects[i]->Animate(fTimeElapsed);
 	}
-
+	bool check = false;
 	//충돌체크
 	for (int i = 0; i < MAX_PLAYER_SIZE * MAX_BOX_SIZE; ++i) {
 		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_ppObjects[i]->bounding_box);
@@ -618,26 +620,36 @@ void CObjectsShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 		}
 		case INTERSECTS:
 		{
-			//Vector3::DotProduct(xmf3player, xmf3Look) 내적
-			cout << m_ppObjects[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x << "      " << m_ppObjects[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z;
-			cout << "   나의 룩벡터 : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook().x << "    " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook().z;
+			cout << "contain" << endl;
+			//cout << m_ppObjects[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x << "      " << m_ppObjects[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z;
+			//cout << "Me : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook().x << "    " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook().z << endl;
 			
 			if ((m_ppObjects[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x) * (m_ppObjects[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x)
 				< (m_ppObjects[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z) * (m_ppObjects[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z)) {
-				if (m_ppObjects[i]->GetPosition().z > 0) { m_ppObjects[i]->look = XMFLOAT3(0, 0, -1); }
+				if (m_ppObjects[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z > 0) { m_ppObjects[i]->look = XMFLOAT3(0, 0, -1); }
 				else { m_ppObjects[i]->look = XMFLOAT3(0, 0, 1); }
 			}
 			else {
-				if (m_ppObjects[i]->GetPosition().x > 0) { m_ppObjects[i]->look = XMFLOAT3(-1, 0, 0); }
+				if (m_ppObjects[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x > 0) { m_ppObjects[i]->look = XMFLOAT3(-1, 0, 0); }
 				else { m_ppObjects[i]->look = XMFLOAT3(1, 0, 0); }
 			}
-			cout << "상자 룩벡터 :  " << m_ppObjects[i]->look.x << "   " << m_ppObjects[i]->look.z << endl;
+			//cout << "Box :  " << m_ppObjects[i]->look.x << "   " << m_ppObjects[i]->look.z << endl;
+			//Vector3::DotProduct
+			XMFLOAT3 xmf3Result;
+			XMFLOAT3 xmf3Result_1;
+			XMStoreFloat3(&xmf3Result_1, XMVector3Dot(XMLoadFloat3(&CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook()), XMLoadFloat3(&m_ppObjects[i]->look)));
+			XMStoreFloat3(&xmf3Result, XMVector3Dot(XMLoadFloat3(&m_ppObjects[i]->look), XMLoadFloat3(&xmf3Result_1))); 
+			CGameFramework::sendLook = XMFLOAT3(Vector3::Subtract(CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook(), xmf3Result));
+			//cout << "충돌할때SendLook" << CGameFramework::sendLook.x << "   " << CGameFramework::sendLook.z <<endl;
+			check = true;
 			break;
 		}
 		case CONTAINS:
 			break;
 		}
 	}
+	if (check == true)
+		CGameFramework::boxBound = 1;
 }
 
 void CObjectsShader::ReleaseUploadBuffers()
