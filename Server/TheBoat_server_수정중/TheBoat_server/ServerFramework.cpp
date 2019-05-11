@@ -759,8 +759,11 @@ void ServerFramework::WorkerThread() {
 							packets.hp = boxes[j].hp;
 							packets.box_id = j;
 																								
-							if (boxes[j].hp < 0)
+							if (boxes[j].hp < 0) {
+								packets.x = 0.f;
+								packets.z = 0.f;
 								boxes[j].in_use = false;
+							}
 
 							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
 							{
@@ -784,8 +787,11 @@ void ServerFramework::WorkerThread() {
 							//
 							packets.hp = boxes[j].hp;
 
-							if (boxes[j].hp < 0)
+							if (boxes[j].hp < 0) {
+								packets.x = 0.f;
+								packets.z = 0.f;
 								boxes[j].in_use = false;
+							}
 
 							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
 							{

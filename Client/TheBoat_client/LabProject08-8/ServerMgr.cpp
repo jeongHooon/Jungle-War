@@ -202,6 +202,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		collision_box_pos.y = packets->y;
 		collision_box_pos.z = packets->z;
 		box_is_collide = true;
+		boe
 		box_hp[packets->box_id] = packets->hp;
 		printf("%d 플레이어의 충돌지점 x : %f, y : %f, z : %f, 체력 : %f \n", packets->client_id, collision_box_pos.x,
 			collision_box_pos.y, collision_box_pos.z, box_hp[packets->client_id]);
