@@ -39,14 +39,15 @@ class ServerFramework
 	mutex client_lock;
 
 	// Timer전용 OverlappedExtensionSetd
-	// 4는 플레이어 위치 업데이트 전용
-	// 5는 충돌체크전용
-	// 6은 플레이어 총알 생성
-	// 7은 총알 업데이트
-	// 8은 박스 업데이트
+	// 4 플레이어 위치 업데이트 전용
+	// 5 플레이어 총알 충돌체크전용
+	// 6 플레이어 총알 생성
+	// 7 총알 업데이트
+	// 8 박스 업데이트
+	// 9 박스 총알 충돌체크전용
 	OverlappedExtensionSet ol_ex[20];
 
-	Bullet bullets[MAX_PLAYER_SIZE][MAX_BULLET_SIZE] = { 0 };
+	Bullet bullets[MAX_PLAYER_SIZE * MAX_BULLET_SIZE] = { 0 };
 	//Box boxes[MAX_PLAYER_SIZE][MAX_BOX_SIZE] = { 0 };
 	Box boxes[MAX_PLAYER_SIZE * MAX_BOX_SIZE] = { 0 };
 	mutex bullet_lock;

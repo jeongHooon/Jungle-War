@@ -106,7 +106,7 @@ void ServerFramework::InitServer() {
 	// Bullet의 OBB
 	for (int j = 0; j < MAX_PLAYER_SIZE; ++j) {
 		for (int i = 0; i < MAX_BULLET_SIZE; ++i) {
-			bullets[j][i].SetOOBB(XMFLOAT3(bullets[j][i].x, bullets[j][i].y, bullets[j][i].z),
+			bullets[j * MAX_BULLET_SIZE + i].SetOOBB(XMFLOAT3(bullets[j * MAX_BULLET_SIZE + i].x, bullets[j * MAX_BULLET_SIZE + i].y, bullets[j * MAX_BULLET_SIZE + i].z),
 				XMFLOAT3(OBB_SCALE_BULLET_X, OBB_SCALE_BULLET_Y, OBB_SCALE_BULLET_Z),
 				XMFLOAT4(0, 0, 0, 1)); 
 		}
@@ -115,7 +115,7 @@ void ServerFramework::InitServer() {
 	// Box OBB
 	for (int j = 0; j < MAX_PLAYER_SIZE; ++j) {
 		for (int i = 0; i < MAX_BOX_SIZE; ++i) {
-			boxes[j * 10 + i].SetOOBB(XMFLOAT3(boxes[j * 10 + i].x, boxes[j * 10 + i].y, boxes[j * 10 + i].z),
+			boxes[j * 10 + i].SetOOBB(XMFLOAT3(boxes[j * MAX_BOX_SIZE + i].x, boxes[j * MAX_BOX_SIZE + i].y, boxes[j * MAX_BOX_SIZE + i].z),
 				XMFLOAT3(OBB_SCALE_BOX_X, OBB_SCALE_BOX_Y, OBB_SCALE_BOX_Z),
 				XMFLOAT4(0, 0, 0, 1));
 		}
@@ -264,10 +264,6 @@ void ServerFramework::AcceptPlayer() {
 			}
 		}
 	}
-
-
-
-
 
 	// 해당 클라이언트에게도 다른 클라이언트의 위치를 보내줘야한당!~
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
@@ -481,7 +477,7 @@ void ServerFramework::GameStart() {
 	// Bullet의 OBB
 	for (int j = 0; j < MAX_PLAYER_SIZE; ++j) {
 		for (int i = 0; i < MAX_BULLET_SIZE; ++i) {
-			bullets[j][i].SetOOBB(XMFLOAT3(bullets[j][i].x, bullets[j][i].y, bullets[j][i].z),
+			bullets[j * MAX_BULLET_SIZE + i].SetOOBB(XMFLOAT3(bullets[j * MAX_BULLET_SIZE + i].x, bullets[j * MAX_BULLET_SIZE + i].y, bullets[j * MAX_BULLET_SIZE + i].z),
 				XMFLOAT3(OBB_SCALE_BULLET_X, OBB_SCALE_BULLET_Y, OBB_SCALE_BULLET_Z),
 				XMFLOAT4(0, 0, 0, 1));
 		}
@@ -490,7 +486,7 @@ void ServerFramework::GameStart() {
 	// BOX의 OBB
 	for (int j = 0; j < MAX_PLAYER_SIZE; ++j) {
 		for (int i = 0; i < MAX_BOX_SIZE; ++i) {
-			boxes[j * 10 + i].SetOOBB(XMFLOAT3(boxes[j * 10 + i].x, boxes[j * 10 + i].y, boxes[j * 10 + i].z),
+			boxes[j * MAX_BOX_SIZE + i].SetOOBB(XMFLOAT3(boxes[j * MAX_BOX_SIZE + i].x, boxes[j * MAX_BOX_SIZE + i].y, boxes[j * MAX_BOX_SIZE + i].z),
 				XMFLOAT3(OBB_SCALE_BOX_X, OBB_SCALE_BOX_Y, OBB_SCALE_BOX_Z),
 				XMFLOAT4(0, 0, 0, 1));
 		}
@@ -622,10 +618,10 @@ void ServerFramework::WorkerThread() {
 			}
 		}
 		else if (overlapped_buffer->command == SS_COLLISION) {
-			for (int j = 0; (j < MAX_PLAYER_SIZE - 1); ++j) {
-				for (int i = 0; i < MAX_BULLET_SIZE; ++i) {
-					if (bullets[j + 1][i].in_use && clients[j].in_use) {
-						ContainmentType containType = clients[j].bounding_box.Contains(bullets[j + 1][i].bounding_box);
+			for (int j = 0; j < MAX_PLAYER_SIZE; ++j) {
+				for (int i = 0; i < MAX_PLAYER_SIZE * MAX_BULLET_SIZE; ++i) {
+					if (bullets[i].in_use && clients[j].in_use) {
+						ContainmentType containType = clients[j].bounding_box.Contains(bullets[i].bounding_box);
 						switch (containType)
 						{
 						case DISJOINT:
@@ -648,10 +644,12 @@ void ServerFramework::WorkerThread() {
 							//
 							packets.hp = clients[j].hp;
 
+							
 							SendPacket(j, &packets);
-							SendPacket(j + 1, &packets);
-							printf("충돌 시작\n");
-							bullets[j + 1][i].in_use = false;
+								
+							
+							printf("플레이어 - 총알 충돌 시작\n");
+							bullets[i].in_use = false;
 							break;
 						}
 						case CONTAINS:
@@ -667,72 +665,77 @@ void ServerFramework::WorkerThread() {
 							//
 							packets.hp = clients[j].hp;
 
-							SendPacket(j, &packets);
-							SendPacket(j + 1, &packets);
-							printf("충돌!!!!\n");
-							bullets[j + 1][i].in_use = false;
+							
+							printf("플레이어 - 총알 충돌\n");
+							bullets[i].in_use = false;
 							break;
 						}
 					}
-					if (bullets[j][i].in_use) {
-						//ContainmentType containType_rev = clients[j].bounding_box.Contains(bullets[j + 1][i].bounding_box);
-						ContainmentType containType_rev = bullets[j][i].bounding_box.Contains(clients[j + 1].bounding_box);
-						switch (containType_rev)
-						{
-						case DISJOINT:
-						{
-							//printf("충돌 안함ㅠ\n");
-							break;
-						}
-						case INTERSECTS:
-						{
-							SC_PACKET_COLLISION packets;
-							packets.size = sizeof(SC_PACKET_COLLISION);
-							packets.type = SC_COLLSION_PB;
-							packets.x = clients[j + 1].bounding_box.Center.x;
-							packets.y = clients[j + 1].bounding_box.Center.y;
-							packets.z = clients[j + 1].bounding_box.Center.z;
-							packets.client_id = j + 1;
-							//
-							clients[j + 1].hp -= 25.f;
-							//
-							packets.hp = clients[j + 1].hp;
+					//if (bullets[j * MAX_BULLET_SIZE + i].in_use) {
+					//	//ContainmentType containType_rev = clients[j].bounding_box.Contains(bullets[j + 1][i].bounding_box);
+					//	ContainmentType containType_rev = bullets[j * MAX_BULLET_SIZE + i].bounding_box.Contains(clients[j + 1].bounding_box);
+					//	switch (containType_rev)
+					//	{
+					//	case DISJOINT:
+					//	{
+					//		//printf("충돌 안함ㅠ\n");
+					//		break;
+					//	}
+					//	case INTERSECTS:
+					//	{
+					//		SC_PACKET_COLLISION packets;
+					//		packets.size = sizeof(SC_PACKET_COLLISION);
+					//		packets.type = SC_COLLSION_PB;
+					//		packets.x = clients[j + 1].bounding_box.Center.x;
+					//		packets.y = clients[j + 1].bounding_box.Center.y;
+					//		packets.z = clients[j + 1].bounding_box.Center.z;
+					//		packets.client_id = j + 1;
+					//		//
+					//		clients[j + 1].hp -= 25.f;
+					//		//
+					//		packets.hp = clients[j + 1].hp;
 
 
-							SendPacket(j, &packets);
-							SendPacket(j + 1, &packets);
-							bullets[j][i].in_use = false;
-							printf("충돌 시작\n");
-							break;
-						}
-						case CONTAINS:
-							SC_PACKET_COLLISION packets;
-							packets.size = sizeof(SC_PACKET_COLLISION);
-							packets.type = SC_COLLSION_PB;
-							packets.x = clients[j + 1].bounding_box.Center.x;
-							packets.y = clients[j + 1].bounding_box.Center.y;
-							packets.z = clients[j + 1].bounding_box.Center.z;
-							packets.client_id = j + 1;
-							//
-							clients[j + 1].hp -= 25.f;
-							//
-							packets.hp = clients[j + 1].hp;
+					//		for (int k = 0; k < MAX_PLAYER_SIZE; ++k) {
+					//			if (clients[k].in_use == true) {
+					//				SendPacket(k, &packets);
+					//			}
+					//		}
+					//		bullets[j * MAX_BULLET_SIZE + i].in_use = false;
+					//		printf("충돌 시작\n");
+					//		break;
+					//	}
+					//	case CONTAINS:
+					//		SC_PACKET_COLLISION packets;
+					//		packets.size = sizeof(SC_PACKET_COLLISION);
+					//		packets.type = SC_COLLSION_PB;
+					//		packets.x = clients[j + 1].bounding_box.Center.x;
+					//		packets.y = clients[j + 1].bounding_box.Center.y;
+					//		packets.z = clients[j + 1].bounding_box.Center.z;
+					//		packets.client_id = j + 1;
+					//		//
+					//		clients[j + 1].hp -= 25.f;
+					//		//
+					//		packets.hp = clients[j + 1].hp;
 
-							SendPacket(j, &packets);
-							SendPacket(j + 1, &packets);
-							bullets[j][i].in_use = false;
-							printf("충돌!!!!\n");
-							break;
-						}
-					}
+					//		for (int k = 0; k < MAX_PLAYER_SIZE; ++k) {
+					//			if (clients[k].in_use == true) {
+					//				SendPacket(k, &packets);
+					//			}
+					//		}
+					//		bullets[j * MAX_BULLET_SIZE + i].in_use = false;
+					//		printf("충돌!!!!\n");
+					//		break;
+					//	}
+					//}
 				}
 			}
 		}
-		else if (overlapped_buffer->command == SS_COLLISION_BTOB) {
-			for (int j = 0; (j < MAX_PLAYER_SIZE - 1); ++j) {
-				for (int i = 0; i < MAX_BULLET_SIZE; ++i) {
-					if (bullets[j + 1][i].in_use && clients[j].in_use) {
-						ContainmentType containType = clients[j].bounding_box.Contains(bullets[j + 1][i].bounding_box);
+		else if (overlapped_buffer->command == SS_COLLISION_BB) {
+			for (int j = 0; j < MAX_PLAYER_SIZE * MAX_BOX_SIZE; ++j) {
+				for (int i = 0; i < MAX_PLAYER_SIZE * MAX_BULLET_SIZE; ++i) {
+					if (bullets[i].in_use && boxes[j].in_use) {
+						ContainmentType containType = boxes[j].bounding_box.Contains(bullets[i].bounding_box);
 						switch (containType)
 						{
 						case DISJOINT:
@@ -742,96 +745,108 @@ void ServerFramework::WorkerThread() {
 						}
 						case INTERSECTS:
 						{
-							SC_PACKET_COLLISION packets;
-							packets.size = sizeof(SC_PACKET_COLLISION);
-							packets.type = SC_COLLSION_PB;
-							packets.x = clients[j].bounding_box.Center.x;
+							SC_PACKET_COLLISION_BB packets;
+							packets.size = sizeof(SC_PACKET_COLLISION_BB);
+							packets.type = SC_COLLSION_BB;
+							packets.x = boxes[j].bounding_box.Center.x;
 							// 플레이어의 키 만큼 반영해서
-							packets.y = clients[j].bounding_box.Center.y;
-							packets.z = clients[j].bounding_box.Center.z;
+							packets.y = boxes[j].bounding_box.Center.y;
+							packets.z = boxes[j].bounding_box.Center.z;
 							packets.client_id = j;
 							//
-							clients[j].hp -= 25.f;
+							boxes[j].hp -= 25.f;
 							//
-							packets.hp = clients[j].hp;
+							packets.hp = boxes[j].hp;
 
-							SendPacket(j, &packets);
-							SendPacket(j + 1, &packets);
-							printf("충돌 시작\n");
-							bullets[j + 1][i].in_use = false;
+							if (boxes[j].hp < 0)
+								boxes[j].in_use = false;
+
+							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+							{
+								if(clients[k].in_use)
+									SendPacket(k, &packets);
+							}
+							printf("박스 - 총알 충돌 시작\n");
+							bullets[i].in_use = false;
 							break;
 						}
 						case CONTAINS:
-							SC_PACKET_COLLISION packets;
-							packets.size = sizeof(SC_PACKET_COLLISION);
-							packets.type = SC_COLLSION_PB;
-							packets.x = clients[j].bounding_box.Center.x;
-							packets.y = clients[j].bounding_box.Center.y;
-							packets.z = clients[j].bounding_box.Center.z;
+							SC_PACKET_COLLISION_BB packets;
+							packets.size = sizeof(SC_PACKET_COLLISION_BB);
+							packets.type = SC_COLLSION_BB;
+							packets.x = boxes[j].bounding_box.Center.x;
+							packets.y = boxes[j].bounding_box.Center.y;
+							packets.z = boxes[j].bounding_box.Center.z;
 							packets.client_id = j;
 							//
-							clients[j].hp -= 25.f;
+							boxes[j].hp -= 25.f;
 							//
-							packets.hp = clients[j].hp;
+							packets.hp = boxes[j].hp;
 
-							SendPacket(j, &packets);
-							SendPacket(j + 1, &packets);
-							printf("충돌!!!!\n");
-							bullets[j + 1][i].in_use = false;
+							if (boxes[j].hp < 0)
+								boxes[j].in_use = false;
+
+							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+							{
+								if (clients[k].in_use)
+									SendPacket(k, &packets);
+							}
+							printf("박스 - 총알 충돌\n");
+							bullets[i].in_use = false;
 							break;
 						}
 					}
-					if (bullets[j][i].in_use) {
-						//ContainmentType containType_rev = clients[j].bounding_box.Contains(bullets[j + 1][i].bounding_box);
-						ContainmentType containType_rev = bullets[j][i].bounding_box.Contains(clients[j + 1].bounding_box);
-						switch (containType_rev)
-						{
-						case DISJOINT:
-						{
-							//printf("충돌 안함ㅠ\n");
-							break;
-						}
-						case INTERSECTS:
-						{
-							SC_PACKET_COLLISION packets;
-							packets.size = sizeof(SC_PACKET_COLLISION);
-							packets.type = SC_COLLSION_PB;
-							packets.x = clients[j + 1].bounding_box.Center.x;
-							packets.y = clients[j + 1].bounding_box.Center.y;
-							packets.z = clients[j + 1].bounding_box.Center.z;
-							packets.client_id = j + 1;
-							//
-							clients[j + 1].hp -= 25.f;
-							//
-							packets.hp = clients[j + 1].hp;
+					//if (bullets[j * MAX_BULLET_SIZE + i].in_use) {
+					//	//ContainmentType containType_rev = clients[j].bounding_box.Contains(bullets[j + 1][i].bounding_box);
+					//	ContainmentType containType_rev = bullets[j * MAX_BULLET_SIZE + i].bounding_box.Contains(clients[j + 1].bounding_box);
+					//	switch (containType_rev)
+					//	{
+					//	case DISJOINT:
+					//	{
+					//		//printf("충돌 안함ㅠ\n");
+					//		break;
+					//	}
+					//	case INTERSECTS:
+					//	{
+					//		SC_PACKET_COLLISION_BB packets;
+					//		packets.size = sizeof(SC_PACKET_COLLISION_BB);
+					//		packets.type = SC_COLLSION_BB;
+					//		packets.x = boxes[j + 1].bounding_box.Center.x;
+					//		packets.y = boxes[j + 1].bounding_box.Center.y;
+					//		packets.z = boxes[j + 1].bounding_box.Center.z;
+					//		packets.client_id = j + 1;
+					//		//
+					//		boxes[j + 1].hp -= 25.f;
+					//		//
+					//		packets.hp = boxes[j + 1].hp;
 
 
-							SendPacket(j, &packets);
-							SendPacket(j + 1, &packets);
-							bullets[j][i].in_use = false;
-							printf("충돌 시작\n");
-							break;
-						}
-						case CONTAINS:
-							SC_PACKET_COLLISION packets;
-							packets.size = sizeof(SC_PACKET_COLLISION);
-							packets.type = SC_COLLSION_PB;
-							packets.x = clients[j + 1].bounding_box.Center.x;
-							packets.y = clients[j + 1].bounding_box.Center.y;
-							packets.z = clients[j + 1].bounding_box.Center.z;
-							packets.client_id = j + 1;
-							//
-							clients[j + 1].hp -= 25.f;
-							//
-							packets.hp = clients[j + 1].hp;
+					//		SendPacket(j, &packets);
+					//		SendPacket(j + 1, &packets);
+					//		bullets[j * MAX_BULLET_SIZE + i].in_use = false;
+					//		printf("충돌 시작\n");
+					//		break;
+					//	}
+					//	case CONTAINS:
+					//		SC_PACKET_COLLISION_BB packets;
+					//		packets.size = sizeof(SC_PACKET_COLLISION_BB);
+					//		packets.type = SC_COLLSION_BB;
+					//		packets.x = boxes[j + 1].bounding_box.Center.x;
+					//		packets.y = boxes[j + 1].bounding_box.Center.y;
+					//		packets.z = boxes[j + 1].bounding_box.Center.z;
+					//		packets.client_id = j + 1;
+					//		//
+					//		boxes[j + 1].hp -= 25.f;
+					//		//
+					//		packets.hp = boxes[j + 1].hp;
 
-							SendPacket(j, &packets);
-							SendPacket(j + 1, &packets);
-							bullets[j][i].in_use = false;
-							printf("충돌!!!!\n");
-							break;
-						}
-					}
+					//		SendPacket(j, &packets);
+					//		SendPacket(j + 1, &packets);
+					//		bullets[j * MAX_BULLET_SIZE + i].in_use = false;
+					//		printf("충돌!!!!\n");
+					//		break;
+					//	}
+					//}
 				}
 			}
 		}
@@ -888,17 +903,17 @@ void ServerFramework::WorkerThread() {
 			int shooter_id = overlapped_buffer->shooter_player_id;
 			if (bullet_counter[shooter_id] > MAX_BULLET_SIZE - 2) {
 				for (int d = 0; d < MAX_BULLET_SIZE; ++d) {
-					bullets[shooter_id][d].in_use = false;
+					bullets[shooter_id * MAX_BULLET_SIZE + d].in_use = false;
 				}
 				bullet_counter[shooter_id] = 0;
 				printf("총알 초기화\n");
 				//break;
 			}
-			bullets[shooter_id][bullet_counter[shooter_id]].x = clients[shooter_id].x;
-			bullets[shooter_id][bullet_counter[shooter_id]].y = clients[shooter_id].y;
-			bullets[shooter_id][bullet_counter[shooter_id]].z = clients[shooter_id].z;
-			bullets[shooter_id][bullet_counter[shooter_id]].look_vec = clients[shooter_id].look_vec;
-			bullets[shooter_id][bullet_counter[shooter_id]].in_use = true;
+			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].x = clients[shooter_id].x + 10 * clients[shooter_id].look_vec.x;
+			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].y = clients[shooter_id].y;
+			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].z = clients[shooter_id].z + 10 * clients[shooter_id].look_vec.z;
+			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].look_vec = clients[shooter_id].look_vec;
+			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].in_use = true;
 			bullet_counter[shooter_id]++;
 			bullet_times[shooter_id] = 0;
 		}
@@ -908,44 +923,44 @@ void ServerFramework::WorkerThread() {
 			for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 				for (int j = 0; j < MAX_BULLET_SIZE; ++j) {
 					//bullet_lock.lock();
-					if (bullets[i][j].in_use) {
-						bullets[i][j].x += METER_PER_PIXEL * bullets[i][j].look_vec.x * (AR_SPEED * overlapped_buffer->elapsed_time);
-						bullets[i][j].y += METER_PER_PIXEL * bullets[i][j].look_vec.y * (AR_SPEED * overlapped_buffer->elapsed_time);
-						bullets[i][j].z += METER_PER_PIXEL * bullets[i][j].look_vec.z * (AR_SPEED * overlapped_buffer->elapsed_time);
+					if (bullets[i* MAX_BULLET_SIZE + j].in_use) {
+						bullets[i* MAX_BULLET_SIZE + j].x += METER_PER_PIXEL * bullets[i* MAX_BULLET_SIZE + j].look_vec.x * (AR_SPEED * overlapped_buffer->elapsed_time);
+						bullets[i* MAX_BULLET_SIZE + j].y += METER_PER_PIXEL * bullets[i* MAX_BULLET_SIZE + j].look_vec.y * (AR_SPEED * overlapped_buffer->elapsed_time);
+						bullets[i* MAX_BULLET_SIZE + j].z += METER_PER_PIXEL * bullets[i* MAX_BULLET_SIZE + j].look_vec.z * (AR_SPEED * overlapped_buffer->elapsed_time);
 						//printf("총알 진행중\n");
 
 
-						bullets[i][j].SetOOBB(
-							XMFLOAT3(bullets[i][j].x, bullets[i][j].y, bullets[i][j].z),
+						bullets[i* MAX_BULLET_SIZE + j].SetOOBB(
+							XMFLOAT3(bullets[i* MAX_BULLET_SIZE + j].x, bullets[i* MAX_BULLET_SIZE + j].y, bullets[i* MAX_BULLET_SIZE + j].z),
 							XMFLOAT3(OBB_SCALE_BULLET_X, OBB_SCALE_BULLET_Y, OBB_SCALE_BULLET_Z),
 							XMFLOAT4(0, 0, 0, 1));
 					}
-					if (bullets[i][j].x >= 4000.f || bullets[i][j].x <= 0) {
-						bullets[i][j].in_use = false;
+					if (bullets[i* MAX_BULLET_SIZE + j].x >= 4000.f || bullets[i* MAX_BULLET_SIZE + j].x <= 0) {
+						bullets[i* MAX_BULLET_SIZE + j].in_use = false;
 						//bullet_lock.unlock();
 						continue;
 					}
-					if (bullets[i][j].y >= 4000.f || bullets[i][j].y <= 0) {
-						bullets[i][j].in_use = false;
+					if (bullets[i* MAX_BULLET_SIZE + j].y >= 4000.f || bullets[i* MAX_BULLET_SIZE + j].y <= 0) {
+						bullets[i* MAX_BULLET_SIZE + j].in_use = false;
 						//bullet_lock.unlock();
 						continue;
 					}
-					if (bullets[i][j].z >= 4000.f || bullets[i][j].z <= 0) {
-						bullets[i][j].in_use = false;
+					if (bullets[i* MAX_BULLET_SIZE + j].z >= 4000.f || bullets[i* MAX_BULLET_SIZE + j].z <= 0) {
+						bullets[i* MAX_BULLET_SIZE + j].in_use = false;
 						//bullet_lock.unlock();
 						continue;
 					}
 
 					//여기서 보내줘야지~
-					if (bullets[i][j].in_use) {
+					if (bullets[i* MAX_BULLET_SIZE + j].in_use) {
 						SC_PACKET_BULLET packets;
 						packets.id = i;
 						packets.size = sizeof(SC_PACKET_BULLET);
 						packets.type = SC_BULLET_POS;
 						packets.bullet_id = j;
-						packets.x = bullets[i][j].x;
-						packets.y = bullets[i][j].y;
-						packets.z = bullets[i][j].z;
+						packets.x = bullets[i* MAX_BULLET_SIZE + j].x;
+						packets.y = bullets[i* MAX_BULLET_SIZE + j].y;
+						packets.z = bullets[i* MAX_BULLET_SIZE + j].z;
 						// 해당 플레이어에게만 보내야함
 						// 렉 걸려서 안보냄 충돌체크하고 HP만 감소
 						//SendPacket(i, &packets);
@@ -966,32 +981,32 @@ void ServerFramework::WorkerThread() {
 
 				//clients[client_id].y = height_map->GetHeight(clients[client_id].x, clients[client_id].z);
 
-				boxes[box_player_id  * 10 + box_counter[box_player_id]].x =
+				boxes[box_player_id  * MAX_BOX_SIZE + box_counter[box_player_id]].x =
 					clients[box_player_id].x + 30 * clients[box_player_id].look_vec.x;
 
-				boxes[box_player_id * 10 + box_counter[box_player_id]].z =
+				boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].z =
 					clients[box_player_id].z + 30 * clients[box_player_id].look_vec.z;
 
-				boxes[box_player_id * 10 + box_counter[box_player_id]].y =
-					height_map->GetHeight(boxes[box_player_id * 10 + box_counter[box_player_id]].x,
-						boxes[box_player_id * 10 + box_counter[box_player_id]].z + 200.f);
+				boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].y =
+					height_map->GetHeight(boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].x,
+						boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].z + 200.f);
 
-				boxes[box_player_id  * 10 + box_counter[box_player_id]].look_vec = clients[box_player_id].look_vec;
-				boxes[box_player_id  * 10 + box_counter[box_player_id]].in_use = true;
+				boxes[box_player_id  * MAX_BOX_SIZE + box_counter[box_player_id]].look_vec = clients[box_player_id].look_vec;
+				boxes[box_player_id  * MAX_BOX_SIZE + box_counter[box_player_id]].in_use = true;
 				box_counter[box_player_id]++;
 				++clients[overlapped_buffer->box_player_id].box_count;
 
 				for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 					for (int j = 0; j < MAX_BOX_SIZE; ++j) {
-						if (boxes[i * 10 + j].in_use) {
+						if (boxes[i * MAX_BOX_SIZE + j].in_use) {
 							SC_PACKET_BOX packets;
 							packets.id = i;
 							packets.size = sizeof(SC_PACKET_BOX);
 							packets.type = SC_BOX_POS;
 							packets.box_id = j;
-							packets.x = boxes[i * 10 + j].x;
-							packets.y = boxes[i * 10 + j].y;
-							packets.z = boxes[i * 10 + j].z;
+							packets.x = boxes[i * MAX_BOX_SIZE + j].x;
+							packets.y = boxes[i * MAX_BOX_SIZE + j].y;
+							packets.z = boxes[i * MAX_BOX_SIZE + j].z;
 
 								for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
 									if (clients[k].in_use)
@@ -1024,18 +1039,18 @@ void ServerFramework::WorkerThread() {
 		else if (overlapped_buffer->command == SS_BOX_UPDATE) {
 			/*for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 				for (int j = 0; j < MAX_BOX_SIZE; ++j) {
-					if (boxes[i][j].in_use) {
+					if (boxes[i * 10 + j].in_use) {
 						SC_PACKET_BOX packets;
 						packets.id = i;
 						packets.size = sizeof(SC_PACKET_BOX);
 						packets.type = SC_BOX_POS;
 						packets.box_id = j;
-						packets.x = boxes[i][j].x;
-						packets.y = boxes[i][j].y;
-						packets.z = boxes[i][j].z;
-						
+						packets.x = boxes[i * 10 + j].x;
+						packets.y = boxes[i * 10 + j].y;
+						packets.z = boxes[i * 10 + j].z;
+
 						for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
-							if(clients[k].in_use)
+							if (clients[k].in_use)
 								SendPacket(k, &packets);
 					}
 				}
@@ -1097,6 +1112,9 @@ void ServerFramework::Update(duration<float>& elapsed_time) {
 	ol_ex[5].command = SS_COLLISION;
 	PostQueuedCompletionStatus(iocp_handle, 0, 5, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[5]));
 
+	ol_ex[9].command = SS_COLLISION_BB;
+	PostQueuedCompletionStatus(iocp_handle, 0, 9, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[9]));
+
 	// bool 변수 클라이언트마다 배정.
 	// 시간값을 overlapped로 넘겨줘서 
 
@@ -1105,9 +1123,12 @@ void ServerFramework::Update(duration<float>& elapsed_time) {
 	ol_ex[7].elapsed_time = elapsed_time.count();
 	PostQueuedCompletionStatus(iocp_handle, 0, 7, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[7]));
 
-	//ol_ex[8].command = SS_BOX_UPDATE;
-	//ol_ex[8].elapsed_time = elapsed_time.count();
-	//PostQueuedCompletionStatus(iocp_handle, 0, 7, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[8]));
+	ol_ex[8].command = SS_BOX_UPDATE;
+	ol_ex[8].elapsed_time = elapsed_time.count();
+	PostQueuedCompletionStatus(iocp_handle, 0, 8, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[8]));
+
+	
+
 }
 
 void ServerFramework::TimerSend(duration<float>& elapsed_time) {
@@ -1121,7 +1142,7 @@ void ServerFramework::TimerSend(duration<float>& elapsed_time) {
 		}
 		sender_time = 0;
 	}
-	if (is_item_gen) {
+	/*if (is_item_gen) {
 		item_gen_timer += elapsed_time.count();
 		if (item_gen_timer >= ITEM_GEN_TIME) {
 			ol_ex[8].command = SS_ITEM_GEN;
@@ -1129,5 +1150,5 @@ void ServerFramework::TimerSend(duration<float>& elapsed_time) {
 			item_gen_timer = 0.f;
 			is_item_gen = false;
 		}
-	}
+	}*/
 }
