@@ -47,7 +47,8 @@ class ServerFramework
 	OverlappedExtensionSet ol_ex[20];
 
 	Bullet bullets[MAX_PLAYER_SIZE][MAX_BULLET_SIZE] = { 0 };
-	Box boxes[MAX_PLAYER_SIZE][MAX_BOX_SIZE] = { 0 };
+	//Box boxes[MAX_PLAYER_SIZE][MAX_BOX_SIZE] = { 0 };
+	Box boxes[MAX_PLAYER_SIZE * MAX_BOX_SIZE] = { 0 };
 	mutex bullet_lock;
 	// 플레이어별 몇 번째 총알까지 발사했는지 저장하는 변수
 	int bullet_counter[MAX_PLAYER_SIZE] = { 0 };

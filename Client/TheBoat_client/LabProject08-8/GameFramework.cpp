@@ -316,7 +316,10 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 	case WM_LBUTTONDOWN:
 		::SetCapture(hWnd);
 		::GetCursorPos(&m_ptOldCursorPos);
-
+		for (int i = 0; i < 4; ++i) {
+			printf("룩 1 %f | %f | %f \n", m_pPlayer[i]->GetLook().x, m_pPlayer[i]->GetLook().y, m_pPlayer[i]->GetLook().z);
+		}
+		printf("=======================\n");
 		if (CShader::shootBullet == 0) {
 			CShader::shootBullet = 1;
 			sndPlaySound(L"../Assets/Sounds/RifleSound1.wav", SND_ASYNC);	// 사운드
@@ -325,7 +328,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		}
 		else
 			CShader::shootBullet = 0;
-
+		
 		//server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
 		server_mgr.SendPacket(CS_LEFT_BUTTON_DOWN, m_pPlayer[my_client_id]->GetLook());
 		break;
@@ -357,7 +360,11 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		//	mouse_moving_counter = 0;
 		//}
 		
+<<<<<<< HEAD
 		server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook()); // 마우스 룩벡터
+=======
+		server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
+>>>>>>> a1883e0b7baff6a6d3f1b67ce940b33fee896422
 
 		//mouse_moving_counter++;
 

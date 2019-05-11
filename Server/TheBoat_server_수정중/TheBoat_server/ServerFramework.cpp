@@ -115,7 +115,7 @@ void ServerFramework::InitServer() {
 	// Box OBB
 	for (int j = 0; j < MAX_PLAYER_SIZE; ++j) {
 		for (int i = 0; i < MAX_BOX_SIZE; ++i) {
-			boxes[j][i].SetOOBB(XMFLOAT3(boxes[j][i].x, boxes[j][i].y, boxes[j][i].z),
+			boxes[j * 10 + i].SetOOBB(XMFLOAT3(boxes[j * 10 + i].x, boxes[j * 10 + i].y, boxes[j * 10 + i].z),
 				XMFLOAT3(OBB_SCALE_BOX_X, OBB_SCALE_BOX_Y, OBB_SCALE_BOX_Z),
 				XMFLOAT4(0, 0, 0, 1));
 		}
@@ -490,7 +490,7 @@ void ServerFramework::GameStart() {
 	// BOXÀÇ OBB
 	for (int j = 0; j < MAX_PLAYER_SIZE; ++j) {
 		for (int i = 0; i < MAX_BOX_SIZE; ++i) {
-			boxes[j][i].SetOOBB(XMFLOAT3(boxes[j][i].x, boxes[j][i].y, boxes[j][i].z),
+			boxes[j * 10 + i].SetOOBB(XMFLOAT3(boxes[j * 10 + i].x, boxes[j * 10 + i].y, boxes[j * 10 + i].z),
 				XMFLOAT3(OBB_SCALE_BOX_X, OBB_SCALE_BOX_Y, OBB_SCALE_BOX_Z),
 				XMFLOAT4(0, 0, 0, 1));
 		}
@@ -966,22 +966,41 @@ void ServerFramework::WorkerThread() {
 
 				//clients[client_id].y = height_map->GetHeight(clients[client_id].x, clients[client_id].z);
 
-				boxes[box_player_id][box_counter[box_player_id]].x =
+				boxes[box_player_id  * 10 + box_counter[box_player_id]].x =
 					clients[box_player_id].x + 30 * clients[box_player_id].look_vec.x;
 
-				boxes[box_player_id][box_counter[box_player_id]].z =
+				boxes[box_player_id * 10 + box_counter[box_player_id]].z =
 					clients[box_player_id].z + 30 * clients[box_player_id].look_vec.z;
 
-				boxes[box_player_id][box_counter[box_player_id]].y =
-					height_map->GetHeight(boxes[box_player_id][box_counter[box_player_id]].x,
-						boxes[box_player_id][box_counter[box_player_id]].z + 200.f);
+				boxes[box_player_id * 10 + box_counter[box_player_id]].y =
+					height_map->GetHeight(boxes[box_player_id * 10 + box_counter[box_player_id]].x,
+						boxes[box_player_id * 10 + box_counter[box_player_id]].z + 200.f);
 
-				boxes[box_player_id][box_counter[box_player_id]].look_vec = clients[box_player_id].look_vec;
-				boxes[box_player_id][box_counter[box_player_id]].in_use = true;
+				boxes[box_player_id  * 10 + box_counter[box_player_id]].look_vec = clients[box_player_id].look_vec;
+				boxes[box_player_id  * 10 + box_counter[box_player_id]].in_use = true;
 				box_counter[box_player_id]++;
 				++clients[overlapped_buffer->box_player_id].box_count;
 
 				for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
+					for (int j = 0; j < MAX_BOX_SIZE; ++j) {
+						if (boxes[i * 10 + j].in_use) {
+							SC_PACKET_BOX packets;
+							packets.id = i;
+							packets.size = sizeof(SC_PACKET_BOX);
+							packets.type = SC_BOX_POS;
+							packets.box_id = j;
+							packets.x = boxes[i * 10 + j].x;
+							packets.y = boxes[i * 10 + j].y;
+							packets.z = boxes[i * 10 + j].z;
+
+								for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+									if (clients[k].in_use)
+										SendPacket(k, &packets);
+						}
+					}
+				}
+
+				/*for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 					for (int j = 0; j < MAX_BOX_SIZE; ++j) {
 						if (boxes[i][j].in_use) {
 							SC_PACKET_BOX packets;
@@ -992,13 +1011,14 @@ void ServerFramework::WorkerThread() {
 							packets.x = boxes[i][j].x;
 							packets.y = boxes[i][j].y;
 							packets.z = boxes[i][j].z;
+							
 
 							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
 								if (clients[k].in_use)
 									SendPacket(k, &packets);
 						}
 					}
-				}
+				}*/
 			}
 		}
 		else if (overlapped_buffer->command == SS_BOX_UPDATE) {
