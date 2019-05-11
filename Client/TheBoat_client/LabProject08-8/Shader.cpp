@@ -7320,10 +7320,9 @@ void CTreeShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 {
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
 	pTerrainCopy = pTerrain;
-	int xObjects = MAX_BOX_SIZE, yObjects = MAX_PLAYER_SIZE, zObjects = 1, i = 0;
+	int xObjects = MAX_BOX_SIZE, yObjects = 3, zObjects = 1, i = 0;
 
-	m_nObjects = (xObjects * 2 + 1) * (yObjects * 2 + 1) * (zObjects * 2 + 1);
-
+	m_nObjects = (xObjects ) * (yObjects ) * (zObjects );
 	CTexture *pTextures = new CTexture(6, RESOURCE_TEXTURE2DARRAY, 0);
 	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 0);
 	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 1);
@@ -7348,21 +7347,32 @@ void CTreeShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	pCubeMaterial->SetTexture(pTexture);
 	pCubeMaterial->SetReflection(1);
 #endif
-	CCubeMeshIlluminatedTextured *pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 20, 100, 20);
 
+	////
+	CMesh *soldier = NULL;
+	ID3D12RootSignature *a = NULL;
+	Model3D SoldierModel;
+	std::vector<D3D12_SHADER_RESOURCE_VIEW_DESC*> meshSRV;
+	std::vector<std::wstring> textureNameArray1;
+	//
+	LoadMD5Model(pd3dDevice, pd3dCommandList, a, L"../Assets/Model/Soldier_Mesh.MD5MESH", SoldierModel, meshSRV, textureNameArray1, soldier);
+	//CGameObject *TreeObject = NULL;
+
+	CCubeMeshIlluminatedTextured *pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 20, 100, 20);
+	
 	m_ppObjects = new CGameObject*[m_nObjects];
 
 	float fxPitch = 12.0f * 2.5f, fyPitch = 12.0f * 2.5f, fzPitch = 12.0f * 2.5f;
 
 	CRotatingObject *pRotatingObject = NULL;
-	for (int x = -xObjects; x <= xObjects; x++)
+	for (int x = 0; x < xObjects; x++)
 	{
-		for (int y = -yObjects; y <= yObjects; y++)
+		for (int y = 0; y < yObjects; y++)
 		{
-			for (int z = -zObjects; z <= zObjects; z++)
+			for (int z = 0; z < zObjects; z++)
 			{
 				pRotatingObject = new CRotatingObject(1);
-				pRotatingObject->SetMesh(0, pCubeMesh);
+				pRotatingObject->SetMesh(0, soldier);
 #ifndef _WITH_BATCH_MATERIAL
 				pRotatingObject->SetMaterial(pCubeMaterial);
 #endif
@@ -7398,6 +7408,7 @@ void CTreeShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 				else if (i == 27) xPosition = 504, zPosition = 1139;
 				else if (i == 28) xPosition = 602, zPosition = 1122;
 				else if (i == 29) xPosition = 851, zPosition = 984;
+				
 				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
 				pRotatingObject->SetPosition(xPosition, fHeight, zPosition);
 				pRotatingObject->SetRotationAxis(XMFLOAT3(0.0f, 0.0f, 0.0f));
@@ -7458,7 +7469,7 @@ void CTreeShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 	if (m_pMaterial) m_pMaterial->UpdateShaderVariables(pd3dCommandList);
 #endif
 
-	for (int j = 0; j < MAX_PLAYER_SIZE * MAX_BOX_SIZE; j++)
+	for (int j = 0; j < m_nObjects; j++)
 	{
 		if (m_ppObjects[j]) m_ppObjects[j]->Render(pd3dCommandList, pCamera);
 	}
