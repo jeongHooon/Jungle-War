@@ -46,6 +46,7 @@
 #define SS_ITEM_GEN				18	// Event
 #define SS_BOX_GENERATE			19
 #define SS_BOX_UPDATE			20
+#define SS_COLLISION_BB			21
 
 
 

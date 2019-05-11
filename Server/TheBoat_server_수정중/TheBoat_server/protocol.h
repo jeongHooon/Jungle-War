@@ -46,7 +46,7 @@
 #define SS_ITEM_GEN				18	// Event
 #define SS_BOX_GENERATE			19
 #define SS_BOX_UPDATE			20
-#define SS_COLLISION_BTOB		21
+#define SS_COLLISION_BB			21
 
 
 
@@ -132,6 +132,15 @@ struct SC_PACKET_COLLISION {
 	float x, y, z;
 	float hp;
 };
+
+struct SC_PACKET_COLLISION_BB {
+	BYTE size;
+	BYTE type;
+	WORD client_id;
+	float x, y, z;
+	float hp;
+};
+
 
 struct SC_PAKCET_CLIENT_BUILDING_COLLSION {
 
