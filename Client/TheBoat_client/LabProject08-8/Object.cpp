@@ -474,8 +474,8 @@ void CGameObject::LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, ID3D12Gra
 	LoadMD5Anim(L"../Assets/Model/RunLeft.MD5ANIM", NewMD5Model);//13
 	LoadMD5Anim(L"../Assets/Model/RunRight.MD5ANIM", NewMD5Model);//14
 	LoadMD5Anim(L"../Assets/Model/jumpM.MD5ANIM", NewMD5Model);//15
-	LoadMD5Anim(L"../Assets/Model/jump1.MD5ANIM", NewMD5Model);//7
-	LoadMD5Anim(L"../Assets/Model/jump2.MD5ANIM", NewMD5Model);//7
+	LoadMD5Anim(L"../Assets/Model/takedamage.MD5ANIM", NewMD5Model);//16
+	LoadMD5Anim(L"../Assets/Model/die.MD5ANIM", NewMD5Model);//17
 	LoadMD5Anim(L"../Assets/Model/jump3.MD5ANIM", NewMD5Model);//7
 	//LoadMD5Anim(L"../Assets/Model/CrouchShot.MD5ANIM", NewMD5Model); //15
 	//LoadMD5Anim(L"../Assets/Model/CrouchWalk.MD5ANIM", NewMD5Model); //16
