@@ -834,9 +834,11 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 				}
 
 			}
-			if (server_mgr.GetClientID() != my_client_id)
-				//m_pPlayer[server_mgr.GetClientID()]->SetLook(server_mgr.ReturnLookVector());
+			if (server_mgr.GetClientID() != my_client_id) {
+
+				m_pPlayer[server_mgr.GetClientID()]->SetLookTemp(server_mgr.ReturnLookVector());
 				m_pPlayer[server_mgr.GetClientID()]->SetLook(XMFLOAT3(0.0f,0.0f,1.0f));
+			}
 
 			m_pPlayer[server_mgr.GetClientID()]->SetPosition(server_mgr.ReturnPlayerPosStatus(server_mgr.GetClientID()).pos);
 			
@@ -953,8 +955,9 @@ void CGameFramework::BuildObjects()
 	m_pPlayer->Rotate(0.0f, -45.0f, 0.0f);
 #endif
 #ifdef _WITH_GUNSHIP_MODEL
-	for (int i = 0; i < MAX_PLAYER_SIZE; ++i)
+	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pPlayer[i]->SetPosition(XMFLOAT3(30 * i, -100.0f, 0.0f));
+	}
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		float xPosition;
 		float zPosition;
@@ -1111,8 +1114,9 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 		{
 			;
 		}
-		else if (i != my_client_id)
-			m_pPlayer[i]->rrrotate(XMConvertToDegrees(atan2(m_pPlayer[i]->LookTemp.z, m_pPlayer[i]->LookTemp.x)));
+		else if (i != my_client_id) {
+			m_pPlayer[i]->rrrotate((atan2(m_pPlayer[i]->LookTemp.z, m_pPlayer[i]->LookTemp.x)));
+		}
 	}
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pObject) m_pObject[i]->Animate(fTimeElapsed);
