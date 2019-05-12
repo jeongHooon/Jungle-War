@@ -856,7 +856,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 			for (int i = 0; i < MAX_PLAYER_SIZE*MAX_BOX_SIZE; ++i) {
 				//cout << server_mgr.GetBoxInuse(i) << " ";
 				if (server_mgr.GetBoxInuse(i) == 0) {
-					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(0, 0, 0));
+					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(0, 0, 0));	
 				}
 				else {
 					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(server_mgr.GetBox(i).x, server_mgr.GetBox(i).y, server_mgr.GetBox(i).z));

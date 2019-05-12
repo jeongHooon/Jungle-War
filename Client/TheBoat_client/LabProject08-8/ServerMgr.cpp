@@ -176,12 +176,12 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		//boxes[clients_id][recvd_box_id].x = packets->x;
 		//boxes[clients_id][recvd_box_id].y = packets->y;
 		//boxes[clients_id][recvd_box_id].z = packets->z;
-		boxes[packets->box_id].id = clients_id * MAX_BOX_SIZE + recvd_box_id;    // 클라 * 10(십의자리 인덱스) + 박스
-		boxes[packets->box_id].x = packets->x;
-		boxes[packets->box_id].y = packets->y;
-		boxes[packets->box_id].z = packets->z;
-		boxes[packets->box_id].hp = packets->hp;
-		boxes[packets->box_id].in_use = packets->in_use;
+		boxes[recvd_box_id].id = clients_id * MAX_BOX_SIZE;    // 클라 * 10(십의자리 인덱스) + 박스
+		boxes[recvd_box_id].x = packets->x;
+		boxes[recvd_box_id].y = packets->y;
+		boxes[recvd_box_id].z = packets->z;
+		boxes[recvd_box_id].hp = packets->hp;
+		boxes[recvd_box_id].in_use = packets->in_use;
 
 		//printf("[Bullet] %d 플레이어 총알 ID[%d] \n", clients_id, packets->bullet_id);
 		break;
@@ -207,12 +207,12 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		boxes[packets->box_id].in_use = packets->in_use;
 		box_is_collide = true;
 		box_hp[packets->box_id] = packets->hp;
-		if(box_hp[packets->box_id] < 0){
+		/*if(box_hp[packets->box_id] < 0){
 			boxes[packets->box_id].x = 0;
 			boxes[packets->box_id].z = 0;
-		}
-		printf("%d 플레이어의 충돌지점 x : %f, y : %f, z : %f, 체력 : %f \n", packets->client_id, collision_box_pos.x,
-			collision_box_pos.y, collision_box_pos.z, box_hp[packets->client_id]);
+		}*/
+		/*printf("%d 플레이어의 충돌지점 x : %f, y : %f, z : %f, 체력 : %f \n", packets->client_id, collision_box_pos.x,
+			collision_box_pos.y, collision_box_pos.z, box_hp[packets->client_id]);*/
 
 		break;
 	}

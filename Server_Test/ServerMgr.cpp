@@ -1,11 +1,13 @@
 #include "stdafx.h"
 #include "ServerMgr.h"
 
+// 나중에 바꿀 것
 #define maxuserIDLen 20
 #define maxPasswdLen 20
 
 char userid[20];
 char passwd[20];
+
 
 void ServerMgr::ErrorDisplay(const char* msg, int err_no) {
 	_wsetlocale(LC_ALL, L"korean");
@@ -29,10 +31,14 @@ void ServerMgr::IPInput() {
 	}
 }
 
+// 채팅에서 _tmain 부분
 void ServerMgr::Initialize(HWND& hwnd) {
 	WSADATA	wsadata;
 	WSAStartup(MAKEWORD(2, 2), &wsadata);
 
+
+	// 채팅에서 SOCKET toServer
+	// 여기서 SOCKET sock;
 	sock = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, 0);
 	int opt_val = TRUE;
 	setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*)&opt_val, sizeof(opt_val));
@@ -45,12 +51,15 @@ void ServerMgr::Initialize(HWND& hwnd) {
 	ServerAddr.sin_addr.s_addr = inet_addr(server_ip.c_str());
 
 	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//ServerAddr.sin_addr.s_addr = inet_addr("192.168.101.211");
+
+	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//ServerAddr.sin_addr.s_addr = inet_addr("110.5.195.3");
 
 	int retval = WSAConnect(sock, (sockaddr *)&ServerAddr, sizeof(ServerAddr), NULL, NULL, NULL, NULL);
 	if (retval == SOCKET_ERROR) {
 		printf("소켓 연결 안됨\n");
 	}
-
 	async_handle = hwnd;
 	WSAAsyncSelect(sock, async_handle, WM_SOCKET, FD_CONNECT | FD_CLOSE | FD_READ);
 
@@ -60,10 +69,29 @@ void ServerMgr::Initialize(HWND& hwnd) {
 	recv_wsabuf.len = CLIENT_BUF_SIZE;
 	printf("server_mgr 초기화\n");
 
-	cout << "id 입력 : ";
+	//-------------------------------여기----------------------
+//	SendLoginREQ(sock);
+	cout << "id를 입력해 주세요 ";
 	cin >> userid;
-	cout << "비밀번호 입력 : ";
+	cout << "암호를 입력해 주세요 ";
 	cin >> passwd;
+
+	// 명령어구조체(ProtoCommand)와 StrLogin 생성
+	char protoBuffer[1024];
+	ProtoCommand *cmd = (ProtoCommand *)protoBuffer;
+	StrLoginREQ *login = (StrLoginREQ *)cmd->data;
+
+	// 명령어 세팅
+	cmd->command = ComLoginREQ;	// 로그인 한다는 명령어
+	// 데이터 세팅
+	strncpy_s((char *)login->userid, maxUserIDLen, userid, maxUserIDLen);
+	login->userid[maxUserIDLen - 1] = '\0';
+
+	strncpy_s((char *)login->passwd, maxPasswdLen, passwd, maxPasswdLen);
+	login->passwd[maxPasswdLen - 1] = '\0';
+
+	send(sock, protoBuffer,
+		sizeof(ProtoCommand) + sizeof(StrLoginREQ), 0);
 }
 
 void ServerMgr::ReadPacket() {
@@ -108,55 +136,47 @@ int ServerMgr::GetClientID() {
 }
 
 // 내가 만든거
-void ServerMgr::SendLoginREQ(SOCKET toServer) {
+void ServerMgr::SendLoginREQ(SOCKET socket) {
 
-	
 }
 
 void ServerMgr::ProcessPacket(char* ptr) {
 	static bool first_time = true;
 	switch (ptr[1]) {
 	case SC_ENTER_PLAYER: {
-		SC_PACKET_ENTER_PLAYER* packets = reinterpret_cast<SC_PACKET_ENTER_PLAYER*>(ptr);
-
+		SC_PACKET_ENTER_PLAYER * packets = reinterpret_cast<SC_PACKET_ENTER_PLAYER*>(ptr);
 		if (first_set_id) {
 			clients_id = packets->id;
 			camera_id = packets->id;
 			first_set_id = false;
 		}
 
-		// strncpy_s((char *)client_myid[packets->id], 20, passwd, 20);
 		// strcpy는 문제가 생기면 한없이 복사하므로
 		// 제한된 길이만큼만 복사하는 strncpy가 안전
 		// 가장 끝자리에 '\0'을 붙여준다.
 
-		strncpy_s((char *)packets->userid, maxuserIDLen, userid, maxuserIDLen);
-		packets->userid[maxuserIDLen - 1] = '\0';
+		strncpy_s((char *)packets->userid, maxUserIDLen, userid, maxUserIDLen);
+		packets->userid[maxUserIDLen - 1] = '\0';
 
 		strncpy_s((char *)packets->passwd, maxPasswdLen, passwd, maxPasswdLen);
 		packets->passwd[maxPasswdLen - 1] = '\0';
-		/////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////
 
 		sc_vec_buff[packets->id].pos.x = packets->x;
 		sc_vec_buff[packets->id].pos.y = packets->y;
 		sc_vec_buff[packets->id].pos.z = packets->z;
 		client_hp[packets->id] = packets->hp;
 
-		//		client_myid[packets->id] = packets->userid;
-		//		strncpy_s((char *)client_myid[packets->id], maxuserIDLen, userid, maxuserIDLen);
-
 		printf("[SC_ENTER_PLAYER] : %d 플레이어 입장\n", packets->id);
 		printf("%d 플레이어의 id : %s \n", packets->id, packets->userid);
-		//		printf("%d 플레이어의 id : %s \n", packets->id, client_myid[packets->id]);
 		break;
 	}
-
 	case SC_BUILDING_GEN: {
 		SC_PACKET_ENTER_PLAYER* packets = reinterpret_cast<SC_PACKET_ENTER_PLAYER*>(ptr);
 		building_pos[packets->id].x = packets->x;
 		building_pos[packets->id].y = packets->y;
 		building_pos[packets->id].z = packets->z;
-	
+
 		building_extents[packets->id].x = packets->size_x;
 		building_extents[packets->id].y = packets->size_y;
 		building_extents[packets->id].z = packets->size_z;
@@ -188,16 +208,20 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		bullets[packets->bullet_id].x = packets->x;
 		bullets[packets->bullet_id].y = packets->y;
 		bullets[packets->bullet_id].z = packets->z;
+
+		//printf("[Bullet] %d 플레이어 총알 ID[%d] \n", clients_id, packets->bullet_id);
 		break;
 	}
 	case SC_BOX_POS: {
 		SC_PACKET_BOX* packets = reinterpret_cast<SC_PACKET_BOX*>(ptr);
 		clients_id = packets->id;
 		recvd_box_id = packets->box_id;
-		boxes[packets->box_id].id = clients_id * 10 + recvd_box_id;    // 클라 * 10(십의자리 인덱스) + 박스
+	
+		boxes[packets->box_id].id = clients_id * MAX_BOX_SIZE + recvd_box_id;    // 클라 * 10(십의자리 인덱스) + 박스
 		boxes[packets->box_id].x = packets->x;
 		boxes[packets->box_id].y = packets->y;
 		boxes[packets->box_id].z = packets->z;
+		boxes[packets->box_id].hp = packets->hp;
 
 		//printf("[Bullet] %d 플레이어 총알 ID[%d] \n", clients_id, packets->bullet_id);
 		break;
@@ -213,13 +237,32 @@ void ServerMgr::ProcessPacket(char* ptr) {
 			collision_pos.y, collision_pos.z, client_hp[packets->client_id]);
 		break;
 	}
+	case SC_COLLSION_BB: {
+		SC_PACKET_COLLISION_BB* packets = reinterpret_cast<SC_PACKET_COLLISION_BB*>(ptr);
+		collision_box_pos.x = packets->x;
+		collision_box_pos.y = packets->y;
+		collision_box_pos.z = packets->z;
+		box_is_collide = true;
+		box_hp[packets->box_id] = packets->hp;
+		if(box_hp[packets->box_id] < 0){
+			boxes[packets->box_id].x = 0;
+			boxes[packets->box_id].z = 0;
+		}
+		printf("%d 플레이어의 충돌지점 x : %f, y : %f, z : %f, 체력 : %f \n", packets->client_id, collision_box_pos.x,
+			collision_box_pos.y, collision_box_pos.z, box_hp[packets->client_id]);
+		break;
+	}
+
+
 	case SC_COLLSION_BDP: {	// building to player
 		SC_PACKET_COLLISION* packets = reinterpret_cast<SC_PACKET_COLLISION*>(ptr);
 		collision_pos.x = packets->x;
 		collision_pos.y = packets->y;
 		collision_pos.z = packets->z;
+		//client_hp[packets->client_id] = packets->hp;
 		printf("%d 플레이어 벽과 꽈당 [%f, %f, %f] \n", packets->client_id, collision_pos.x,
 			collision_pos.y, collision_pos.z, client_hp[packets->client_id]);
+
 		break;
 	}
 	case SC_ITEM_GEN: {
@@ -232,20 +275,17 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		is_item_gen = true;
 		break;
 	}
+	}
 }
-
-}
-
 float ServerMgr::GetPlayerHP(int p_n) {
 	return client_hp[p_n];
 }
 
-//여기-----------------------
+//여기-----------------
 char ServerMgr::GetPlayerID(int p_i) {
 	return client_myid[p_i];
 }
-//---------------------------
-
+//---------------------------------
 bool ServerMgr::IsItemGen() {
 	return is_item_gen;
 }
@@ -265,6 +305,7 @@ void ServerMgr::ReturnBuildingExtents(XMFLOAT3* input_building_extents) {
 		input_building_extents[i].z = building_extents[i].z;
 	}
 }
+
 
 XMFLOAT3 ServerMgr::ReturnItemPosition() {
 	is_item_gen = false;
@@ -457,10 +498,11 @@ void ServerMgr::SendPacket(int type, XMFLOAT3& xmvector) {
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
 	case CS_KEY_PRESS_Q:
-//		packet_buffer->type = CS_KEY_PRESS_Q;
-//		packet_buffer->box_pos = xmvector;
-//		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
+		packet_buffer->type = CS_KEY_PRESS_Q;
+		//packet_buffer->box_pos = xmvector; 오류 무엇?
+		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
+
 
 	case CS_KEY_RELEASE_UP:
 		packet_buffer->type = CS_KEY_RELEASE_UP;
@@ -541,7 +583,6 @@ void ServerMgr::ClientError() {
 
 SPlayer ServerMgr::ReturnPlayerPosStatus(int client_id) {
 	return sc_vec_buff[client_id];
-
 }
 
 XMFLOAT3 ServerMgr::ReturnLookVector() {
