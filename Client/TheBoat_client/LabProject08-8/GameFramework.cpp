@@ -40,7 +40,7 @@ CGameFramework::CGameFramework()
 		m_pPlayer[i] = NULL;
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		m_pObject[i] = NULL;
-	_tcscpy_s(m_pszFrameRate, _T("THE BOAT   ("));
+	_tcscpy_s(m_pszFrameRate, _T("Jungle War ("));
 
 	for (int i = 0; i < 4; ++i) itemUI[i] = false;
 }

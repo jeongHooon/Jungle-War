@@ -398,7 +398,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 			packets.player_status = 2;
 		}
 		else if (clients[cl_id].is_move_backward == false && clients[cl_id].is_move_foward == false &&
-			clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false) {
+			clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false && clients[cl_id].is_jump == false) {
 			packets.player_status = 0;
 		}
 		// 걷는 상황 // 가만 0 총 2 앞런 1 앞 3 뒤 4 오 5 왼 6  크라우치 7 오뒤 8 왼뒤 9 뒤런 10
@@ -812,22 +812,26 @@ void ServerFramework::WorkerThread() {
 						clients[i].x += clients[i].look_vec.z * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 					}
 				}
-				clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
+	//			clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
 
-				//if (!clients[i].is_jump) {
-				//   // 점프 아닐 시 y값 지정
-				//   clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
-				//}
-				//else if (clients[i].is_jump) {
-				//   //printf("점프가속도 %f\n", jumAcc);
-				//   clients[i].y += jumpAcc * (overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
-				//   jumpAcc -= 10.0f;
-				//   if (clients[i].y <= height_map->GetHeight(clients[i].x, clients[i].z)) {
-				//      clients[i].is_jump = false;
-				//      jumpAcc = 10.0f;
-				//      printf("점프 끝 ㅎㅇㅎㅇ\n");
-				//   }
-				//}
+
+
+				if (!clients[i].is_jump) {
+					// 점프 아닐 시 y값 지정
+					clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
+
+
+				}
+				else if (clients[i].is_jump) {
+					//	clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
+					clients[i].y += jumpAcc * (overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+					//jumpAcc += 10.0f;
+					jumpAcc -= 1.0f;
+					if (clients[i].y <= height_map->GetHeight(clients[i].x, clients[i].z)) {
+						clients[i].is_jump = false;
+						jumpAcc = 70.0f;
+					}
+				}
 
 				clients[i].client_lock.unlock();
 				clients[i].SetOOBB(XMFLOAT3(clients[i].x, clients[i].y, clients[i].z), XMFLOAT3(OBB_SCALE_PLAYER_X, OBB_SCALE_PLAYER_Y, OBB_SCALE_PLAYER_Z), XMFLOAT4(0, 0, 0, 1));
@@ -1065,7 +1069,7 @@ void ServerFramework::TimerSend(duration<float>& elapsed_time) {
 	sender_time += elapsed_time.count();
 	if (sender_time >= UPDATE_TIME) {   // 1/60 초마다 데이터 송신
 		for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-			if (clients[i].is_move_backward || clients[i].is_move_foward || clients[i].is_move_left || clients[i].is_move_right) {
+			if (clients[i].is_move_backward || clients[i].is_move_foward || clients[i].is_move_left || clients[i].is_move_right || clients[i].is_jump) {
 				ol_ex[i].command = SC_PLAYER_MOVE;
 				PostQueuedCompletionStatus(iocp_handle, 0, i, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[i]));
 			}
