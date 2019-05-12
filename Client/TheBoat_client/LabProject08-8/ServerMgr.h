@@ -33,7 +33,7 @@ class ServerMgr
 	DWORD in_packet_size = 0;
 	DWORD saved_packet_size = 0;
 
-	SPlayer sc_vec_buff[4];
+	SPlayer sc_vec_buff[MAX_PLAYER_SIZE];
 	XMFLOAT3 sc_look_vec;
 
 	XMFLOAT3 collision_pos;

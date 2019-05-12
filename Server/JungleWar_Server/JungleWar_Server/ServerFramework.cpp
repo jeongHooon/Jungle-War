@@ -205,6 +205,7 @@ void ServerFramework::AcceptPlayer() {
 	clients[client_id].is_crouch = false;
 	clients[client_id].is_q = false;
 	clients[client_id].is_jump = false;
+	clients[client_id].is_die = false;
 	ZeroMemory(&clients[client_id].overlapped_ex.wsa_over, sizeof(WSAOVERLAPPED));
 	clients[client_id].overlapped_ex.is_recv = true;
 	clients[client_id].overlapped_ex.wsabuf.buf = clients[client_id].overlapped_ex.io_buffer;
@@ -607,6 +608,9 @@ void ServerFramework::WorkerThread() {
 				else if (clients[client_id].is_jump) {
 					packets.player_status = 15;
 				}
+				else if (clients[client_id].is_die) {
+					packets.player_status = 17;
+				}
 				//packets.player_status = clients[client_id].is_running;
 				//printf("높이 : %f\n", clients[client_id].y);
 				for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
@@ -643,11 +647,11 @@ void ServerFramework::WorkerThread() {
 							clients[j].hp -= 25.f;
 							//
 							packets.hp = clients[j].hp;
-
-
+							
+							if ( clients[j].hp < 0.f) {
+								clients[j].is_die = true;
+							}
 							SendPacket(j, &packets);
-
-
 							printf("플레이어 - 총알 충돌 시작\n");
 							bullets[i].in_use = false;
 							break;
@@ -800,8 +804,8 @@ void ServerFramework::WorkerThread() {
 						clients[i].x += clients[i].look_vec.z * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 					}
 				}
-
 				clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
+
 				//if (!clients[i].is_jump) {
 				//	// 점프 아닐 시 y값 지정
 				//	clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
