@@ -608,9 +608,9 @@ void ServerFramework::WorkerThread() {
 				else if (clients[client_id].is_jump) {
 					packets.player_status = 15;
 				}
-				else if (clients[client_id].is_die) {
+				/*else if (clients[client_id].is_die) {
 					packets.player_status = 17;
-				}
+				}*/
 				//packets.player_status = clients[client_id].is_running;
 				//printf("높이 : %f\n", clients[client_id].y);
 				for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
@@ -648,9 +648,9 @@ void ServerFramework::WorkerThread() {
 							//
 							packets.hp = clients[j].hp;
 							
-							if ( clients[j].hp < 0.f) {
+							/*if ( clients[j].hp < 0.f) {
 								clients[j].is_die = true;
-							}
+							}*/
 							SendPacket(j, &packets);
 							printf("플레이어 - 총알 충돌 시작\n");
 							bullets[i].in_use = false;
@@ -1058,9 +1058,6 @@ void ServerFramework::Update(duration<float>& elapsed_time) {
 	ol_ex[8].command = SS_BOX_UPDATE;
 	ol_ex[8].elapsed_time = elapsed_time.count();
 	PostQueuedCompletionStatus(iocp_handle, 0, 8, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[8]));
-
-
-
 }
 
 void ServerFramework::TimerSend(duration<float>& elapsed_time) {
