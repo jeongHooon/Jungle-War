@@ -150,16 +150,16 @@ void ServerFramework::InitServer() {
 	}
 
 	//for (int i = 0; i < OBJECT_BUILDING; ++i) {
-	//	building[i] = new Building;
-	//	XMFLOAT3 input_buffer = XMFLOAT3{ static_cast<float>(rand() % 4000), 0.f, static_cast<float>(rand() % 4000) };
-	//	XMFLOAT3 input_extents = XMFLOAT3{ static_cast<float>(rand() % 50 + 10),static_cast<float>(rand() % 30 + 200), static_cast<float>(rand() % 50 + 10) };
-	//	input_buffer.y = height_map->GetHeight(input_buffer.x, input_buffer.z);
-	//	building[i]->SetPosition(input_buffer, input_extents);
-	//	//building[i]->SetObbExtents(i)
-	//	//printf("[%d]건물 위치 [%f, %f, %f] \n", i,
-	//	//	building[i]->GetPosition().x,
-	//	//	building[i]->GetPosition().y,
-	//	//	building[i]->GetPosition().z);
+	//   building[i] = new Building;
+	//   XMFLOAT3 input_buffer = XMFLOAT3{ static_cast<float>(rand() % 4000), 0.f, static_cast<float>(rand() % 4000) };
+	//   XMFLOAT3 input_extents = XMFLOAT3{ static_cast<float>(rand() % 50 + 10),static_cast<float>(rand() % 30 + 200), static_cast<float>(rand() % 50 + 10) };
+	//   input_buffer.y = height_map->GetHeight(input_buffer.x, input_buffer.z);
+	//   building[i]->SetPosition(input_buffer, input_extents);
+	//   //building[i]->SetObbExtents(i)
+	//   //printf("[%d]건물 위치 [%f, %f, %f] \n", i,
+	//   //   building[i]->GetPosition().x,
+	//   //   building[i]->GetPosition().y,
+	//   //   building[i]->GetPosition().z);
 	//}
 }
 
@@ -385,10 +385,10 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		// 플레이어가 뒤는 상황
 
 		//if (clients[cl_id].is_left_click) {
-		//	packets.player_status = 3;
+		//   packets.player_status = 3;
 		//}
 		//else if (clients[cl_id].is_running) {
-		//	packets.player_status = 2;
+		//   packets.player_status = 2;
 		//}
 		// 걷지도 뛰지도 않는 상황
 
@@ -569,12 +569,12 @@ void ServerFramework::WorkerThread() {
 			}
 		}
 		else if (overlapped_buffer->command == SC_PLAYER_MOVE) {
-			if (clients[client_id].in_use ) {
+			if (clients[client_id].in_use) {
 				SC_PACKET_POS packets;
 				packets.id = client_id;
 				packets.size = sizeof(SC_PACKET_POS);
 				packets.type = SC_POS;
-				
+
 				packets.x = clients[client_id].x;
 				packets.y = clients[client_id].y;
 				packets.z = clients[client_id].z;
@@ -609,7 +609,7 @@ void ServerFramework::WorkerThread() {
 					packets.player_status = 15;
 				}
 				/*else if (clients[client_id].is_die) {
-					packets.player_status = 17;
+				packets.player_status = 17;
 				}*/
 				//packets.player_status = clients[client_id].is_running;
 				//printf("높이 : %f\n", clients[client_id].y);
@@ -647,10 +647,11 @@ void ServerFramework::WorkerThread() {
 							clients[j].hp -= 25.f;
 							//
 							packets.hp = clients[j].hp;
-							
+
 							/*if ( clients[j].hp < 0.f) {
-								clients[j].is_die = true;
+							clients[j].is_die = true;
 							}*/
+
 							SendPacket(j, &packets);
 							printf("플레이어 - 총알 충돌 시작\n");
 							bullets[i].in_use = false;
@@ -668,7 +669,6 @@ void ServerFramework::WorkerThread() {
 							clients[j].hp -= 25.f;
 							//
 							packets.hp = clients[j].hp;
-
 
 							printf("플레이어 - 총알 충돌\n");
 							bullets[i].in_use = false;
@@ -707,8 +707,6 @@ void ServerFramework::WorkerThread() {
 							packets.box_id = j;
 
 							if (boxes[j].hp < 0) {
-								packets.x = 0.f;
-								packets.z = 0.f;
 								boxes[j].in_use = false;
 							}
 
@@ -728,6 +726,7 @@ void ServerFramework::WorkerThread() {
 							packets.x = boxes[j].bounding_box.Center.x;
 							packets.y = boxes[j].bounding_box.Center.y;
 							packets.z = boxes[j].bounding_box.Center.z;
+							packets.in_use = boxes[j].in_use;
 							packets.client_id = j;
 							//
 							boxes[j].hp -= 25.f;
@@ -736,8 +735,6 @@ void ServerFramework::WorkerThread() {
 
 							if (boxes[j].hp < 0) {
 								boxes[j].in_use = false;
-								packets.x = 0.f;
-								packets.z = 0.f;
 								packets.in_use = false;
 							}
 							else
@@ -807,22 +804,19 @@ void ServerFramework::WorkerThread() {
 				clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
 
 				//if (!clients[i].is_jump) {
-				//	// 점프 아닐 시 y값 지정
-				//	clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
+				//   // 점프 아닐 시 y값 지정
+				//   clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
 				//}
 				//else if (clients[i].is_jump) {
-				//	//printf("점프가속도 %f\n", jumAcc);
-				//	clients[i].y += jumpAcc * (overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
-				//	jumpAcc -= 10.0f;
-				//	if (clients[i].y <= height_map->GetHeight(clients[i].x, clients[i].z)) {
-				//		clients[i].is_jump = false;
-				//		jumpAcc = 10.0f;
-				//		printf("점프 끝 ㅎㅇㅎㅇ\n");
-				//	}
+				//   //printf("점프가속도 %f\n", jumAcc);
+				//   clients[i].y += jumpAcc * (overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+				//   jumpAcc -= 10.0f;
+				//   if (clients[i].y <= height_map->GetHeight(clients[i].x, clients[i].z)) {
+				//      clients[i].is_jump = false;
+				//      jumpAcc = 10.0f;
+				//      printf("점프 끝 ㅎㅇㅎㅇ\n");
+				//   }
 				//}
-
-
-
 
 				clients[i].client_lock.unlock();
 				clients[i].SetOOBB(XMFLOAT3(clients[i].x, clients[i].y, clients[i].z), XMFLOAT3(OBB_SCALE_PLAYER_X, OBB_SCALE_PLAYER_Y, OBB_SCALE_PLAYER_Z), XMFLOAT4(0, 0, 0, 1));
@@ -857,7 +851,6 @@ void ServerFramework::WorkerThread() {
 						bullets[i* MAX_BULLET_SIZE + j].y += METER_PER_PIXEL * bullets[i* MAX_BULLET_SIZE + j].look_vec.y * (AR_SPEED * overlapped_buffer->elapsed_time);
 						bullets[i* MAX_BULLET_SIZE + j].z += METER_PER_PIXEL * bullets[i* MAX_BULLET_SIZE + j].look_vec.z * (AR_SPEED * overlapped_buffer->elapsed_time);
 						//printf("총알 진행중\n");
-
 
 						bullets[i* MAX_BULLET_SIZE + j].SetOOBB(
 							XMFLOAT3(bullets[i* MAX_BULLET_SIZE + j].x, bullets[i* MAX_BULLET_SIZE + j].y, bullets[i* MAX_BULLET_SIZE + j].z),
@@ -932,7 +925,7 @@ void ServerFramework::WorkerThread() {
 							packets.id = i;
 							packets.size = sizeof(SC_PACKET_BOX);
 							packets.type = SC_BOX_POS;
-							packets.box_id = j;
+							packets.box_id = i * MAX_BOX_SIZE + j;
 							packets.hp = 125.f;
 							packets.in_use = true;
 							packets.x = boxes[i * MAX_BOX_SIZE + j].x;
@@ -992,7 +985,7 @@ void ServerFramework::WorkerThread() {
 		else {
 			delete overlapped_buffer;
 		}
-}
+	}
 }
 
 void ServerFramework::SendPacket(int cl_id, void* packet) {

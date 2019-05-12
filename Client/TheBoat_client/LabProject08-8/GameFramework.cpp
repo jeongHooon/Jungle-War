@@ -852,15 +852,15 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 				XMFLOAT3(server_mgr.GetBullet().x, server_mgr.GetBullet().y, server_mgr.GetBullet().z));
 			
 			for (int i = 0; i < MAX_PLAYER_SIZE*MAX_BOX_SIZE; ++i) {
-				//cout << server_mgr.GetBoxInuse(i) << " ";
+				cout << server_mgr.GetBoxInuse(i) << " ";
 				if (server_mgr.GetBoxInuse(i) == 0) {
-					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(0, 0, 0));
+					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(0, 0, 0));	
 				}
 				else {
 					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(server_mgr.GetBox(i).x, server_mgr.GetBox(i).y, server_mgr.GetBox(i).z));
 				}
 			}	//박스위치
-			//cout << endl;
+			cout << endl;
 			// 아이템생성
 			if (server_mgr.IsItemGen()) {
 				server_mgr.ReturnItemPosition();

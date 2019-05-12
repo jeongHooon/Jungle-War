@@ -36,7 +36,7 @@ void ServerMgr::Initialize(HWND& hwnd) {
 	// 아이피
 	ServerAddr.sin_addr.s_addr = inet_addr(server_ip.c_str());
 
-	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	//ServerAddr.sin_addr.s_addr = inet_addr("192.168.101.211");
 
 	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
@@ -176,12 +176,12 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		//boxes[clients_id][recvd_box_id].x = packets->x;
 		//boxes[clients_id][recvd_box_id].y = packets->y;
 		//boxes[clients_id][recvd_box_id].z = packets->z;
-		boxes[packets->box_id].id = clients_id * MAX_BOX_SIZE + recvd_box_id;    // 클라 * 10(십의자리 인덱스) + 박스
-		boxes[packets->box_id].x = packets->x;
-		boxes[packets->box_id].y = packets->y;
-		boxes[packets->box_id].z = packets->z;
-		boxes[packets->box_id].hp = packets->hp;
-		boxes[packets->box_id].in_use = packets->in_use;
+		boxes[recvd_box_id].id = clients_id * MAX_BOX_SIZE;    // 클라 * 10(십의자리 인덱스) + 박스
+		boxes[recvd_box_id].x = packets->x;
+		boxes[recvd_box_id].y = packets->y;
+		boxes[recvd_box_id].z = packets->z;
+		boxes[recvd_box_id].hp = packets->hp;
+		boxes[recvd_box_id].in_use = packets->in_use;
 
 		//printf("[Bullet] %d 플레이어 총알 ID[%d] \n", clients_id, packets->bullet_id);
 		break;
