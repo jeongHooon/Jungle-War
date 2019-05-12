@@ -2,7 +2,7 @@
 
 #define FRAME_BUFFER_WIDTH		800
 #define FRAME_BUFFER_HEIGHT		600
-#define NUM_OBJECT 1
+#define NUM_OBJECT 20
 #include "Timer.h"
 #include "Player.h"
 #include "Scene.h"
@@ -77,7 +77,6 @@ public:
 	static int					boxBound;
 	float						playerHp = 100;
 	int							gameMode = 1;
-	int							boxIndex = 0;
 
 private:
 	int							mainScreenSelect = 0;
