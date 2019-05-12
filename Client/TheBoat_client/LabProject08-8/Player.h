@@ -46,6 +46,7 @@ protected:
 	bool isShot = false;
 	float shotTime = 0.0f;
 public:
+	float time = 0;
 	void ActiveShot() { 
 		isShot = true; shotTime = 0.0f;
 		//if (isShot == false) {
@@ -123,6 +124,16 @@ public:
 	CAirplanePlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext=NULL, int nMeshes=1);
 	virtual ~CAirplanePlayer();
 
+	virtual CCamera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
+	/*virtual void OnPlayerUpdateCallback(float fTimeElapsed);
+	virtual void OnCameraUpdateCallback(float fTimeElapsed);*/
+};
+class CTreeObject : public CPlayer
+{
+public:
+	CTreeObject(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext = NULL, int nMeshes = 1);
+	virtual ~CTreeObject();
+	void Animate(float fTimeElapsed);
 	virtual CCamera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
 	/*virtual void OnPlayerUpdateCallback(float fTimeElapsed);
 	virtual void OnCameraUpdateCallback(float fTimeElapsed);*/

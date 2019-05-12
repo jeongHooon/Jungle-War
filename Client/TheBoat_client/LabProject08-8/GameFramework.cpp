@@ -846,18 +846,14 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 
 			m_pScene->m_ppShaders[2]->SetPosition(server_mgr.GetBullet().id,
 				XMFLOAT3(server_mgr.GetBullet().x, server_mgr.GetBullet().y, server_mgr.GetBullet().z));
-<<<<<<< HEAD
 			/*for (int i = 0; i < MAX_PLAYER_SIZE*MAX_BOX_SIZE; ++i) {
 				if(server_mgr.GetBoxHp(i)<1)
 					m_pScene->m_pBuildings->SetBoxPosition(server_mgr.GetBox().id, XMFLOAT3(server_mgr.GetBox().x, server_mgr.GetBox().y, server_mgr.GetBox().z));
 				else
 					m_pScene->m_pBuildings->SetBoxPosition(server_mgr.GetBox().id, XMFLOAT3(server_mgr.GetBox().x, server_mgr.GetBox().y, server_mgr.GetBox().z));
 			}*/	//내일
-=======
 
 			m_pScene->m_pBuildings->SetBoxPosition(server_mgr.GetBox().id, XMFLOAT3(server_mgr.GetBox().x, server_mgr.GetBox().y, server_mgr.GetBox().z));
-			if(server_mgr.g)
->>>>>>> 547e88079cd4fe7654fc1fcc9b9ca9773923c4a5
 			// 아이템생성
 			if (server_mgr.IsItemGen()) {
 				server_mgr.ReturnItemPosition();
@@ -926,7 +922,8 @@ void CGameFramework::BuildObjects()
 
 	for (int i = 0; i < 4; ++i)
 		m_pScene->m_pPlayer[i] = m_pPlayer[i] = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
-
+	for (int i = 0; i < NUM_OBJECT; ++i)
+		m_pScene->m_pObject[i] = m_pObject[i] = new CTreeObject(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
 	//m_pCamera = m_pPlayer[my_client_id]->GetCamera();
 
 #ifdef _WITH_APACHE_MODEL
@@ -936,6 +933,8 @@ void CGameFramework::BuildObjects()
 #ifdef _WITH_GUNSHIP_MODEL
 	for (int i = 0; i < 4; ++i)
 		m_pPlayer[i]->SetPosition(XMFLOAT3(30 * i, -100.0f, 0.0f));
+	for (int i = 0; i < NUM_OBJECT; ++i)
+		m_pObject[i]->SetPosition(XMFLOAT3(30 * i, 50.0f, 0.0f));
 	//	m_pPlayer->Rotate(0.0f, 0.0f, 0.0f);
 #endif
 
@@ -947,6 +946,8 @@ void CGameFramework::BuildObjects()
 
 	for (int i = 0; i < 4; ++i)
 		if (m_pPlayer[i]) m_pPlayer[i]->ReleaseUploadBuffers();
+	for (int i = 0; i < NUM_OBJECT; ++i)
+		if (m_pObject[i]) m_pObject[i]->ReleaseUploadBuffers();
 	if (m_pScene) m_pScene->ReleaseUploadBuffers();
 
 	m_GameTimer.Reset();
@@ -956,7 +957,8 @@ void CGameFramework::ReleaseObjects()
 {
 	for (int i = 0; i < 4; ++i)
 		if (m_pPlayer[i]) delete m_pPlayer[i];
-
+	for (int i = 0; i < NUM_OBJECT; ++i)
+		if (m_pObject[i]) delete m_pObject[i];
 	if (m_pScene) m_pScene->ReleaseObjects();
 	if (m_pScene) delete m_pScene;
 }
@@ -1033,6 +1035,9 @@ void CGameFramework::ProcessInput()
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pPlayer[i]->Update(m_GameTimer.GetTimeElapsed());
 	}
+	/*for (int i = 0; i < NUM_OBJECT; ++i) {
+		m_pObject[i]->Update(m_GameTimer.GetTimeElapsed());
+	}*/
 }
 
 void CGameFramework::AnimateObjects(CCamera *pCamera)
@@ -1040,6 +1045,8 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
 	for (int i = 0; i < 4; ++i)
 		if (m_pPlayer) m_pPlayer[i]->Animate(fTimeElapsed);
+	for (int i = 0; i < NUM_OBJECT; ++i)
+		if (m_pPlayer) m_pObject[i]->Animate(fTimeElapsed);
 	if (m_pScene) m_pScene->AnimateObjects(fTimeElapsed, pCamera);
 
 	bool dummy_bool;
@@ -1145,7 +1152,12 @@ void CGameFramework::FrameAdvance()
 		else
 			m_pPlayer[i]->Render(m_pd3dCommandList, m_pCamera);
 	}
-
+	for (int i = 0; i < NUM_OBJECT; ++i) {
+		m_pObject[i]->UpdateTransform(NULL);
+		if (i == my_client_id && m_pCamera->GetMode() == SPACESHIP_CAMERA);
+		else
+			 m_pObject[i]->Render(m_pd3dCommandList, m_pCamera);
+	}
 
 	
 	if (gameMode == 0) {

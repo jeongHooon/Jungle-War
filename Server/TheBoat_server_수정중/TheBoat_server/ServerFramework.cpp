@@ -758,7 +758,7 @@ void ServerFramework::WorkerThread() {
 							//
 							packets.hp = boxes[j].hp;
 							packets.box_id = j;
-																								
+
 							if (boxes[j].hp < 0) {
 								packets.x = 0.f;
 								packets.z = 0.f;
@@ -767,7 +767,7 @@ void ServerFramework::WorkerThread() {
 
 							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
 							{
-								if(clients[k].in_use)
+								if (clients[k].in_use)
 									SendPacket(k, &packets);
 							}
 							printf("박스 - 총알 충돌 시작\n");
@@ -775,6 +775,7 @@ void ServerFramework::WorkerThread() {
 							break;
 						}
 						case CONTAINS:
+						{
 							SC_PACKET_COLLISION_BB packets;
 							packets.size = sizeof(SC_PACKET_COLLISION_BB);
 							packets.type = SC_COLLSION_BB;
@@ -788,18 +789,16 @@ void ServerFramework::WorkerThread() {
 							packets.hp = boxes[j].hp;
 
 							if (boxes[j].hp < 0) {
-<<<<<<< HEAD
 								boxes[j].in_use = false;
 								packets.x = 0;
 								packets.z = 0;
 							}
-=======
+							else {
 								packets.x = 0.f;
 								packets.z = 0.f;
 								boxes[j].in_use = false;
 							}
 
->>>>>>> 547e88079cd4fe7654fc1fcc9b9ca9773923c4a5
 							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
 							{
 								if (clients[k].in_use)
@@ -809,58 +808,60 @@ void ServerFramework::WorkerThread() {
 							bullets[i].in_use = false;
 							break;
 						}
+
+						}
+						//if (bullets[j * MAX_BULLET_SIZE + i].in_use) {
+						//	//ContainmentType containType_rev = clients[j].bounding_box.Contains(bullets[j + 1][i].bounding_box);
+						//	ContainmentType containType_rev = bullets[j * MAX_BULLET_SIZE + i].bounding_box.Contains(clients[j + 1].bounding_box);
+						//	switch (containType_rev)
+						//	{
+						//	case DISJOINT:
+						//	{
+						//		//printf("충돌 안함ㅠ\n");
+						//		break;
+						//	}
+						//	case INTERSECTS:
+						//	{
+						//		SC_PACKET_COLLISION_BB packets;
+						//		packets.size = sizeof(SC_PACKET_COLLISION_BB);
+						//		packets.type = SC_COLLSION_BB;
+						//		packets.x = boxes[j + 1].bounding_box.Center.x;
+						//		packets.y = boxes[j + 1].bounding_box.Center.y;
+						//		packets.z = boxes[j + 1].bounding_box.Center.z;
+						//		packets.client_id = j + 1;
+						//		//
+						//		boxes[j + 1].hp -= 25.f;
+						//		//
+						//		packets.hp = boxes[j + 1].hp;
+
+
+						//		SendPacket(j, &packets);
+						//		SendPacket(j + 1, &packets);
+						//		bullets[j * MAX_BULLET_SIZE + i].in_use = false;
+						//		printf("충돌 시작\n");
+						//		break;
+						//	}
+						//	case CONTAINS:
+						//		SC_PACKET_COLLISION_BB packets;
+						//		packets.size = sizeof(SC_PACKET_COLLISION_BB);
+						//		packets.type = SC_COLLSION_BB;
+						//		packets.x = boxes[j + 1].bounding_box.Center.x;
+						//		packets.y = boxes[j + 1].bounding_box.Center.y;
+						//		packets.z = boxes[j + 1].bounding_box.Center.z;
+						//		packets.client_id = j + 1;
+						//		//
+						//		boxes[j + 1].hp -= 25.f;
+						//		//
+						//		packets.hp = boxes[j + 1].hp;
+
+						//		SendPacket(j, &packets);
+						//		SendPacket(j + 1, &packets);
+						//		bullets[j * MAX_BULLET_SIZE + i].in_use = false;
+						//		printf("충돌!!!!\n");
+						//		break;
+						//	}
+						//}
 					}
-					//if (bullets[j * MAX_BULLET_SIZE + i].in_use) {
-					//	//ContainmentType containType_rev = clients[j].bounding_box.Contains(bullets[j + 1][i].bounding_box);
-					//	ContainmentType containType_rev = bullets[j * MAX_BULLET_SIZE + i].bounding_box.Contains(clients[j + 1].bounding_box);
-					//	switch (containType_rev)
-					//	{
-					//	case DISJOINT:
-					//	{
-					//		//printf("충돌 안함ㅠ\n");
-					//		break;
-					//	}
-					//	case INTERSECTS:
-					//	{
-					//		SC_PACKET_COLLISION_BB packets;
-					//		packets.size = sizeof(SC_PACKET_COLLISION_BB);
-					//		packets.type = SC_COLLSION_BB;
-					//		packets.x = boxes[j + 1].bounding_box.Center.x;
-					//		packets.y = boxes[j + 1].bounding_box.Center.y;
-					//		packets.z = boxes[j + 1].bounding_box.Center.z;
-					//		packets.client_id = j + 1;
-					//		//
-					//		boxes[j + 1].hp -= 25.f;
-					//		//
-					//		packets.hp = boxes[j + 1].hp;
-
-
-					//		SendPacket(j, &packets);
-					//		SendPacket(j + 1, &packets);
-					//		bullets[j * MAX_BULLET_SIZE + i].in_use = false;
-					//		printf("충돌 시작\n");
-					//		break;
-					//	}
-					//	case CONTAINS:
-					//		SC_PACKET_COLLISION_BB packets;
-					//		packets.size = sizeof(SC_PACKET_COLLISION_BB);
-					//		packets.type = SC_COLLSION_BB;
-					//		packets.x = boxes[j + 1].bounding_box.Center.x;
-					//		packets.y = boxes[j + 1].bounding_box.Center.y;
-					//		packets.z = boxes[j + 1].bounding_box.Center.z;
-					//		packets.client_id = j + 1;
-					//		//
-					//		boxes[j + 1].hp -= 25.f;
-					//		//
-					//		packets.hp = boxes[j + 1].hp;
-
-					//		SendPacket(j, &packets);
-					//		SendPacket(j + 1, &packets);
-					//		bullets[j * MAX_BULLET_SIZE + i].in_use = false;
-					//		printf("충돌!!!!\n");
-					//		break;
-					//	}
-					//}
 				}
 			}
 		}
