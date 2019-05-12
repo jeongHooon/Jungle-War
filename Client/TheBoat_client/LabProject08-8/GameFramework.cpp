@@ -850,9 +850,9 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 				XMFLOAT3(server_mgr.GetBullet().x, server_mgr.GetBullet().y, server_mgr.GetBullet().z));
 			
 			for (int i = 0; i < MAX_PLAYER_SIZE*MAX_BOX_SIZE; ++i) {
-				if (server_mgr.GetBoxHp(i) < 0) {
+				if (server_mgr.GetBoxHp(i) < 1) {
 					m_pScene->m_pBuildings->SetBoxPosition(server_mgr.GetBox().id, XMFLOAT3(0, 0, 0));
-					//cout << server_mgr.GetBoxHp(i) << "     ";
+					cout << server_mgr.GetBoxHp(i) << "     ";
 				}
 				else
 					m_pScene->m_pBuildings->SetBoxPosition(server_mgr.GetBox().id, XMFLOAT3(server_mgr.GetBox().x, server_mgr.GetBox().y, server_mgr.GetBox().z));
@@ -1190,7 +1190,7 @@ void CGameFramework::FrameAdvance()
 			m_pScene->m_ppUIShaders[8]->Render(m_pd3dCommandList, m_pCamera);
 
 		m_pScene->m_ppUIShaders[10]->Render(m_pd3dCommandList, m_pCamera); // 총
-		m_pScene->m_ppUIShaders[11]->Render(m_pd3dCommandList, m_pCamera); // 총
+		//m_pScene->m_ppUIShaders[11]->Render(m_pd3dCommandList, m_pCamera); // 총
 
 		if (m_pCamera->GetMode() == SPACESHIP_CAMERA)
 			m_pScene->m_ppUIShaders[1]->Render(m_pd3dCommandList, m_pCamera);// UI렌더 바꿔야함.
