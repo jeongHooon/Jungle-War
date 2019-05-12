@@ -7,7 +7,7 @@
 #define MAX_PLAYER_SIZE		4
 #define	WM_SOCKET			WM_USER + 1
 #define CLIENT_BUF_SIZE		1024
-#define MAX_BULLET_SIZE			30
+#define MAX_BULLET_SIZE			40
 #define MAX_BOX_SIZE			10
 
 ////////////////////////////////
@@ -23,6 +23,8 @@
 #define WALK_SPEED				10.0f
 #define JUMP_SPEED              40.0f
 #define G_S 9.8f
+#define MAX_BOX_HP				50.0f;
+#define MAX_BULLET_DAMAGE		25.0f;
 
 // Object °¹¼ö Á¤¸® 
 #define OBJECT_BUILDING			10
