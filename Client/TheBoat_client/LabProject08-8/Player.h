@@ -57,6 +57,9 @@ public:
 		//}
 	}
 	CPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext=NULL, int nMeshes = 1);
+	
+	XMFLOAT3 LookTemp;
+	void SetLookTemp(XMFLOAT3 xmf3Look) { LookTemp = xmf3Look; }
 	virtual ~CPlayer();
 
 	XMFLOAT3 GetPosition() { return(m_xmf3Position); }
@@ -72,7 +75,7 @@ public:
 	void SetVelocity(const XMFLOAT3& xmf3Velocity) { m_xmf3Velocity = xmf3Velocity; }
 	void SetPosition(const XMFLOAT3& xmf3Position) { Move(XMFLOAT3(xmf3Position.x - m_xmf3Position.x, xmf3Position.y - m_xmf3Position.y, xmf3Position.z - m_xmf3Position.z), false); }
 	void SetLook(XMFLOAT3 xmf3Look) { m_xmf3Look = xmf3Look; }
-	void rrrotate();
+	void rrrotate(float deg);
 	const XMFLOAT3& GetVelocity() const { return(m_xmf3Velocity); }
 	float GetYaw() const { return(m_fYaw); }
 	float GetPitch() const { return(m_fPitch); }
