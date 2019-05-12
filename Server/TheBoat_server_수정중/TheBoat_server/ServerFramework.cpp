@@ -784,9 +784,11 @@ void ServerFramework::WorkerThread() {
 							//
 							packets.hp = boxes[j].hp;
 
-							if (boxes[j].hp < 0)
+							if (boxes[j].hp < 0) {
 								boxes[j].in_use = false;
-
+								packets.x = 0;
+								packets.z = 0;
+							}
 							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
 							{
 								if (clients[k].in_use)

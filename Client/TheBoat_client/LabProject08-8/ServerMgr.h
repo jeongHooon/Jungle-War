@@ -65,6 +65,7 @@ public:
 	void ErrorDisplay(const char* msg, int err_no);
 	int GetClientID();
 	int ReturnCameraID();
+	float GetBoxHp(int index) { return box_hp[index]; }
 	Bullet GetBullet();
 	Box GetBox();
 	SPlayer ReturnPlayerPosStatus(int client_id);
