@@ -150,6 +150,8 @@ struct Box {
 	bool is_send = false;
 	float x, y, z;
 
+	int boxindex;
+
 
 	XMFLOAT3 look_vec;
 	int type;

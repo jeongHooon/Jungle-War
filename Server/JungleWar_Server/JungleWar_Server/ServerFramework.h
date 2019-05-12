@@ -55,7 +55,7 @@ class ServerFramework
 	int bullet_counter[MAX_PLAYER_SIZE] = { 0 };
 	int box_counter[MAX_PLAYER_SIZE] = { 0 };
 
-
+	int box_count = 0;
 
 	// 플레이어마다 bullet 시간을 가지고 있다. 
 	float bullet_times[MAX_PLAYER_SIZE];

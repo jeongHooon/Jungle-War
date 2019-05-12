@@ -205,6 +205,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		collision_box_pos.y = packets->y;
 		collision_box_pos.z = packets->z;
 		boxes[packets->box_id].in_use = packets->in_use;
+		printf("ºÎµú ¹Ú½º %d\n", packets->box_id);
 		box_is_collide = true;
 		box_hp[packets->box_id] = packets->hp;
 		/*if(box_hp[packets->box_id] < 0){
