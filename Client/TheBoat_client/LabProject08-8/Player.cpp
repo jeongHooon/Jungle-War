@@ -307,6 +307,7 @@ void CPlayer::rrrotate(float deg)
 	/*time += 0.1;
 	if (time > 360.f)
 		time = 0;*/
+	//printf("%f \n", deg);
 	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), -deg/45, 0.0f);
 	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
 }
