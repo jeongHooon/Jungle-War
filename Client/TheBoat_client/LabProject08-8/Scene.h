@@ -76,7 +76,7 @@ public:
 	CHeightMapTerrain *GetTerrain() { return(m_pTerrain); }
 
 	CPlayer						*m_pPlayer[4];
-
+	CPlayer						*m_pObject[30];
 	static int					makeParticleIndex;
 	static bool					particleOn;
 	static XMFLOAT3				particlePosition;

@@ -2,7 +2,7 @@
 
 #define FRAME_BUFFER_WIDTH		800
 #define FRAME_BUFFER_HEIGHT		600
-
+#define NUM_OBJECT 5
 #include "Timer.h"
 #include "Player.h"
 #include "Scene.h"
@@ -72,6 +72,7 @@ public:
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
 	static CPlayer				*m_pPlayer[4];
+	static CPlayer				*m_pObject[NUM_OBJECT];
 	static CCamera				*m_pCamera;
 	static int					boxBound;
 	float						playerHp = 100;

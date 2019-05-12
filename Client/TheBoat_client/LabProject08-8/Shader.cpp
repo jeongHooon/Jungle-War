@@ -8,6 +8,7 @@
 #include "DDSTextureLoader12.h"
 
 CPlayer* CGameFramework::m_pPlayer[];
+CPlayer* CGameFramework::m_pObject[];
 int CGameFramework::my_client_id;
 XMFLOAT3 CGameFramework::buildingPos[];
 XMFLOAT3 CGameFramework::sendLook;
@@ -7365,22 +7366,18 @@ void CTreeShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 //#endif
 
 	////
-	
-
 	CCubeMeshIlluminatedTextured *pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 20, 100, 20);
 	
 	m_ppObjects = new CGameObject*[m_nObjects];
-
-	float fxPitch = 12.0f * 2.5f, fyPitch = 12.0f * 2.5f, fzPitch = 12.0f * 2.5f;
-
-	CRotatingObject *pRotatingObject = NULL;
+	
+	CGameObject *pRotatingObject = NULL;
 	for (int x = 0; x < xObjects; x++)
 	{
 		for (int y = 0; y < yObjects; y++)
 		{
 			for (int z = 0; z < zObjects; z++)
 			{
-				pRotatingObject = new CRotatingObject(1);
+				pRotatingObject = new CGameObject();
 				pRotatingObject->SetMesh(0, pCubeMesh);
 #ifndef _WITH_BATCH_MATERIAL
 				pRotatingObject->SetMaterial(pCubeMaterial);
@@ -7420,8 +7417,8 @@ void CTreeShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 				
 				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
 				pRotatingObject->SetPosition(xPosition, fHeight, zPosition);
-				pRotatingObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
-				pRotatingObject->SetRotationSpeed(10.0f * (i % 10)+3.0f);
+				//pRotatingObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
+				//pRotatingObject->SetRotationSpeed(10.0f * (i % 10)+3.0f);
 				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
 				pRotatingObject->SetScale(2.0, 15.0, 2.0);
 				m_ppObjects[i++] = pRotatingObject;
@@ -7480,6 +7477,6 @@ void CTreeShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 
 	for (int j = 0; j < m_nObjects; j++)
 	{
-		if (m_ppObjects[j]) m_ppObjects[j]->Render(pd3dCommandList, pCamera);
+		;//if (m_ppObjects[j]) m_ppObjects[j]->Render(pd3dCommandList, pCamera);
 	}
 }

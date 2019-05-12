@@ -512,6 +512,44 @@ void CGameObject::LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, ID3D12Gra
 
 	//if (m_pMaterial) SetMaterial(m_pMaterial);
 }
+void CGameObject::LoadFrameHierarchyFromFile2(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, UINT nFrame, ModelSubset ModelData)
+{
+	CMesh *pMesh = NULL;
+	CMesh *pMesh1 = NULL;
+
+	LoadObjectModel(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/WarriorMesh.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
+	//LoadMD5Anim(L"../Assets/Model/WarriorIdle.MD5ANIM", NewMD5Model);//0
+	SetMesh(0, pMesh);
+	//AddRef();
+	
+	m_pMaterial = new CMaterial();
+	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Model/warrior.dds", 0);
+
+	m_pMaterial->SetTexture(pTexture);
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	ID3D12Resource *pd3dcbResource = CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+
+	CTexturedShader *pShader = new CTexturedShader();
+	pShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
+	pShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	pShader->CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 1, 1);
+	pShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, 1, pd3dcbResource, ncbElementBytes);
+	pShader->CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, true);
+
+	SetCbvGPUDescriptorHandle(pShader->GetGPUCbvDescriptorStartHandle());
+
+	m_pMaterial->SetShader(pShader);
+
+	/*if (pMesh)
+	SetMesh(0, pMesh);
+	else
+	ResizeMeshes(0);*/
+
+	//if (m_pMaterial) SetMaterial(m_pMaterial);
+}
 void CGameObject::PrintFrameInfo(CGameObject *pGameObject, CGameObject *pParent)
 {
 	TCHAR pstrDebug[128] = { 0 };
@@ -537,7 +575,20 @@ void CGameObject::LoadGeometryFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsC
 
 #endif
 }
+void CGameObject::LoadGeometryFromFile2(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, TCHAR *pstrFileName)
+{
+	ModelSubset data;
+	LoadFrameHierarchyFromFile2(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0, data);
 
+
+
+#ifdef _WITH_DEBUG_FRAME_HIERARCHY
+	TCHAR pstrDebug[128] = { 0 };
+	_stprintf_s(pstrDebug, 128, _T("Frame Hierarchy\n"));
+	OutputDebugString(pstrDebug);
+
+#endif
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 CRotatingObject::CRotatingObject(int nMeshes)
