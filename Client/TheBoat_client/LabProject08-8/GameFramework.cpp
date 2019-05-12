@@ -38,7 +38,8 @@ CGameFramework::CGameFramework()
 	m_pScene = NULL;
 	for (int i = 0; i < 4; ++i)
 		m_pPlayer[i] = NULL;
-
+	for (int i = 0; i < NUM_OBJECT; ++i)
+		m_pObject[i] = NULL;
 	_tcscpy_s(m_pszFrameRate, _T("THE BOAT   ("));
 
 	for (int i = 0; i < 4; ++i) itemUI[i] = false;
@@ -834,7 +835,8 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 
 			}
 			if (server_mgr.GetClientID() != my_client_id)
-				m_pPlayer[server_mgr.GetClientID()]->SetLook(server_mgr.ReturnLookVector());
+				//m_pPlayer[server_mgr.GetClientID()]->SetLook(server_mgr.ReturnLookVector());
+				m_pPlayer[server_mgr.GetClientID()]->SetLook(XMFLOAT3(0.0f,0.0f,1.0f));
 
 			m_pPlayer[server_mgr.GetClientID()]->SetPosition(server_mgr.ReturnPlayerPosStatus(server_mgr.GetClientID()).pos);
 
@@ -1025,9 +1027,9 @@ void CGameFramework::ProcessInput()
 
 						;// m_pPlayer[my_client_id]->Rotate(cyDelta, 0.0f, -cxDelta);
 					else
-						for (int i = 0; i < MAX_PLAYER_SIZE; ++i) 
-						if (i == my_client_id)
-							m_pPlayer[my_client_id]->Rotate(cyDelta, cxDelta, 0.0f);
+						for (int i = 0; i < MAX_PLAYER_SIZE; ++i)
+							if (i == my_client_id)
+								m_pPlayer[i]->Rotate(cyDelta, cxDelta, 0.0f);
 				}
 				if (dwDirection) {
 					for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
@@ -1057,7 +1059,7 @@ void CGameFramework::ProcessInput()
 		}
 	}
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-		;//m_pPlayer[i]->Update(m_GameTimer.GetTimeElapsed());
+		m_pPlayer[i]->Update(m_GameTimer.GetTimeElapsed());
 	}
 	
 }
@@ -1067,15 +1069,15 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		if (m_pPlayer) m_pPlayer[i]->Animate(fTimeElapsed);
-	/*	if (i == my_client_id)
+		if (i == my_client_id)
 		{
-
+			;
 		}
 		else if (i != my_client_id)
-			m_pPlayer[i]->rrrotate();*/
+			m_pPlayer[i]->rrrotate();
 	}
 	for (int i = 0; i < NUM_OBJECT; ++i)
-		if (m_pPlayer) m_pObject[i]->Animate(fTimeElapsed);
+		if (m_pObject) m_pObject[i]->Animate(fTimeElapsed);
 
 	if (m_pScene) m_pScene->AnimateObjects(fTimeElapsed, pCamera);
 

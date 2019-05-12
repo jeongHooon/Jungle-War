@@ -33,11 +33,6 @@ void CPlayer::GetKeyInput(int key) {
 	animation_status = key;
 }
 
-void CPlayer::rrrotate()
-{
-	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), time, 0.0f);
-	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
-}
 
 CPlayer::~CPlayer()
 {
@@ -287,6 +282,14 @@ void CPlayer::Animate(float fTimeElapsed)
 
 	//XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), time, 0.0f);
 	//m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
+}
+void CPlayer::rrrotate()
+{
+	time += 0.1;
+	if (time > 360.f)
+		time = 0;
+	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), time, 0.0f);
+	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
 }
 
 void CPlayer::OnPrepareRender()
