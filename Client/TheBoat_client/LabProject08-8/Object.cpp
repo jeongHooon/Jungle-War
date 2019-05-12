@@ -516,15 +516,18 @@ void CGameObject::LoadFrameHierarchyFromFile2(ID3D12Device *pd3dDevice, ID3D12Gr
 {
 	CMesh *pMesh = NULL;
 	CMesh *pMesh1 = NULL;
+	//LoadMD5Model(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Soldier_Mesh.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
+	//LoadMD5Model(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Soldier_Rifle.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh1);
+	LoadMD5Model(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/WarriorMesh.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
 
-	LoadObjectModel(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/WarriorMesh.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
+	//LoadObjectModel(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Image/Trees/Trees3x3.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
 	//LoadMD5Anim(L"../Assets/Model/WarriorIdle.MD5ANIM", NewMD5Model);//0
 	SetMesh(0, pMesh);
 	//AddRef();
 	
 	m_pMaterial = new CMaterial();
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Model/warrior.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/warrior.dds", 0);
 
 	m_pMaterial->SetTexture(pTexture);
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
