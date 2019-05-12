@@ -194,7 +194,14 @@ void CPlayer::Update(float fTimeElapsed)
 	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
 	if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
 	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
-	if (nCurrentCameraMode == FIRST_PERSON_CAMERA) m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - 10 * GetLookVector().x, GetPosition().y + 25, GetPosition().z - 10 * GetLookVector().z));	// 1인칭 카메라 움직이기
+	if (nCurrentCameraMode == FIRST_PERSON_CAMERA) {
+		if(!isDie)
+			m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - 10 * GetLookVector().x, GetPosition().y + 25, GetPosition().z - 10 * GetLookVector().z));	// 1인칭 카메라 움직이기
+		else {
+			m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - 120 * GetLookVector().x, GetPosition().y + 80, GetPosition().z - 120 * GetLookVector().z));	// 1인칭 카메라 움직이기
+			//m_pCamera->SetLookAt(XMFLOAT3(0, -1, 0));
+		}
+	}
 	if (nCurrentCameraMode == SPACESHIP_CAMERA) m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, GetPosition().y + 15, GetPosition().z));	// 줌 카메라 움직이기
 
 	m_pCamera->RegenerateViewMatrix();
@@ -252,22 +259,30 @@ CCamera *CPlayer::OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode)
 
 void CPlayer::Animate(float fTimeElapsed)
 {
-	if (isShot) {
-		for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
-			UpdateMD5Model(NewMD5Model, fTimeElapsed *0.4, 2, m_ppMeshes[i], i);
-		shotTime += fTimeElapsed;
-	}
-	else if (isDie) {
-		for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
-			UpdateMD5Model(NewMD5Model, fTimeElapsed *0.4, 17, m_ppMeshes[i], i);
-	}
-	else {
-		for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
-			UpdateMD5Model(NewMD5Model, fTimeElapsed *0.4, animation_status, m_ppMeshes[i], i);
+	if (!gameend) {
+		if (isShot) {
+
+			for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
+				UpdateMD5Model(NewMD5Model, fTimeElapsed *0.4, 2, m_ppMeshes[i], i);
+			shotTime += fTimeElapsed;
+		}
+		else if (isDie) {
+			for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
+				UpdateMD5Model(NewMD5Model, fTimeElapsed *0.4, 17, m_ppMeshes[i], i);
+			dieTime += fTimeElapsed;
+		}
+		else {
+			for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
+				UpdateMD5Model(NewMD5Model, fTimeElapsed *0.4, animation_status, m_ppMeshes[i], i);
+		}
 	}
 	if (shotTime > 0.5) {
 		shotTime = 0.0f;
 		isShot = false;
+	}
+	if (dieTime > 2.0) {
+		shotTime = 0.0f;
+		gameend = true;
 	}
 
 	m_xmf4x4ToParentTransform._11 = m_xmf3Right.x; m_xmf4x4ToParentTransform._12 = m_xmf3Right.y; m_xmf4x4ToParentTransform._13 = m_xmf3Right.z;

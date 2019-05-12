@@ -204,6 +204,8 @@ void ServerFramework::AcceptPlayer() {
 	clients[client_id].is_running = false;
 	clients[client_id].is_crouch = false;
 	clients[client_id].is_q = false;
+	clients[client_id].is_jump = false;
+	clients[client_id].is_die = false;
 	ZeroMemory(&clients[client_id].overlapped_ex.wsa_over, sizeof(WSAOVERLAPPED));
 	clients[client_id].overlapped_ex.is_recv = true;
 	clients[client_id].overlapped_ex.wsabuf.buf = clients[client_id].overlapped_ex.io_buffer;
@@ -311,6 +313,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		clients[cl_id].is_running = true;
 		break;
 	case CS_KEY_PRESS_SPACE:
+		clients[cl_id].is_jump = true;
 		break;
 
 	case CS_KEY_RELEASE_UP:
@@ -337,6 +340,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		clients[cl_id].is_running = false;
 		break;
 	case CS_KEY_RELEASE_SPACE:
+		//clients[cl_id].is_jump = false;
 		break;
 
 	case CS_RIGHT_BUTTON_DOWN:
@@ -565,12 +569,12 @@ void ServerFramework::WorkerThread() {
 			}
 		}
 		else if (overlapped_buffer->command == SC_PLAYER_MOVE) {
-			if (clients[client_id].in_use) {
+			if (clients[client_id].in_use ) {
 				SC_PACKET_POS packets;
 				packets.id = client_id;
 				packets.size = sizeof(SC_PACKET_POS);
 				packets.type = SC_POS;
-				clients[client_id].y = height_map->GetHeight(clients[client_id].x, clients[client_id].z);
+				
 				packets.x = clients[client_id].x;
 				packets.y = clients[client_id].y;
 				packets.z = clients[client_id].z;
@@ -601,6 +605,12 @@ void ServerFramework::WorkerThread() {
 					printf("크라우치 들어왔어\n");
 					packets.player_status = 7;
 				}
+				else if (clients[client_id].is_jump) {
+					packets.player_status = 15;
+				}
+				/*else if (clients[client_id].is_die) {
+					packets.player_status = 17;
+				}*/
 				//packets.player_status = clients[client_id].is_running;
 				//printf("높이 : %f\n", clients[client_id].y);
 				for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
@@ -637,11 +647,11 @@ void ServerFramework::WorkerThread() {
 							clients[j].hp -= 25.f;
 							//
 							packets.hp = clients[j].hp;
-
-
+							
+							/*if ( clients[j].hp < 0.f) {
+								clients[j].is_die = true;
+							}*/
 							SendPacket(j, &packets);
-
-
 							printf("플레이어 - 총알 충돌 시작\n");
 							bullets[i].in_use = false;
 							break;
@@ -665,63 +675,6 @@ void ServerFramework::WorkerThread() {
 							break;
 						}
 					}
-					//if (bullets[j * MAX_BULLET_SIZE + i].in_use) {
-					//	//ContainmentType containType_rev = clients[j].bounding_box.Contains(bullets[j + 1][i].bounding_box);
-					//	ContainmentType containType_rev = bullets[j * MAX_BULLET_SIZE + i].bounding_box.Contains(clients[j + 1].bounding_box);
-					//	switch (containType_rev)
-					//	{
-					//	case DISJOINT:
-					//	{
-					//		//printf("충돌 안함ㅠ\n");
-					//		break;
-					//	}
-					//	case INTERSECTS:
-					//	{
-					//		SC_PACKET_COLLISION packets;
-					//		packets.size = sizeof(SC_PACKET_COLLISION);
-					//		packets.type = SC_COLLSION_PB;
-					//		packets.x = clients[j + 1].bounding_box.Center.x;
-					//		packets.y = clients[j + 1].bounding_box.Center.y;
-					//		packets.z = clients[j + 1].bounding_box.Center.z;
-					//		packets.client_id = j + 1;
-					//		//
-					//		clients[j + 1].hp -= 25.f;
-					//		//
-					//		packets.hp = clients[j + 1].hp;
-
-
-					//		for (int k = 0; k < MAX_PLAYER_SIZE; ++k) {
-					//			if (clients[k].in_use == true) {
-					//				SendPacket(k, &packets);
-					//			}
-					//		}
-					//		bullets[j * MAX_BULLET_SIZE + i].in_use = false;
-					//		printf("충돌 시작\n");
-					//		break;
-					//	}
-					//	case CONTAINS:
-					//		SC_PACKET_COLLISION packets;
-					//		packets.size = sizeof(SC_PACKET_COLLISION);
-					//		packets.type = SC_COLLSION_PB;
-					//		packets.x = clients[j + 1].bounding_box.Center.x;
-					//		packets.y = clients[j + 1].bounding_box.Center.y;
-					//		packets.z = clients[j + 1].bounding_box.Center.z;
-					//		packets.client_id = j + 1;
-					//		//
-					//		clients[j + 1].hp -= 25.f;
-					//		//
-					//		packets.hp = clients[j + 1].hp;
-
-					//		for (int k = 0; k < MAX_PLAYER_SIZE; ++k) {
-					//			if (clients[k].in_use == true) {
-					//				SendPacket(k, &packets);
-					//			}
-					//		}
-					//		bullets[j * MAX_BULLET_SIZE + i].in_use = false;
-					//		printf("충돌!!!!\n");
-					//		break;
-					//	}
-					//}
 				}
 			}
 		}
@@ -802,64 +755,15 @@ void ServerFramework::WorkerThread() {
 							break;
 						}
 					}
-				//if (bullets[j * MAX_BULLET_SIZE + i].in_use) {
-				//	//ContainmentType containType_rev = clients[j].bounding_box.Contains(bullets[j + 1][i].bounding_box);
-				//	ContainmentType containType_rev = bullets[j * MAX_BULLET_SIZE + i].bounding_box.Contains(clients[j + 1].bounding_box);
-				//	switch (containType_rev)
-				//	{
-				//	case DISJOINT:
-				//	{
-				//		//printf("충돌 안함ㅠ\n");
-				//		break;
-				//	}
-				//	case INTERSECTS:
-				//	{
-				//		SC_PACKET_COLLISION_BB packets;
-				//		packets.size = sizeof(SC_PACKET_COLLISION_BB);
-				//		packets.type = SC_COLLSION_BB;
-				//		packets.x = boxes[j + 1].bounding_box.Center.x;
-				//		packets.y = boxes[j + 1].bounding_box.Center.y;
-				//		packets.z = boxes[j + 1].bounding_box.Center.z;
-				//		packets.client_id = j + 1;
-				//		//
-				//		boxes[j + 1].hp -= 25.f;
-				//		//
-				//		packets.hp = boxes[j + 1].hp;
-
-
-				//		SendPacket(j, &packets);
-				//		SendPacket(j + 1, &packets);
-				//		bullets[j * MAX_BULLET_SIZE + i].in_use = false;
-				//		printf("충돌 시작\n");
-				//		break;
-				//	}
-				//	case CONTAINS:
-				//		SC_PACKET_COLLISION_BB packets;
-				//		packets.size = sizeof(SC_PACKET_COLLISION_BB);
-				//		packets.type = SC_COLLSION_BB;
-				//		packets.x = boxes[j + 1].bounding_box.Center.x;
-				//		packets.y = boxes[j + 1].bounding_box.Center.y;
-				//		packets.z = boxes[j + 1].bounding_box.Center.z;
-				//		packets.client_id = j + 1;
-				//		//
-				//		boxes[j + 1].hp -= 25.f;
-				//		//
-				//		packets.hp = boxes[j + 1].hp;
-
-				//		SendPacket(j, &packets);
-				//		SendPacket(j + 1, &packets);
-				//		bullets[j * MAX_BULLET_SIZE + i].in_use = false;
-				//		printf("충돌!!!!\n");
-				//		break;
-				//	}
-				//}
+				}
 			}
 		}
-	}
 		else if (overlapped_buffer->command == SS_PLAYER_POS_UPDATE) {
 			for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 				//client_lock.lock();
 				clients[i].client_lock.lock();
+
+
 				if (clients[i].is_move_foward) {
 					if (clients[i].is_running) {
 						clients[i].z += clients[i].look_vec.z * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
@@ -899,8 +803,27 @@ void ServerFramework::WorkerThread() {
 						clients[i].z += (-1) * clients[i].look_vec.x * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 						clients[i].x += clients[i].look_vec.z * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 					}
-
 				}
+				clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
+
+				//if (!clients[i].is_jump) {
+				//	// 점프 아닐 시 y값 지정
+				//	clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
+				//}
+				//else if (clients[i].is_jump) {
+				//	//printf("점프가속도 %f\n", jumAcc);
+				//	clients[i].y += jumpAcc * (overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+				//	jumpAcc -= 10.0f;
+				//	if (clients[i].y <= height_map->GetHeight(clients[i].x, clients[i].z)) {
+				//		clients[i].is_jump = false;
+				//		jumpAcc = 10.0f;
+				//		printf("점프 끝 ㅎㅇㅎㅇ\n");
+				//	}
+				//}
+
+
+
+
 				clients[i].client_lock.unlock();
 				clients[i].SetOOBB(XMFLOAT3(clients[i].x, clients[i].y, clients[i].z), XMFLOAT3(OBB_SCALE_PLAYER_X, OBB_SCALE_PLAYER_Y, OBB_SCALE_PLAYER_Z), XMFLOAT4(0, 0, 0, 1));
 			}
@@ -1135,9 +1058,6 @@ void ServerFramework::Update(duration<float>& elapsed_time) {
 	ol_ex[8].command = SS_BOX_UPDATE;
 	ol_ex[8].elapsed_time = elapsed_time.count();
 	PostQueuedCompletionStatus(iocp_handle, 0, 8, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[8]));
-
-
-
 }
 
 void ServerFramework::TimerSend(duration<float>& elapsed_time) {

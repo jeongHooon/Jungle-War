@@ -33,7 +33,7 @@ class ServerMgr
 	DWORD in_packet_size = 0;
 	DWORD saved_packet_size = 0;
 
-	SPlayer sc_vec_buff[4];
+	SPlayer sc_vec_buff[MAX_PLAYER_SIZE];
 	XMFLOAT3 sc_look_vec;
 
 	XMFLOAT3 collision_pos;
@@ -68,7 +68,7 @@ public:
 	float GetBoxHp(int index) { return box_hp[index]; }
 	bool GetBoxInuse(int index) { return boxes[index].in_use; }
 	Bullet GetBullet();
-	Box GetBox();
+	Box GetBox(int index);
 	SPlayer ReturnPlayerPosStatus(int client_id);
 	XMFLOAT3 ReturnLookVector();
 	XMFLOAT3 ReturnCollsionPosition(bool* is_collide);

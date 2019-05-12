@@ -96,6 +96,8 @@ struct Client {
 
 	bool is_jump;
 
+	bool is_die;
+
 	bool is_crouch;
 	float hp = 100.f;
 	int box_count = 0;

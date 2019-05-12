@@ -36,7 +36,7 @@ void ServerMgr::Initialize(HWND& hwnd) {
 	// 아이피
 	ServerAddr.sin_addr.s_addr = inet_addr(server_ip.c_str());
 
-	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	//ServerAddr.sin_addr.s_addr = inet_addr("192.168.101.211");
 
 	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
@@ -91,8 +91,8 @@ Bullet ServerMgr::GetBullet() {
 	return bullets[recvd_bullet_id];
 }
 
-Box ServerMgr::GetBox() {
-	return boxes[recvd_box_id];
+Box ServerMgr::GetBox(int index) {
+	return boxes[index];
 }
 
 int ServerMgr::GetClientID() {
@@ -193,6 +193,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		collision_pos.z = packets->z;
 		s_is_collide = true;
 		client_hp[packets->client_id] = packets->hp;
+		
 		printf("%d 플레이어의 충돌지점 x : %f, y : %f, z : %f, 체력 : %f \n", packets->client_id, collision_pos.x,
 			collision_pos.y, collision_pos.z, client_hp[packets->client_id]);
 
