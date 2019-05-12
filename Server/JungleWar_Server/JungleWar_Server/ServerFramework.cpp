@@ -89,17 +89,9 @@ void ServerFramework::InitServer() {
 	}
 	client_lock.unlock();
 
-	// OOBB 셋
+	// PLayer OOBB 셋
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		clients[i].SetOOBB(XMFLOAT3(clients[i].x, clients[i].y, clients[i].z), XMFLOAT3(OBB_SCALE_PLAYER_X, OBB_SCALE_PLAYER_Y, OBB_SCALE_PLAYER_Z), XMFLOAT4(0, 0, 0, 1));
-		//printf("[%d]플레이어의 OBB : [%f, %f, %f], Extents [%f, %f, %f] \n", i,
-		//	clients[i].bounding_box.Center.x,
-		//	clients[i].bounding_box.Center.y,
-		//	clients[i].bounding_box.Center.z,
-		//	clients[i].bounding_box.Extents.x,
-		//	clients[i].bounding_box.Extents.y,
-		//	clients[i].bounding_box.Extents.z
-		//	);
 		clients[i].bounding_box.Center;
 	}
 
@@ -425,7 +417,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		}
 		//////////////////////////
 		for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-			if (clients[i].in_use == true) {
+			if (clients[i].in_use) {
 				SendPacket(i, &packets);
 			}
 		}
