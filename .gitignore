@@ -5,6 +5,8 @@
 *.exe
 *.pdb
 *.ilk
+.db
 .vs/
 Debug/
 Release/
+ipch/
