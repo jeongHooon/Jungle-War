@@ -65,24 +65,24 @@ void ServerFramework::InitServer() {
 
 	client_lock.lock();
 
-	/*66
-	clients[0].x = 600.f;
-	clients[0].z = 850.f;
+	
+	clients[0].x = 731.f;
+	clients[0].z = 669.f;
 
-	clients[1].x = 1700.f;
-	clients[1].z = 1000.f;
+	clients[1].x = 386.f;
+	clients[1].z = 1345.f;
 
 	clients[2].x = 600.f;
 	clients[2].z = 950.f;
 
 	clients[3].x = 1700.f;
 	clients[3].z = 900.f;
-	*/
+	
 
 
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-		clients[i].x = 450.f;
-		clients[i].z = 800.f;
+		/*clients[i].x = 450.f;
+		clients[i].z = 800.f;*/
 
 		clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
 		clients[i].hp = 100.f;
@@ -315,7 +315,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		clients[cl_id].is_running = true;
 		break;
 	case CS_KEY_PRESS_SPACE:
-		clients[cl_id].is_jump = true;
+		//clients[cl_id].is_jump = true;
 		break;
 
 	case CS_KEY_RELEASE_UP:
@@ -398,7 +398,8 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 			packets.player_status = 2;
 		}
 		else if (clients[cl_id].is_move_backward == false && clients[cl_id].is_move_foward == false &&
-			clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false && clients[cl_id].is_jump == false) {
+			clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false) {
+			//clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false && clients[cl_id].is_jump == false) {
 			packets.player_status = 0;
 		}
 		// 걷는 상황 // 가만 0 총 2 앞런 1 앞 3 뒤 4 오 5 왼 6  크라우치 7 오뒤 8 왼뒤 9 뒤런 10
@@ -812,26 +813,26 @@ void ServerFramework::WorkerThread() {
 						clients[i].x += clients[i].look_vec.z * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 					}
 				}
-	//			clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
+				clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
 
 
 
-				if (!clients[i].is_jump) {
-					// 점프 아닐 시 y값 지정
-					clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
+				//if (!clients[i].is_jump) {
+				//	// 점프 아닐 시 y값 지정
+				//	clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
 
 
-				}
-				else if (clients[i].is_jump) {
-					//	clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
-					clients[i].y += jumpAcc * (overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
-					//jumpAcc += 10.0f;
-					jumpAcc -= 1.0f;
-					if (clients[i].y <= height_map->GetHeight(clients[i].x, clients[i].z)) {
-						clients[i].is_jump = false;
-						jumpAcc = 70.0f;
-					}
-				}
+				//}
+				//else if (clients[i].is_jump) {
+				//	//	clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
+				//	clients[i].y += jumpAcc * (overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+				//	//jumpAcc += 10.0f;
+				//	jumpAcc -= 1.0f;
+				//	if (clients[i].y <= height_map->GetHeight(clients[i].x, clients[i].z)) {
+				//		clients[i].is_jump = false;
+				//		jumpAcc = 70.0f;
+				//	}
+				//}
 
 				clients[i].client_lock.unlock();
 				clients[i].SetOOBB(XMFLOAT3(clients[i].x, clients[i].y, clients[i].z), XMFLOAT3(OBB_SCALE_PLAYER_X, OBB_SCALE_PLAYER_Y, OBB_SCALE_PLAYER_Z), XMFLOAT4(0, 0, 0, 1));
@@ -852,6 +853,10 @@ void ServerFramework::WorkerThread() {
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].z = clients[shooter_id].z + 10 * clients[shooter_id].look_vec.z;
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].look_vec = clients[shooter_id].look_vec;
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].in_use = true;
+
+			printf("%f         %f            %f\n", bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].x,
+				bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].y,
+				bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].z);
 			bullet_counter[shooter_id]++;
 			bullet_times[shooter_id] = 0;
 		}
