@@ -60,6 +60,7 @@ public:
 		//	isShot = false;
 		//}
 	}
+	void InitAnimation(int num) { NewMD5Model.animations[num].currAnimTime = 0; }
 	CPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext=NULL, int nMeshes = 1);
 	
 	XMFLOAT3 LookTemp;
