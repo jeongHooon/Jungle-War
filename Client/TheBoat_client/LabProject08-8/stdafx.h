@@ -95,7 +95,8 @@ extern ID3D12Resource *CreateTextureResourceFromFile(ID3D12Device *pd3dDevice, I
 #define RANDOM_COLOR	XMFLOAT4(rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX))
 
 #define EPSILON				1.0e-10f
-
+#define	PI		3.141592654
+#define	DEG(rad)	(rad*180.0/PI)
 inline bool IsZero(float fValue) { return((fabsf(fValue) < EPSILON)); }
 inline bool IsEqual(float fA, float fB) { return(::IsZero(fA - fB)); }
 inline float InverseSqrt(float fValue) { return 1.0f / sqrtf(fValue); }

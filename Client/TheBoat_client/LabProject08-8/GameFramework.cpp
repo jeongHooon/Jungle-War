@@ -923,12 +923,23 @@ void CGameFramework::BuildObjects()
 	m_pScene = new CScene();
 	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
 
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < MAX_PLAYER_SIZE; ++i)
 		m_pScene->m_pPlayer[i] = m_pPlayer[i] = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
 
-	for (int i = 0; i < NUM_OBJECT; ++i)
+	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pScene->m_pObject[i] = m_pObject[i] = new CTreeObject(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
+		if(i == 0)
+			m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 0.0f));
+		else if(i==1)
+			m_pObject[i]->SetLook(XMFLOAT3(1.0f, 0.0f, 0.0f));
+		else if(i==2)
+			m_pObject[i]->SetLook(XMFLOAT3(-1.0f, 0.0f, 0.0f));
+		else if(i==3)
+			m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
+		else if(i==4)
+			m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, -1.0f));
 
+	}
 
 	//m_pCamera = m_pPlayer[my_client_id]->GetCamera();
 
@@ -937,10 +948,10 @@ void CGameFramework::BuildObjects()
 	m_pPlayer->Rotate(0.0f, -45.0f, 0.0f);
 #endif
 #ifdef _WITH_GUNSHIP_MODEL
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < MAX_PLAYER_SIZE; ++i)
 		m_pPlayer[i]->SetPosition(XMFLOAT3(30 * i, -100.0f, 0.0f));
 	for (int i = 0; i < NUM_OBJECT; ++i)
-		m_pObject[i]->SetPosition(XMFLOAT3(30 * i, 50.0f, 0.0f));
+		m_pObject[i]->SetPosition(XMFLOAT3(700 * i, 300.0f, 1400.0f));
 
 #endif
 
@@ -950,7 +961,7 @@ void CGameFramework::BuildObjects()
 
 	WaitForGpuComplete();
 
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < MAX_PLAYER_SIZE; ++i)
 		if (m_pPlayer[i]) m_pPlayer[i]->ReleaseUploadBuffers();
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pObject[i]) m_pObject[i]->ReleaseUploadBuffers();
@@ -962,7 +973,7 @@ void CGameFramework::BuildObjects()
 
 void CGameFramework::ReleaseObjects()
 {
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < MAX_PLAYER_SIZE; ++i)
 		if (m_pPlayer[i]) delete m_pPlayer[i];
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pObject[i]) delete m_pObject[i];
@@ -1012,44 +1023,57 @@ void CGameFramework::ProcessInput()
 				{
 					if (pKeysBuffer[VK_RBUTTON] & 0xF0)
 
-						m_pPlayer[my_client_id]->Rotate(cyDelta, 0.0f, -cxDelta);
+						;// m_pPlayer[my_client_id]->Rotate(cyDelta, 0.0f, -cxDelta);
 					else
-						m_pPlayer[my_client_id]->Rotate(cyDelta, cxDelta, 0.0f);
+						for (int i = 0; i < MAX_PLAYER_SIZE; ++i) 
+						if (i == my_client_id)
+							m_pPlayer[my_client_id]->Rotate(cyDelta, cxDelta, 0.0f);
 				}
 				if (dwDirection) {
 					for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 						// 중요
-						m_pPlayer[i]->Move(dwDirection, WALK_SPEED * METER_PER_PIXEL * m_GameTimer.GetTimeElapsed(), false);
+						//if(i == my_client_id)
+							//m_pPlayer[i]->Move(dwDirection, WALK_SPEED * METER_PER_PIXEL * m_GameTimer.GetTimeElapsed(), false);
 					}
 				}
 			}
 			else {
 				if (cxDelta || cyDelta)
 				{
+					//줌 회전
 					if (pKeysBuffer[VK_RBUTTON] & 0xF0)
-						m_pPlayer[my_client_id]->Rotate(cyDelta, cxDelta, 0.0f);
+						 m_pPlayer[my_client_id]->Rotate(cyDelta, cxDelta, 0.0f);
 					else
-						m_pPlayer[my_client_id]->Rotate(cyDelta, 0.0f, -cxDelta);
+						;// m_pPlayer[my_client_id]->Rotate(cyDelta, 0.0f, -cxDelta);
 				}
 				if (dwDirection) {
 					for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 						// 중요
-						m_pPlayer[i]->Move(dwDirection, WALK_SPEED * METER_PER_PIXEL * m_GameTimer.GetTimeElapsed(), false);
+						//if (i == my_client_id)
+							//m_pPlayer[i]->Move(dwDirection, WALK_SPEED * METER_PER_PIXEL * m_GameTimer.GetTimeElapsed(), false);
 					}
 				}
 			}
 		}
 	}
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-		m_pPlayer[i]->Update(m_GameTimer.GetTimeElapsed());
+		;//m_pPlayer[i]->Update(m_GameTimer.GetTimeElapsed());
 	}
+	
 }
 
 void CGameFramework::AnimateObjects(CCamera *pCamera)
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		if (m_pPlayer) m_pPlayer[i]->Animate(fTimeElapsed);
+	/*	if (i == my_client_id)
+		{
+
+		}
+		else if (i != my_client_id)
+			m_pPlayer[i]->rrrotate();*/
+	}
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pPlayer) m_pObject[i]->Animate(fTimeElapsed);
 
@@ -1152,18 +1176,23 @@ void CGameFramework::FrameAdvance()
 #ifdef _WITH_PLAYER_TOP
 	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
 #endif
-	for (int i = 0; i < 4; ++i) {
+	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pPlayer[i]->UpdateTransform(NULL);
 		if (i == my_client_id && m_pCamera->GetMode() == SPACESHIP_CAMERA);
-		else
+		else {
+			/*if(i != my_client_id)
+				m_pPlayer[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));*/
 			m_pPlayer[i]->Render(m_pd3dCommandList, m_pCamera);
+		}
 	}
 
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pObject[i]->UpdateTransform(NULL);
 		if (i == my_client_id && m_pCamera->GetMode() == SPACESHIP_CAMERA);
-		else
+		else {
+			m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 			m_pObject[i]->Render(m_pd3dCommandList, m_pCamera);
+		}
 	}
 
 
