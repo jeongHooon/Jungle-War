@@ -60,6 +60,7 @@ class ServerFramework
 	// 플레이어마다 bullet 시간을 가지고 있다. 
 	float bullet_times[MAX_PLAYER_SIZE];
 
+	float jumpAcc = 1000.0f;
 	// Building obejct는 총 10개
 	//Object* object_mother;
 	Building* building[OBJECT_BUILDING];
