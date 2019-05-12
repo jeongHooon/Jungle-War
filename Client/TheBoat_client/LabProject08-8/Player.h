@@ -46,6 +46,8 @@ protected:
 	bool isShot = false;
 	float shotTime = 0.0f;
 public:
+	float dieTime = 0;
+	bool gameend = false;
 	bool isDie = false;
 	float time = 0;
 	void ActiveShot() { 
