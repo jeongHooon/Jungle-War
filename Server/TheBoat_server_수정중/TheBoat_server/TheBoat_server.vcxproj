@@ -23,11 +23,7 @@
     <ProjectGuid>{93A63F91-1286-4FD7-917E-65927C4DE51A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>TheBoatserver</RootNamespace>
-<<<<<<< HEAD
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
-=======
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
->>>>>>> 4d82a0688b117e5f3514b31954e1f0cf9cc69a1d
     <ProjectName>TheBoat_server_fix</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
