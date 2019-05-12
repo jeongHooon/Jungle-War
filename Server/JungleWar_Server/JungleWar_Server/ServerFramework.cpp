@@ -1074,7 +1074,7 @@ void ServerFramework::TimerSend(duration<float>& elapsed_time) {
 	sender_time += elapsed_time.count();
 	if (sender_time >= UPDATE_TIME) {   // 1/60 초마다 데이터 송신
 		for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-			if (clients[i].is_move_backward || clients[i].is_move_foward || clients[i].is_move_left || clients[i].is_move_right || clients[i].is_jump) {
+			if (clients[i].is_move_backward || clients[i].is_move_foward || clients[i].is_move_left || clients[i].is_move_right) {
 				ol_ex[i].command = SC_PLAYER_MOVE;
 				PostQueuedCompletionStatus(iocp_handle, 0, i, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[i]));
 			}
