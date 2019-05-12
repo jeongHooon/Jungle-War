@@ -33,6 +33,12 @@ void CPlayer::GetKeyInput(int key) {
 	animation_status = key;
 }
 
+void CPlayer::rrrotate()
+{
+	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), time, 0.0f);
+	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
+}
+
 CPlayer::~CPlayer()
 {
 	ReleaseShaderVariables();
@@ -130,6 +136,11 @@ void CPlayer::Rotate(float x, float y, float z)
 		m_pCamera->Rotate(x, y, z);
 		if (y != 0.0f)
 		{
+			
+			//XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), XMConvertToDegrees(atan2(m_pCamera->GetLookVector().x, m_pCamera->GetLookVector().z)), 0.0f);
+			//XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), 90.f, 0.0f);
+			//m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
+			///캐릭터 회전
 			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), XMConvertToRadians(y));
 			m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
 			m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
@@ -183,11 +194,12 @@ void CPlayer::Update(float fTimeElapsed)
 
 	if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
 
+	//카메라 위치 조정
 	DWORD nCurrentCameraMode = m_pCamera->GetMode();
 	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
 	if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
 	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
-	if (nCurrentCameraMode == FIRST_PERSON_CAMERA) m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - 15 * GetLookVector().x, GetPosition().y + 30, GetPosition().z - 15 * GetLookVector().z));	// 1인칭 카메라 움직이기
+	if (nCurrentCameraMode == FIRST_PERSON_CAMERA) m_pCamera->SetPosition(XMFLOAT3(GetPosition().x - 10 * GetLookVector().x, GetPosition().y + 25, GetPosition().z - 10 * GetLookVector().z));	// 1인칭 카메라 움직이기
 	if (nCurrentCameraMode == SPACESHIP_CAMERA) m_pCamera->SetPosition(XMFLOAT3(GetPosition().x, GetPosition().y + 15, GetPosition().z));	// 줌 카메라 움직이기
 
 	m_pCamera->RegenerateViewMatrix();
@@ -270,8 +282,11 @@ void CPlayer::Animate(float fTimeElapsed)
 	/*time += fTimeElapsed;
 	if(time> 360.f)
 		time = 0;*/
-	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), time, 0.0f);
-	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
+	//printf("%f \n", XMConvertToDegrees(atan2(m_pCamera->GetLookVector().z, m_pCamera->GetLookVector().x)));
+	//XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), XMConvertToDegrees(atan2(m_pCamera->GetLookVector().z, m_pCamera->GetLookVector().x)), 0.0f);
+
+	//XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), time, 0.0f);
+	//m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
 }
 
 void CPlayer::OnPrepareRender()
@@ -381,6 +396,11 @@ void CTreeObject::Animate(float fTimeElapsed)
 	m_xmf4x4ToParentTransform._41 = m_xmf3Position.x; m_xmf4x4ToParentTransform._42 = m_xmf3Position.y; m_xmf4x4ToParentTransform._43 = m_xmf3Position.z;
 
 	SetOOBB(GetPosition(), XMFLOAT3(5, 10, 5), XMFLOAT4(0, 0, 0, 1));
+	time += fTimeElapsed;
+	if (time > 360.f)
+		time = 0;
+	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), time, 0.0f);
+	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
 }
 
 CCamera *CTreeObject::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
