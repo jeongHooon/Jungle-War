@@ -30,6 +30,7 @@ void CPlayer::GetKeyInput(int key) {
 	//printf("[애니메이션] : %d키 누름\n",key);
 	
 	//check
+	//NewMD5Model.animations[key].currAnimTime = 0;
 	animation_status = key;
 }
 

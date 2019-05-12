@@ -439,6 +439,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(3);
+					m_pPlayer[my_client_id]->InitAnimation(3);
 					charstate = 3;
 				}
 				server_mgr.SendPacket(CS_KEY_PRESS_UP, m_pPlayer[my_client_id]->GetLook());

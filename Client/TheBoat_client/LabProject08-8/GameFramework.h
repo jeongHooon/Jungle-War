@@ -2,7 +2,7 @@
 
 #define FRAME_BUFFER_WIDTH		800
 #define FRAME_BUFFER_HEIGHT		600
-#define NUM_OBJECT 20
+#define NUM_OBJECT 1
 #include "Timer.h"
 #include "Player.h"
 #include "Scene.h"
