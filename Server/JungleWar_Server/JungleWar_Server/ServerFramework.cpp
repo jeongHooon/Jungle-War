@@ -749,12 +749,8 @@ void ServerFramework::WorkerThread() {
 								packets.box_id = boxes[j].boxindex;
 								boxes[j].in_use = false;
 							}
-<<<<<<< HEAD
 							packets.in_use = boxes[boxes[j].boxindex].in_use;
-=======
-							cout << endl << j << endl;
-							packets.in_use = boxes[j].in_use;
->>>>>>> 66de6ca75859bc1780a008f20e2b3d30cab403e0
+							//packets.in_use = boxes[j].in_use;
 
 							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
 							{
