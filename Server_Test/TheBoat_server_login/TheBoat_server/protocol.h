@@ -4,12 +4,15 @@
 #define SERVER_PORT			4000
 #define MAX_BUFFER_SIZE		4000
 #define MAX_PACKET_SIZE		256
-#define MAXIMUM_PLAYER		4
+#define MAX_PLAYER_SIZE		4
 #define	WM_SOCKET			WM_USER + 1
 #define CLIENT_BUF_SIZE		1024
 #define MAX_BULLET_SIZE			30
 #define MAX_BOX_SIZE			10
 
+#define maxUserIDLen		20
+#define maxpasswdLen		20
+#define maxChatSize			256
 // 본인 클라이언트 및 서버에서 사용
 //#define RUN_SPEED				2.78f
 // 위치 테스트용
@@ -21,6 +24,7 @@
 #define OBJECT_BUILDING			10
 
 // Server To Client
+#define SC_LOGIN_PLAYER			0
 #define SC_ENTER_PLAYER			1
 #define SC_POS					2
 #define SC_REMOVE_PLAYER		3
@@ -46,6 +50,7 @@
 #define SS_ITEM_GEN				18	// Event
 #define SS_BOX_GENERATE			19
 #define SS_BOX_UPDATE			20
+#define SS_COLLISION_BTOB		21
 
 
 
@@ -60,7 +65,6 @@
 #define CS_KEY_PRESS_2			8
 #define CS_LEFT_BUTTON_DOWN		9
 #define CS_RIGHT_BUTTON_DOWN	10
-
 
 #define CS_KEY_RELEASE_UP			11
 #define CS_KEY_RELEASE_DOWN			12
@@ -101,8 +105,9 @@ enum SubWeapons {
 struct SC_PACKET_ENTER_PLAYER {
 	BYTE size;
 	BYTE type;
-	WORD id;      
-	char myid[256];    // 입력받은 id
+	WORD id;
+	BYTE userid[maxUserIDLen];
+ 	BYTE passwd[maxpasswdLen];
 	float x, y, z;
 	// 건물 크기 보낼 때만 사용
 	float hp;
@@ -113,7 +118,8 @@ struct SC_PACKET_LOOCVEC {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	char myid[256];    // 입력받은 id
+	BYTE userid[maxUserIDLen];
+	BYTE passwd[maxpasswdLen];
 	DirectX::XMFLOAT3 look_vec;
 	int player_status;
 };
@@ -122,7 +128,6 @@ struct SC_PACKET_POS {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	char myid[256];    // 입력받은 id
 	int player_status;
 	float x, y, z;
 };
@@ -131,7 +136,6 @@ struct SC_PACKET_COLLISION {
 	BYTE size;
 	BYTE type;
 	WORD client_id;
-	char myid[256];    // 입력받은 id
 	float x, y, z;
 	float hp;
 };
@@ -146,14 +150,11 @@ struct SC_PACKET_ITEM_GEN {
 	float x, y, z;
 };
 
-
-
 // 클라->서버
 struct CS_PACKET_BIGGEST {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	char myid[256];    // 입력받은 id
 	bool player_in[4];
 };
 
@@ -161,7 +162,6 @@ struct CS_PACKET_KEYUP {
 	BYTE size;
 	BYTE type;
 	DirectX::XMFLOAT3 look_vec;
-	DirectX::XMFLOAT3 box_pos;
 };
 struct CS_PACKET_KEYDOWN {
 	BYTE size;
@@ -234,14 +234,12 @@ struct SC_PACKET_REMOVE_PLAYER {
 	BYTE size;
 	BYTE type;
 	WORD client_id;
-	char myid[256];    // 입력받은 id
 };
 
 struct SC_PACKET_BULLET {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	char myid[256];    // 입력받은 id
 	WORD bullet_id;
 	DirectX::XMFLOAT3 pos;
 
@@ -252,7 +250,6 @@ struct SC_PACKET_BOX {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	char myid[256];    // 입력받은 id
 	WORD box_id;
 	DirectX::XMFLOAT3 pos;
 

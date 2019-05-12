@@ -2,7 +2,6 @@
 
 class CHeightMapImage;
 class Building;
-class Tree;
 
 struct Event {
 	int id;
@@ -27,9 +26,9 @@ class ServerFramework
 
 	BOOL mode_selector;	// 
 
-	Client clients[MAXIMUM_PLAYER];
-	bool player_entered[4] = { 0 };
-	bool player_ready[4] = { 0 };		// Player_Ready 패킷 도착하면 해당 
+	Client clients[MAX_PLAYER_SIZE];
+	bool player_entered[MAX_PLAYER_SIZE] = { 0 };
+	bool player_ready[MAX_PLAYER_SIZE] = { 0 };		// Player_Ready 패킷 도착하면 해당 
 										// Client_ID에 맞는 배열 true
 										// 모두 true가 되면 게임 시작 함수 실행
 	CHeightMapImage* height_map;
@@ -44,23 +43,22 @@ class ServerFramework
 	// 5는 충돌체크전용
 	// 6은 플레이어 총알 생성
 	// 7은 총알 업데이트
+	// 8은 박스 업데이트
 	OverlappedExtensionSet ol_ex[20];
 
-	Bullet bullets[4][MAX_BULLET_SIZE] = { 0 };
+	Bullet bullets[MAX_PLAYER_SIZE][MAX_BULLET_SIZE] = { 0 };
+	Box boxes[MAX_PLAYER_SIZE][MAX_BOX_SIZE] = { 0 };
 	mutex bullet_lock;
 	// 플레이어별 몇 번째 총알까지 발사했는지 저장하는 변수
-	int bullet_counter[4] = { 0 };
-
+	int bullet_counter[MAX_PLAYER_SIZE] = { 0 };
+	int box_counter[MAX_PLAYER_SIZE] = { 0 };
 
 	// 플레이어마다 bullet 시간을 가지고 있다. 
-	float bullet_times[4];
+	float bullet_times[MAX_PLAYER_SIZE];
 
 	// Building obejct는 총 10개
 	//Object* object_mother;
 	Building* building[OBJECT_BUILDING];
-
-	//Tree
-	Tree* tree[OBJECT_TREE];
 
 public:
 	void InitServer();
@@ -73,7 +71,6 @@ public:
 	//void TimerFunc();
 	ServerFramework();
 	~ServerFramework();
-
 
 	// 이 함수는 ElaspsedTime을 측정하는 스레드 함수이다.
 	void TimerSend(duration<float>& elapsed_time);
