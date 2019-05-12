@@ -1168,12 +1168,6 @@ void CGameFramework::FrameAdvance()
 
 	m_pScene->Render(m_pd3dCommandList, m_pCamera);
 
-	////박스 사라지는부분
-	//for (int i = 0; i < MAX_PLAYER_SIZE * MAX_BOX_SIZE; ++i) {
-	//	if (server_mgr.GetBoxHp(i) < 10)
-	//		m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(-1000, -1000, -1000));
-	//}
-
 
 #ifdef _WITH_PLAYER_TOP
 	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);

@@ -632,9 +632,11 @@ void CObjectsShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 			}
 			XMFLOAT3 xmf3Result;
 			XMFLOAT3 xmf3Result_1;
+			XMFLOAT3 xmf3Result_2;
 			XMStoreFloat3(&xmf3Result_1, XMVector3Dot(XMLoadFloat3(&CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook()), XMLoadFloat3(&m_ppObjects[i]->look)));
 			XMStoreFloat3(&xmf3Result, XMVector3Dot(XMLoadFloat3(&m_ppObjects[i]->look), XMLoadFloat3(&xmf3Result_1))); 
-			CGameFramework::sendLook = XMFLOAT3(Vector3::Subtract(CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook(), xmf3Result));
+			xmf3Result_2 = XMFLOAT3(Vector3::Subtract(CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook(), xmf3Result));
+			CGameFramework::sendLook = XMFLOAT3(2 * xmf3Result_2.x / 3, 2 * xmf3Result_2.y / 3, 2 * xmf3Result_2.z / 3);
 			check = true;
 			break;
 		}
