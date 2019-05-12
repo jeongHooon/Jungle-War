@@ -706,9 +706,10 @@ void ServerFramework::WorkerThread() {
 							packets.hp = boxes[j].hp;
 							packets.box_id = j;
 
-							if (boxes[j].hp < 0) {
+							if (boxes[j].hp < 1) {
 								boxes[j].in_use = false;
 							}
+							packets.in_use = boxes[j].in_use;
 
 							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
 							{
@@ -732,22 +733,19 @@ void ServerFramework::WorkerThread() {
 							boxes[j].hp -= 25.f;
 							//
 							packets.hp = boxes[j].hp;
+							packets.box_id = j;
 
-							if (boxes[j].hp < 0) {
+							if (boxes[j].hp < 1) {
 								boxes[j].in_use = false;
-								packets.in_use = false;
 							}
-							else
-							{
-								packets.in_use = true;
-							}
+							packets.in_use = boxes[j].in_use;
 
 							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
 							{
 								if (clients[k].in_use)
 									SendPacket(k, &packets);
 							}
-							printf("박스 - 총알 충돌\n");
+							printf("박스 - 총알 충돌 시작\n");
 							bullets[i].in_use = false;
 							break;
 						}
