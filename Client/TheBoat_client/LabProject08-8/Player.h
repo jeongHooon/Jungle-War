@@ -50,6 +50,7 @@ public:
 	bool gameend = false;
 	bool isDie = false;
 	float time = 0;
+
 	void ActiveShot() { 
 		isShot = true; shotTime = 0.0f;
 		//if (isShot == false) {
