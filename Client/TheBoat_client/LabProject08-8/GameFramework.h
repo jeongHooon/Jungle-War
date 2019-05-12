@@ -76,7 +76,7 @@ public:
 	static CCamera				*m_pCamera;
 	static int					boxBound;
 	float						playerHp = 100;
-	bool						gameMode = true;
+	int							gameMode = 1;
 	int							boxIndex = 0;
 
 private:

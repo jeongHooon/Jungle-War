@@ -322,7 +322,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppUIShaders[25] = pNumShader9;
 
 	// 메인화면
-	m_nMainUIShaders = 3;
+	m_nMainUIShaders = 4;
 	m_ppMainUIShaders = new CShader*[m_nMainUIShaders];
 
 	CMainScreenShader *pMainScreenShader = new CMainScreenShader();
@@ -337,9 +337,14 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pMainScreenCheck_1Shader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pMainScreenCheck_1Shader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
+	CGameOverShader *pGameOverShader = new CGameOverShader();
+	pGameOverShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pGameOverShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
 	m_ppMainUIShaders[0] = pMainScreenShader;
 	m_ppMainUIShaders[1] = pMainScreenCheckShader;
 	m_ppMainUIShaders[2] = pMainScreenCheck_1Shader;
+	m_ppMainUIShaders[3] = pGameOverShader;
 
 	BuildLightsAndMaterials();
 

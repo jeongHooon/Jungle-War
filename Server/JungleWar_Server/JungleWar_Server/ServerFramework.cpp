@@ -89,17 +89,9 @@ void ServerFramework::InitServer() {
 	}
 	client_lock.unlock();
 
-	// OOBB 셋
+	// PLayer OOBB 셋
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		clients[i].SetOOBB(XMFLOAT3(clients[i].x, clients[i].y, clients[i].z), XMFLOAT3(OBB_SCALE_PLAYER_X, OBB_SCALE_PLAYER_Y, OBB_SCALE_PLAYER_Z), XMFLOAT4(0, 0, 0, 1));
-		//printf("[%d]플레이어의 OBB : [%f, %f, %f], Extents [%f, %f, %f] \n", i,
-		//	clients[i].bounding_box.Center.x,
-		//	clients[i].bounding_box.Center.y,
-		//	clients[i].bounding_box.Center.z,
-		//	clients[i].bounding_box.Extents.x,
-		//	clients[i].bounding_box.Extents.y,
-		//	clients[i].bounding_box.Extents.z
-		//	);
 		clients[i].bounding_box.Center;
 	}
 
@@ -115,9 +107,10 @@ void ServerFramework::InitServer() {
 	// Box OBB
 	for (int j = 0; j < MAX_PLAYER_SIZE; ++j) {
 		for (int i = 0; i < MAX_BOX_SIZE; ++i) {
-			boxes[j * 10 + i].SetOOBB(XMFLOAT3(boxes[j * MAX_BOX_SIZE + i].x, boxes[j * MAX_BOX_SIZE + i].y, boxes[j * MAX_BOX_SIZE + i].z),
+			boxes[j * MAX_BOX_SIZE + i].SetOOBB(XMFLOAT3(boxes[j * MAX_BOX_SIZE + i].x, boxes[j * MAX_BOX_SIZE + i].y, boxes[j * MAX_BOX_SIZE + i].z),
 				XMFLOAT3(OBB_SCALE_BOX_X, OBB_SCALE_BOX_Y, OBB_SCALE_BOX_Z),
 				XMFLOAT4(0, 0, 0, 1));
+			boxes[j * MAX_BOX_SIZE + i].hp = 125.f;
 		}
 	}
 
@@ -425,7 +418,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		}
 		//////////////////////////
 		for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-			if (clients[i].in_use == true) {
+			if (clients[i].in_use) {
 				SendPacket(i, &packets);
 			}
 		}
@@ -489,6 +482,7 @@ void ServerFramework::GameStart() {
 			boxes[j * MAX_BOX_SIZE + i].SetOOBB(XMFLOAT3(boxes[j * MAX_BOX_SIZE + i].x, boxes[j * MAX_BOX_SIZE + i].y, boxes[j * MAX_BOX_SIZE + i].z),
 				XMFLOAT3(OBB_SCALE_BOX_X, OBB_SCALE_BOX_Y, OBB_SCALE_BOX_Z),
 				XMFLOAT4(0, 0, 0, 1));
+			boxes[j * MAX_BOX_SIZE + i].hp = 125.f;
 		}
 	}
 
@@ -1011,6 +1005,7 @@ void ServerFramework::WorkerThread() {
 							packets.size = sizeof(SC_PACKET_BOX);
 							packets.type = SC_BOX_POS;
 							packets.box_id = j;
+							packets.hp = 125.f;
 							packets.x = boxes[i * MAX_BOX_SIZE + j].x;
 							packets.y = boxes[i * MAX_BOX_SIZE + j].y;
 							packets.z = boxes[i * MAX_BOX_SIZE + j].z;

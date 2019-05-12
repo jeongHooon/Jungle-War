@@ -49,7 +49,7 @@ using namespace std;
 #include <atomic>
 
 #include "d3dx12.h"
-#include "..\..\..\Server\TheBoat_server\TheBoat_server\protocol.h"
+#include "..\..\..\Server\JungleWar_Server\JungleWar_Server\protocol.h"
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
