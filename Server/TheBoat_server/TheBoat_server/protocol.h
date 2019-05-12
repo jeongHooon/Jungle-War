@@ -10,6 +10,11 @@
 #define MAX_BULLET_SIZE			30
 #define MAX_BOX_SIZE			10
 
+////////////////////////////////
+#define maxUserIDLen		20
+#define maxPasswdLen		20
+#define maxChatSize			256
+
 // 본인 클라이언트 및 서버에서 사용
 //#define RUN_SPEED				2.78f
 // 위치 테스트용
@@ -21,6 +26,7 @@
 #define OBJECT_BUILDING			10
 
 // Server To Client
+#define SC_LOGIN_PLAYER			0
 #define SC_ENTER_PLAYER			1
 #define SC_POS					2
 #define SC_REMOVE_PLAYER		3
@@ -103,6 +109,8 @@ struct SC_PACKET_ENTER_PLAYER {
 	BYTE size;
 	BYTE type;
 	WORD id;
+	BYTE userid[maxUserIDLen];
+	BYTE passwd[maxPasswdLen];
 	float x, y, z;
 	// 건물 크기 보낼 때만 사용
 	float hp;
@@ -113,6 +121,8 @@ struct SC_PACKET_LOOCVEC {
 	BYTE size;
 	BYTE type;
 	WORD id;
+	BYTE userid[maxUserIDLen];
+	BYTE passwd[maxPasswdLen];
 	DirectX::XMFLOAT3 look_vec;
 	int player_status;
 };
@@ -142,6 +152,7 @@ struct SC_PACKET_COLLISION_BB {
 	float hp;
 };
 
+
 struct SC_PAKCET_CLIENT_BUILDING_COLLSION {
 
 };
@@ -166,7 +177,6 @@ struct CS_PACKET_KEYUP {
 	BYTE size;
 	BYTE type;
 	DirectX::XMFLOAT3 look_vec;
-	DirectX::XMFLOAT3 box_pos;
 };
 struct CS_PACKET_KEYDOWN {
 	BYTE size;
