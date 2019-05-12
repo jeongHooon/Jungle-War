@@ -20,7 +20,7 @@ class ServerMgr
 	Bullet bullets[MAX_BULLET_SIZE] = { 0 };
 	int recvd_bullet_id = 0;
 
-	Box boxes[MAX_BOX_SIZE] = { 0 };
+	Box boxes[MAX_BOX_SIZE*MAX_PLAYER_SIZE] = { 0 };
 	int recvd_box_id = 0;
 
 	bool first_set_id = true;
