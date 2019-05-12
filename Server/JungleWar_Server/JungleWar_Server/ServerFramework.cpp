@@ -610,9 +610,9 @@ void ServerFramework::WorkerThread() {
 					printf("크라우치 들어왔어\n");
 					packets.player_status = 7;
 				}
-				else if (clients[client_id].is_jump) {
+				/*else if (clients[client_id].is_jump) {
 					packets.player_status = 15;
-				}
+				}*/
 				/*else if (clients[client_id].is_die) {
 				packets.player_status = 17;
 				}*/
@@ -854,9 +854,9 @@ void ServerFramework::WorkerThread() {
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].look_vec = clients[shooter_id].look_vec;
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].in_use = true;
 
-			printf("%f         %f            %f\n", bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].x,
+			/*printf("%f         %f            %f\n", bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].x,
 				bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].y,
-				bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].z);
+				bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].z);*/
 			bullet_counter[shooter_id]++;
 			bullet_times[shooter_id] = 0;
 		}
@@ -1074,7 +1074,7 @@ void ServerFramework::TimerSend(duration<float>& elapsed_time) {
 	sender_time += elapsed_time.count();
 	if (sender_time >= UPDATE_TIME) {   // 1/60 초마다 데이터 송신
 		for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-			if (clients[i].is_move_backward || clients[i].is_move_foward || clients[i].is_move_left || clients[i].is_move_right || clients[i].is_jump) {
+			if (clients[i].is_move_backward || clients[i].is_move_foward || clients[i].is_move_left || clients[i].is_move_right) {
 				ol_ex[i].command = SC_PLAYER_MOVE;
 				PostQueuedCompletionStatus(iocp_handle, 0, i, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[i]));
 			}

@@ -838,7 +838,6 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 			if (server_mgr.GetClientID() != my_client_id) {
 
 				m_pPlayer[server_mgr.GetClientID()]->SetLookTemp(server_mgr.ReturnLookVector());
-				m_pPlayer[server_mgr.GetClientID()]->SetLook(XMFLOAT3(0.0f,0.0f,1.0f));
 			}
 
 			m_pPlayer[server_mgr.GetClientID()]->SetPosition(server_mgr.ReturnPlayerPosStatus(server_mgr.GetClientID()).pos);
@@ -956,6 +955,9 @@ void CGameFramework::BuildObjects()
 #ifdef _WITH_GUNSHIP_MODEL
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pPlayer[i]->SetPosition(XMFLOAT3(30 * i, -100.0f, 0.0f));
+		if(i!=my_client_id)
+			m_pPlayer[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
+
 	}
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		float xPosition;
