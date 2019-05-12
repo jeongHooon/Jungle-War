@@ -852,7 +852,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 				XMFLOAT3(server_mgr.GetBullet().x, server_mgr.GetBullet().y, server_mgr.GetBullet().z));
 			
 			for (int i = 0; i < MAX_PLAYER_SIZE*MAX_BOX_SIZE; ++i) {
-				if (server_mgr.GetBoxHp(i) < 1) {
+				if (server_mgr.GetBoxHp(i) < 0) {
 					m_pScene->m_pBuildings->SetBoxPosition(server_mgr.GetBox().id, XMFLOAT3(0, 0, 0));
 					//cout << server_mgr.GetBoxHp(i) << "     ";
 				}
@@ -1241,6 +1241,8 @@ void CGameFramework::FrameAdvance()
 		
 	}
 	
+	if (playerHp < 1)
+		gameMode = 2;
 	if(gameMode == 2)
 		m_pScene->m_ppMainUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//게임오버 화면
 	// 렌더
