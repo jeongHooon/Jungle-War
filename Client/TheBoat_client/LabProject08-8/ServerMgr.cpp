@@ -202,6 +202,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		collision_box_pos.y = packets->y;
 		collision_box_pos.z = packets->z;
 		box_is_collide = true;
+		boe
 		box_hp[packets->box_id] = packets->hp;
 		if(box_hp[packets->box_id] < 0){
 			boxes[packets->box_id].x = 0;
