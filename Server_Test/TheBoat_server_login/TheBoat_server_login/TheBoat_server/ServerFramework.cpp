@@ -142,6 +142,7 @@ void ServerFramework::AcceptPlayer() {
 	c_addr.sin_addr.s_addr = INADDR_ANY;
 	int addr_len = sizeof(SOCKADDR_IN);
 
+
 	int new_key = -1;
 	auto client_socket = WSAAccept(listen_socket, reinterpret_cast<SOCKADDR*>(&c_addr), &addr_len, NULL, NULL);
 	// Nagle알고리즘
@@ -152,6 +153,8 @@ void ServerFramework::AcceptPlayer() {
 		inet_ntoa(c_addr.sin_addr), ntohs(c_addr.sin_port));
 
 	int client_id = -1;
+
+	
 
 	client_lock.lock();
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
@@ -165,8 +168,11 @@ void ServerFramework::AcceptPlayer() {
 	if (client_id == -1) {
 		printf("최대 유저 초과\n");
 	}
+
 	printf("[%d] 플레이어 입장\n", client_id);
+
 	client_lock.lock();
+	
 	clients[client_id].s = client_socket;
 	clients[client_id].ar_mag = 0;
 	clients[client_id].sub_mag = 0;
@@ -195,18 +201,20 @@ void ServerFramework::AcceptPlayer() {
 		&flag, &clients[client_id].overlapped_ex.wsa_over, NULL);
 
 	// 플레이어 입장했다고 패킷 보내줘야함.
-	// 이 정보에는 플레이어의 초기 위치정보도 포함되어야 한다. 
+	// 이 정보에는 플레이어의 초기 위치정보도 포함되어야 한다.
 	SC_PACKET_ENTER_PLAYER packet;
 	packet.id = client_id;
 	packet.size = sizeof(SC_PACKET_ENTER_PLAYER);
 	packet.type = SC_ENTER_PLAYER;
-
+	///////////////////////////////////////////////////////////////
+//	strncpy_s((char *)packet.userid, 20, clients[client_id].myid, 20);
 
 	packet.hp = clients[client_id].hp;
 	packet.x = clients[client_id].x;
 	packet.y = clients[client_id].y;
 	packet.z = clients[client_id].z;
 	SendPacket(client_id, &packet);
+
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		if (clients[i].in_use && (client_id != i)) {
 			printf("%d 플레이어 입장 정보 전송\n", i);
@@ -245,8 +253,10 @@ void ServerFramework::AcceptPlayer() {
 				packet.x = clients[i].x;
 				packet.y = clients[i].y;
 				packet.z = clients[i].z;
+//				strncpy_s((char *)packet.userid, 20, clients[client_id].myid, 20);
 				SendPacket(client_id, &packet);
 				printf("%d에게 %d의 정보를 보낸다\n", client_id, i);
+				printf("오오 %s", clients[client_id].myid);
 			}
 		}
 	}
@@ -1028,7 +1038,6 @@ void ServerFramework::DisconnectPlayer(int cl_id) {
 			SendPacket(i, &packet);
 		}
 	}
-
 }
 
 void ServerFramework::Update(duration<float>& elapsed_time) {
