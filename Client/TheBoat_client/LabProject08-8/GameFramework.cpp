@@ -834,12 +834,9 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 				}
 
 			}
-			///////////////////////////////********************************* 캐릭터 종잇장 룩벡터 받아오지 않기//////////////////////////
-			if (server_mgr.GetClientID() != my_client_id) {
-
-				m_pPlayer[server_mgr.GetClientID()]->SetLookTemp(server_mgr.ReturnLookVector());
+			if (server_mgr.GetClientID() != my_client_id)
+				//m_pPlayer[server_mgr.GetClientID()]->SetLook(server_mgr.ReturnLookVector());
 				m_pPlayer[server_mgr.GetClientID()]->SetLook(XMFLOAT3(0.0f,0.0f,1.0f));
-			}
 
 			m_pPlayer[server_mgr.GetClientID()]->SetPosition(server_mgr.ReturnPlayerPosStatus(server_mgr.GetClientID()).pos);
 
@@ -856,11 +853,11 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 			
 			for (int i = 0; i < MAX_PLAYER_SIZE*MAX_BOX_SIZE; ++i) {
 				if (server_mgr.GetBoxHp(i) < 0) {
-					m_pScene->m_pBuildings->SetBoxPosition(server_mgr.GetBox().id, XMFLOAT3(0, 0, 0));
+					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(0, 0, 0));
 					//cout << server_mgr.GetBoxHp(i) << "     ";
 				}
 				else
-					m_pScene->m_pBuildings->SetBoxPosition(server_mgr.GetBox().id, XMFLOAT3(server_mgr.GetBox().x, server_mgr.GetBox().y, server_mgr.GetBox().z));
+					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(server_mgr.GetBox().x, server_mgr.GetBox().y, server_mgr.GetBox().z));
 			}	//박스위치
 			// 아이템생성
 			if (server_mgr.IsItemGen()) {
@@ -1076,10 +1073,8 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 		{
 			;
 		}
-		else if (i != my_client_id) {
-			
+		else if (i != my_client_id)
 			m_pPlayer[i]->rrrotate(XMConvertToDegrees(atan2(m_pPlayer[i]->LookTemp.z, m_pPlayer[i]->LookTemp.x)));
-		}
 	}
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pObject) m_pObject[i]->Animate(fTimeElapsed);

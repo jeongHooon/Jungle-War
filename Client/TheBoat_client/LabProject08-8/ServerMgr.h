@@ -66,6 +66,7 @@ public:
 	int GetClientID();
 	int ReturnCameraID();
 	float GetBoxHp(int index) { return box_hp[index]; }
+	bool GetBoxInuse(int index) { return boxes[index].in_use; }
 	Bullet GetBullet();
 	Box GetBox();
 	SPlayer ReturnPlayerPosStatus(int client_id);
@@ -74,7 +75,7 @@ public:
 	// 아이템 생성 후 위치 Return
 	bool IsItemGen();
 	XMFLOAT3 ReturnItemPosition();
-
+	
 	// 플레이어 체력
 	float GetPlayerHP(int p_n);
 
