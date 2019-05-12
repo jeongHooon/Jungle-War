@@ -46,6 +46,7 @@ protected:
 	bool isShot = false;
 	float shotTime = 0.0f;
 public:
+	bool isDie = false;
 	float time = 0;
 	void ActiveShot() { 
 		isShot = true; shotTime = 0.0f;
@@ -76,6 +77,7 @@ public:
 	void SetPosition(const XMFLOAT3& xmf3Position) { Move(XMFLOAT3(xmf3Position.x - m_xmf3Position.x, xmf3Position.y - m_xmf3Position.y, xmf3Position.z - m_xmf3Position.z), false); }
 	void SetLook(XMFLOAT3 xmf3Look) { m_xmf3Look = xmf3Look; }
 	void rrrotate(float deg);
+	void ImDie() { isDie = true; }
 	const XMFLOAT3& GetVelocity() const { return(m_xmf3Velocity); }
 	float GetYaw() const { return(m_fYaw); }
 	float GetPitch() const { return(m_fPitch); }

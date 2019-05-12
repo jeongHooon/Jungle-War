@@ -1272,8 +1272,10 @@ void CGameFramework::FrameAdvance()
 		
 	}
 	
-	if (playerHp < 1)
+	if (playerHp < 1) {
 		gameMode = 2;
+		m_pPlayer[my_client_id]->ImDie();
+	}
 	if(gameMode == 2)
 		m_pScene->m_ppMainUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//게임오버 화면
 	// 렌더

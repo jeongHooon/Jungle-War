@@ -257,6 +257,10 @@ void CPlayer::Animate(float fTimeElapsed)
 			UpdateMD5Model(NewMD5Model, fTimeElapsed *0.4, 2, m_ppMeshes[i], i);
 		shotTime += fTimeElapsed;
 	}
+	else if (isDie) {
+		for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
+			UpdateMD5Model(NewMD5Model, fTimeElapsed *0.4, 17, m_ppMeshes[i], i);
+	}
 	else {
 		for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
 			UpdateMD5Model(NewMD5Model, fTimeElapsed *0.4, animation_status, m_ppMeshes[i], i);
