@@ -38,7 +38,7 @@ class ServerMgr{
 
 	XMFLOAT3 collision_pos;
 	float client_hp[4] = { 0 };
-	char *client_myid[4] = { 0 };
+	BYTE client_myid[4] = { 0 };
 
 
 	int camera_id = 0;
@@ -53,9 +53,7 @@ class ServerMgr{
 
 	bool s_is_collide = false;
 public:
-	void SendLoginREQ(SOCKET toServer);
-
-
+	void SendLoginREQ(SOCKET toServer);     // ·Î±×ÀÎ 
 	void IPInput();
 	void Initialize(HWND& hwnd);
 	void ClientError();
