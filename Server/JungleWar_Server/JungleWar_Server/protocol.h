@@ -21,6 +21,8 @@
 #define RUN_SPEED				16.0f
 #define METER_PER_PIXEL			0.243f
 #define WALK_SPEED				10.0f
+#define JUMP_SPEED              40.0f
+#define G_S 9.8f
 
 // Object °¹¼ö Á¤¸® 
 #define OBJECT_BUILDING			10
