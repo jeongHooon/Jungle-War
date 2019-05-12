@@ -785,6 +785,11 @@ void ServerFramework::WorkerThread() {
 								boxes[j].in_use = false;
 								packets.x = 0.f;
 								packets.z = 0.f;
+								packets.in_use = false;
+							}
+							else
+							{
+								packets.in_use = true;
 							}
 
 							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
@@ -1006,6 +1011,7 @@ void ServerFramework::WorkerThread() {
 							packets.type = SC_BOX_POS;
 							packets.box_id = j;
 							packets.hp = 125.f;
+							packets.in_use = true;
 							packets.x = boxes[i * MAX_BOX_SIZE + j].x;
 							packets.y = boxes[i * MAX_BOX_SIZE + j].y;
 							packets.z = boxes[i * MAX_BOX_SIZE + j].z;
