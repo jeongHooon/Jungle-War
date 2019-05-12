@@ -40,7 +40,7 @@
 #define SC_ITEM_GEN				10	// Actually Item gen packet
 #define SC_BUILDING_GEN			11
 
-#define SC_BOX_POS			21
+#define SC_BOX_POS				21
 
 // Server To Server
 #define SS_COLLISION			12
@@ -266,6 +266,7 @@ struct SC_PACKET_BOX {
 	BYTE type;
 	WORD id;
 	WORD box_id;
+	float hp;
 	DirectX::XMFLOAT3 pos;
 
 	float x, y, z;

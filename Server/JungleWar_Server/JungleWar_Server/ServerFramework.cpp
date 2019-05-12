@@ -107,9 +107,10 @@ void ServerFramework::InitServer() {
 	// Box OBB
 	for (int j = 0; j < MAX_PLAYER_SIZE; ++j) {
 		for (int i = 0; i < MAX_BOX_SIZE; ++i) {
-			boxes[j * 10 + i].SetOOBB(XMFLOAT3(boxes[j * MAX_BOX_SIZE + i].x, boxes[j * MAX_BOX_SIZE + i].y, boxes[j * MAX_BOX_SIZE + i].z),
+			boxes[j * MAX_BOX_SIZE + i].SetOOBB(XMFLOAT3(boxes[j * MAX_BOX_SIZE + i].x, boxes[j * MAX_BOX_SIZE + i].y, boxes[j * MAX_BOX_SIZE + i].z),
 				XMFLOAT3(OBB_SCALE_BOX_X, OBB_SCALE_BOX_Y, OBB_SCALE_BOX_Z),
 				XMFLOAT4(0, 0, 0, 1));
+			boxes[j * MAX_BOX_SIZE + i].hp = 125.f;
 		}
 	}
 
@@ -481,6 +482,7 @@ void ServerFramework::GameStart() {
 			boxes[j * MAX_BOX_SIZE + i].SetOOBB(XMFLOAT3(boxes[j * MAX_BOX_SIZE + i].x, boxes[j * MAX_BOX_SIZE + i].y, boxes[j * MAX_BOX_SIZE + i].z),
 				XMFLOAT3(OBB_SCALE_BOX_X, OBB_SCALE_BOX_Y, OBB_SCALE_BOX_Z),
 				XMFLOAT4(0, 0, 0, 1));
+			boxes[j * MAX_BOX_SIZE + i].hp = 125.f;
 		}
 	}
 
@@ -1003,6 +1005,7 @@ void ServerFramework::WorkerThread() {
 							packets.size = sizeof(SC_PACKET_BOX);
 							packets.type = SC_BOX_POS;
 							packets.box_id = j;
+							packets.hp = 125.f;
 							packets.x = boxes[i * MAX_BOX_SIZE + j].x;
 							packets.y = boxes[i * MAX_BOX_SIZE + j].y;
 							packets.z = boxes[i * MAX_BOX_SIZE + j].z;

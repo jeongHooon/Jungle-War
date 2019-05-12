@@ -94,6 +94,8 @@ struct Client {
 
 	bool is_q;
 
+	bool is_jump;
+
 	bool is_crouch;
 	float hp = 100.f;
 	int box_count = 0;
@@ -150,7 +152,7 @@ struct Box {
 	XMFLOAT3 look_vec;
 	int type;
 	bool is_bound = false;
-	float hp = 125.f;
+	float hp;
 	BoundingOrientedBox bounding_box;
 
 	void SetOOBB(XMFLOAT3 xmCenter, XMFLOAT3 xmExtents, XMFLOAT4 xmOrientation) {
