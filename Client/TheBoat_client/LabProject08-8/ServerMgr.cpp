@@ -452,7 +452,7 @@ void ServerMgr::SendPacket(int type, XMFLOAT3& xmvector) {
 		break;
 	case CS_KEY_PRESS_Q:
 		packet_buffer->type = CS_KEY_PRESS_Q;
-		packet_buffer->box_pos = xmvector;
+		//packet_buffer->box_pos = xmvector; 오류 무엇?
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
 
