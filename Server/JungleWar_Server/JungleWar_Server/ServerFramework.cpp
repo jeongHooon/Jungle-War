@@ -342,7 +342,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		clients[cl_id].is_running = false;
 		break;
 	case CS_KEY_RELEASE_SPACE:
-		//clients[cl_id].is_jump = false;
+		clients[cl_id].is_jump = false;
 		break;
 
 	case CS_RIGHT_BUTTON_DOWN:
