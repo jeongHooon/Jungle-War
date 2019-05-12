@@ -791,7 +791,6 @@ void ServerFramework::WorkerThread() {
 								boxes[j].in_use = false;
 								packets.x = 0.f;
 								packets.z = 0.f;
-								boxes[j].in_use = false;
 							}
 
 							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
