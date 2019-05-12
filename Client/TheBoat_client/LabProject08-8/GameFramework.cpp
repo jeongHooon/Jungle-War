@@ -953,7 +953,7 @@ void CGameFramework::BuildObjects()
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i)
 		m_pPlayer[i]->SetPosition(XMFLOAT3(30 * i, -100.0f, 0.0f));
 	for (int i = 0; i < NUM_OBJECT; ++i)
-		m_pObject[i]->SetPosition(XMFLOAT3(700 * i, 300.0f, 1400.0f));
+		m_pObject[i]->SetPosition(XMFLOAT3(700 * i, 150.0f, 1400.0f));
 
 #endif
 

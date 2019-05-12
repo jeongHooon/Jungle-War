@@ -527,7 +527,7 @@ void CGameObject::LoadFrameHierarchyFromFile2(ID3D12Device *pd3dDevice, ID3D12Gr
 	
 	m_pMaterial = new CMaterial();
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/warrior.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Trees/Tree02.dds", 0);
 
 	m_pMaterial->SetTexture(pTexture);
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
