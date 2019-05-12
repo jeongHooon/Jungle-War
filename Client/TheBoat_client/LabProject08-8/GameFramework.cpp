@@ -715,7 +715,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			if (is_pushed[CS_KEY_PRESS_Q] == true) {
 				printf("[WM_KEYDOWN] : Q키 놓음 \n");
 				server_mgr.SendPacket(CS_KEY_RELEASE_Q);
-				cout << m_pPlayer[my_client_id]->GetPosition().x << "    " << m_pPlayer[my_client_id]->GetPosition().z << endl;
+				//cout << m_pPlayer[my_client_id]->GetPosition().x << "    " << m_pPlayer[my_client_id]->GetPosition().z << endl;
 				is_pushed[CS_KEY_PRESS_Q] = false;
 				
 			}
@@ -852,7 +852,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 				XMFLOAT3(server_mgr.GetBullet().x, server_mgr.GetBullet().y, server_mgr.GetBullet().z));
 			
 			for (int i = 0; i < MAX_PLAYER_SIZE*MAX_BOX_SIZE; ++i) {
-				cout << server_mgr.GetBoxInuse(i) << " ";
+				//cout << server_mgr.GetBoxInuse(i) << " ";
 				if (server_mgr.GetBoxInuse(i) == 0) {
 					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(0, 0, 0));
 				}
@@ -860,7 +860,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(server_mgr.GetBox().x, server_mgr.GetBox().y, server_mgr.GetBox().z));
 				}
 			}	//박스위치
-			cout << endl;
+			//cout << endl;
 			// 아이템생성
 			if (server_mgr.IsItemGen()) {
 				server_mgr.ReturnItemPosition();
@@ -954,8 +954,43 @@ void CGameFramework::BuildObjects()
 #ifdef _WITH_GUNSHIP_MODEL
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i)
 		m_pPlayer[i]->SetPosition(XMFLOAT3(30 * i, -100.0f, 0.0f));
-	for (int i = 0; i < NUM_OBJECT; ++i)
-		m_pObject[i]->SetPosition(XMFLOAT3(700 * i, 150.0f, 1400.0f));
+	for (int i = 0; i < NUM_OBJECT; ++i) {
+		float xPosition;
+		float zPosition;
+
+		if (i == 0) xPosition = 680, zPosition = 925;
+		else if (i == 1) xPosition = 715, zPosition = 853;
+		else if (i == 2) xPosition = 641, zPosition = 858;
+		else if (i == 3) xPosition = 641, zPosition = 858;
+		else if (i == 4) xPosition = 639, zPosition = 794;
+		else if (i == 5) xPosition = 577, zPosition = 800;
+		else if (i == 6) xPosition = 516, zPosition = 822;
+		else if (i == 7) xPosition = 463, zPosition = 875;
+		else if (i == 8) xPosition = 487, zPosition = 951;
+		else if (i == 9) xPosition = 538, zPosition = 969;
+		else if (i == 10) xPosition = 465, zPosition = 766;
+		else if (i == 11) xPosition = 518, zPosition = 757;
+		else if (i == 12) xPosition = 436, zPosition = 795;
+		else if (i == 13) xPosition = 426, zPosition = 729;
+		else if (i == 14) xPosition = 385, zPosition = 876;
+		else if (i == 15) xPosition = 396, zPosition = 968;
+		else if (i == 16) xPosition = 338, zPosition = 970;
+		else if (i == 17) xPosition = 390, zPosition = 1048;
+		else if (i == 18) xPosition = 469, zPosition = 1106;
+		else if (i == 19) xPosition = 563, zPosition = 1078;
+		/*else if (i == 20) xPosition = 653, zPosition = 1029;
+		else if (i == 21) xPosition = 706, zPosition = 1080;
+		else if (i == 22) xPosition = 737, zPosition = 1036;
+		else if (i == 23) xPosition = 778, zPosition = 957;
+		else if (i == 24) xPosition = 667, zPosition = 1257;
+		else if (i == 25) xPosition = 574, zPosition = 1272;
+		else if (i == 26) xPosition = 484, zPosition = 1269;
+		else if (i == 27) xPosition = 504, zPosition = 1139;
+		else if (i == 28) xPosition = 602, zPosition = 1122;
+		else if (i == 29) xPosition = 851, zPosition = 984;*/
+		float fHeight = m_pScene->GetTerrain()->GetHeight(xPosition, zPosition);
+		m_pObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
+	}
 
 #endif
 
