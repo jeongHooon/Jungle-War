@@ -857,7 +857,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(0, 0, 0));
 				}
 				else {
-					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(server_mgr.GetBox().x, server_mgr.GetBox().y, server_mgr.GetBox().z));
+					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(server_mgr.GetBox(i).x, server_mgr.GetBox(i).y, server_mgr.GetBox(i).z));
 				}
 			}	//박스위치
 			//cout << endl;

@@ -68,7 +68,7 @@ public:
 	float GetBoxHp(int index) { return box_hp[index]; }
 	bool GetBoxInuse(int index) { return boxes[index].in_use; }
 	Bullet GetBullet();
-	Box GetBox();
+	Box GetBox(int index);
 	SPlayer ReturnPlayerPosStatus(int client_id);
 	XMFLOAT3 ReturnLookVector();
 	XMFLOAT3 ReturnCollsionPosition(bool* is_collide);

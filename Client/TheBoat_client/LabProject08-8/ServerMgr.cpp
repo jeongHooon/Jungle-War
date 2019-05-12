@@ -91,8 +91,8 @@ Bullet ServerMgr::GetBullet() {
 	return bullets[recvd_bullet_id];
 }
 
-Box ServerMgr::GetBox() {
-	return boxes[recvd_box_id];
+Box ServerMgr::GetBox(int index) {
+	return boxes[index];
 }
 
 int ServerMgr::GetClientID() {
