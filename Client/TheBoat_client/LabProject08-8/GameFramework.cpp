@@ -544,7 +544,9 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			alphaMapOn = !alphaMapOn;
 			break;
 		case '0':
-			gameMode = !gameMode;
+			++gameMode;
+			if (gameMode > 2)
+				gameMode = 0;
 			break;
 		case 'Q':
 			if (is_pushed[CS_KEY_PRESS_Q] == false) {
@@ -848,14 +850,13 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 				XMFLOAT3(server_mgr.GetBullet().x, server_mgr.GetBullet().y, server_mgr.GetBullet().z));
 			
 			for (int i = 0; i < MAX_PLAYER_SIZE*MAX_BOX_SIZE; ++i) {
-				if (server_mgr.GetBoxHp(i) < 1) {
-					m_pScene->m_pBuildings->SetBoxPosition(server_mgr.GetBox().id, XMFLOAT3(server_mgr.GetBox().x, server_mgr.GetBox().y, server_mgr.GetBox().z));
-					cout << server_mgr.GetBoxHp(i) << "     ";
+				if (server_mgr.GetBoxHp(i) < 0) {
+					m_pScene->m_pBuildings->SetBoxPosition(server_mgr.GetBox().id, XMFLOAT3(0, 0, 0));
+					//cout << server_mgr.GetBoxHp(i) << "     ";
 				}
 				else
 					m_pScene->m_pBuildings->SetBoxPosition(server_mgr.GetBox().id, XMFLOAT3(server_mgr.GetBox().x, server_mgr.GetBox().y, server_mgr.GetBox().z));
-			}	//내일
-			cout << endl;
+			}	//박스위치
 			// 아이템생성
 			if (server_mgr.IsItemGen()) {
 				server_mgr.ReturnItemPosition();
@@ -975,7 +976,7 @@ void CGameFramework::ProcessInput()
 	static UCHAR pKeysBuffer[256];
 	bool bProcessedByScene = false;
 	if (GetKeyboardState(pKeysBuffer) && m_pScene) bProcessedByScene = m_pScene->ProcessInput(pKeysBuffer);
-	if (!bProcessedByScene)
+	if (!bProcessedByScene && gameMode != 2)
 	{
 		DWORD dwDirection = 0;
 		// 플레이어 움직임 (중요)
@@ -1174,7 +1175,7 @@ void CGameFramework::FrameAdvance()
 		if (mainScreenSelect == 2)
 			m_pScene->m_ppMainUIShaders[2]->Render(m_pd3dCommandList, m_pCamera); // 메인화면 선택창
 	}
-	else if (gameMode == 1) { // UI 렌더
+	else if (gameMode == 1 || gameMode == 2) { // UI 렌더
 		m_pScene->m_ppUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 미니맵
 
 																		  //printf("%f", playerHp);
@@ -1205,8 +1206,12 @@ void CGameFramework::FrameAdvance()
 			m_pScene->m_ppUIShaders[11 + m_pPlayer[my_client_id]->GetPlayerBullet() / 10]->Render(m_pd3dCommandList, m_pCamera); // 앞 숫자
 		if (m_pPlayer[my_client_id]->GetPlayerBullet() > 0)
 			m_pScene->m_ppUIShaders[16 + m_pPlayer[my_client_id]->GetPlayerBullet() % 10]->Render(m_pd3dCommandList, m_pCamera); // 뒷 숫자
+		
+		
 	}
 	
+	if(gameMode == 2)
+		m_pScene->m_ppMainUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//게임오버 화면
 	// 렌더
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
