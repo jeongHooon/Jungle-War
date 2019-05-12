@@ -738,6 +738,7 @@ void ServerFramework::WorkerThread() {
 							if (boxes[j].hp < 1) {
 								boxes[j].in_use = false;
 							}
+							cout << endl << j << endl;
 							packets.in_use = boxes[j].in_use;
 
 							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
