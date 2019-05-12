@@ -181,6 +181,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		boxes[packets->box_id].y = packets->y;
 		boxes[packets->box_id].z = packets->z;
 		boxes[packets->box_id].hp = packets->hp;
+		boxes[packets->box_id].in_use = packets->in_use;
 
 		//printf("[Bullet] %d 플레이어 총알 ID[%d] \n", clients_id, packets->bullet_id);
 		break;
@@ -202,6 +203,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		collision_box_pos.x = packets->x;
 		collision_box_pos.y = packets->y;
 		collision_box_pos.z = packets->z;
+		boxes[packets->box_id].in_use = packets->in_use;
 		box_is_collide = true;
 		box_hp[packets->box_id] = packets->hp;
 		if(box_hp[packets->box_id] < 0){

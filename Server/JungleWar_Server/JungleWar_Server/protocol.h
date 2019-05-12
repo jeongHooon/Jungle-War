@@ -148,6 +148,7 @@ struct SC_PACKET_COLLISION_BB {
 	BYTE type;
 	WORD client_id;
 	WORD box_id;
+	float in_use;
 	float x, y, z;
 	float hp;
 };
@@ -266,6 +267,7 @@ struct SC_PACKET_BOX {
 	BYTE type;
 	WORD id;
 	WORD box_id;
+	bool in_use;
 	float hp;
 	DirectX::XMFLOAT3 pos;
 
