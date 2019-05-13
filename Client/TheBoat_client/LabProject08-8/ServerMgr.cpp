@@ -36,13 +36,11 @@ void ServerMgr::Initialize(HWND& hwnd) {
 	// æ∆¿Ã««
 	ServerAddr.sin_addr.s_addr = inet_addr(server_ip.c_str());
 
-	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	//ServerAddr.sin_addr.s_addr = inet_addr("192.168.101.211");
 
 	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	//ServerAddr.sin_addr.s_addr = inet_addr("110.5.195.3");
-
-
 
 	int retval = WSAConnect(sock, (sockaddr *)&ServerAddr, sizeof(ServerAddr), NULL, NULL, NULL, NULL);
 	if (retval == SOCKET_ERROR) {
@@ -84,7 +82,6 @@ void ServerMgr::ReadPacket() {
 			saved_packet_size += io_bytes;
 			io_bytes = 0;
 		}
-
 	}
 }
 Bullet ServerMgr::GetBullet() {

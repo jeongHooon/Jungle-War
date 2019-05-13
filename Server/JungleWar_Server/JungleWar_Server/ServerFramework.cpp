@@ -64,8 +64,6 @@ void ServerFramework::InitServer() {
 	height_map = new CHeightMapImage(file_name, 513, 513, xmf3Scale);
 
 	client_lock.lock();
-
-	
 	clients[0].x = 731.f;
 	clients[0].z = 669.f;
 
@@ -78,8 +76,6 @@ void ServerFramework::InitServer() {
 	clients[3].x = 1700.f;
 	clients[3].z = 900.f;
 	
-
-
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		/*clients[i].x = 450.f;
 		clients[i].z = 800.f;*/
@@ -115,7 +111,6 @@ void ServerFramework::InitServer() {
 			boxes[j * MAX_BOX_SIZE + i].hp = MAX_BOX_HP;
 		}
 	}
-
 
 	// building 
 	XMFLOAT3 input_buffer[10];
@@ -183,6 +178,7 @@ void ServerFramework::AcceptPlayer() {
 		inet_ntoa(c_addr.sin_addr), ntohs(c_addr.sin_port));
 
 	int client_id = -1;
+
 	client_lock.lock();
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		if (clients[i].in_use == false) {
@@ -191,6 +187,7 @@ void ServerFramework::AcceptPlayer() {
 		}
 	}
 	client_lock.unlock();
+	
 	if (client_id == -1) {
 		printf("최대 유저 초과\n");
 	}
@@ -300,7 +297,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		break;
 	case CS_KEY_PRESS_CROUCH:
 		clients[cl_id].is_crouch = true;
-		printf("clients[cl_id].is_crouch %d\n", clients[cl_id].is_crouch);
+//		printf("clients[cl_id].is_crouch %d\n", clients[cl_id].is_crouch);
 		break;
 
 	case CS_KEY_PRESS_1:
@@ -315,8 +312,9 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		clients[cl_id].is_running = true;
 		break;
 	case CS_KEY_PRESS_SPACE:
-		//clients[cl_id].is_jump = true;
+	//	clients[cl_id].is_jump = true;
 		break;
+
 
 	case CS_KEY_RELEASE_UP:
 		clients[cl_id].is_move_foward = false;
@@ -398,7 +396,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 			packets.player_status = 2;
 		}
 		else if (clients[cl_id].is_move_backward == false && clients[cl_id].is_move_foward == false &&
-			clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false) {
+			clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false ) {
 			//clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false && clients[cl_id].is_jump == false) {
 			packets.player_status = 0;
 		}
@@ -610,9 +608,9 @@ void ServerFramework::WorkerThread() {
 					printf("크라우치 들어왔어\n");
 					packets.player_status = 7;
 				}
-				/*else if (clients[client_id].is_jump) {
+				else if (clients[client_id].is_jump) {
 					packets.player_status = 15;
-				}*/
+				}
 				/*else if (clients[client_id].is_die) {
 				packets.player_status = 17;
 				}*/
@@ -772,7 +770,6 @@ void ServerFramework::WorkerThread() {
 				//client_lock.lock();
 				clients[i].client_lock.lock();
 
-
 				if (clients[i].is_move_foward) {
 					if (clients[i].is_running) {
 						clients[i].z += clients[i].look_vec.z * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
@@ -815,12 +812,9 @@ void ServerFramework::WorkerThread() {
 				}
 				clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
 
-
-
-				//if (!clients[i].is_jump) {
+				//if (!clients[i].is_) {
 				//	// 점프 아닐 시 y값 지정
 				//	clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
-
 
 				//}
 				//else if (clients[i].is_jump) {
