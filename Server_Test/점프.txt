@@ -1,0 +1,69 @@
+		else if (overlapped_buffer->command == SS_PLAYER_POS_UPDATE) {
+			for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
+				//client_lock.lock();
+				clients[i].client_lock.lock();
+				if (clients[i].is_move_foward) {
+					if (clients[i].is_running) {
+						clients[i].z += clients[i].look_vec.z * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+						clients[i].x += clients[i].look_vec.x * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+					}
+					else {
+						clients[i].z += clients[i].look_vec.z * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+						clients[i].x += clients[i].look_vec.x * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;	
+					
+					}
+				}
+				if (clients[i].is_move_backward) {
+					if (clients[i].is_running) {
+						clients[i].z += (-1) * clients[i].look_vec.z * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+						clients[i].x += (-1) * clients[i].look_vec.x * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+					}
+					else {
+						clients[i].z += (-1) * clients[i].look_vec.z * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+						clients[i].x += (-1) * clients[i].look_vec.x * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+					}
+				}
+				if (clients[i].is_move_left) {
+					if (clients[i].is_running) {
+						clients[i].z += clients[i].look_vec.x * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+						clients[i].x += (-1) * clients[i].look_vec.z * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+					}
+					else {
+						clients[i].z += clients[i].look_vec.x * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+						clients[i].x += (-1) * clients[i].look_vec.z * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+					}
+				}
+				if (clients[i].is_move_right) {
+					if (clients[i].is_running) {
+						clients[i].z += (-1) * clients[i].look_vec.x * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+						clients[i].x += clients[i].look_vec.z * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+					}
+					else {
+						clients[i].z += (-1) * clients[i].look_vec.x * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+						clients[i].x += clients[i].look_vec.z * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+					}
+				}
+		//		clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
+
+
+				if (!clients[i].is_jump) {
+					// 점프 아닐 시 y값 지정
+				  clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
+
+
+				}
+				else if (clients[i].is_jump) {
+				//	clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
+					clients[i].y += jumpAcc * (overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+				    //jumpAcc += 10.0f;
+					jumpAcc -= 1.0f;
+				   if (clients[i].y <= height_map->GetHeight(clients[i].x, clients[i].z)) {
+				      clients[i].is_jump = false;
+				      jumpAcc = 70.0f;
+				   }
+				}
+
+				clients[i].client_lock.unlock();
+				clients[i].SetOOBB(XMFLOAT3(clients[i].x, clients[i].y, clients[i].z), XMFLOAT3(OBB_SCALE_PLAYER_X, OBB_SCALE_PLAYER_Y, OBB_SCALE_PLAYER_Z), XMFLOAT4(0, 0, 0, 1));
+			}
+		}
