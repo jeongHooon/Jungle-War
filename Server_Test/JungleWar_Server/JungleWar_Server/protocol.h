@@ -10,15 +10,19 @@
 #define MAX_BULLET_SIZE			30
 #define MAX_BOX_SIZE			10
 
+////////////////////////////////
 #define maxUserIDLen		20
-#define maxpasswdLen		20
+#define maxPasswdLen		20
 #define maxChatSize			256
+
 // 본인 클라이언트 및 서버에서 사용
 //#define RUN_SPEED				2.78f
 // 위치 테스트용
 #define RUN_SPEED				16.0f
 #define METER_PER_PIXEL			0.243f
 #define WALK_SPEED				10.0f
+#define JUMP_SPEED              40.0f
+#define G_S 9.8f
 
 // Object 갯수 정리 
 #define OBJECT_BUILDING			10
@@ -38,7 +42,7 @@
 #define SC_ITEM_GEN				10	// Actually Item gen packet
 #define SC_BUILDING_GEN			11
 
-#define SC_BOX_POS			21
+#define SC_BOX_POS				21
 
 // Server To Server
 #define SS_COLLISION			12
@@ -50,7 +54,7 @@
 #define SS_ITEM_GEN				18	// Event
 #define SS_BOX_GENERATE			19
 #define SS_BOX_UPDATE			20
-#define SS_COLLISION_BTOB		21
+#define SS_COLLISION_BB			21
 
 
 
@@ -65,6 +69,7 @@
 #define CS_KEY_PRESS_2			8
 #define CS_LEFT_BUTTON_DOWN		9
 #define CS_RIGHT_BUTTON_DOWN	10
+
 
 #define CS_KEY_RELEASE_UP			11
 #define CS_KEY_RELEASE_DOWN			12
@@ -107,7 +112,7 @@ struct SC_PACKET_ENTER_PLAYER {
 	BYTE type;
 	WORD id;
 	BYTE userid[maxUserIDLen];
- 	BYTE passwd[maxpasswdLen];
+	BYTE passwd[maxPasswdLen];
 	float x, y, z;
 	// 건물 크기 보낼 때만 사용
 	float hp;
@@ -119,7 +124,7 @@ struct SC_PACKET_LOOCVEC {
 	BYTE type;
 	WORD id;
 	BYTE userid[maxUserIDLen];
-	BYTE passwd[maxpasswdLen];
+	BYTE passwd[maxPasswdLen];
 	DirectX::XMFLOAT3 look_vec;
 	int player_status;
 };
@@ -140,6 +145,17 @@ struct SC_PACKET_COLLISION {
 	float hp;
 };
 
+struct SC_PACKET_COLLISION_BB {
+	BYTE size;
+	BYTE type;
+	WORD client_id;
+	WORD box_id;
+	float in_use;
+	float x, y, z;
+	float hp;
+};
+
+
 struct SC_PAKCET_CLIENT_BUILDING_COLLSION {
 
 };
@@ -149,6 +165,8 @@ struct SC_PACKET_ITEM_GEN {
 	BYTE type;
 	float x, y, z;
 };
+
+
 
 // 클라->서버
 struct CS_PACKET_BIGGEST {
@@ -251,6 +269,8 @@ struct SC_PACKET_BOX {
 	BYTE type;
 	WORD id;
 	WORD box_id;
+	bool in_use;
+	float hp;
 	DirectX::XMFLOAT3 pos;
 
 	float x, y, z;
