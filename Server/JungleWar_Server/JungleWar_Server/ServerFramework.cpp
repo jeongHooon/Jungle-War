@@ -59,16 +59,16 @@ void ServerFramework::InitServer() {
 	if (retval == SOCKET_ERROR)
 		printf("listen ¿¡·¯\n");
 
-	XMFLOAT3 xmf3Scale(8.0f, 2.f, 8.0f);
+	XMFLOAT3 xmf3Scale(4.0f, 2.0f, 4.0f);
 	LPCTSTR file_name = _T("terrain11.raw");
 	height_map = new CHeightMapImage(file_name, 513, 513, xmf3Scale);
 
 	client_lock.lock();
-	clients[1].x = 731.f;
-	clients[1].z = 669.f;
+	clients[0].x = 731.f;
+	clients[0].z = 669.f;
 
-	clients[0].x = 386.f;
-	clients[0].z = 1345.f;
+	clients[1].x = 386.f;
+	clients[1].z = 1345.f;
 
 	clients[2].x = 600.f;
 	clients[2].z = 950.f;

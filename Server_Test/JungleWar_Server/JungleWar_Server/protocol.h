@@ -7,7 +7,7 @@
 #define MAX_PLAYER_SIZE		4
 #define	WM_SOCKET			WM_USER + 1
 #define CLIENT_BUF_SIZE		1024
-#define MAX_BULLET_SIZE			30
+#define MAX_BULLET_SIZE			40
 #define MAX_BOX_SIZE			10
 
 ////////////////////////////////
@@ -23,6 +23,8 @@
 #define WALK_SPEED				10.0f
 #define JUMP_SPEED              40.0f
 #define G_S 9.8f
+#define MAX_BOX_HP				50.0f;
+#define MAX_BULLET_DAMAGE		25.0f;
 
 // Object 갯수 정리 
 #define OBJECT_BUILDING			10
@@ -107,11 +109,12 @@ enum SubWeapons {
 };
 
 // 서버->클라
+
 struct SC_PACKET_ENTER_PLAYER {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	BYTE userid[maxUserIDLen];
+	char userid[maxUserIDLen];
 	BYTE passwd[maxPasswdLen];
 	float x, y, z;
 	// 건물 크기 보낼 때만 사용
@@ -173,6 +176,7 @@ struct CS_PACKET_BIGGEST {
 	BYTE size;
 	BYTE type;
 	WORD id;
+	BYTE userid[256];
 	bool player_in[4];
 };
 

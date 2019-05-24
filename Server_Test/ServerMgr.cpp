@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "ServerMgr.h"
 
+char userid[256];
+char passwd[256];
+
 void ServerMgr::ErrorDisplay(const char* msg, int err_no) {
 	_wsetlocale(LC_ALL, L"korean");
 	WCHAR *lpMsgBuf;
@@ -15,9 +18,25 @@ void ServerMgr::ErrorDisplay(const char* msg, int err_no) {
 	LocalFree(lpMsgBuf);
 }
 void ServerMgr::IPInput() {
+
+
 	while (true) {
 		cout << "서버 아이피 입력 : ";
 		cin >> server_ip;
+		cout << "ID 입력 : ";
+		cin >> userid;
+		cout << "pw 입력 : ";
+		cin >> passwd;
+
+		char protoBuffer[1024];
+		ProtoCommand *cmd = (ProtoCommand *)protoBuffer;
+		StrLoginREQ *login = (StrLoginREQ *)cmd->data;
+
+		strncpy_s((char *)login->userid, maxUserIDLen, userid, maxUserIDLen);
+		login->userid[maxUserIDLen - 1] = '\0';// 가장 끝자리에 '\0'을 붙여준다.
+
+	//	send(toServer, protoBuffer,
+	//		sizeof(ProtoCommand) + sizeof(StrLoginREQ), 0);
 		break;
 	}
 }
@@ -41,8 +60,6 @@ void ServerMgr::Initialize(HWND& hwnd) {
 
 	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	//ServerAddr.sin_addr.s_addr = inet_addr("110.5.195.3");
-
-
 
 	int retval = WSAConnect(sock, (sockaddr *)&ServerAddr, sizeof(ServerAddr), NULL, NULL, NULL, NULL);
 	if (retval == SOCKET_ERROR) {
@@ -84,7 +101,6 @@ void ServerMgr::ReadPacket() {
 			saved_packet_size += io_bytes;
 			io_bytes = 0;
 		}
-
 	}
 }
 Bullet ServerMgr::GetBullet() {
@@ -109,12 +125,15 @@ void ServerMgr::ProcessPacket(char* ptr) {
 			camera_id = packets->id;
 			first_set_id = false;
 		}
-
+//		strncpy_s((char *)packets->userid, maxUserIDLen, , maxUserIDLen);
 		sc_vec_buff[packets->id].pos.x = packets->x;
 		sc_vec_buff[packets->id].pos.y = packets->y;
 		sc_vec_buff[packets->id].pos.z = packets->z;
+//		strncpy_s((char *)userid, maxUserIDLen, sc_vec_buff[packets->id], maxUserIDLen);
+
 		client_hp[packets->id] = packets->hp;
-		printf("[SC_ENTER_PLAYER] : %d 플레이어 입장\n", packets->id);
+		
+		printf("[SC_ENTER_PLAYER] : %d 플레이어 입장 아이디는 %s\n", packets->id, userid);
 
 		break;
 	}
@@ -182,7 +201,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		boxes[recvd_box_id].y = packets->y;
 		boxes[recvd_box_id].z = packets->z;
 		boxes[recvd_box_id].hp = packets->hp;
-		boxes[recvd_box_id].in_use = packets->in_use;
+//		boxes[recvd_box_id].in_use = packets->in_use;
 
 		//printf("[Bullet] %d 플레이어 총알 ID[%d] \n", clients_id, packets->bullet_id);
 		break;
@@ -205,15 +224,16 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		collision_box_pos.x = packets->x;
 		collision_box_pos.y = packets->y;
 		collision_box_pos.z = packets->z;
-		boxes[packets->box_id].in_use = packets->in_use;
+//		boxes[packets->box_id].in_use = packets->in_use;
+		printf("부딪 박스 %d\n", packets->box_id);
 		box_is_collide = true;
 		box_hp[packets->box_id] = packets->hp;
-		if(box_hp[packets->box_id] < 0){
+		/*if(box_hp[packets->box_id] < 0){
 			boxes[packets->box_id].x = 0;
 			boxes[packets->box_id].z = 0;
-		}
-		printf("%d 플레이어의 충돌지점 x : %f, y : %f, z : %f, 체력 : %f \n", packets->client_id, collision_box_pos.x,
-			collision_box_pos.y, collision_box_pos.z, box_hp[packets->client_id]);
+		}*/
+		/*printf("%d 플레이어의 충돌지점 x : %f, y : %f, z : %f, 체력 : %f \n", packets->client_id, collision_box_pos.x,
+			collision_box_pos.y, collision_box_pos.z, box_hp[packets->client_id]);*/
 
 		break;
 	}
