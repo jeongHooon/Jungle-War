@@ -64,11 +64,11 @@ void ServerFramework::InitServer() {
 	height_map = new CHeightMapImage(file_name, 513, 513, xmf3Scale);
 
 	client_lock.lock();
-	clients[0].x = 731.f;
-	clients[0].z = 669.f;
+	clients[1].x = 731.f;
+	clients[1].z = 669.f;
 
-	clients[1].x = 386.f;
-	clients[1].z = 1345.f;
+	clients[0].x = 386.f;
+	clients[0].z = 1345.f;
 
 	clients[2].x = 600.f;
 	clients[2].z = 950.f;
@@ -340,7 +340,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		clients[cl_id].is_running = false;
 		break;
 	case CS_KEY_RELEASE_SPACE:
-		clients[cl_id].is_jump = false;
+		//clients[cl_id].is_jump = false;
 		break;
 
 	case CS_RIGHT_BUTTON_DOWN:
@@ -608,9 +608,9 @@ void ServerFramework::WorkerThread() {
 					printf("크라우치 들어왔어\n");
 					packets.player_status = 7;
 				}
-				else if (clients[client_id].is_jump) {
+				/*else if (clients[client_id].is_jump) {
 					packets.player_status = 15;
-				}
+				}*/
 				/*else if (clients[client_id].is_die) {
 				packets.player_status = 17;
 				}*/
