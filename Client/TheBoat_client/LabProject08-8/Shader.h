@@ -50,6 +50,7 @@ public:
 	virtual void ReleaseUploadBuffers();
 	virtual void SetBoxPosition(int index, XMFLOAT3 input) { }
 	virtual void SetBoxPosition(XMFLOAT3 input) { }
+	virtual void SetScale(float x, float y, float z) { }
 	virtual void BoundCheck(XMFLOAT3 playerPosition, float playersize) { }
 
 	virtual void OnPrepareRender(ID3D12GraphicsCommandList *pd3dCommandList);
@@ -167,7 +168,50 @@ public:
 
 	virtual void SetBoxPosition(int index, XMFLOAT3 input);
 
+	virtual D3D12_BLEND_DESC CreateBlendState();
+
 	virtual void BoundCheck(XMFLOAT3 playerPosition, float playerSize);
+
+protected:
+	CHeightMapTerrain * pTerrainCopy;
+	CGameObject * *m_ppObjects = 0;
+	int								m_nObjects = 0;
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+#define _WITH_BATCH_MATERIAL
+
+class CBigBoxShader : public CIlluminatedTexturedShader
+{
+public:
+	CBigBoxShader();
+	virtual ~CBigBoxShader();
+
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext = NULL);
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseObjects();
+
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+
+	virtual void ReleaseUploadBuffers();
+
+	virtual void SetScale(float x, float y, float z);
+
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+
+
+	virtual D3D12_BLEND_DESC CreateBlendState();
+
 
 protected:
 	CHeightMapTerrain * pTerrainCopy;

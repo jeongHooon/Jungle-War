@@ -475,6 +475,174 @@ void CIlluminatedShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12RootSignat
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
+CBigBoxShader::CBigBoxShader()
+{
+}
+
+CBigBoxShader::~CBigBoxShader()
+{
+}
+
+void CBigBoxShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nObjects, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
+}
+
+void CBigBoxShader::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+	for (int j = 0; j < m_nObjects; j++)
+	{
+		CB_GAMEOBJECT_INFO *pbMappedcbGameObject = (CB_GAMEOBJECT_INFO *)((UINT8 *)m_pcbMappedGameObjects + (j * ncbElementBytes));
+		XMStoreFloat4x4(&pbMappedcbGameObject->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&m_ppObjects[j]->m_xmf4x4World)));
+#ifdef _WITH_BATCH_MATERIAL
+		if (m_pMaterial) pbMappedcbGameObject->m_nMaterial = m_pMaterial->m_nReflection;
+#endif
+	}
+}
+
+void CBigBoxShader::ReleaseShaderVariables()
+{
+	if (m_pd3dcbGameObjects)
+	{
+		m_pd3dcbGameObjects->Unmap(0, NULL);
+		m_pd3dcbGameObjects->Release();
+	}
+
+	CIlluminatedTexturedShader::ReleaseShaderVariables();
+}
+
+//#define _WITH_TERRAIN_PARTITION
+
+void CBigBoxShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
+{
+	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
+
+	int xObjects = 1, yObjects = 1, zObjects = 1, i = 0;
+
+	m_nObjects = 1;
+
+	CTexture *pTextures = new CTexture(6, RESOURCE_TEXTURE2DARRAY, 0);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 0);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 1);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 4);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 3);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 2);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 5);
+
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 6);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nObjects, m_pd3dcbGameObjects, ncbElementBytes);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTextures, 5, false);
+
+#ifdef _WITH_BATCH_MATERIAL
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(pTextures);
+	m_pMaterial->SetReflection(1);
+#else
+	CMaterial *pCubeMaterial = new CMaterial();
+	pCubeMaterial->SetTexture(pTexture);
+	pCubeMaterial->SetReflection(1);
+#endif
+	CCubeMeshIlluminatedTextured *pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 1000, 5000, 1000);
+
+	m_ppObjects = new CGameObject*[m_nObjects];
+
+	float fxPitch = 12.0f * 2.5f, fyPitch = 12.0f * 2.5f, fzPitch = 12.0f * 2.5f;
+
+	CRotatingObject *pRotatingObject = NULL;
+	pRotatingObject = new CRotatingObject(1);
+	pRotatingObject->SetMesh(0, pCubeMesh);
+#ifndef _WITH_BATCH_MATERIAL
+	pRotatingObject->SetMaterial(pCubeMaterial);
+#endif
+	float xPosition = 1000, zPosition = 1000;
+	float fHeight = pTerrain->GetHeight(xPosition, zPosition);
+	pRotatingObject->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
+	pRotatingObject->SetRotationAxis(XMFLOAT3(0.0f, 1.0f, 0.0f));
+	pRotatingObject->SetRotationSpeed(10.0f * (i % 10));
+	pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+	m_ppObjects[0] = pRotatingObject;
+}
+
+void CBigBoxShader::ReleaseObjects()
+{
+	if (m_ppObjects)
+	{
+		for (int j = 0; j < m_nObjects; j++) if (m_ppObjects[j]) delete m_ppObjects[j];
+		delete[] m_ppObjects;
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) delete m_pMaterial;
+#endif
+}
+
+void CBigBoxShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
+{
+	for (int j = 0; j < m_nObjects; j++)
+	{
+		m_ppObjects[j]->Animate(fTimeElapsed);
+	}
+}
+
+void CBigBoxShader::SetScale(float x, float y, float z)
+{
+	m_ppObjects[0]->SetScale(x, y, z);
+}
+
+void CBigBoxShader::ReleaseUploadBuffers()
+{
+	if (m_ppObjects)
+	{
+		for (int j = 0; j < m_nObjects; j++) if (m_ppObjects[j]) m_ppObjects[j]->ReleaseUploadBuffers();
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->ReleaseUploadBuffers();
+#endif
+}
+
+void CBigBoxShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+{
+	CIlluminatedTexturedShader::Render(pd3dCommandList, pCamera);
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->UpdateShaderVariables(pd3dCommandList);
+#endif
+
+	if (m_ppObjects[0]) m_ppObjects[0]->Render(pd3dCommandList, pCamera);
+	m_ppObjects[0]->SetScale(0.9, 0.9, 0.9);
+}
+
+D3D12_BLEND_DESC CBigBoxShader::CreateBlendState()
+{
+	D3D12_BLEND_DESC d3dBlendDesc;
+	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
+	d3dBlendDesc.AlphaToCoverageEnable = FALSE;
+	d3dBlendDesc.IndependentBlendEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	return(d3dBlendDesc);
+}
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
 CObjectsShader::CObjectsShader()
 {
 }
@@ -526,12 +694,12 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	m_nObjects = (xObjects * 2 + 1) * (yObjects * 2 + 1) * (zObjects * 2 + 1);
 
 	CTexture *pTextures = new CTexture(6, RESOURCE_TEXTURE2DARRAY, 0);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 0);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 1);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 4);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 3);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 2);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 5);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 0);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 1);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 4);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 3);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 2);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 5);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -556,7 +724,7 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	float fxPitch = 12.0f * 2.5f, fyPitch = 12.0f * 2.5f, fzPitch = 12.0f * 2.5f;
 
 	CRotatingObject *pRotatingObject = NULL;
-	
+
 	for (int x = -xObjects; x <= xObjects; x++)
 	{
 		for (int y = -yObjects; y <= yObjects; y++)
@@ -605,7 +773,7 @@ void CObjectsShader::SetBoxPosition(int index, XMFLOAT3 input) {
 
 void CObjectsShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 {
-	
+
 	for (int i = 0; i < MAX_BOX_SIZE * MAX_PLAYER_SIZE; ++i) {
 		m_ppObjects[i]->Animate(fTimeElapsed);
 	}
@@ -634,14 +802,14 @@ void CObjectsShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 			XMFLOAT3 xmf3Result_1;
 			XMFLOAT3 xmf3Result_2;
 			XMStoreFloat3(&xmf3Result_1, XMVector3Dot(XMLoadFloat3(&CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook()), XMLoadFloat3(&m_ppObjects[i]->look)));
-			XMStoreFloat3(&xmf3Result, XMVector3Dot(XMLoadFloat3(&m_ppObjects[i]->look), XMLoadFloat3(&xmf3Result_1))); 
+			XMStoreFloat3(&xmf3Result, XMVector3Dot(XMLoadFloat3(&m_ppObjects[i]->look), XMLoadFloat3(&xmf3Result_1)));
 			xmf3Result_2 = XMFLOAT3(Vector3::Subtract(CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook(), xmf3Result));
 			CGameFramework::sendLook = XMFLOAT3(2 * xmf3Result_2.x / 3, 2 * xmf3Result_2.y / 3, 2 * xmf3Result_2.z / 3);
 			check = true;
 			break;
 		}
 		case CONTAINS:
-		
+
 			break;
 		}
 	}
@@ -675,8 +843,28 @@ void CObjectsShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera 
 	}
 }
 
+D3D12_BLEND_DESC CObjectsShader::CreateBlendState()
+{
+	D3D12_BLEND_DESC d3dBlendDesc;
+	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
+	d3dBlendDesc.AlphaToCoverageEnable = FALSE;
+	d3dBlendDesc.IndependentBlendEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	return(d3dBlendDesc);
+}
+
 void CObjectsShader::BoundCheck(XMFLOAT3 playerPosition, float playerSize) {
-	
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -817,13 +1005,13 @@ void CFlowerShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommand
 	float fTerrainWidth = pTerrain->GetWidth();
 	float fTerrainLength = pTerrain->GetLength();
 
-	int xObjects = 3;
+	int xObjects = 1;
 	int yObjects = 1;
-	int zObjects = 3;
+	int zObjects = 1;
 	m_nTree = (xObjects * yObjects * zObjects);
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/AK-47.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/Green.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -840,7 +1028,7 @@ void CFlowerShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommand
 	pCubeMaterial->SetTexture(pTexture);
 #endif
 
-	CBillboardMesh *pCubeMesh = new CBillboardMesh(pd3dDevice, pd3dCommandList, 12.0f, 6.0f, 6.0f);
+	CBillboardMesh *pCubeMesh = new CBillboardMesh(pd3dDevice, pd3dCommandList, 100.0f, 100.0f, 100.0f);
 
 	m_ppTree = new CBillboard*[m_nTree];
 
