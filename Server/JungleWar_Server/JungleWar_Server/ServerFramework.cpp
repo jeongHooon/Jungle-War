@@ -1041,23 +1041,30 @@ void ServerFramework::DisconnectPlayer(int cl_id) {
 
 void ServerFramework::Update(duration<float>& elapsed_time) {
 	// 이유를 모르겠네 도대체;
-	ol_ex[4].command = SS_PLAYER_POS_UPDATE;
-	ol_ex[4].elapsed_time = elapsed_time.count();
-	PostQueuedCompletionStatus(iocp_handle, 0, 4, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[4]));
+	ol_ex[MAX_PLAYER_SIZE].command = SS_PLAYER_POS_UPDATE;
+	ol_ex[MAX_PLAYER_SIZE].elapsed_time = elapsed_time.count();
+	PostQueuedCompletionStatus(iocp_handle, 0, MAX_PLAYER_SIZE, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[MAX_PLAYER_SIZE]));
 
-	ol_ex[5].command = SS_COLLISION;
-	PostQueuedCompletionStatus(iocp_handle, 0, 5, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[5]));
+	ol_ex[MAX_PLAYER_SIZE + 1].command = SS_COLLISION;
+	PostQueuedCompletionStatus(iocp_handle, 0, MAX_PLAYER_SIZE + 1, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[MAX_PLAYER_SIZE + 1]));
 
-	ol_ex[9].command = SS_COLLISION_BB;
-	PostQueuedCompletionStatus(iocp_handle, 0, 9, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[9]));
+	// Bullet이 실제로 날아가는건 여기서 관리해야할거같다.
+	ol_ex[MAX_PLAYER_SIZE + 3].command = SS_BULLET_UPDATE;
+	ol_ex[MAX_PLAYER_SIZE + 3].elapsed_time = elapsed_time.count();
+	PostQueuedCompletionStatus(iocp_handle, 0, MAX_PLAYER_SIZE + 3, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[MAX_PLAYER_SIZE + 3]));
+
+	ol_ex[MAX_PLAYER_SIZE + 5].command = SS_COLLISION_BB;
+	PostQueuedCompletionStatus(iocp_handle, 0, MAX_PLAYER_SIZE + 4, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[MAX_PLAYER_SIZE + 5]));
+
+	//ol_ex[MAX_PLAYER_SIZE + 6].command = SS_COLLISION_MP;
+	//PostQueuedCompletionStatus(iocp_handle, 0, MAX_PLAYER_SIZE + 6, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[MAX_PLAYER_SIZE + 6]));
+
+
 
 	// bool 변수 클라이언트마다 배정.
 	// 시간값을 overlapped로 넘겨줘서 
 
-	// Bullet이 실제로 날아가는건 여기서 관리해야할거같다.
-	ol_ex[7].command = SS_BULLET_UPDATE;
-	ol_ex[7].elapsed_time = elapsed_time.count();
-	PostQueuedCompletionStatus(iocp_handle, 0, 7, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[7]));
+	
 
 	//ol_ex[8].command = SS_BOX_UPDATE;
 	//ol_ex[8].elapsed_time = elapsed_time.count();
@@ -1084,4 +1091,8 @@ void ServerFramework::TimerSend(duration<float>& elapsed_time) {
 	is_item_gen = false;
 	}
 	}*/
+}
+
+void ServerFramework::magnetic()
+{
 }

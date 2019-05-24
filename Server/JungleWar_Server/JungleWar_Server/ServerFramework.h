@@ -39,13 +39,14 @@ class ServerFramework
 	mutex client_lock;
 
 	// Timer전용 OverlappedExtensionSetd
-	// 4 플레이어 위치 업데이트 전용
-	// 5 플레이어 총알 충돌체크전용
-	// 6 플레이어 총알 생성
-	// 7 총알 업데이트
-	// 8 박스 업데이트
-	// 9 박스 총알 충돌체크전용
-	OverlappedExtensionSet ol_ex[20];
+	// MAX_PLAYER_SIZE  플레이어 위치 업데이트 전용
+	// MAX_PLAYER_SIZE + 1 플레이어 총알 충돌체크전용
+	// MAX_PLAYER_SIZE + 2 플레이어 총알 생성
+	// MAX_PLAYER_SIZE + 3 총알 업데이트
+	// MAX_PLAYER_SIZE + 4 박스 업데이트
+	// MAX_PLAYER_SIZE + 5 박스 총알 충돌체크전용
+	// MAX_PLAYER_SIZE + 6 자기장 업데이트
+	OverlappedExtensionSet ol_ex[OX_SIZE];
 
 	Bullet bullets[MAX_PLAYER_SIZE * MAX_BULLET_SIZE];
 	//Box boxes[MAX_PLAYER_SIZE][MAX_BOX_SIZE] = { 0 };
@@ -72,6 +73,7 @@ public:
 	void SendPacket(int cl_id, void* packet);		//
 	void ProcessPacket(int cl_id, char* packet);	// 패킷 수신후 정리해서 송신
 	void DisconnectPlayer(int cl_id);				// 플레이어 접속 해지
+	void magnetic();
 
 													//void TimerFunc();
 	ServerFramework();

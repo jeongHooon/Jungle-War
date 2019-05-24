@@ -9,6 +9,7 @@
 #define CLIENT_BUF_SIZE		1024
 #define MAX_BULLET_SIZE			40
 #define MAX_BOX_SIZE			10
+#define OX_SIZE				20
 
 ////////////////////////////////
 #define maxUserIDLen		20
@@ -57,6 +58,7 @@
 #define SS_BOX_GENERATE			19
 #define SS_BOX_UPDATE			20
 #define SS_COLLISION_BB			21
+#define SS_COLLISION_MP			22
 
 
 
