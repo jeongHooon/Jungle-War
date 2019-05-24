@@ -101,7 +101,7 @@ struct Client {
 	bool is_crouch;
 	float hp = 100.f;
 	int box_count = 0;
-
+	char clientid[256];
 
 	Team team;
 	ARWeapons ar_weapons;
@@ -149,6 +149,8 @@ struct Box {
 	bool in_use = false;
 	bool is_send = false;
 	float x, y, z;
+
+	int boxindex;
 
 
 	XMFLOAT3 look_vec;

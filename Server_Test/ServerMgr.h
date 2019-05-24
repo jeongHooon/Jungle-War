@@ -1,35 +1,32 @@
 #pragma once
 
-struct ProtoCommand {
-	WORD command;
-	BYTE data[0];
+// Server 에서 받아오는 Player의 정보 
+struct SPlayer {
+	char idid[256];
+	XMFLOAT3 pos;
+	int player_status;
 };
 
-const WORD ComLoginREQ = 1;		// id와 패스워드로 로그인 요청
-struct StrLoginREQ {			// REQ : 뭔가 요청하는 패킷
+struct ProtoCommand
+{
+	WORD command;
+	BYTE data[0];//크기가 0이므로 실제로 메모리를 할당하지는
+				// 않지만, ProtoCommand의 끝부분을 알려주는
+				// 포인터로서 기능한다.
+				// 그러므로 이 위치에 데이터를 만든다면
+				// ProtoCommand 뒤에 붙어있는 구조체를 만들
+				// 수 있다.
+};
+
+
+
+struct StrLoginREQ    //프로토콜에 REQ가 붙으면
+{						//  뭔가 요청을 하는 패킷
 	BYTE userid[maxUserIDLen];
 	BYTE passwd[maxPasswdLen];
 };
 
-const WORD ComLoginACK = 2;		// 서버에서 로그인 결과 응답
-struct StrLoginACK {			// ACK : REQ에 대한 응답을 의미하는 패킷
-	BYTE result;		
-	// 0이면 로그인 성공, 아니면 실패
-};
 
-enum EnumLoginACK {
-	LoginACKConnectAllow = 0,		// 접속 허용
-	LoginACKInvaildPasswd = 1,		// 패스워드 불일치
-	LoginACKDuplicateConnect = 2,	// 한 아이디로 중복접속
-};
-
-//////////////////////////////////////////
-
-// Server 에서 받아오는 Player의 정보 
-struct SPlayer {
-	XMFLOAT3 pos;
-	int player_status;
-};
 
 class ServerMgr
 {
@@ -44,25 +41,24 @@ class ServerMgr
 	Bullet bullets[MAX_BULLET_SIZE] = { 0 };
 	int recvd_bullet_id = 0;
 
-	Box boxes[MAX_BOX_SIZE] = { 0 };
+	Box boxes[MAX_BOX_SIZE*MAX_PLAYER_SIZE] = { 0 };
 	int recvd_box_id = 0;
 
 	bool first_set_id = true;
 
 	char send_buffer[CLIENT_BUF_SIZE] = { 0 };
+	//char send_buffer_vector[CLIENT_BUF_SIZE] = { 0 };
 	char recv_buffer[CLIENT_BUF_SIZE] = { 0 };
 
 	char packet_buffer[CLIENT_BUF_SIZE] = { 0 };
 	DWORD in_packet_size = 0;
 	DWORD saved_packet_size = 0;
 
-	SPlayer sc_vec_buff[4];
+	SPlayer sc_vec_buff[MAX_PLAYER_SIZE];
 	XMFLOAT3 sc_look_vec;
 
 	XMFLOAT3 collision_pos;
 	float client_hp[MAX_PLAYER_SIZE] = { 0 };
-	BYTE client_myid[MAX_PLAYER_SIZE] = { 0 };
-
 
 	XMFLOAT3 collision_box_pos;
 	float box_hp[MAX_PLAYER_SIZE * MAX_BOX_SIZE] = { 0 };
@@ -89,26 +85,24 @@ public:
 	void ProcessPacket(char* ptr);
 	void ErrorDisplay(const char* msg, int err_no);
 	int GetClientID();
-	
-	
-	// 내꺼 로그인
-	void SendLoginREQ(SOCKET toSerer);
 	int ReturnCameraID();
 	float GetBoxHp(int index) { return box_hp[index]; }
+	bool GetBoxInuse(int index) { return boxes[index].in_use; }
 	Bullet GetBullet();
-	Box GetBox();
+	Box GetBox(int index);
 	SPlayer ReturnPlayerPosStatus(int client_id);
 	XMFLOAT3 ReturnLookVector();
 	XMFLOAT3 ReturnCollsionPosition(bool* is_collide);
 	// 아이템 생성 후 위치 Return
 	bool IsItemGen();
 	XMFLOAT3 ReturnItemPosition();
-
+	
 	// 플레이어 체력
 	float GetPlayerHP(int p_n);
 
-	char GetPlayerID(int p_i);
 	// 
 	void ReturnBuildingPosition(XMFLOAT3* building_pos);
 	void ReturnBuildingExtents(XMFLOAT3* building_pos);
 };
+
+

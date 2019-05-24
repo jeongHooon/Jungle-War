@@ -55,19 +55,19 @@ class ServerFramework
 	int bullet_counter[MAX_PLAYER_SIZE] = { 0 };
 	int box_counter[MAX_PLAYER_SIZE] = { 0 };
 
-
+	int box_count = 0;
 
 	// 플레이어마다 bullet 시간을 가지고 있다. 
 	float bullet_times[MAX_PLAYER_SIZE];
-
 	float jumpAcc = 70.0f;
+
 	// Building obejct는 총 10개
 	//Object* object_mother;
 	Building* building[OBJECT_BUILDING];
 
 public:
 	void InitServer();
-	void AcceptPlayer();
+	void AcceptPlayer(int cl_id, char* packet);
 	void WorkerThread();
 	void SendPacket(int cl_id, void* packet);		//
 	void ProcessPacket(int cl_id, char* packet);	// 패킷 수신후 정리해서 송신
