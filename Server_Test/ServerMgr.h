@@ -2,7 +2,6 @@
 
 // Server 에서 받아오는 Player의 정보 
 struct SPlayer {
-	char idid[256];
 	XMFLOAT3 pos;
 	int player_status;
 };
@@ -21,9 +20,9 @@ struct ProtoCommand
 
 
 struct StrLoginREQ    //프로토콜에 REQ가 붙으면
-{						//  뭔가 요청을 하는 패킷
-	BYTE userid[maxUserIDLen];
-	BYTE passwd[maxPasswdLen];
+{						//  요청을 하는 패킷
+//	BYTE userid[maxUserIDLen];
+//	BYTE passwd[maxPasswdLen];
 };
 
 
@@ -65,6 +64,10 @@ class ServerMgr
 
 	int camera_id = 0;
 	string server_ip;
+	
+	BYTE userid[maxUserIDLen];
+	BYTE passwd[maxPasswdLen];
+
 
 	// 아이템 생성 부분
 	XMFLOAT3 item_pos;
