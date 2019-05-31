@@ -59,8 +59,8 @@ void ServerFramework::InitServer() {
 	if (retval == SOCKET_ERROR)
 		printf("listen ¿¡·¯\n");
 
-	XMFLOAT3 xmf3Scale(4.0f, 2.0f, 4.0f);
-	LPCTSTR file_name = _T("terrain11.raw");
+	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
+	LPCTSTR file_name = _T("TerrainNew.raw");
 	height_map = new CHeightMapImage(file_name, 513, 513, xmf3Scale);
 
 	client_lock.lock();

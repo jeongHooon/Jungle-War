@@ -515,6 +515,9 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case 'c':
 		case 'C':
+
+			printf("캐릭터 Y %f  \n", m_pPlayer[my_client_id]->GetPosition().y);
+			printf("터레인 높이 %f \n", m_pScene->GetTerrain()->GetHeight(m_pPlayer[my_client_id]->GetPosition().x, m_pPlayer[my_client_id]->GetPosition().z));
 			if (is_pushed[CS_KEY_PRESS_CROUCH] == false) {
 				m_pPlayer[my_client_id]->GetKeyInput(7);
 				server_mgr.SendPacket(CS_KEY_PRESS_CROUCH, m_pPlayer[my_client_id]->GetLook());
@@ -1232,7 +1235,6 @@ void CGameFramework::FrameAdvance()
 			m_pObject[i]->Render(m_pd3dCommandList, m_pCamera);
 		}
 	}
-
 
 	
 	if (gameMode == 0) {

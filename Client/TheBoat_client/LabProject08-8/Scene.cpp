@@ -116,34 +116,13 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 {
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 
-	/*m_nObjects = 5;
-	m_ppObjects = new CGameObject*[m_nObjects];
-
-#ifdef _WITH_GUNSHIP_MODEL
-	m_ppObjects[0] = new CGunshipHellicopter(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	m_ppObjects[0]->SetPosition(XMFLOAT3(0.0f, 0.0f, 50.0f));
-	m_ppObjects[1] = new CGunshipHellicopter(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	m_ppObjects[1]->SetPosition(XMFLOAT3(-30.0f, 5.0f, 30.0f));
-	m_ppObjects[2] = new CGunshipHellicopter(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	m_ppObjects[2]->SetPosition(XMFLOAT3(+30.0f, 0.0f, 20.0f));
-	m_ppObjects[3] = new CGunshipHellicopter(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	m_ppObjects[3]->SetPosition(XMFLOAT3(+40.0f, 10.0f, 50.0f));
-	m_ppObjects[4] = new CGunshipHellicopter(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	m_ppObjects[4]->SetPosition(XMFLOAT3(+40.0f, -10.0f, 30.0f));
-#endif
-#ifdef _WITH_APACHE_MODEL
-	m_ppObjects[0] = new CApacheHellicopter(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	m_ppObjects[0]->SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
-	m_ppObjects[0]->Rotate(0.0f, 90.0f, 0.0f);
-#endif*/
-
 	XMFLOAT3 xmf3Scale(8.0f, 2.f, 8.0f);
 	XMFLOAT4 xmf4Color(1.0f, 1.0f, 1.0f, 0.0f);
 #ifdef _WITH_
 	_PARTITION
 	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("../Assets/Image/Terrain/HeightMap.raw"), 513, 513, 17, 17, xmf3Scale, xmf4Color);
 #else
-	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("../Assets/Image/Terrain/terrain11.raw"), 513, 513, 513, 513, xmf3Scale, xmf4Color);
+	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("../Assets/Image/Terrain/TerrainNew.raw"), 513, 513, 513, 513, xmf3Scale, xmf4Color);
 #endif
 
 
@@ -157,7 +136,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	m_pBuildings = pBuildingShader;
 
-	m_nShaders = 5;
+	m_nShaders = 6;
 	m_ppShaders = new CShader*[m_nShaders];
 
 	CRedDotShader *pTreeShader = new CRedDotShader();
@@ -180,12 +159,16 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pObjectsShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
+	CBigBoxShader *pBigBoxShader = new CBigBoxShader();
+	pBigBoxShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pBigBoxShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
 	m_ppShaders[0] = pTreeShader;
 	m_ppShaders[1] = pFlowerShader;
 	m_ppShaders[2] = pBulletShader;
 	m_ppShaders[3] = pParticleShader;
 	m_ppShaders[4] = pObjectsShader;
-
+	m_ppShaders[5] = pBigBoxShader;
 	// UI
 
 	m_nUIShaders = 26;
@@ -605,7 +588,6 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 		m_ppShaders[0]*/
 	m_pBuildings->AnimateObjects(fTimeElapsed, pCamera);
 	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->AnimateObjects(fTimeElapsed, pCamera);
-
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Animate(fTimeElapsed);
 
 	if (m_pLights)
@@ -623,6 +605,7 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pObject[i]->SetScale(0.5f, 0.5f, 0.5f);
 	}
+	m_ppShaders[5]->SetScale(0.1f, 0.1f, 0.1f);
 	//for (int i = 0; i < m_nObjects; i++) m_ppUIShaders[i]->AnimateObjects(fTimeElapsed, pCamera);
 
 	m_ppUIShaders[0]->AnimateObjects(fTimeElapsed, pCamera);
