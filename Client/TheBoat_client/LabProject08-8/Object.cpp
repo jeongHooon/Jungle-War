@@ -15,6 +15,8 @@ CTexture::CTexture(int nTextures, UINT nTextureType, int nSamplers)
 	if (m_nTextures > 0)
 	{
 		m_pRootArgumentInfos = new SRVROOTARGUMENTINFO[m_nTextures];
+		m_pRootArgumentInfos2 = new SRVROOTARGUMENTINFO[m_nTextures];
+
 		m_ppd3dTextureUploadBuffers = new ID3D12Resource*[m_nTextures];
 		m_ppd3dTextures = new ID3D12Resource*[m_nTextures];
 	}
@@ -43,6 +45,11 @@ void CTexture::SetRootArgument(int nIndex, UINT nRootParameterIndex, D3D12_GPU_D
 	m_pRootArgumentInfos[nIndex].m_nRootParameterIndex = nRootParameterIndex;
 	m_pRootArgumentInfos[nIndex].m_d3dSrvGpuDescriptorHandle = d3dSrvGpuDescriptorHandle;
 }
+void CTexture::SetRootArgumentCbv(int nIndex, UINT nRootParameterIndex, D3D12_GPU_DESCRIPTOR_HANDLE d3dCbvGpuDescriptorHandle)
+{
+	m_pRootArgumentInfos2[nIndex].m_nRootParameterIndex = nRootParameterIndex;
+	m_pRootArgumentInfos2[nIndex].m_d3dSrvGpuDescriptorHandle = d3dCbvGpuDescriptorHandle;
+}
 
 void CTexture::SetSampler(int nIndex, D3D12_GPU_DESCRIPTOR_HANDLE d3dSamplerGpuDescriptorHandle)
 {
@@ -64,6 +71,10 @@ void CTexture::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
 	}
 }
 
+void CTexture::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList, int nIndex)
+{
+	pd3dCommandList->SetGraphicsRootDescriptorTable(5, m_pRootArgumentInfos2[nIndex].m_d3dSrvGpuDescriptorHandle);
+}
 void CTexture::UpdateShaderVariable(ID3D12GraphicsCommandList *pd3dCommandList, int nIndex)
 {
 	pd3dCommandList->SetGraphicsRootDescriptorTable(m_pRootArgumentInfos[nIndex].m_nRootParameterIndex, m_pRootArgumentInfos[nIndex].m_d3dSrvGpuDescriptorHandle);
@@ -485,7 +496,7 @@ void CGameObject::LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, ID3D12Gra
 
 	m_pMaterial = new CMaterial();
 	CTexture *pTexture = new CTexture(2, RESOURCE_TEXTURE2D, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Model/demo_soldier1.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Model/demo_soldier.dds", 0);
 	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Model/warrior.dds", 1);
 
 	m_pMaterial->SetTexture(pTexture);
@@ -497,7 +508,8 @@ void CGameObject::LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, ID3D12Gra
 	CTexturedShader *pShader = new CTexturedShader();
 	pShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
 	pShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
-	pShader->CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 1, 1);
+	pShader->CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 1, 2); 
+	//pShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, 1, m_pd3dcbGameObject, ncbElementBytes);
 	pShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, 1, pd3dcbResource, ncbElementBytes);
 	pShader->CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, true);
 
@@ -516,24 +528,24 @@ void CGameObject::LoadFrameHierarchyFromFile2(ID3D12Device *pd3dDevice, ID3D12Gr
 {
 	CMesh *pMesh = NULL;
 	CMesh *pMesh1 = NULL;
-	//LoadMD5Model(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Soldier_Mesh.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
-	//LoadMD5Model(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Soldier_Rifle.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh1);
-	//LoadMD5Model(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/WarriorMesh.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
+	CTexturedRectMesh *pRectMesh = NULL;
 
+
+	//pRectMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 15.0f, 0.0f, 15.0f);
+	//SetMesh(0, pRectMesh);
+
+	ResizeMeshes(2);
 	LoadObjectModel(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Image/Trees/tree3.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
-	//LoadMD5Anim(L"../Assets/Model/WarriorIdle.MD5ANIM", NewMD5Model);//0
 	SetMesh(0, pMesh);
-	//AddRef();
-	
-	m_pMaterial = new CMaterial();
+	LoadMD5Model(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Soldier_Rifle.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh1);
+	SetMesh(1, pMesh1);
+
+	//CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Trees/Tree.dds", 0);
 
-	m_pMaterial->SetTexture(pTexture);
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
-
 	ID3D12Resource *pd3dcbResource = CreateShaderVariables(pd3dDevice, pd3dCommandList);
-
 
 	CTexturedShader *pShader = new CTexturedShader();
 	pShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
@@ -541,9 +553,15 @@ void CGameObject::LoadFrameHierarchyFromFile2(ID3D12Device *pd3dDevice, ID3D12Gr
 	pShader->CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 1, 1);
 	pShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, 1, pd3dcbResource, ncbElementBytes);
 	pShader->CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, true);
+	//ID3D12Resource *pd3dcbResource = CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
+
+
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(pTexture);
+	
 	SetCbvGPUDescriptorHandle(pShader->GetGPUCbvDescriptorStartHandle());
-
+	//SetShader(pShader);
 	m_pMaterial->SetShader(pShader);
 
 	/*if (pMesh)
@@ -551,7 +569,7 @@ void CGameObject::LoadFrameHierarchyFromFile2(ID3D12Device *pd3dDevice, ID3D12Gr
 	else
 	ResizeMeshes(0);*/
 
-	//if (m_pMaterial) SetMaterial(m_pMaterial);
+	//SetMaterial(m_pMaterial);
 }
 void CGameObject::PrintFrameInfo(CGameObject *pGameObject, CGameObject *pParent)
 {
