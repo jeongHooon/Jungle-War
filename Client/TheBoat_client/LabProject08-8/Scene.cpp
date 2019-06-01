@@ -122,7 +122,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	_PARTITION
 	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("../Assets/Image/Terrain/HeightMap.raw"), 513, 513, 17, 17, xmf3Scale, xmf4Color);
 #else
-	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("../Assets/Image/Terrain/terrain11.raw"), 513, 513, 513, 513, xmf3Scale, xmf4Color);
+	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("../Assets/Image/Terrain/TerrainNew.raw"), 513, 513, 513, 513, xmf3Scale, xmf4Color);
 #endif
 
 
@@ -605,7 +605,7 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pObject[i]->SetScale(0.5f, 0.5f, 0.5f);
 	}
-	m_ppShaders[5]->SetScale(0.9, 0.9, 0.9);
+	m_ppShaders[5]->SetScale(0.1f, 0.1f, 0.1f);
 	//for (int i = 0; i < m_nObjects; i++) m_ppUIShaders[i]->AnimateObjects(fTimeElapsed, pCamera);
 
 	m_ppUIShaders[0]->AnimateObjects(fTimeElapsed, pCamera);

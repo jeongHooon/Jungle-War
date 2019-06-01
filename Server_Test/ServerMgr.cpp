@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "ServerMgr.h"
 
-char userid[256];
-char passwd[256];
-
 void ServerMgr::ErrorDisplay(const char* msg, int err_no) {
 	_wsetlocale(LC_ALL, L"korean");
 	WCHAR *lpMsgBuf;
