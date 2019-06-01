@@ -60,7 +60,7 @@ void ServerFramework::InitServer() {
 		printf("listen ¿¡·¯\n");
 
 	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
-	LPCTSTR file_name = _T("TerrainNew.raw");
+	LPCTSTR file_name = _T("TerrainNew1.raw");
 	height_map = new CHeightMapImage(file_name, 513, 513, xmf3Scale);
 
 	client_lock.lock();
