@@ -735,12 +735,12 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	m_nObjects = (xObjects * 2 + 1) * (yObjects * 2 + 1) * (zObjects * 2 + 1);
 
 	CTexture *pTextures = new CTexture(6, RESOURCE_TEXTURE2DARRAY, 0);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 0);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 1);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 4);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 3);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 2);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blue.dds", 5);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Box.dds", 0);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Box.dds", 1);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Box.dds", 4);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Box.dds", 3);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Box.dds", 2);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Box.dds", 5);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -890,7 +890,7 @@ D3D12_BLEND_DESC CObjectsShader::CreateBlendState()
 	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
 	d3dBlendDesc.AlphaToCoverageEnable = FALSE;
 	d3dBlendDesc.IndependentBlendEnable = FALSE;
-	d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = FALSE;
 	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
 	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
 	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
