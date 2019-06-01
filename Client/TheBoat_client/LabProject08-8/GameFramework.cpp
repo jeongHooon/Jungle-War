@@ -40,6 +40,7 @@ CGameFramework::CGameFramework()
 		m_pPlayer[i] = NULL;
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		m_pObject[i] = NULL;
+	m_pBlueBox[0] = NULL;
 	_tcscpy_s(m_pszFrameRate, _T("Jungle War ("));
 
 	for (int i = 0; i < 4; ++i) itemUI[i] = false;
@@ -948,7 +949,7 @@ void CGameFramework::BuildObjects()
 			m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, -1.0f));
 
 	}
-
+	m_pScene->m_pBlueBox[0] = m_pBlueBox[0] = new CBlueBox(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
 	//m_pCamera = m_pPlayer[my_client_id]->GetCamera();
 
 #ifdef _WITH_APACHE_MODEL
@@ -1011,6 +1012,7 @@ void CGameFramework::BuildObjects()
 		if (m_pPlayer[i]) m_pPlayer[i]->ReleaseUploadBuffers();
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pObject[i]) m_pObject[i]->ReleaseUploadBuffers();
+	if (m_pBlueBox[0]) m_pBlueBox[0]->ReleaseUploadBuffers();
 
 	if (m_pScene) m_pScene->ReleaseUploadBuffers();
 
@@ -1023,7 +1025,7 @@ void CGameFramework::ReleaseObjects()
 		if (m_pPlayer[i]) delete m_pPlayer[i];
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pObject[i]) delete m_pObject[i];
-
+	if (m_pBlueBox[0])delete m_pBlueBox[0];
 	if (m_pScene) m_pScene->ReleaseObjects();
 	if (m_pScene) delete m_pScene;
 }
@@ -1123,7 +1125,7 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 	}
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pObject) m_pObject[i]->Animate(fTimeElapsed);
-
+	if (m_pBlueBox[0])m_pBlueBox[0]->Animate(fTimeElapsed);
 	if (m_pScene) m_pScene->AnimateObjects(fTimeElapsed, pCamera);
 
 	bool dummy_bool;
@@ -1235,7 +1237,12 @@ void CGameFramework::FrameAdvance()
 			m_pObject[i]->Render(m_pd3dCommandList, m_pCamera);
 		}
 	}
-
+	m_pBlueBox[0]->UpdateTransform(NULL);
+	if (0 == my_client_id && m_pCamera->GetMode() == SPACESHIP_CAMERA);
+	else {
+		m_pBlueBox[0]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
+		m_pBlueBox[0]->Render(m_pd3dCommandList, m_pCamera);
+	}
 	
 	if (gameMode == 0) {
 		m_pScene->m_ppMainUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 메인화면
@@ -1265,7 +1272,8 @@ void CGameFramework::FrameAdvance()
 			m_pScene->m_ppUIShaders[1]->Render(m_pd3dCommandList, m_pCamera);// UI렌더 바꿔야함.
 
 		if (alphaMapOn == true)
-			m_pScene->m_ppUIShaders[9]->Render(m_pd3dCommandList, m_pCamera); // 맵
+			m_pScene->m_ppUIShaders[26]->Render(m_pd3dCommandList, m_pCamera); // 맵
+		//m_pScene->m_ppUIShaders[9]->Render(m_pd3dCommandList, m_pCamera); // 맵
 
 
 

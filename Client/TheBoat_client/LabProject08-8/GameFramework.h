@@ -73,6 +73,8 @@ public:
 
 	static CPlayer				*m_pPlayer[4];
 	static CPlayer				*m_pObject[NUM_OBJECT];
+	CPlayer						*m_pBlueBox[1];
+
 	static CCamera				*m_pCamera;
 	static int					boxBound;
 	float						playerHp = 100;

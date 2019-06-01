@@ -77,6 +77,8 @@ public:
 
 	CPlayer						*m_pPlayer[4];
 	CPlayer						*m_pObject[30];
+	CPlayer						*m_pBlueBox[1];
+
 	static int					makeParticleIndex;
 	static bool					particleOn;
 	static XMFLOAT3				particlePosition;

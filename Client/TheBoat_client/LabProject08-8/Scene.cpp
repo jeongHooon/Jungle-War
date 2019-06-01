@@ -136,7 +136,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	m_pBuildings = pBuildingShader;
 
-	m_nShaders = 6;
+	m_nShaders = 5;
 	m_ppShaders = new CShader*[m_nShaders];
 
 	CRedDotShader *pTreeShader = new CRedDotShader();
@@ -168,10 +168,9 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppShaders[2] = pBulletShader;
 	m_ppShaders[3] = pParticleShader;
 	m_ppShaders[4] = pObjectsShader;
-	m_ppShaders[5] = pBigBoxShader;
 	// UI
 
-	m_nUIShaders = 26;
+	m_nUIShaders = 27;
 	m_ppUIShaders = new CShader*[m_nUIShaders];
 
 	CMiniMapShader *pMiniMapShader = new CMiniMapShader();
@@ -277,6 +276,10 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pNumShader9->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pNumShader9->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
+	CBlueScreenShader *pBlueScreenShader = new CBlueScreenShader();
+	pBlueScreenShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pBlueScreenShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
 	m_ppUIShaders[0] = pMiniMapShader;
 	m_ppUIShaders[1] = pTreeShader;
 	m_ppUIShaders[2] = pHpBarShader;
@@ -303,6 +306,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppUIShaders[23] = pNumShader7;
 	m_ppUIShaders[24] = pNumShader8;
 	m_ppUIShaders[25] = pNumShader9;
+	m_ppUIShaders[26] = pBlueScreenShader;
 
 	// 메인화면
 	m_nMainUIShaders = 4;
@@ -605,7 +609,6 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pObject[i]->SetScale(0.5f, 0.5f, 0.5f);
 	}
-	m_ppShaders[5]->SetScale(0.1f, 0.1f, 0.1f);
 	//for (int i = 0; i < m_nObjects; i++) m_ppUIShaders[i]->AnimateObjects(fTimeElapsed, pCamera);
 
 	m_ppUIShaders[0]->AnimateObjects(fTimeElapsed, pCamera);
