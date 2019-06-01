@@ -45,6 +45,11 @@ class ServerMgr
 	int camera_id = 0;
 	string server_ip;
 
+	// 로그인
+	char userid[maxUserIDLen];
+	char userpw[maxUserIDLen];
+
+
 	// 아이템 생성 부분
 	XMFLOAT3 item_pos;
 	bool is_item_gen;
