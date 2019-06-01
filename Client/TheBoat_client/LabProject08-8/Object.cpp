@@ -535,15 +535,19 @@ void CGameObject::LoadFrameHierarchyFromFile2(ID3D12Device *pd3dDevice, ID3D12Gr
 	//pRectMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 15.0f, 0.0f, 15.0f);
 	//SetMesh(0, pRectMesh);
 
-	ResizeMeshes(2);
-	LoadObjectModel(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Image/Trees/tree3.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
+	//ResizeMeshes(2);
+	//LoadObjectModel(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Image/Trees/tree3.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
+
+	LoadObjectModel(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Image/Trees/trree.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
 	SetMesh(0, pMesh);
-	LoadMD5Model(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Soldier_Rifle.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh1);
-	SetMesh(1, pMesh1);
+	//LoadMD5Model(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Soldier_Rifle.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh1);
+	//SetMesh(1, pMesh1);
 
 	//CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Trees/Tree.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/oak3.dds", 0);
+
+	//pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Trees/Tree.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	ID3D12Resource *pd3dcbResource = CreateShaderVariables(pd3dDevice, pd3dCommandList);

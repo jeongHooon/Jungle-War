@@ -735,12 +735,12 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	m_nObjects = (xObjects * 2 + 1) * (yObjects * 2 + 1) * (zObjects * 2 + 1);
 
 	CTexture *pTextures = new CTexture(6, RESOURCE_TEXTURE2DARRAY, 0);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Box.dds", 0);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Box.dds", 1);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Box.dds", 4);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Box.dds", 3);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Box.dds", 2);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/Box.dds", 5);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/oak1.dds", 0);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/oak1.dds", 1);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/oak1.dds", 4);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/oak1.dds", 3);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/oak1.dds", 2);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/oak1.dds", 5);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
