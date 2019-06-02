@@ -1314,19 +1314,19 @@ void CGameFramework::FrameAdvance()
 		case DISJOINT:
 		{
 			blueScreenMode = true;
-			//cout << "자기장 미충돌" << endl;
+			cout << "자기장 미충돌" << endl;
 			break;
 		}
 		case INTERSECTS:
 		{
 			blueScreenMode = false;
-			//cout << "자기장 충돌 INTERSETS" << endl;
+			cout << "자기장 충돌 INTERSETS" << endl;
 			break;
 		}
 		case CONTAINS:
 		{
 			blueScreenMode = true;
-			//cout << "자기장 충돌 CONTAINS" << endl;
+			cout << "자기장 충돌 CONTAINS" << endl;
 			break;
 			break;
 		}
