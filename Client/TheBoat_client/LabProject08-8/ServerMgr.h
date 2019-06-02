@@ -3,6 +3,8 @@
 // Server 에서 받아오는 Player의 정보 
 struct SPlayer {
 	XMFLOAT3 pos;
+	float elecX, elecY, elecZ;
+	int elecCount;
 	int player_status;
 };
 
