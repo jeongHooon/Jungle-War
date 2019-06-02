@@ -119,6 +119,9 @@ struct SC_PACKET_ENTER_PLAYER {
 	BYTE passwd[maxPasswdLen];
 	float x, y, z;
 	// 건물 크기 보낼 때만 사용
+
+	float elecX, elecY, elecZ;
+
 	float hp;
 	float size_x, size_y, size_z;
 };
@@ -139,6 +142,8 @@ struct SC_PACKET_POS {
 	WORD id;
 	int player_status;
 	float x, y, z;
+
+	int elecCount;
 };
 
 struct SC_PACKET_COLLISION {

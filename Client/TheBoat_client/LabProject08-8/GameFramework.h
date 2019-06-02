@@ -17,7 +17,7 @@ private:
 	ServerMgr server_mgr;
 	bool is_pushed[11] = { 0 };
 
-	XMFLOAT3 sc_player_pos[4];
+	XMFLOAT3 sc_player_pos[MAX_PLAYER_SIZE];
 	bool first_recv;
 	int recvd_client_id; 
 

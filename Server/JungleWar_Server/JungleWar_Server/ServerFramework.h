@@ -62,6 +62,8 @@ class ServerFramework
 	float bullet_times[MAX_PLAYER_SIZE];
 	float jumpAcc = 70.0f;
 
+	int elecCount = 0;
+
 	// Building obejct´Â ÃÑ 10°³
 	//Object* object_mother;
 	Building* building[OBJECT_BUILDING];

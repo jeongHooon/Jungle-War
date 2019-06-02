@@ -213,6 +213,10 @@ void ServerFramework::AcceptPlayer() {
 	clients[client_id].prev_packet_size = 0;
 	clients[client_id].team = Team::NON_TEAM;
 
+	clients[client_id].elecX = 0;
+	clients[client_id].elecY = 0;
+
+
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(client_socket),
 		iocp_handle, client_id, 0);
 	// 플레이어 입장 표시
@@ -232,6 +236,9 @@ void ServerFramework::AcceptPlayer() {
 	packet.x = clients[client_id].x;
 	packet.y = clients[client_id].y;
 	packet.z = clients[client_id].z;
+	packet.elecX = 1500.f;
+	packet.elecY = 1000.f;
+	packet.elecZ = 1500.f;
 	SendPacket(client_id, &packet);
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		if (clients[i].in_use && (client_id != i)) {
@@ -239,9 +246,9 @@ void ServerFramework::AcceptPlayer() {
 			SendPacket(i, &packet);
 		}
 	}
-	// 건물 정보 보내주기
 
-	for (int j = 0; j < OBJECT_BUILDING; ++j) {
+	// 건물 정보 보내주기
+	/*for (int j = 0; j < OBJECT_BUILDING; ++j) {
 		SC_PACKET_ENTER_PLAYER packet;
 		packet.id = j;
 		packet.size = sizeof(SC_PACKET_ENTER_PLAYER);
@@ -257,7 +264,7 @@ void ServerFramework::AcceptPlayer() {
 				SendPacket(i, &packet);
 			}
 		}
-	}
+	}*/
 
 	// 해당 클라이언트에게도 다른 클라이언트의 위치를 보내줘야한당!~
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
@@ -581,6 +588,8 @@ void ServerFramework::WorkerThread() {
 				packets.x = clients[client_id].x;
 				packets.y = clients[client_id].y;
 				packets.z = clients[client_id].z;
+
+				packets.elecCount = elecCount;
 
 				if (clients[client_id].is_left_click) {
 					packets.player_status = 2;
@@ -1079,6 +1088,7 @@ void ServerFramework::TimerSend(duration<float>& elapsed_time) {
 				ol_ex[i].command = SC_PLAYER_MOVE;
 				PostQueuedCompletionStatus(iocp_handle, 0, i, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[i]));
 			}
+			++elecCount;
 		}
 		sender_time = 0;
 	}
