@@ -213,8 +213,9 @@ void ServerFramework::AcceptPlayer() {
 	clients[client_id].prev_packet_size = 0;
 	clients[client_id].team = Team::NON_TEAM;
 
-	clients[client_id].elecX = 0;
-	clients[client_id].elecY = 0;
+	clients[client_id].elecX = 500.f;
+	clients[client_id].elecY = 1000.f;
+	clients[client_id].elecZ = 500.f;
 
 
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(client_socket),
@@ -236,9 +237,9 @@ void ServerFramework::AcceptPlayer() {
 	packet.x = clients[client_id].x;
 	packet.y = clients[client_id].y;
 	packet.z = clients[client_id].z;
-	packet.elecX = 500.f;
-	packet.elecY = 1000.f;
-	packet.elecZ = 500.f;
+	packet.elecX = clients[client_id].elecX;
+	packet.elecY = clients[client_id].elecY;
+	packet.elecZ = clients[client_id].elecZ;
 	SendPacket(client_id, &packet);
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		if (clients[i].in_use && (client_id != i)) {
