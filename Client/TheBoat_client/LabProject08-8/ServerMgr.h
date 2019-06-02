@@ -89,6 +89,7 @@ public:
 	float GetPlayerHP(int p_n);
 
 	static int elecCount;
+	static XMFLOAT3 elecPos;
 
 	// 
 	void ReturnBuildingPosition(XMFLOAT3* building_pos);
