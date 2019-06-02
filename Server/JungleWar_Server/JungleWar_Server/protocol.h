@@ -134,6 +134,8 @@ struct SC_PACKET_LOOCVEC {
 	BYTE passwd[maxPasswdLen];
 	DirectX::XMFLOAT3 look_vec;
 	int player_status;
+
+	int elecCount;
 };
 
 struct SC_PACKET_POS {
@@ -143,7 +145,7 @@ struct SC_PACKET_POS {
 	int player_status;
 	float x, y, z;
 
-	int elecCount;
+	//int elecCount;
 };
 
 struct SC_PACKET_COLLISION {

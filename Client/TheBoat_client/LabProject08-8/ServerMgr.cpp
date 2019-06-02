@@ -150,9 +150,9 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		sc_vec_buff[packets->id].player_status = packets->player_status;
 
 		//sc_vec_buff[packets->id].elecCount = packets->elecCount;
-		elecCount = packets->elecCount;
+		//elecCount = packets->elecCount;
 
-		printf("elecCount : %d\n", packets->elecCount);
+		//printf("elecCount : %d\n", packets->elecCount);
 		
 
 		break;
@@ -162,6 +162,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		clients_id = packets->id;
 		sc_look_vec = packets->look_vec;
 		sc_vec_buff[packets->id].player_status = packets->player_status;
+		elecCount = packets->elecCount;
 
 		break;
 	}
