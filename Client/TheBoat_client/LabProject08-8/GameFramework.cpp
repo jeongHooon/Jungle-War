@@ -966,37 +966,45 @@ void CGameFramework::BuildObjects()
 		float xPosition;
 		float zPosition;
 
-		if (i == 0) xPosition = 1000, zPosition = 1000;
-		else if (i == 1) xPosition = 1200, zPosition = 1500;
-		else if (i == 2) xPosition = 1300, zPosition = 1200;
-		else if (i == 3) xPosition = 1500, zPosition = 1670;
-		else if (i == 4) xPosition = 1600, zPosition = 1450;
-		else if (i == 5) xPosition = 1700, zPosition = 1780;
-		else if (i == 6) xPosition = 1800, zPosition = 1150;
+		if (i == 0) xPosition = 230, zPosition = 280;
+		else if (i == 1) xPosition = 110, zPosition = 270;
+		else if (i == 2) xPosition = 135, zPosition = 200;
+		else if (i == 3) xPosition = 260, zPosition = 340;
+		else if (i == 4) xPosition = 310, zPosition = 230;
+		else if (i == 5) xPosition = 360, zPosition = 370;
+		else if (i == 6) xPosition = 430, zPosition = 150;
 
-		else if (i == 7) xPosition = 3000, zPosition = 1000;
-		else if (i == 8) xPosition = 487, zPosition = 951;
-		else if (i == 9) xPosition = 538, zPosition = 969;
-		else if (i == 10) xPosition = 465, zPosition = 766;
-		else if (i == 11) xPosition = 518, zPosition = 757;
-		else if (i == 12) xPosition = 436, zPosition = 795;
-		else if (i == 13) xPosition = 426, zPosition = 729;
+		else if (i == 7) xPosition = 510, zPosition = 310;
+		else if (i == 8) xPosition = 560, zPosition = 290;
+		else if (i == 9) xPosition = 570, zPosition = 190;
+		else if (i == 10) xPosition = 755, zPosition = 240;
+		else if (i == 11) xPosition = 665, zPosition = 360;
+		else if (i == 12) xPosition = 880, zPosition = 335;
+		else if (i == 13) xPosition = 795, zPosition = 420;
 
-		else if (i == 14) xPosition = 1000, zPosition = 3000;
-		else if (i == 15) xPosition = 396, zPosition = 968;
-		else if (i == 16) xPosition = 338, zPosition = 970;
-		else if (i == 17) xPosition = 390, zPosition = 1048;
-		else if (i == 18) xPosition = 469, zPosition = 1106;
-		else if (i == 19) xPosition = 4000, zPosition = 4000;
-		else if (i == 20) xPosition = 653, zPosition = 1029;
+		else if (i == 14) xPosition = 325, zPosition = 700;
+		else if (i == 15) xPosition = 350, zPosition = 550;
+		else if (i == 16) xPosition = 400, zPosition = 710;
+		else if (i == 17) xPosition = 420, zPosition = 860;
+		else if (i == 18) xPosition = 430, zPosition = 645;
+		else if (i == 19) xPosition = 450, zPosition = 550;
+		else if (i == 20) xPosition = 460, zPosition = 770;
 
-		else if (i == 21) xPosition = 3000, zPosition = 3000;
-		else if (i == 22) xPosition = 737, zPosition = 1036;
-		else if (i == 23) xPosition = 778, zPosition = 957;
-		else if (i == 24) xPosition = 667, zPosition = 1257;
-		else if (i == 25) xPosition = 574, zPosition = 1272;
-		else if (i == 26) xPosition = 484, zPosition = 1269;
-		else if (i == 27) xPosition = 3000, zPosition = 3000;
+		else if (i == 21) xPosition = 560, zPosition = 840;
+		else if (i == 22) xPosition = 660, zPosition = 800;
+		else if (i == 23) xPosition = 590, zPosition = 690;
+		else if (i == 24) xPosition = 670, zPosition = 580;
+		else if (i == 25) xPosition = 730, zPosition = 720;
+		else if (i == 26) xPosition = 750, zPosition = 620;
+		else if (i == 27) xPosition = 830, zPosition = 620;
+
+		/*else if (i == 28) xPosition = 420, zPosition = 290;
+		else if (i == 29) xPosition = 424, zPosition = 370;
+		else if (i == 30) xPosition = 560, zPosition = 500;
+		else if (i == 31) xPosition = 474, zPosition = 440;
+		else if (i == 32) xPosition = 630, zPosition = 510;
+		else if (i == 33) xPosition = 600, zPosition = 440;
+		else if (i == 34) xPosition = 540, zPosition = 450;*/
 		/*else if (i == 28) xPosition = 602, zPosition = 1122;
 		else if (i == 29) xPosition = 3000, zPosition = 3000;*/
 		float fHeight = m_pScene->GetTerrain()->GetHeight(xPosition, zPosition);
@@ -1294,7 +1302,7 @@ void CGameFramework::FrameAdvance()
 	if(gameMode == 2)
 		m_pScene->m_ppMainUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//게임오버 화면
 	// 렌더
-
+	printf("%f %f %f \n", m_pPlayer[0]->GetPosition().x, m_pPlayer[0]->GetPosition().y, m_pPlayer[0]->GetPosition().z);
 
 	m_pBlueBox[0]->SetBoxScale(server_mgr.GetElecCount());
 
@@ -1306,11 +1314,19 @@ void CGameFramework::FrameAdvance()
 		case DISJOINT:
 		{
 			blueScreenMode = true;
+			//cout << "자기장 미충돌" << endl;
 			break;
 		}
 		case INTERSECTS:
 		{
 			blueScreenMode = false;
+			//cout << "자기장 충돌 INTERSETS" << endl;
+			break;
+		}
+		case CONTAINS:
+			blueScreenMode = true;
+			//cout << "자기장 충돌 CONTAINS" << endl;
+			break;
 			break;
 		}
 		}
