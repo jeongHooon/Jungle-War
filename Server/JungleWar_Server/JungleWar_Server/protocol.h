@@ -7,10 +7,10 @@
 #define MAX_PLAYER_SIZE		4
 #define	WM_SOCKET			WM_USER + 1
 #define CLIENT_BUF_SIZE		1024
-#define MAX_BULLET_SIZE			40
-#define MAX_BOX_SIZE			10
+#define MAX_BULLET_SIZE		40
+#define MAX_BOX_SIZE		10
 #define OX_SIZE				20
-
+#define TERRAIN_SCALE		0.5f
 ////////////////////////////////
 #define maxUserIDLen		20
 #define maxPasswdLen		20
