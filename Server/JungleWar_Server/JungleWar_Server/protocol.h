@@ -19,13 +19,13 @@
 // 본인 클라이언트 및 서버에서 사용
 //#define RUN_SPEED				2.78f
 // 위치 테스트용
-#define RUN_SPEED				16.0f
+#define RUN_SPEED				6.0f
 #define METER_PER_PIXEL			0.243f
-#define WALK_SPEED				10.0f
+#define WALK_SPEED				3.0f
 #define JUMP_SPEED              40.0f
 #define G_S 9.8f
-#define MAX_BOX_HP				50.0f;
-#define MAX_BULLET_DAMAGE		25.0f;
+#define MAX_BOX_HP				50.0f
+#define MAX_BULLET_DAMAGE		25.0f
 
 // Object 갯수 정리 
 #define OBJECT_BUILDING			10
