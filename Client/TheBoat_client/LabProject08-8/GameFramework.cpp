@@ -5,9 +5,11 @@
 #include "stdafx.h"
 #include "GameFramework.h"
 #include"resource.h"
+#include "ServerMgr.h"
 #pragma comment (lib,"winmm")
 int CShader::shootBullet;
 CShader*	CScene::m_pBuildings;
+bool ServerMgr::damageCheck = false;
 
 CGameFramework::CGameFramework()
 {
@@ -871,14 +873,13 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 				server_mgr.ReturnItemPosition();
 			}
 			// 플레이어 체력	(PlayerNum을 인자로 받음)
-			if (server_mgr.GetPlayerHP(my_client_id) < 0 && damageCheck == false) {
+			if (ServerMgr::damageCheck == true) {
 				playerHp += server_mgr.GetPlayerHP(my_client_id);
-				damageCheck = true;
+				ServerMgr::damageCheck = false;
 			}
-			if (server_mgr.GetPlayerHP(my_client_id) == 0)
-				damageCheck = false;
+			
 
-			//cout << playerHp << endl;
+			cout << playerHp << " , " << server_mgr.GetPlayerHP(my_client_id) << endl;
 			//printf("%f", playerHp);
 			// 빌딩은 총 10개 0~9 로 접근 가능.
 			break;

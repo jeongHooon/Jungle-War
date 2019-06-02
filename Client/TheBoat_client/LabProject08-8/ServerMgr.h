@@ -90,6 +90,7 @@ public:
 
 	static int elecCount;
 	static XMFLOAT3 elecPos;
+	static bool damageCheck;
 
 	// 
 	void ReturnBuildingPosition(XMFLOAT3* building_pos);

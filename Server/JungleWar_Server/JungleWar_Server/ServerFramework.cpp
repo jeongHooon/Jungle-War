@@ -477,7 +477,7 @@ void ServerFramework::GameStart() {
 		clients[i].x = rand() % 4000;
 		clients[i].z = rand() % 4000;
 		clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
-		clients[i].hp = 100.f;
+		clients[i].hp = 0;
 	}
 	client_lock.unlock();
 
