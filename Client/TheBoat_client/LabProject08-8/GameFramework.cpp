@@ -1307,7 +1307,7 @@ void CGameFramework::FrameAdvance()
 	m_pBlueBox[0]->SetBoxScale(server_mgr.GetElecCount());
 
 	// 자기장 충돌체크
-	for (int i = 0; i < MAX_PLAYER_SIZE ; ++i) {
+	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pBlueBox[0]->bounding_box);
 		switch (containType)
 		{
@@ -1329,6 +1329,7 @@ void CGameFramework::FrameAdvance()
 			//cout << "자기장 충돌 CONTAINS" << endl;
 			break;
 			break;
+		}
 		}
 	}
 	////
