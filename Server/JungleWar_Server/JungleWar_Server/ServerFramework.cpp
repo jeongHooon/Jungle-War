@@ -67,8 +67,8 @@ void ServerFramework::InitServer() {
 	clients[0].x = 731.f;
 	clients[0].z = 669.f;
 
-	clients[1].x = 386.f;
-	clients[1].z = 1345.f;
+	clients[1].x = 600.f;
+	clients[1].z = 500.f;
 
 	clients[2].x = 600.f;
 	clients[2].z = 950.f;
@@ -935,10 +935,10 @@ void ServerFramework::WorkerThread() {
 				//clients[client_id].y = height_map->GetHeight(clients[client_id].x, clients[client_id].z);
 
 				boxes[box_player_id  * MAX_BOX_SIZE + box_counter[box_player_id]].x =
-					clients[box_player_id].x + 30 * clients[box_player_id].look_vec.x;
+					clients[box_player_id].x + 10 * clients[box_player_id].look_vec.x;
 
 				boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].z =
-					clients[box_player_id].z + 30 * clients[box_player_id].look_vec.z;
+					clients[box_player_id].z + 10 * clients[box_player_id].look_vec.z;
 
 				boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].y =
 					height_map->GetHeight(boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].x,
