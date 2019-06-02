@@ -1237,6 +1237,7 @@ void CGameFramework::FrameAdvance()
 		m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 		m_pObject[i]->Render(m_pd3dCommandList, m_pCamera);
 	}
+
 	m_pBlueBox[0]->UpdateTransform(NULL);
 	m_pBlueBox[0]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 	m_pBlueBox[0]->Render(m_pd3dCommandList, m_pCamera);
@@ -1295,6 +1296,8 @@ void CGameFramework::FrameAdvance()
 	// 렌더
 
 
+	m_pBlueBox[0]->SetBoxScale(server_mgr.GetElecCount());
+
 	// 자기장 충돌체크
 	for (int i = 0; i < MAX_PLAYER_SIZE ; ++i) {
 		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pBlueBox[0]->bounding_box);
@@ -1303,19 +1306,13 @@ void CGameFramework::FrameAdvance()
 		case DISJOINT:
 		{
 			blueScreenMode = true;
-			cout << "자기장 미충돌" << endl;
 			break;
 		}
 		case INTERSECTS:
 		{
 			blueScreenMode = false;
-			cout << "자기장 충돌 INTERSETS" << endl;
 			break;
 		}
-		case CONTAINS:
-			blueScreenMode = true;
-			cout << "자기장 충돌 CONTAINS" << endl;
-			break;
 		}
 	}
 	////
