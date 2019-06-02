@@ -545,7 +545,7 @@ void CGameObject::LoadFrameHierarchyFromFile2(ID3D12Device *pd3dDevice, ID3D12Gr
 
 	//CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/oak4.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/oak5.dds", 0);
 
 	//pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Trees/Tree.dds", 0);
 
