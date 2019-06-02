@@ -5,9 +5,11 @@
 #include "stdafx.h"
 #include "Player.h"
 #include "Shader.h"
-
+#include "ServerMgr.h"
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CPlayer
+
+int ServerMgr::elecCount;
 
 CPlayer::CPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext, int nMeshes) : CGameObject(nMeshes)
 {
@@ -534,10 +536,19 @@ void CBlueBox::Animate(float fTimeElapsed)
 	time = 0;*/
 	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), time, 0.0f);
 	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
-	SetScale(2000 - 0.1 * count, 5000, 2000 - 0.1 * count);
+	
+
+	SetScale(2000 - 0.01 * ServerMgr::elecCount, 5000, 2000 - 0.01 * ServerMgr::elecCount);
 	SetPosition(XMFLOAT3(1500, 1000, 1500));
-	SetOOBB(XMFLOAT3(1500, 1000, 1500), XMFLOAT3((2000 - 0.1 * count)/2, 5000, (2000 - 0.1 * count) / 2), XMFLOAT4(0, 0, 0, 1));
-	++count;
+	SetOOBB(XMFLOAT3(1500, 1000, 1500), XMFLOAT3((2000 - 0.01 * ServerMgr::elecCount) / 2, 5000, (2000 - 0.01 * ServerMgr::elecCount) / 2), XMFLOAT4(0, 0, 0, 1));
+	cout << ServerMgr::elecCount << endl;
+}
+
+void CBlueBox::SetBoxScale(int input) {
+	/*SetScale(2000 - 0.01 * input, 5000, 2000 - 0.01 * input);
+	SetPosition(XMFLOAT3(1000, 1000, 1000));
+	SetOOBB(XMFLOAT3(1000, 1000, 1000), XMFLOAT3((2000 - 0.01 * input) / 2, 5000, (2000 - 0.01 * input) / 2), XMFLOAT4(0, 0, 0, 1));
+	cout << input << endl;*/
 }
 
 CCamera * CBlueBox::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)

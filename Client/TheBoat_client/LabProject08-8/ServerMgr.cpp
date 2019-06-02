@@ -149,7 +149,8 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		// 0 ¼û½¬±â, 1: °È±â, 2: ¶Ù±â
 		sc_vec_buff[packets->id].player_status = packets->player_status;
 
-		sc_vec_buff[packets->id].elecCount = packets->elecCount;
+		//sc_vec_buff[packets->id].elecCount = packets->elecCount;
+		//elecCount = packets->elecCount;
 
 		//printf("elecCount : %d\n", packets->elecCount);
 		
@@ -161,6 +162,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		clients_id = packets->id;
 		sc_look_vec = packets->look_vec;
 		sc_vec_buff[packets->id].player_status = packets->player_status;
+		elecCount = packets->elecCount;
 
 		break;
 	}
@@ -247,6 +249,9 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		break;
 	}
 	}
+}
+int ServerMgr::GetElecCount() {
+	return elecCount;
 }
 float ServerMgr::GetPlayerHP(int p_n) {
 	return client_hp[p_n];

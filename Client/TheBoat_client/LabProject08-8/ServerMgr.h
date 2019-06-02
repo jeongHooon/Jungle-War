@@ -61,6 +61,7 @@ class ServerMgr
 
 	bool s_is_collide = false;
 	bool box_is_collide = false;
+	
 public:
 	void IPInput();
 	void Initialize(HWND& hwnd);
@@ -70,6 +71,7 @@ public:
 	void SendPacket(int type, XMFLOAT3& xmvector);
 	void ProcessPacket(char* ptr);
 	void ErrorDisplay(const char* msg, int err_no);
+	int GetElecCount();
 	int GetClientID();
 	int ReturnCameraID();
 	float GetBoxHp(int index) { return box_hp[index]; }
@@ -85,6 +87,8 @@ public:
 	
 	// 플레이어 체력
 	float GetPlayerHP(int p_n);
+
+	static int elecCount;
 
 	// 
 	void ReturnBuildingPosition(XMFLOAT3* building_pos);

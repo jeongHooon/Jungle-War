@@ -758,7 +758,7 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	pCubeMaterial->SetTexture(pTexture);
 	pCubeMaterial->SetReflection(1);
 #endif
-	CCubeMeshIlluminatedTextured *pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 20, 20, 20);
+	CCubeMeshIlluminatedTextured *pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 8, 8, 8);
 
 	m_ppObjects = new CGameObject*[m_nObjects];
 
@@ -808,7 +808,7 @@ void CObjectsShader::ReleaseObjects()
 void CObjectsShader::SetBoxPosition(int index, XMFLOAT3 input) {
 	float fHeight = pTerrainCopy->GetHeight(input.x, input.z);
 	m_ppObjects[index]->SetPosition(input.x, fHeight + 5, input.z);
-	m_ppObjects[index]->SetOOBB(m_ppObjects[index]->GetPosition(), XMFLOAT3(10, 10, 10), XMFLOAT4(0, 0, 0, 1));
+	m_ppObjects[index]->SetOOBB(m_ppObjects[index]->GetPosition(), XMFLOAT3(4, 4, 4), XMFLOAT4(0, 0, 0, 1));
 }
 
 
@@ -8005,7 +8005,7 @@ void CTreeShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 //#endif
 
 	////
-	CCubeMeshIlluminatedTextured *pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 20, 100, 20);
+	CCubeMeshIlluminatedTextured *pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 10, 10, 10);
 	
 	m_ppObjects = new CGameObject*[m_nObjects];
 	

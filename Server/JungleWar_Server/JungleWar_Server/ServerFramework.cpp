@@ -236,9 +236,9 @@ void ServerFramework::AcceptPlayer() {
 	packet.x = clients[client_id].x;
 	packet.y = clients[client_id].y;
 	packet.z = clients[client_id].z;
-	packet.elecX = 1500.f;
+	packet.elecX = 500.f;
 	packet.elecY = 1000.f;
-	packet.elecZ = 1500.f;
+	packet.elecZ = 500.f;
 	SendPacket(client_id, &packet);
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		if (clients[i].in_use && (client_id != i)) {
@@ -389,6 +389,9 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		packets.size = sizeof(SC_PACKET_LOOCVEC);
 		packets.type = SC_PLAYER_LOOKVEC;
 		packets.look_vec = clients[cl_id].look_vec;
+
+		packets.elecCount = elecCount;
+
 		// 플레이어가 뒤는 상황
 
 		//if (clients[cl_id].is_left_click) {
@@ -589,7 +592,7 @@ void ServerFramework::WorkerThread() {
 				packets.y = clients[client_id].y;
 				packets.z = clients[client_id].z;
 
-				packets.elecCount = elecCount;
+				//packets.elecCount = elecCount;
 
 				if (clients[client_id].is_left_click) {
 					packets.player_status = 2;
