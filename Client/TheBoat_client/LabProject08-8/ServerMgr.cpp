@@ -18,10 +18,10 @@ void ServerMgr::IPInput() {
 	while (true) {
 		cout << "서버 아이피 입력 : ";
 		cin >> server_ip;
-		//cout << "아이디 입력 : ";
-		//cin >> userid;
-		//cout << "비밀번호 입력 : ";
-		//cin >> userpw;
+//		cout << "아이디 입력 : ";
+//		cin >> userid;
+//		cout << "비밀번호 입력 : ";
+//		cin >> userpw;
 		break;
 	}
 }
@@ -122,7 +122,15 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		elecPos = XMFLOAT3(packets->elecX, packets->elecY, packets->elecZ);
 
 		client_hp[packets->id] = packets->hp;
-		printf("[SC_ENTER_PLAYER] : %d 플레이어 입장\n", packets->id);
+		strncpy_s((char *)packets->userid, maxUserIDLen, userid, maxUserIDLen);
+		packets->userid[maxUserIDLen - 1] = '\0';
+		strncpy_s((char *)packets->passwd, maxPasswdLen, userpw, maxPasswdLen);
+		packets->userid[maxPasswdLen - 1] = '\0';
+
+		printf("[SC_ENTER_PLAYER] : %d 플레이어 입장 아이디는 %s\n", packets->id, packets->userid);
+
+
+//		printf("[SC_ENTER_PLAYER] : %d 플레이어 입장\n", packets->id);
 
 		break;
 	}
