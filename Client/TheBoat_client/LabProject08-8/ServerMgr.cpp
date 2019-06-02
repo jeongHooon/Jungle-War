@@ -151,7 +151,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 
 		sc_vec_buff[packets->id].elecCount = packets->elecCount;
 
-		printf("elecCount : %d\n", packets->elecCount);
+		//printf("elecCount : %d\n", packets->elecCount);
 		
 
 		break;
