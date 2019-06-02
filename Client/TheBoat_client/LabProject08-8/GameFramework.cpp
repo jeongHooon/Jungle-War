@@ -966,36 +966,39 @@ void CGameFramework::BuildObjects()
 		float xPosition;
 		float zPosition;
 
-		if (i == 0) xPosition = 680, zPosition = 925;
-		else if (i == 1) xPosition = 715, zPosition = 853;
-		else if (i == 2) xPosition = 641, zPosition = 858;
-		else if (i == 3) xPosition = 641, zPosition = 858;
-		else if (i == 4) xPosition = 639, zPosition = 794;
-		else if (i == 5) xPosition = 577, zPosition = 800;
-		else if (i == 6) xPosition = 516, zPosition = 822;
-		else if (i == 7) xPosition = 463, zPosition = 875;
+		if (i == 0) xPosition = 1000, zPosition = 1000;
+		else if (i == 1) xPosition = 1200, zPosition = 1500;
+		else if (i == 2) xPosition = 1300, zPosition = 1200;
+		else if (i == 3) xPosition = 1500, zPosition = 1670;
+		else if (i == 4) xPosition = 1600, zPosition = 1450;
+		else if (i == 5) xPosition = 1700, zPosition = 1780;
+		else if (i == 6) xPosition = 1800, zPosition = 1150;
+
+		else if (i == 7) xPosition = 3000, zPosition = 1000;
 		else if (i == 8) xPosition = 487, zPosition = 951;
 		else if (i == 9) xPosition = 538, zPosition = 969;
 		else if (i == 10) xPosition = 465, zPosition = 766;
 		else if (i == 11) xPosition = 518, zPosition = 757;
 		else if (i == 12) xPosition = 436, zPosition = 795;
 		else if (i == 13) xPosition = 426, zPosition = 729;
-		else if (i == 14) xPosition = 385, zPosition = 876;
+
+		else if (i == 14) xPosition = 1000, zPosition = 3000;
 		else if (i == 15) xPosition = 396, zPosition = 968;
 		else if (i == 16) xPosition = 338, zPosition = 970;
 		else if (i == 17) xPosition = 390, zPosition = 1048;
 		else if (i == 18) xPosition = 469, zPosition = 1106;
-		else if (i == 19) xPosition = 563, zPosition = 1078;
-		/*else if (i == 20) xPosition = 653, zPosition = 1029;
-		else if (i == 21) xPosition = 706, zPosition = 1080;
+		else if (i == 19) xPosition = 4000, zPosition = 4000;
+		else if (i == 20) xPosition = 653, zPosition = 1029;
+
+		else if (i == 21) xPosition = 3000, zPosition = 3000;
 		else if (i == 22) xPosition = 737, zPosition = 1036;
 		else if (i == 23) xPosition = 778, zPosition = 957;
 		else if (i == 24) xPosition = 667, zPosition = 1257;
 		else if (i == 25) xPosition = 574, zPosition = 1272;
 		else if (i == 26) xPosition = 484, zPosition = 1269;
-		else if (i == 27) xPosition = 504, zPosition = 1139;
-		else if (i == 28) xPosition = 602, zPosition = 1122;
-		else if (i == 29) xPosition = 851, zPosition = 984;*/
+		else if (i == 27) xPosition = 3000, zPosition = 3000;
+		/*else if (i == 28) xPosition = 602, zPosition = 1122;
+		else if (i == 29) xPosition = 3000, zPosition = 3000;*/
 		float fHeight = m_pScene->GetTerrain()->GetHeight(xPosition, zPosition);
 		m_pObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
 	}
