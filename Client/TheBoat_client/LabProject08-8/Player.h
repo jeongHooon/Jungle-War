@@ -37,7 +37,7 @@ protected:
 	LPVOID						m_pPlayerUpdatedContext = NULL;
 	LPVOID						m_pCameraUpdatedContext = NULL;
 
-	int							playerHp = 100;
+	float						playerHp = 100.0;
 	int							playerBullet = 40;
 
 	CCamera						*m_pCamera = NULL;
@@ -89,6 +89,7 @@ public:
 	int	  GetPlayerBullet() { return(playerBullet); }
 	void  MinusPlayerBullet() { --playerBullet; }
 	int GetPlayerHp() { return(playerHp); }
+	void SetPlayerHp(float input) { playerHp = input; }
 	virtual void SetBoxScale(int input) {}
 
 
