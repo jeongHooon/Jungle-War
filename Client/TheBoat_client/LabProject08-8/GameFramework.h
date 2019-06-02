@@ -80,6 +80,7 @@ public:
 	static int					boxBound;
 	float						playerHp = 100;
 	int							gameMode = 1;
+	bool						damageCheck = false;
 
 private:
 	int							mainScreenSelect = 0;

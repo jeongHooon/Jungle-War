@@ -785,7 +785,7 @@ void CObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 				pRotatingObject->SetRotationSpeed(10.0f * (i % 10));
 				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
 				pRotatingObject->SetScale(2.0, 2.0, 2.0);
-				pRotatingObject->SetOOBB(pRotatingObject->GetPosition(), XMFLOAT3(20, 20, 20), XMFLOAT4(0, 0, 0, 1));
+				pRotatingObject->SetOOBB(pRotatingObject->GetPosition(), XMFLOAT3(4, 4, 4), XMFLOAT4(0, 0, 0, 1));
 				m_ppObjects[i++] = pRotatingObject;
 			}
 		}

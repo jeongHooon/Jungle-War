@@ -81,7 +81,7 @@ void ServerFramework::InitServer() {
 		clients[i].z = 800.f;*/
 
 		clients[i].y = height_map->GetHeight(clients[i].x, clients[i].z);
-		clients[i].hp = 100.f;
+		clients[i].hp = 0;
 	}
 	client_lock.unlock();
 
@@ -659,10 +659,10 @@ void ServerFramework::WorkerThread() {
 							packets.z = clients[j].bounding_box.Center.z;
 							packets.client_id = j;
 							//
-							clients[j].hp -= MAX_BULLET_DAMAGE;
+							//clients[j].hp -= MAX_BULLET_DAMAGE;
 							//
-							packets.hp = clients[j].hp;
-
+							//packets.hp = clients[j].hp;
+							packets.hp = (-1) * MAX_BULLET_DAMAGE;
 							/*if ( clients[j].hp < 0.f) {
 							clients[j].is_die = true;
 							}*/
@@ -681,9 +681,11 @@ void ServerFramework::WorkerThread() {
 							packets.z = clients[j].bounding_box.Center.z;
 							packets.client_id = j;
 							//
-							clients[j].hp -= MAX_BULLET_DAMAGE;
+							//clients[j].hp -= MAX_BULLET_DAMAGE;
 							//
-							packets.hp = clients[j].hp;
+							//packets.hp = clients[j].hp;
+
+							packets.hp = (-1) * MAX_BULLET_DAMAGE;
 
 							printf("플레이어 - 총알 충돌\n");
 							bullets[i].in_use = false;

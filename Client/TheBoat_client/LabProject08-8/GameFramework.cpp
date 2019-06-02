@@ -871,7 +871,14 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 				server_mgr.ReturnItemPosition();
 			}
 			// 플레이어 체력	(PlayerNum을 인자로 받음)
-			playerHp = server_mgr.GetPlayerHP(my_client_id);
+			if (server_mgr.GetPlayerHP(my_client_id) < 0 && damageCheck == false) {
+				playerHp += server_mgr.GetPlayerHP(my_client_id);
+				damageCheck = true;
+			}
+			if (server_mgr.GetPlayerHP(my_client_id) == 0)
+				damageCheck = false;
+
+			//cout << playerHp << endl;
 			//printf("%f", playerHp);
 			// 빌딩은 총 10개 0~9 로 접근 가능.
 			break;
@@ -1306,7 +1313,7 @@ void CGameFramework::FrameAdvance()
 
 	m_pBlueBox[0]->SetBoxScale(server_mgr.GetElecCount());
 
-	cout << "자기장 중심 (" << m_pBlueBox[0]->GetPosition().x << " " << m_pBlueBox[0]->GetPosition().y << " " << m_pBlueBox[0]->GetPosition().z << endl;
+	//cout << "자기장 중심 (" << m_pBlueBox[0]->GetPosition().x << " " << m_pBlueBox[0]->GetPosition().y << " " << m_pBlueBox[0]->GetPosition().z << endl;
 
 	// 자기장 충돌체크
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
@@ -1316,8 +1323,8 @@ void CGameFramework::FrameAdvance()
 		case DISJOINT:
 		{
 			blueScreenMode = true;
-			m_pPlayer[my_client_id]->SetPlayerHp(m_pPlayer[my_client_id]->GetPlayerHp() - 1);
-			cout << m_pPlayer[my_client_id]->GetPlayerHp() << endl;
+			playerHp -= 0.01;
+			cout << playerHp;
 			break;
 		}
 		case INTERSECTS:
