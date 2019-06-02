@@ -539,9 +539,9 @@ void CBlueBox::Animate(float fTimeElapsed)
 	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
 	
 
-	SetScale(500 - 0.001 * ServerMgr::elecCount, 5000, 500 - 0.001 * ServerMgr::elecCount);
+	SetScale(1500 - 0.001 * ServerMgr::elecCount, 5000, 1500 - 0.001 * ServerMgr::elecCount);
 	SetPosition(ServerMgr::elecPos);
-	SetOOBB(ServerMgr::elecPos, XMFLOAT3((500 - 0.001 * ServerMgr::elecCount) / 2, 1000, (500 - 0.001 * ServerMgr::elecCount) / 2), XMFLOAT4(0, 0, 0, 1));
+	SetOOBB(ServerMgr::elecPos, XMFLOAT3((1500 - 0.001 * ServerMgr::elecCount) / 2, 5000, (1500 - 0.001 * ServerMgr::elecCount) / 2), XMFLOAT4(0, 0, 0, 1));
 	cout << ServerMgr::elecCount << endl;
 }
 
