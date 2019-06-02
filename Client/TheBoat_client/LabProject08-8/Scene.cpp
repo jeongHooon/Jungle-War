@@ -116,7 +116,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 {
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 
-	XMFLOAT3 xmf3Scale(8.0f, 2.f, 8.0f);
+	XMFLOAT3 xmf3Scale(TERRAIN_SCALE * 4, TERRAIN_SCALE, TERRAIN_SCALE * 4);
 	XMFLOAT4 xmf4Color(1.0f, 1.0f, 1.0f, 0.0f);
 #ifdef _WITH_
 	_PARTITION

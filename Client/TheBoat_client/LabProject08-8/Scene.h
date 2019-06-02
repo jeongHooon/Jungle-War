@@ -6,7 +6,6 @@
 
 #include "Shader.h"
 #include "Player.h"
-
 struct LIGHT
 {
 	XMFLOAT4				m_xmf4Ambient;

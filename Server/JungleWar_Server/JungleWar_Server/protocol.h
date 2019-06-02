@@ -7,10 +7,10 @@
 #define MAX_PLAYER_SIZE		4
 #define	WM_SOCKET			WM_USER + 1
 #define CLIENT_BUF_SIZE		1024
-#define MAX_BULLET_SIZE			40
-#define MAX_BOX_SIZE			10
+#define MAX_BULLET_SIZE		40
+#define MAX_BOX_SIZE		10
 #define OX_SIZE				20
-
+#define TERRAIN_SCALE		0.5f
 ////////////////////////////////
 #define maxUserIDLen		20
 #define maxPasswdLen		20
@@ -119,6 +119,9 @@ struct SC_PACKET_ENTER_PLAYER {
 	BYTE passwd[maxPasswdLen];
 	float x, y, z;
 	// 건물 크기 보낼 때만 사용
+
+	float elecX, elecY, elecZ;
+
 	float hp;
 	float size_x, size_y, size_z;
 };
@@ -139,6 +142,8 @@ struct SC_PACKET_POS {
 	WORD id;
 	int player_status;
 	float x, y, z;
+
+	int elecCount;
 };
 
 struct SC_PACKET_COLLISION {

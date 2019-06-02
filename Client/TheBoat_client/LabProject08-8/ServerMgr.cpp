@@ -18,10 +18,10 @@ void ServerMgr::IPInput() {
 	while (true) {
 		cout << "서버 아이피 입력 : ";
 		cin >> server_ip;
-		cout << "아이디 입력 : ";
-		cin >> userid;
-		cout << "비밀번호 입력 : ";
-		cin >> userpw;
+		//cout << "아이디 입력 : ";
+		//cin >> userid;
+		//cout << "비밀번호 입력 : ";
+		//cin >> userpw;
 		break;
 	}
 }
@@ -113,6 +113,9 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		sc_vec_buff[packets->id].pos.x = packets->x;
 		sc_vec_buff[packets->id].pos.y = packets->y;
 		sc_vec_buff[packets->id].pos.z = packets->z;
+		sc_vec_buff[packets->id].elecX = packets->elecX;
+		sc_vec_buff[packets->id].elecY = packets->elecY;
+		sc_vec_buff[packets->id].elecZ = packets->elecZ;
 		client_hp[packets->id] = packets->hp;
 		printf("[SC_ENTER_PLAYER] : %d 플레이어 입장\n", packets->id);
 
@@ -145,6 +148,10 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		sc_vec_buff[packets->id].pos.z = packets->z;
 		// 0 숨쉬기, 1: 걷기, 2: 뛰기
 		sc_vec_buff[packets->id].player_status = packets->player_status;
+
+		sc_vec_buff[packets->id].elecCount = packets->elecCount;
+
+		printf("elecCount : %d\n", packets->elecCount);
 		
 
 		break;

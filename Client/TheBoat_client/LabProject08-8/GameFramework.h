@@ -2,7 +2,8 @@
 
 #define FRAME_BUFFER_WIDTH		800
 #define FRAME_BUFFER_HEIGHT		600
-#define NUM_OBJECT 20
+#define NUM_OBJECT 28
+
 #include "Timer.h"
 #include "Player.h"
 #include "Scene.h"
@@ -17,7 +18,7 @@ private:
 	ServerMgr server_mgr;
 	bool is_pushed[11] = { 0 };
 
-	XMFLOAT3 sc_player_pos[4];
+	XMFLOAT3 sc_player_pos[MAX_PLAYER_SIZE];
 	bool first_recv;
 	int recvd_client_id; 
 

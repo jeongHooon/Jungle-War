@@ -102,6 +102,9 @@ struct Client {
 	float hp = 100.f;
 	int box_count = 0;
 
+	float elecX;
+	float elecY;
+
 
 	Team team;
 	ARWeapons ar_weapons;
