@@ -104,6 +104,7 @@ struct Client {
 
 	float elecX;
 	float elecY;
+	float elecZ;
 
 
 	Team team;

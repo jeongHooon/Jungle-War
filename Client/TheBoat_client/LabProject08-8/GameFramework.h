@@ -4,6 +4,7 @@
 #define FRAME_BUFFER_HEIGHT		600
 #define NUM_OBJECT 30
 
+
 #include "Timer.h"
 #include "Player.h"
 #include "Scene.h"
