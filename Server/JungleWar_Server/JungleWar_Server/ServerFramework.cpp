@@ -237,13 +237,17 @@ void ServerFramework::AcceptPlayer() {
 	packet.x = clients[client_id].x;
 	packet.y = clients[client_id].y;
 	packet.z = clients[client_id].z;
-	packet.elecX = clients[client_id].elecX;
-	packet.elecY = clients[client_id].elecY;
-	packet.elecZ = clients[client_id].elecZ;
+	packet.elecX = 500.f;
+	packet.elecY = 1000.f;
+	packet.elecZ = 500.f;
+
+	
 	SendPacket(client_id, &packet);
+	//printf("%d 자기장 중심 %f \n", client_id, clients[client_id].elecX);
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		if (clients[i].in_use && (client_id != i)) {
 			printf("%d 플레이어 입장 정보 전송\n", i);
+			//printf("밑 %d 자기장 중심 %f \n", i, clients[i].elecX);
 			SendPacket(i, &packet);
 		}
 	}

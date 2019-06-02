@@ -1306,7 +1306,7 @@ void CGameFramework::FrameAdvance()
 
 	m_pBlueBox[0]->SetBoxScale(server_mgr.GetElecCount());
 
-	cout << "자기장 중심 (" << m_pBlueBox[0]->GetPosition().x << " " << m_pBlueBox[0]->GetPosition().y << " " << m_pBlueBox[0]->GetPosition().z << endl;
+	//cout << "자기장 중심 (" << m_pBlueBox[0]->GetPosition().x << " " << m_pBlueBox[0]->GetPosition().y << " " << m_pBlueBox[0]->GetPosition().z << endl;
 
 	// 자기장 충돌체크
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {

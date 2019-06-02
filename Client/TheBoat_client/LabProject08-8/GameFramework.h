@@ -2,14 +2,8 @@
 
 #define FRAME_BUFFER_WIDTH		800
 #define FRAME_BUFFER_HEIGHT		600
-<<<<<<< HEAD
-
 #define NUM_OBJECT 30
 
-
-=======
-#define NUM_OBJECT 30
->>>>>>> 615d77a0b5ca4ba88a296c0f5eaada7657dfcc89
 
 #include "Timer.h"
 #include "Player.h"

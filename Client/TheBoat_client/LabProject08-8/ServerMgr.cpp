@@ -119,13 +119,19 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		sc_vec_buff[packets->id].elecY = packets->elecY;
 		sc_vec_buff[packets->id].elecZ = packets->elecZ;
 
-		elecPos = XMFLOAT3(packets->elecX, packets->elecY, packets->elecZ);
+		cout <<packets->id<<"번 자기장" << packets->elecX << packets->elecY << packets->elecZ << endl;
+		if(packets->id == clients_id)
+			elecPos = XMFLOAT3(packets->elecX, packets->elecY, packets->elecZ);
+		cout <<packets->id<<"번" <<elecPos.x << endl;
+		
 
 		client_hp[packets->id] = packets->hp;
 		strncpy_s((char *)packets->userid, maxUserIDLen, userid, maxUserIDLen);
 		packets->userid[maxUserIDLen - 1] = '\0';
 		strncpy_s((char *)packets->passwd, maxPasswdLen, userpw, maxPasswdLen);
 		packets->userid[maxPasswdLen - 1] = '\0';
+
+
 
 		printf("[SC_ENTER_PLAYER] : %d 플레이어 입장 아이디는 %s\n", packets->id, packets->userid);
 
