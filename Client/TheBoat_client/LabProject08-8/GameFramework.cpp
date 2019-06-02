@@ -998,10 +998,10 @@ void CGameFramework::BuildObjects()
 		else if (i == 26) xPosition = 750, zPosition = 620;
 		else if (i == 27) xPosition = 830, zPosition = 620;
 
-		/*else if (i == 28) xPosition = 420, zPosition = 290;
+		else if (i == 28) xPosition = 420, zPosition = 290;
 		else if (i == 29) xPosition = 424, zPosition = 370;
 		else if (i == 30) xPosition = 560, zPosition = 500;
-		else if (i == 31) xPosition = 474, zPosition = 440;
+		/*else if (i == 31) xPosition = 474, zPosition = 440;
 		else if (i == 32) xPosition = 630, zPosition = 510;
 		else if (i == 33) xPosition = 600, zPosition = 440;
 		else if (i == 34) xPosition = 540, zPosition = 450;*/
@@ -1324,6 +1324,7 @@ void CGameFramework::FrameAdvance()
 			break;
 		}
 		case CONTAINS:
+		{
 			blueScreenMode = true;
 			//cout << "자기장 충돌 CONTAINS" << endl;
 			break;
