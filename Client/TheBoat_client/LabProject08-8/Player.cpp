@@ -542,7 +542,6 @@ void CBlueBox::Animate(float fTimeElapsed)
 	SetScale(1200 - 0.01 * ServerMgr::elecCount, 5000, 1200 - 0.01 * ServerMgr::elecCount);
 	SetPosition(ServerMgr::elecPos);
 	SetOOBB(ServerMgr::elecPos, XMFLOAT3((1200 - 0.01 * ServerMgr::elecCount) / 2, 5000, (1200 - 0.01 * ServerMgr::elecCount) / 2), XMFLOAT4(0, 0, 0, 1));
-	cout << ServerMgr::elecCount << endl;
 }
 
 void CBlueBox::SetBoxScale(int input) {
