@@ -1231,18 +1231,12 @@ void CGameFramework::FrameAdvance()
 
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pObject[i]->UpdateTransform(NULL);
-		if (i == my_client_id && m_pCamera->GetMode() == SPACESHIP_CAMERA);
-		else {
-			m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
-			m_pObject[i]->Render(m_pd3dCommandList, m_pCamera);
-		}
+		m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
+		m_pObject[i]->Render(m_pd3dCommandList, m_pCamera);
 	}
 	m_pBlueBox[0]->UpdateTransform(NULL);
-	if (0 == my_client_id && m_pCamera->GetMode() == SPACESHIP_CAMERA);
-	else {
-		m_pBlueBox[0]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
-		m_pBlueBox[0]->Render(m_pd3dCommandList, m_pCamera);
-	}
+	m_pBlueBox[0]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
+	m_pBlueBox[0]->Render(m_pd3dCommandList, m_pCamera);
 	
 	if (gameMode == 0) {
 		m_pScene->m_ppMainUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 메인화면
@@ -1272,8 +1266,7 @@ void CGameFramework::FrameAdvance()
 			m_pScene->m_ppUIShaders[1]->Render(m_pd3dCommandList, m_pCamera);// UI렌더 바꿔야함.
 
 		if (alphaMapOn == true)
-			m_pScene->m_ppUIShaders[26]->Render(m_pd3dCommandList, m_pCamera); // 맵
-		//m_pScene->m_ppUIShaders[9]->Render(m_pd3dCommandList, m_pCamera); // 맵
+			m_pScene->m_ppUIShaders[9]->Render(m_pd3dCommandList, m_pCamera); // 맵
 
 
 
@@ -1284,6 +1277,8 @@ void CGameFramework::FrameAdvance()
 		if (m_pPlayer[my_client_id]->GetPlayerBullet() > 0)
 			m_pScene->m_ppUIShaders[16 + m_pPlayer[my_client_id]->GetPlayerBullet() % 10]->Render(m_pd3dCommandList, m_pCamera); // 뒷 숫자
 		
+		if(blueScreenMode)
+			m_pScene->m_ppUIShaders[26]->Render(m_pd3dCommandList, m_pCamera);
 		
 	}
 	
@@ -1291,9 +1286,36 @@ void CGameFramework::FrameAdvance()
 		gameMode = 2;
 		m_pPlayer[my_client_id]->ImDie();
 	}
+
 	if(gameMode == 2)
 		m_pScene->m_ppMainUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//게임오버 화면
 	// 렌더
+
+
+	// 자기장 충돌체크
+	for (int i = 0; i < MAX_PLAYER_SIZE ; ++i) {
+		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pBlueBox[0]->bounding_box);
+		switch (containType)
+		{
+		case DISJOINT:
+		{
+			blueScreenMode = true;
+			cout << "자기장 미충돌" << endl;
+			break;
+		}
+		case INTERSECTS:
+		{
+			blueScreenMode = false;
+			cout << "자기장 충돌 INTERSETS" << endl;
+			break;
+		}
+		case CONTAINS:
+			blueScreenMode = true;
+			cout << "자기장 충돌 CONTAINS" << endl;
+			break;
+		}
+	}
+	////
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;

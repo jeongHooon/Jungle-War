@@ -84,6 +84,7 @@ private:
 	int							mainScreenSelect = 0;
 	bool						itemUI[4] = {};
 	bool						alphaMapOn = false;
+	bool						blueScreenMode = false;
 	HINSTANCE					m_hInstance;
 	HWND						m_hWnd; 
 

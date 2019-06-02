@@ -529,15 +529,15 @@ void CBlueBox::Animate(float fTimeElapsed)
 	m_xmf4x4ToParentTransform._31 = m_xmf3Look.x; m_xmf4x4ToParentTransform._32 = m_xmf3Look.y; m_xmf4x4ToParentTransform._33 = m_xmf3Look.z;
 	m_xmf4x4ToParentTransform._41 = m_xmf3Position.x; m_xmf4x4ToParentTransform._42 = m_xmf3Position.y; m_xmf4x4ToParentTransform._43 = m_xmf3Position.z;
 
-	//SetOOBB(GetPosition(), XMFLOAT3(5, 10, 5), XMFLOAT4(0, 0, 0, 1));
 	/*time += fTimeElapsed;
 	if (time > 360.f)
 	time = 0;*/
 	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), time, 0.0f);
 	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
-	SetScale(1.0 - 0.01 * count * fTimeElapsed, 1.0 , 1.0 - 0.01 * count * fTimeElapsed);
-	++count;
+	SetScale(2000 - 0.1 * count, 5000, 2000 - 0.1 * count);
 	SetPosition(XMFLOAT3(1500, 1000, 1500));
+	SetOOBB(XMFLOAT3(1500, 1000, 1500), XMFLOAT3((2000 - 0.1 * count)/2, 5000, (2000 - 0.1 * count) / 2), XMFLOAT4(0, 0, 0, 1));
+	++count;
 }
 
 CCamera * CBlueBox::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
