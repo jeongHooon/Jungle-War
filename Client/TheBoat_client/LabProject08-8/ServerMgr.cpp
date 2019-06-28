@@ -39,8 +39,8 @@ void ServerMgr::Initialize(HWND& hwnd) {
 	ServerAddr.sin_port = htons(SERVER_PORT);
 	// 아이피
 	ServerAddr.sin_addr.s_addr = inet_addr(server_ip.c_str());
-
-	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	
+	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	//ServerAddr.sin_addr.s_addr = inet_addr("192.168.101.211");
 
 	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
@@ -119,10 +119,10 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		sc_vec_buff[packets->id].elecY = packets->elecY;
 		sc_vec_buff[packets->id].elecZ = packets->elecZ;
 
-		cout <<packets->id<<"번 자기장" << packets->elecX << packets->elecY << packets->elecZ << endl;
+		//cout <<packets->id<<"번 자기장" << packets->elecX << packets->elecY << packets->elecZ << endl;
 		if(packets->id == clients_id)
 			elecPos = XMFLOAT3(packets->elecX, packets->elecY, packets->elecZ);
-		cout <<packets->id<<"번" <<elecPos.x << endl;
+		//cout <<packets->id<<"번" <<elecPos.x << endl;
 		
 
 		client_hp[packets->id] = packets->hp;

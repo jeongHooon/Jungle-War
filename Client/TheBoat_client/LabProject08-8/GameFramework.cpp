@@ -879,7 +879,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 			}
 			
 
-			cout << playerHp << " , " << server_mgr.GetPlayerHP(my_client_id) << endl;
+			//cout << playerHp << " , " << server_mgr.GetPlayerHP(my_client_id) << endl;
 			//printf("%f", playerHp);
 			// 빌딩은 총 10개 0~9 로 접근 가능.
 			break;
@@ -1310,7 +1310,7 @@ void CGameFramework::FrameAdvance()
 	if(gameMode == 2)
 		m_pScene->m_ppMainUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//게임오버 화면
 	// 렌더
-	//printf("%f %f %f \n", m_pPlayer[0]->GetPosition().x, m_pPlayer[0]->GetPosition().y, m_pPlayer[0]->GetPosition().z);
+	printf("%f %f %f \n", m_pPlayer[0]->GetPosition().x, m_pPlayer[0]->GetPosition().y, m_pPlayer[0]->GetPosition().z);
 
 	m_pBlueBox[0]->SetBoxScale(server_mgr.GetElecCount());
 
@@ -1325,7 +1325,7 @@ void CGameFramework::FrameAdvance()
 		{
 			blueScreenMode = true;
 			playerHp -= 0.01;
-			cout << playerHp;
+			//cout << playerHp;
 			break;
 		}
 		case INTERSECTS:
