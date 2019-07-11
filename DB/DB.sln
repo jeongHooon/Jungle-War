@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.438
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "2019_WT_DB", "2019_WT_DB.vcxproj", "{BD77F059-6207-43B0-A70E-94B004C46B41}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD77F059-6207-43B0-A70E-94B004C46B41}.Debug|x64.ActiveCfg = Debug|x64
+		{BD77F059-6207-43B0-A70E-94B004C46B41}.Debug|x64.Build.0 = Debug|x64
+		{BD77F059-6207-43B0-A70E-94B004C46B41}.Debug|x86.ActiveCfg = Debug|Win32
+		{BD77F059-6207-43B0-A70E-94B004C46B41}.Debug|x86.Build.0 = Debug|Win32
+		{BD77F059-6207-43B0-A70E-94B004C46B41}.Release|x64.ActiveCfg = Release|x64
+		{BD77F059-6207-43B0-A70E-94B004C46B41}.Release|x64.Build.0 = Release|x64
+		{BD77F059-6207-43B0-A70E-94B004C46B41}.Release|x86.ActiveCfg = Release|Win32
+		{BD77F059-6207-43B0-A70E-94B004C46B41}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5CC7E59B-7B0E-4034-8B2C-6DC9258CB8E5}
+	EndGlobalSection
+EndGlobal
