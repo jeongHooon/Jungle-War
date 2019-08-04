@@ -483,7 +483,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				cout << "1";
 				break;
 			case '2':
-				cout << "2;
+				cout << "2";
 				break;
 			case '3':
 				cout << "3";
