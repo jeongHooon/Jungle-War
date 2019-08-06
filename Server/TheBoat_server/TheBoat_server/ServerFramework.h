@@ -4,6 +4,9 @@ class CHeightMapImage;
 class Building;
 class Tree;
 
+#define MAXIMUM_PLAYER 4
+
+
 struct Event {
 	int id;
 	int type;

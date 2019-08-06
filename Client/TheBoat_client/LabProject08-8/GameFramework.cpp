@@ -11,6 +11,7 @@ int CShader::shootBullet;
 CShader*	CScene::m_pBuildings;
 bool ServerMgr::damageCheck = false;
 
+
 CGameFramework::CGameFramework()
 {
 	m_pdxgiFactory = NULL;
@@ -321,9 +322,9 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		::SetCapture(hWnd);
 		::GetCursorPos(&m_ptOldCursorPos);
 		for (int i = 0; i < 4; ++i) {
-			printf("룩 1 %f | %f | %f \n", m_pPlayer[i]->GetLook().x, m_pPlayer[i]->GetLook().y, m_pPlayer[i]->GetLook().z);
+			//printf("룩 1 %f | %f | %f \n", m_pPlayer[i]->GetLook().x, m_pPlayer[i]->GetLook().y, m_pPlayer[i]->GetLook().z);
 		}
-		printf("=======================\n");
+		//printf("=======================\n");
 		if (CShader::shootBullet == 0) {
 			CShader::shootBullet = 1;
 			sndPlaySound(L"../Assets/Sounds/RifleSound1.wav", SND_ASYNC);	// 사운드
@@ -372,6 +373,147 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 	switch (nMessageID)
 	{
 	case WM_KEYDOWN: {
+		if (writeMode == true) {
+			switch (key_buffer) {
+			case 'a':
+			case 'A':
+				cout << "a";
+				break;
+			case 'b':
+			case 'B':
+				cout << "b";
+				break;
+			case 'c':
+			case 'C':
+				cout << "c";
+				break;
+			case 'd':
+			case 'D':
+				cout << "d";
+				break;
+			case 'e':
+			case 'E':
+				cout << "e";
+				break;
+			case 'f':
+			case 'F':
+				cout << "f";
+				break;
+			case 'g':
+			case 'G':
+				cout << "g";
+				break;
+			case 'h':
+			case 'H':
+				cout << "h";
+				break;
+			case 'i':
+			case 'I':
+				cout << "i";
+				break;
+			case 'j':
+			case 'J':
+				cout << "j";
+				break;
+			case 'k':
+			case 'K':
+				cout << "k";
+				break;
+			case 'l':
+			case 'L':
+				cout << "l";
+				break;
+			case 'm':
+			case 'M':
+				cout << "m";
+				break;
+			case 'n':
+			case 'N':
+				cout << "n";
+				break;
+			case 'o':
+			case 'O':
+				cout << "o";
+				break;
+			case 'p':
+			case 'P':
+				cout << "p";
+				break;
+			case 'q':
+			case 'Q':
+				cout << "q";
+				break;
+			case 'r':
+			case 'R':
+				cout << "r";
+				break;
+			case 's':
+			case 'S':
+				cout << "s";
+				break;
+			case 't':
+			case 'T':
+				cout << "t";
+				break;
+			case 'u':
+			case 'U':
+				cout << "u";
+				break;
+			case 'v':
+			case 'V':
+				cout << "v";
+				break;
+			case 'w':
+			case 'W':
+				cout << "w";
+				break;
+			case 'x':
+			case 'X':
+				cout << "x";
+				break;
+			case 'y':
+			case 'Y':
+				cout << "y";
+				break;
+			case 'z':
+			case 'Z':
+				cout << "z";
+				break;
+			case '1':
+				cout << "1";
+				break;
+			case '2':
+				cout << "2";
+				break;
+			case '3':
+				cout << "3";
+				break;
+			case '4':
+				cout << "4";
+				break;
+			case '5':
+				cout << "5";
+				break;
+			case '6':
+				cout << "6";
+				break;
+			case '7':
+				cout << "7";
+				break;
+			case '8':
+				cout << "8";
+				break;
+			case '9':
+				cout << "9";
+				break;
+			case '0':
+				cout << "0";
+				break;
+			}
+
+
+		}
+
 		if (wParam == VK_SHIFT) {
 			if (is_pushed[CS_KEY_PRESS_SHIFT] == false) {
 				//printf("[WM_KEYUP] : Shift 키 입력\n");
@@ -406,7 +548,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		}
 		if (wParam == VK_SPACE) {
 			if (is_pushed[CS_KEY_PRESS_SPACE] == false) {
-				printf("[WM_KEYUP] : Space 키 입력\n");
+				//printf("[WM_KEYUP] : Space 키 입력\n");
 				server_mgr.SendPacket(CS_KEY_PRESS_SPACE);
 				is_pushed[CS_KEY_PRESS_SPACE] = true;
 				m_pPlayer[my_client_id]->GetKeyInput(15);
@@ -415,12 +557,12 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		}
 		if (wParam == VK_F5) {
 			if (player_ready) {
-				printf("Ready 취소\n");
+				//printf("Ready 취소\n");
 				server_mgr.SendPacket(CS_PLAYER_READY_CANCLE);
 				player_ready = false;
 			}
 			else {
-				printf("Ready\n");
+				//printf("Ready\n");
 				server_mgr.SendPacket(CS_PLAYER_READY);
 				player_ready = true;
 			}
@@ -463,7 +605,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				else if (charstate == 3) {
 					m_pPlayer[my_client_id]->GetKeyInput(6);
 					charstate = 6;
-					printf("215\n");
+					//printf("215\n");
 				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(6);
@@ -519,8 +661,8 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case 'c':
 		case 'C':
 
-			printf("캐릭터 Y %f  \n", m_pPlayer[my_client_id]->GetPosition().y);
-			printf("터레인 높이 %f \n", m_pScene->GetTerrain()->GetHeight(m_pPlayer[my_client_id]->GetPosition().x, m_pPlayer[my_client_id]->GetPosition().z));
+			//printf("캐릭터 Y %f  \n", m_pPlayer[my_client_id]->GetPosition().y);
+			//printf("터레인 높이 %f \n", m_pScene->GetTerrain()->GetHeight(m_pPlayer[my_client_id]->GetPosition().x, m_pPlayer[my_client_id]->GetPosition().z));
 			if (is_pushed[CS_KEY_PRESS_CROUCH] == false) {
 				m_pPlayer[my_client_id]->GetKeyInput(7);
 				server_mgr.SendPacket(CS_KEY_PRESS_CROUCH, m_pPlayer[my_client_id]->GetLook());
@@ -572,7 +714,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			exit(-1);
 		}
 		else if (wParam == VK_SHIFT) {
-			printf("[WM_KEYUP] : Shift 키 놓음\n");
+			//printf("[WM_KEYUP] : Shift 키 놓음\n");
 			if (is_pushed[CS_KEY_PRESS_UP] == false)
 				m_pPlayer[my_client_id]->GetKeyInput(0);
 			else
@@ -607,7 +749,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 
 		}
 		else if (wParam == VK_SPACE) {
-			printf("[WM_KEYUP] : Space 키 놓음\n");
+			//printf("[WM_KEYUP] : Space 키 놓음\n");
 			server_mgr.SendPacket(CS_KEY_RELEASE_SPACE);
 			is_pushed[CS_KEY_PRESS_SPACE] = false;
 			m_pPlayer[my_client_id]->GetKeyInput(0);
@@ -618,7 +760,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case 'w':
 		case 'W':
 			if (is_pushed[CS_KEY_PRESS_UP] == true) {
-				printf("[WM_KEYDOWN] : w,W키 놓음 \n");
+				//printf("[WM_KEYDOWN] : w,W키 놓음 \n");
 				if (charstate == 6) {
 					m_pPlayer[my_client_id]->GetKeyInput(6);
 					charstate = 6;
@@ -638,7 +780,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case 'a':
 		case 'A':
 			if (is_pushed[CS_KEY_PRESS_LEFT] == true) {
-				printf("[WM_KEYDOWN] : a,A키 놓음 \n");
+				//printf("[WM_KEYDOWN] : a,A키 놓음 \n");
 				if (charstate == 6 && is_pushed[CS_KEY_PRESS_UP]) {
 					m_pPlayer[my_client_id]->GetKeyInput(3);
 					charstate = 3;
@@ -658,7 +800,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case 's':
 		case 'S':
 			if (is_pushed[CS_KEY_PRESS_DOWN] == true) {
-				printf("[WM_KEYDOWN] : s,S키 놓음 \n");
+				//printf("[WM_KEYDOWN] : s,S키 놓음 \n");
 				if (charstate == 9) {
 					m_pPlayer[my_client_id]->GetKeyInput(6);
 					charstate = 6;
@@ -678,7 +820,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case 'd':
 		case 'D':
 			if (is_pushed[CS_KEY_PRESS_RIGHT] == true) {
-				printf("[WM_KEYDOWN] : d,D키 놓음 \n");
+				//printf("[WM_KEYDOWN] : d,D키 놓음 \n");
 				if (charstate == 5 && is_pushed[CS_KEY_PRESS_UP]) {
 					m_pPlayer[my_client_id]->GetKeyInput(3);
 					charstate = 3;
@@ -698,7 +840,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case 'c':
 		case 'C':
 			if (is_pushed[CS_KEY_PRESS_CROUCH] == true) {
-				printf("[WM_KEYDOWN] : c,C키 놓음 \n");
+				//printf("[WM_KEYDOWN] : c,C키 놓음 \n");
 				m_pPlayer[my_client_id]->GetKeyInput(0);
 				server_mgr.SendPacket(CS_KEY_RELEASE_CROUCH);
 				is_pushed[CS_KEY_PRESS_CROUCH] = false;
@@ -706,23 +848,22 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case '1':
 			if (is_pushed[CS_KEY_PRESS_1] == true) {
-				printf("[WM_KEYDOWN] : 1키 놓음 \n");
+				//printf("[WM_KEYDOWN] : 1키 놓음 \n");
 				server_mgr.SendPacket(CS_KEY_RELEASE_1);
 				is_pushed[CS_KEY_PRESS_1] = false;
 			}
 			break;
 		case '2':
 			if (is_pushed[CS_KEY_PRESS_2] == true) {
-				printf("[WM_KEYDOWN] : 2키 놓음 \n");
+				//printf("[WM_KEYDOWN] : 2키 놓음 \n");
 				server_mgr.SendPacket(CS_KEY_RELEASE_2);
 				is_pushed[CS_KEY_PRESS_2] = false;
 			}
 			break;
 		case 'Q':
 			if (is_pushed[CS_KEY_PRESS_Q] == true) {
-				printf("[WM_KEYDOWN] : Q키 놓음 \n");
+				//printf("[WM_KEYDOWN] : Q키 놓음 \n");
 				server_mgr.SendPacket(CS_KEY_RELEASE_Q);
-				//cout << m_pPlayer[my_client_id]->GetPosition().x << "    " << m_pPlayer[my_client_id]->GetPosition().z << endl;
 				is_pushed[CS_KEY_PRESS_Q] = false;
 				
 			}
@@ -878,8 +1019,6 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 				ServerMgr::damageCheck = false;
 			}
 			
-
-			//cout << playerHp << " , " << server_mgr.GetPlayerHP(my_client_id) << endl;
 			//printf("%f", playerHp);
 			// 빌딩은 총 10개 0~9 로 접근 가능.
 			break;
@@ -1299,7 +1438,6 @@ void CGameFramework::FrameAdvance()
 
 
 																			  // 숫자 시작
-																			  //cout << "총알 "<<m_pPlayer[my_client_id]->GetPlayerBullet() << endl;
 		if (m_pPlayer[my_client_id]->GetPlayerBullet() / 10 > 0)
 			m_pScene->m_ppUIShaders[11 + m_pPlayer[my_client_id]->GetPlayerBullet() / 10]->Render(m_pd3dCommandList, m_pCamera); // 앞 숫자
 		if (m_pPlayer[my_client_id]->GetPlayerBullet() > 0)
@@ -1318,11 +1456,9 @@ void CGameFramework::FrameAdvance()
 	if(gameMode == 2)
 		m_pScene->m_ppMainUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//게임오버 화면
 	// 렌더
-	printf("%f %f %f \n", m_pPlayer[0]->GetPosition().x, m_pPlayer[0]->GetPosition().y, m_pPlayer[0]->GetPosition().z);
+	//printf("%f %f %f \n", m_pPlayer[0]->GetPosition().x, m_pPlayer[0]->GetPosition().y, m_pPlayer[0]->GetPosition().z);
 
 	m_pBlueBox[0]->SetBoxScale(server_mgr.GetElecCount());
-
-	//cout << "자기장 중심 (" << m_pBlueBox[0]->GetPosition().x << " " << m_pBlueBox[0]->GetPosition().y << " " << m_pBlueBox[0]->GetPosition().z << endl;
 
 	// 자기장 충돌체크
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
@@ -1333,7 +1469,6 @@ void CGameFramework::FrameAdvance()
 		{
 			blueScreenMode = true;
 			playerHp -= 0.01;
-			//cout << playerHp;
 			break;
 		}
 		case INTERSECTS:

@@ -82,6 +82,9 @@ public:
 	float						playerHp = 100;
 	int							gameMode = 1;
 	bool						damageCheck = false;
+	bool						writeMode = true;
+	bool						writeStart = false;
+	int							writeNum = 0;
 
 private:
 	int							mainScreenSelect = 0;
