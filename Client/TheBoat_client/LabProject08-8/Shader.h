@@ -298,8 +298,9 @@ public:
 class CFlowerShader : public CTexturedShader
 {
 protected:
-	CBillboard * *m_ppTree = 0;
+	CRotatingObject * *m_ppTree = 0;
 	int								m_nTree = 0;
+	int								setRedDot = 0;
 
 #ifdef _WITH_BATCH_MATERIAL
 	CMaterial						*m_pMaterial = NULL;

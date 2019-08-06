@@ -1052,7 +1052,7 @@ void CFlowerShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommand
 	m_nTree = (xObjects * yObjects * zObjects);
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/Green.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/RedPoint.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -1069,34 +1069,32 @@ void CFlowerShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommand
 	pCubeMaterial->SetTexture(pTexture);
 #endif
 
-	CBillboardMesh *pCubeMesh = new CBillboardMesh(pd3dDevice, pd3dCommandList, 100.0f, 100.0f, 100.0f);
+	CBillboardMesh *pCubeMesh = new CBillboardMesh(pd3dDevice, pd3dCommandList, 30.0f, 30.0f, 1.0f);
 
-	m_ppTree = new CBillboard*[m_nTree];
+	m_ppTree = new CRotatingObject*[m_nTree];
 
 	XMFLOAT3 xmf3RotateAxis, xmf3SurfaceNormal;
-	CBillboard *pRotatingObject = NULL;
+	CRotatingObject *pRotatingObject = NULL;
 	for (int i = 0, x = 0; x < xObjects; x++)
 	{
 		for (int z = 0; z < zObjects; z++)
 		{
 			for (int y = 0; y < yObjects; y++)
 			{
-				pRotatingObject = new CBillboard();
+				pRotatingObject = new CRotatingObject();
 				pRotatingObject->SetMesh(0, pCubeMesh);
 #ifndef _WITH_BATCH_MATERIAL
 				pRotatingObject->SetMaterial(pCubeMaterial);
 #endif
-				float xPosition = 500 + x * 30;
-				float zPosition = 1000 + z * 30;
+				float xPosition = 800;
+				float zPosition = 800;
 				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
-				pRotatingObject->SetPosition(xPosition, fHeight + (y * 3.0f * fyPitch) + 6.0f, zPosition);
+				//pRotatingObject->SetPosition(800, 0, 1000);
 				if (y == 0)
 				{
 					xmf3SurfaceNormal = pTerrain->GetNormal(xPosition, zPosition);
 					xmf3RotateAxis = Vector3::CrossProduct(XMFLOAT3(0.0f, 1.0f, 0.0f), xmf3SurfaceNormal);
 					if (Vector3::IsZero(xmf3RotateAxis)) xmf3RotateAxis = XMFLOAT3(0.0f, 1.0f, 0.0f);
-					float fAngle = acos(Vector3::DotProduct(XMFLOAT3(0.0f, 1.0f, 0.0f), xmf3SurfaceNormal));
-					pRotatingObject->Rotate(&xmf3RotateAxis, XMConvertToDegrees(fAngle));
 				}
 				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
 				m_ppTree[i++] = pRotatingObject;
@@ -1122,7 +1120,7 @@ void CFlowerShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 {
 	for (int j = 0; j < m_nTree; j++)
 	{
-		m_ppTree[j]->Animate(fTimeElapsed, pCamera);
+		m_ppTree[j]->Animate(fTimeElapsed);
 	}
 }
 
@@ -1146,10 +1144,10 @@ void CFlowerShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *
 	if (m_pMaterial) m_pMaterial->UpdateShaderVariables(pd3dCommandList);
 #endif
 
-	/*for (int j = 0; j < m_nTree; j++)
+	for (int j = 0; j < m_nTree; j++)
 	{
 		if (m_ppTree[j]) m_ppTree[j]->Render(pd3dCommandList, pCamera);
-	}*/
+	}
 }
 
 void CFlowerShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
@@ -1163,11 +1161,11 @@ void CFlowerShader::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12Graphi
 void CFlowerShader::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
 {
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
-	for (int j = 0; j < m_nTree; j++)
+	/*for (int j = 0; j < m_nTree; j++)
 	{
-		CB_GAMEOBJECT_INFO *pbMappedcbGameObject = (CB_GAMEOBJECT_INFO *)((UINT8 *)m_pcbMappedGameObjects + (j * ncbElementBytes));
-		XMStoreFloat4x4(&pbMappedcbGameObject->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&m_ppTree[j]->m_xmf4x4World)));
-	}
+	CB_GAMEOBJECT_INFO *pbMappedcbGameObject = (CB_GAMEOBJECT_INFO *)((UINT8 *)m_pcbMappedGameObjects + (j * ncbElementBytes));
+	XMStoreFloat4x4(&pbMappedcbGameObject->m_xmf4x4World, XMMatrixTranspose(XMLoadFloat4x4(&m_ppTree[j]->m_xmf4x4World)));
+	}*/
 }
 
 void CFlowerShader::ReleaseShaderVariables()
@@ -1177,7 +1175,6 @@ void CFlowerShader::ReleaseShaderVariables()
 		m_pd3dcbGameObjects->Unmap(0, NULL);
 		m_pd3dcbGameObjects->Release();
 	}
-
 	CTexturedShader::ReleaseShaderVariables();
 }
 
@@ -1220,13 +1217,13 @@ void CBulletShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommand
 	float fTerrainWidth = pTerrain->GetWidth();
 	float fTerrainLength = pTerrain->GetLength();
 
-	int xObjects = 256;
+	int xObjects = 1;
 	int yObjects = 1;
 	int zObjects = 1;
-	m_nBullet = 256;
+	m_nBullet = 1;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Bullets/Bullet.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/RedPoint.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -1243,7 +1240,7 @@ void CBulletShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommand
 	pCubeMaterial->SetTexture(pTexture);
 #endif
 
-	CBillboardMesh *pCubeMesh = new CBillboardMesh(pd3dDevice, pd3dCommandList, 1.0f, 1.0f, 1.0f);
+	CBillboardMesh *pCubeMesh = new CBillboardMesh(pd3dDevice, pd3dCommandList, 0.2f, 0.2f, 0.2f);
 
 	m_ppBullet = new CBillboard*[m_nBullet];
 
