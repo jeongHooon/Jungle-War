@@ -22,7 +22,6 @@ void ServerMgr::IPInput() {
 		cin >> userid;
 		cout << "비밀번호 입력 : ";
 		cin >> userpw;
-		cin >> server_ip;
 		break;
 	}
 }

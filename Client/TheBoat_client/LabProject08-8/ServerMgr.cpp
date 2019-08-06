@@ -114,7 +114,6 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		sc_vec_buff[packets->id].pos.y = packets->y;
 		sc_vec_buff[packets->id].pos.z = packets->z;
 
-
 		sc_vec_buff[packets->id].elecX = packets->elecX;
 		sc_vec_buff[packets->id].elecY = packets->elecY;
 		sc_vec_buff[packets->id].elecZ = packets->elecZ;
@@ -123,7 +122,6 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		if(packets->id == clients_id)
 			elecPos = XMFLOAT3(packets->elecX, packets->elecY, packets->elecZ);
 		//cout <<packets->id<<"¹ø" <<elecPos.x << endl;
-		
 
 		client_hp[packets->id] = packets->hp;
 		strncpy_s((char *)packets->userid, maxUserIDLen, userid, maxUserIDLen);

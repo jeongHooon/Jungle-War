@@ -14,7 +14,7 @@ void ErrorDisplay(const char* msg, int err_no) {
 		(LPTSTR)&lpMsgBuf, 0, NULL);
 	printf("%s", msg);
 	wprintf(L"에러%s\n", lpMsgBuf);
-	LocalFree(lpMsgBuf);
+	LocalFree(lpMsgBuf);  
 }
 
 ServerFramework::ServerFramework()
@@ -905,6 +905,8 @@ void ServerFramework::WorkerThread() {
 						//bullet_lock.unlock();
 						continue;
 					}
+
+
 
 					//여기서 보내줘야지~
 					if (bullets[i* MAX_BULLET_SIZE + j].in_use) {
