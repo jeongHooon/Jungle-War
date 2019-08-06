@@ -6,6 +6,7 @@
 
 #include "Shader.h"
 #include "Player.h"
+#define NUM_OBJECT 42
 struct LIGHT
 {
 	XMFLOAT4				m_xmf4Ambient;
@@ -75,7 +76,7 @@ public:
 	CHeightMapTerrain *GetTerrain() { return(m_pTerrain); }
 
 	CPlayer						*m_pPlayer[4];
-	CPlayer						*m_pObject[30];
+	CPlayer						*m_pObject[NUM_OBJECT]; //오브젝트 갯수
 	CPlayer						*m_pBlueBox[1];
 
 	static int					makeParticleIndex;

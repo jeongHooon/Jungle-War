@@ -1148,14 +1148,24 @@ void CGameFramework::BuildObjects()
 		else if (i == 28) xPosition = 420, zPosition = 290;
 		else if (i == 29) xPosition = 424, zPosition = 370;
 		else if (i == 30) xPosition = 560, zPosition = 500;
-		/*else if (i == 31) xPosition = 474, zPosition = 440;
+		else if (i == 31) xPosition = 474, zPosition = 440;
 		else if (i == 32) xPosition = 630, zPosition = 510;
 		else if (i == 33) xPosition = 600, zPosition = 440;
-		else if (i == 34) xPosition = 540, zPosition = 450;*/
+		else if (i == 34) xPosition = 540, zPosition = 450;
+
+		else if (i == 35) xPosition = 520, zPosition = 390;
+		else if (i == 36) xPosition = 524, zPosition = 470;
+		else if (i == 37) xPosition = 560, zPosition = 300;
+		else if (i == 38) xPosition = 574, zPosition = 340;
+		else if (i == 39) xPosition = 530, zPosition = 410;
+		else if (i == 40) xPosition = 500, zPosition = 340;
+		else if (i == 41) xPosition = 540, zPosition = 450;
 		/*else if (i == 28) xPosition = 602, zPosition = 1122;
 		else if (i == 29) xPosition = 3000, zPosition = 3000;*/
 		float fHeight = m_pScene->GetTerrain()->GetHeight(xPosition, zPosition);
 		m_pObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
+		m_pObject[i]->SetOOBB(m_pObject[i]->GetPosition(), XMFLOAT3(1, 1, 1), XMFLOAT4(0, 0, 0, 1));
+		
 	}
 
 #endif
@@ -1481,6 +1491,49 @@ void CGameFramework::FrameAdvance()
 		}
 	}
 	////
+
+	/////// 오브젝트 충돌체크
+	
+	bool check = false;
+	//충돌체크
+	for (int i = 0; i < NUM_OBJECT; ++i) {
+		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pObject[i]->bounding_box);
+		switch (containType)
+		{
+		case DISJOINT:
+		{
+			break;
+		}
+		case INTERSECTS:
+		{
+			printf("오브젝트충돌예에\n");
+			if ((m_pObject[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x) * (m_pObject[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x)
+				< (m_pObject[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z) * (m_pObject[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z)) {
+				if (m_pObject[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z > 0) { m_pObject[i]->look = XMFLOAT3(0, 0, -1); }
+				else { m_pObject[i]->look = XMFLOAT3(0, 0, 1); }
+			}
+			else {
+				if (m_pObject[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x > 0) { m_pObject[i]->look = XMFLOAT3(-1, 0, 0); }
+				else { m_pObject[i]->look = XMFLOAT3(1, 0, 0); }
+			}
+			XMFLOAT3 xmf3Result;
+			XMFLOAT3 xmf3Result_1;
+			XMFLOAT3 xmf3Result_2;
+			XMStoreFloat3(&xmf3Result_1, XMVector3Dot(XMLoadFloat3(&CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook()), XMLoadFloat3(&m_pObject[i]->look)));
+			XMStoreFloat3(&xmf3Result, XMVector3Dot(XMLoadFloat3(&m_pObject[i]->look), XMLoadFloat3(&xmf3Result_1)));
+			xmf3Result_2 = XMFLOAT3(Vector3::Subtract(CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook(), xmf3Result));
+			CGameFramework::sendLook = XMFLOAT3(2 * xmf3Result_2.x / 3, 2 * xmf3Result_2.y / 3, 2 * xmf3Result_2.z / 3);
+			check = true;
+			break;
+		}
+		case CONTAINS:
+
+			break;
+		}
+	}
+	if (check == true)
+		CGameFramework::boxBound = 1;
+	/////////
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
