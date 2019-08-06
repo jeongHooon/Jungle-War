@@ -1009,10 +1009,18 @@ void CGameFramework::BuildObjects()
 		else if (i == 28) xPosition = 420, zPosition = 290;
 		else if (i == 29) xPosition = 424, zPosition = 370;
 		else if (i == 30) xPosition = 560, zPosition = 500;
-		/*else if (i == 31) xPosition = 474, zPosition = 440;
+		else if (i == 31) xPosition = 474, zPosition = 440;
 		else if (i == 32) xPosition = 630, zPosition = 510;
 		else if (i == 33) xPosition = 600, zPosition = 440;
-		else if (i == 34) xPosition = 540, zPosition = 450;*/
+		else if (i == 34) xPosition = 540, zPosition = 450;
+
+		else if (i == 35) xPosition = 520, zPosition = 390;
+		else if (i == 36) xPosition = 524, zPosition = 470;
+		else if (i == 37) xPosition = 560, zPosition = 300;
+		else if (i == 38) xPosition = 574, zPosition = 340;
+		else if (i == 39) xPosition = 530, zPosition = 410;
+		else if (i == 40) xPosition = 500, zPosition = 340;
+		else if (i == 41) xPosition = 540, zPosition = 450;
 		/*else if (i == 28) xPosition = 602, zPosition = 1122;
 		else if (i == 29) xPosition = 3000, zPosition = 3000;*/
 		float fHeight = m_pScene->GetTerrain()->GetHeight(xPosition, zPosition);
