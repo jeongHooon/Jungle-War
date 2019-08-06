@@ -820,7 +820,7 @@ void CObjectsShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 	}
 	bool check = false;
 	//충돌체크
-	for (int i = 0; i < MAX_PLAYER_SIZE * MAX_BOX_SIZE; ++i) {
+	for (int i = 0; i < MAX_PLAYER_SIZE * MAX_BOX_SIZE; ++i)	{
 		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_ppObjects[i]->bounding_box);
 		switch (containType)
 		{
