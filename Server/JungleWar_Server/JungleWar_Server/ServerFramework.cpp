@@ -112,6 +112,77 @@ void ServerFramework::InitServer() {
 		}
 	}
 
+	// Map_Object OBB
+
+	for (int i = 0; i < MAX_OBJECT_SIZE; ++i) {
+		float xPosition;
+		float zPosition;
+		bool obj_state;
+
+		if (i == 0) xPosition = 230, zPosition = 280, obj_state = OBJECT_ALIVE;
+		else if (i == 1) xPosition = 110, zPosition = 270, obj_state = OBJECT_ALIVE;
+		else if (i == 2) xPosition = 135, zPosition = 200, obj_state = OBJECT_ALIVE;
+		else if (i == 3) xPosition = 260, zPosition = 340, obj_state = OBJECT_ALIVE;
+		else if (i == 4) xPosition = 310, zPosition = 230, obj_state = OBJECT_ALIVE;
+		else if (i == 5) xPosition = 360, zPosition = 370, obj_state = OBJECT_ALIVE;
+		else if (i == 6) xPosition = 430, zPosition = 150, obj_state = OBJECT_ALIVE;
+
+		else if (i == 7) xPosition = 510, zPosition = 310, obj_state = OBJECT_ALIVE;
+		else if (i == 8) xPosition = 560, zPosition = 290, obj_state = OBJECT_ALIVE;
+		else if (i == 9) xPosition = 570, zPosition = 190, obj_state = OBJECT_ALIVE;
+		else if (i == 10) xPosition = 755, zPosition = 240, obj_state = OBJECT_ALIVE;
+		else if (i == 11) xPosition = 665, zPosition = 360, obj_state = OBJECT_ALIVE;
+		else if (i == 12) xPosition = 880, zPosition = 335, obj_state = OBJECT_ALIVE;
+		else if (i == 13) xPosition = 795, zPosition = 420, obj_state = OBJECT_ALIVE;
+
+		else if (i == 14) xPosition = 325, zPosition = 700, obj_state = OBJECT_ALIVE;
+		else if (i == 15) xPosition = 350, zPosition = 550, obj_state = OBJECT_ALIVE;
+		else if (i == 16) xPosition = 400, zPosition = 710, obj_state = OBJECT_ALIVE;
+		else if (i == 17) xPosition = 420, zPosition = 860, obj_state = OBJECT_ALIVE;
+		else if (i == 18) xPosition = 430, zPosition = 645, obj_state = OBJECT_ALIVE;
+		else if (i == 19) xPosition = 450, zPosition = 550, obj_state = OBJECT_ALIVE;
+		else if (i == 20) xPosition = 460, zPosition = 770, obj_state = OBJECT_ALIVE;
+
+		else if (i == 21) xPosition = 560, zPosition = 840, obj_state = OBJECT_ALIVE;
+		else if (i == 22) xPosition = 660, zPosition = 800, obj_state = OBJECT_ALIVE;
+		else if (i == 23) xPosition = 590, zPosition = 690, obj_state = OBJECT_ALIVE;
+		else if (i == 24) xPosition = 670, zPosition = 580, obj_state = OBJECT_ALIVE;
+		else if (i == 25) xPosition = 730, zPosition = 720, obj_state = OBJECT_ALIVE;
+		else if (i == 26) xPosition = 750, zPosition = 620, obj_state = OBJECT_ALIVE;
+		else if (i == 27) xPosition = 830, zPosition = 620, obj_state = OBJECT_ALIVE;
+
+		else if (i == 28) xPosition = 420, zPosition = 290, obj_state = OBJECT_ALIVE;
+		else if (i == 29) xPosition = 424, zPosition = 370, obj_state = OBJECT_ALIVE;
+		else if (i == 30) xPosition = 560, zPosition = 500, obj_state = OBJECT_ALIVE;
+		else if (i == 31) xPosition = 474, zPosition = 440, obj_state = OBJECT_ALIVE;
+		else if (i == 32) xPosition = 630, zPosition = 510, obj_state = OBJECT_ALIVE;
+		else if (i == 33) xPosition = 600, zPosition = 440, obj_state = OBJECT_ALIVE;
+		else if (i == 34) xPosition = 540, zPosition = 450, obj_state = OBJECT_ALIVE;
+
+		else if (i == 35) xPosition = 520, zPosition = 390, obj_state = OBJECT_ALIVE;
+		else if (i == 36) xPosition = 524, zPosition = 470, obj_state = OBJECT_ALIVE;
+		else if (i == 37) xPosition = 560, zPosition = 300, obj_state = OBJECT_ALIVE;
+		else if (i == 38) xPosition = 574, zPosition = 340, obj_state = OBJECT_ALIVE;
+		else if (i == 39) xPosition = 530, zPosition = 410, obj_state = OBJECT_ALIVE;
+		else if (i == 40) xPosition = 500, zPosition = 340, obj_state = OBJECT_ALIVE;
+		else if (i == 41) xPosition = 540, zPosition = 450, obj_state = OBJECT_ALIVE;
+		/*else if (i == 28) xPosition = 602, zPosition = 1122;
+		else if (i == 29) xPosition = 3000, zPosition = 3000;*/
+
+		float yPosition = height_map->GetHeight(xPosition, zPosition);
+
+		obj[i].x = xPosition;
+		obj[i].y = yPosition;
+		obj[i].z = zPosition;
+		obj[i].state = obj_state;
+
+		obj[i].SetOOBB(XMFLOAT3(obj[i].x, obj[i].y, obj[i].z),
+			XMFLOAT3(OBB_SCALE_OBJECT_X, OBB_SCALE_OBJECT_Y, OBB_SCALE_OBJECT_Z),
+			XMFLOAT4(0, 0, 0, 1));
+		obj[i].bounding_box.Center;
+		obj[i].hp = MAX_OBJECT_HP;
+	}
+
 	// building 
 	XMFLOAT3 input_buffer[10];
 	XMFLOAT3 input_extents[10];
@@ -1013,6 +1084,90 @@ void ServerFramework::WorkerThread() {
 			}
 			}*/
 		}
+		else if (overlapped_buffer->command == SS_COLLISION_BO) {
+			for (int j = 0; j < MAX_OBJECT_SIZE; ++j) {
+				for (int i = 0; i < MAX_PLAYER_SIZE * MAX_BULLET_SIZE; ++i) {
+					if (bullets[i].in_use && obj[j].in_use) {
+						ContainmentType containType = obj[j].bounding_box.Contains(bullets[i].bounding_box);
+						switch (containType)
+						{
+						case DISJOINT:
+						{
+							//printf("충돌 안함ㅠ\n");
+							break;
+						}
+						case INTERSECTS:
+						{
+							SC_PACKET_COLLISION_OB packets;
+							packets.size = sizeof(SC_PACKET_COLLISION_OB);
+							packets.type = SC_COLLSION_BO;
+							packets.x = obj[j].bounding_box.Center.x;
+							// 플레이어의 키 만큼 반영해서
+							packets.y = obj[j].bounding_box.Center.y;
+							packets.z = obj[j].bounding_box.Center.z;
+							//packets.client_id = j;
+							//
+							obj[j].hp -= MAX_BULLET_DAMAGE;
+							//
+							packets.hp = obj[j].hp;
+							//packets.box_id = boxes[j].boxindex;
+							packets.obj_id = j;
+
+							printf("맞은 나무는 %d야\n", j);
+
+							if (obj[j].hp < 1) {
+								//packets.box_id = boxes[j].boxindex;
+								obj[j].in_use = false;
+							}
+							packets.in_use = obj[j].in_use;
+
+							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+							{
+								if (clients[k].in_use)
+									SendPacket(k, &packets);
+							}
+							//printf("박스 - 총알 충돌 시작\n");
+							bullets[i].in_use = false;
+							break;
+						}
+						case CONTAINS:
+							SC_PACKET_COLLISION_OB packets;
+							packets.size = sizeof(SC_PACKET_COLLISION_OB);
+							packets.type = SC_COLLSION_BO;
+							packets.x = obj[j].bounding_box.Center.x;
+							// 플레이어의 키 만큼 반영해서
+							packets.y = obj[j].bounding_box.Center.y;
+							packets.z = obj[j].bounding_box.Center.z;
+							//packets.client_id = j;
+							//
+							obj[j].hp -= MAX_BULLET_DAMAGE;
+							//
+							packets.hp = obj[j].hp;
+							//packets.box_id = boxes[j].boxindex;
+							packets.obj_id = j;
+
+							printf("맞은 나무는 %d야\n", j);
+
+							if (obj[j].hp < 1) {
+								//packets.box_id = boxes[j].boxindex;
+								obj[j].in_use = false;
+							}
+							packets.in_use = obj[j].in_use;
+
+							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+							{
+								if (clients[k].in_use)
+									SendPacket(k, &packets);
+							}
+							//printf("박스 - 총알 충돌 시작\n");
+							bullets[i].in_use = false;
+							break;
+						}
+					}
+				}
+
+			}
+		}
 		// Send로 인해 할당된 영역 반납
 		else {
 			delete overlapped_buffer;
@@ -1079,6 +1234,9 @@ void ServerFramework::Update(duration<float>& elapsed_time) {
 
 	//ol_ex[MAX_PLAYER_SIZE + 6].command = SS_COLLISION_MP;
 	//PostQueuedCompletionStatus(iocp_handle, 0, MAX_PLAYER_SIZE + 6, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[MAX_PLAYER_SIZE + 6]));
+
+	ol_ex[MAX_PLAYER_SIZE + 7].command = SS_COLLISION_BO;
+	PostQueuedCompletionStatus(iocp_handle, 0, MAX_PLAYER_SIZE + 7, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[MAX_PLAYER_SIZE + 7]));
 
 
 

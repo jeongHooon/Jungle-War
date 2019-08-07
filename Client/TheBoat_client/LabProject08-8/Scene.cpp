@@ -170,7 +170,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppShaders[4] = pObjectsShader;
 	// UI
 
-	m_nUIShaders = 27;
+	m_nUIShaders = 28;
 	m_ppUIShaders = new CShader*[m_nUIShaders];
 
 	CMiniMapShader *pMiniMapShader = new CMiniMapShader();
@@ -280,6 +280,10 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pBlueScreenShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pBlueScreenShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
+	CFlowerShader *pRedPointShader = new CFlowerShader();
+	pRedPointShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pRedPointShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
 	m_ppUIShaders[0] = pMiniMapShader;
 	m_ppUIShaders[1] = pTreeShader;
 	m_ppUIShaders[2] = pHpBarShader;
@@ -307,6 +311,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppUIShaders[24] = pNumShader8;
 	m_ppUIShaders[25] = pNumShader9;
 	m_ppUIShaders[26] = pBlueScreenShader;
+	m_ppUIShaders[27] = pRedPointShader;
 
 	// 메인화면
 	m_nMainUIShaders = 4;
@@ -591,6 +596,10 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 	/*if(CGameFramework::m_pCamera->GetMode == SPACESHIP_CAMERA)
 		m_ppShaders[0]*/
 	m_pBuildings->AnimateObjects(fTimeElapsed, pCamera);
+
+	//m_ppShaders[2]->SetPosition(0,XMFLOAT3(m_pPlayer[CGameFramework::my_client_id]->GetPosition().x, m_pPlayer[CGameFramework::my_client_id]->GetPosition().y + 10, m_pPlayer[CGameFramework::my_client_id]->GetPosition().z));
+	m_ppShaders[2]->SetPosition(0, XMFLOAT3(m_pPlayer[CGameFramework::my_client_id]->GetCamera()->GetPosition().x + 10 * m_pPlayer[CGameFramework::my_client_id]->GetCameraLook().x, 
+		m_pPlayer[CGameFramework::my_client_id]->GetCamera()->GetPosition().y + 10 * m_pPlayer[CGameFramework::my_client_id]->GetCameraLook().y, m_pPlayer[CGameFramework::my_client_id]->GetCamera()->GetPosition().z + 10 * m_pPlayer[CGameFramework::my_client_id]->GetCameraLook().z));
 	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->AnimateObjects(fTimeElapsed, pCamera);
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Animate(fTimeElapsed);
 

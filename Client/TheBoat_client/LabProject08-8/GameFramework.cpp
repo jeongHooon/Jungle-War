@@ -1000,8 +1000,8 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 				//printf("Player 상태 %d\n", server_mgr.ReturnPlayerPosStatus(server_mgr.GetClientID()).player_status);
 			}
 
-			m_pScene->m_ppShaders[2]->SetPosition(server_mgr.GetBullet().id,
-				XMFLOAT3(server_mgr.GetBullet().x, server_mgr.GetBullet().y, server_mgr.GetBullet().z));
+			//m_pScene->m_ppShaders[2]->SetPosition(server_mgr.GetBullet().id,
+			//	XMFLOAT3(server_mgr.GetBullet().x, server_mgr.GetBullet().y, server_mgr.GetBullet().z));
 			
 			for (int i = 0; i < MAX_PLAYER_SIZE*MAX_BOX_SIZE; ++i) {
 				if (server_mgr.GetBoxInuse(i) == 0) {
@@ -1171,6 +1171,7 @@ void CGameFramework::BuildObjects()
 		else if (i == 29) xPosition = 3000, zPosition = 3000;*/
 		float fHeight = m_pScene->GetTerrain()->GetHeight(xPosition, zPosition);
 		m_pObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
+		m_pObject[i]->SetOOBB(m_pObject[i]->GetPosition(), XMFLOAT3(1, 1, 1), XMFLOAT4(0, 0, 0, 1));
 		
 	}
 	for (int i = 0; i < NUM_OBJECT2; ++i) {
@@ -1496,6 +1497,8 @@ void CGameFramework::FrameAdvance()
 		if(blueScreenMode)
 			m_pScene->m_ppUIShaders[26]->Render(m_pd3dCommandList, m_pCamera);
 		
+		
+
 	}
 	
 	if (playerHp < 1) {
@@ -1505,6 +1508,8 @@ void CGameFramework::FrameAdvance()
 
 	if(gameMode == 2)
 		m_pScene->m_ppMainUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//게임오버 화면
+
+	m_pScene->m_ppUIShaders[27]->Render(m_pd3dCommandList, m_pCamera);
 	// 렌더
 	//printf("%f %f %f \n", m_pPlayer[0]->GetPosition().x, m_pPlayer[0]->GetPosition().y, m_pPlayer[0]->GetPosition().z);
 

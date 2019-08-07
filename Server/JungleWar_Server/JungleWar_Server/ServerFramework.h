@@ -46,6 +46,7 @@ class ServerFramework
 	// MAX_PLAYER_SIZE + 4 박스 업데이트
 	// MAX_PLAYER_SIZE + 5 박스 총알 충돌체크전용
 	// MAX_PLAYER_SIZE + 6 자기장 업데이트
+	// MAX_PLAYER_SIZE + 7 오브젝트 총알 충돌체크 전용
 	OverlappedExtensionSet ol_ex[OX_SIZE];
 
 	Bullet bullets[MAX_PLAYER_SIZE * MAX_BULLET_SIZE];
@@ -55,6 +56,8 @@ class ServerFramework
 	// 플레이어별 몇 번째 총알까지 발사했는지 저장하는 변수
 	int bullet_counter[MAX_PLAYER_SIZE] = { 0 };
 	int box_counter[MAX_PLAYER_SIZE] = { 0 };
+
+	Map_Object obj[MAX_OBJECT_SIZE] = { 0 };
 
 	int box_count = 0;
 
