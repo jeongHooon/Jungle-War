@@ -22,11 +22,8 @@
     <ProjectGuid>{11902F85-A658-4112-B8D7-A6E30C143C4B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>JungleWar_Server</RootNamespace>
-<<<<<<< HEAD
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
-=======
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
->>>>>>> 11f75ca929d0dd9e65d1e43bdf9f93d9e8ab0c84
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
