@@ -3,28 +3,10 @@
 // Server 에서 받아오는 Player의 정보 
 struct SPlayer {
 	XMFLOAT3 pos;
+	float elecX, elecY, elecZ;
+	int elecCount;
 	int player_status;
 };
-
-struct ProtoCommand
-{
-	WORD command;
-	BYTE data[0];//크기가 0이므로 실제로 메모리를 할당하지는
-				// 않지만, ProtoCommand의 끝부분을 알려주는
-				// 포인터로서 기능한다.
-				// 그러므로 이 위치에 데이터를 만든다면
-				// ProtoCommand 뒤에 붙어있는 구조체를 만들
-				// 수 있다.
-};
-
-
-
-struct StrLoginREQ    //프로토콜에 REQ가 붙으면
-{						//  요청을 하는 패킷
-//	BYTE userid[maxUserIDLen];
-//	BYTE passwd[maxPasswdLen];
-};
-
 
 
 class ServerMgr
@@ -64,9 +46,10 @@ class ServerMgr
 
 	int camera_id = 0;
 	string server_ip;
-	
-	BYTE userid[maxUserIDLen];
-	BYTE passwd[maxPasswdLen];
+
+	// 로그인
+	char userid[maxUserIDLen];
+	char userpw[maxUserIDLen];
 
 
 	// 아이템 생성 부분
@@ -78,6 +61,7 @@ class ServerMgr
 
 	bool s_is_collide = false;
 	bool box_is_collide = false;
+	
 public:
 	void IPInput();
 	void Initialize(HWND& hwnd);
@@ -87,6 +71,7 @@ public:
 	void SendPacket(int type, XMFLOAT3& xmvector);
 	void ProcessPacket(char* ptr);
 	void ErrorDisplay(const char* msg, int err_no);
+	int GetElecCount();
 	int GetClientID();
 	int ReturnCameraID();
 	float GetBoxHp(int index) { return box_hp[index]; }
@@ -103,9 +88,11 @@ public:
 	// 플레이어 체력
 	float GetPlayerHP(int p_n);
 
+	static int elecCount;
+	static XMFLOAT3 elecPos;
+	static bool damageCheck;
+
 	// 
 	void ReturnBuildingPosition(XMFLOAT3* building_pos);
 	void ReturnBuildingExtents(XMFLOAT3* building_pos);
 };
-
-

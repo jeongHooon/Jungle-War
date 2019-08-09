@@ -12,10 +12,13 @@
 #define MAX_BOX_SIZE		10
 #define OX_SIZE				30
 #define TERRAIN_SCALE		0.5f
-////////////////////////////////
+
+/////////채팅용 프로토콜/////////
 #define maxUserIDLen		20
 #define maxPasswdLen		20
 #define maxChatSize			256
+/////////////////////////////////
+
 
 // 본인 클라이언트 및 서버에서 사용
 //#define RUN_SPEED				2.78f
@@ -116,6 +119,35 @@ enum ARWeapons {
 enum SubWeapons {
 	NON_SUB = 0
 };
+
+/////////채팅용 프로토콜/////////
+struct ProtoCommand
+{
+	WORD command;
+	BYTE data[0];
+};
+const WORD ComLoginREQ = 1; // 로그인 요청
+
+struct StrLoginREQ    {						
+	BYTE userid[maxUserIDLen];
+	BYTE passwd[maxPasswdLen];
+};
+
+const WORD ComLoginACK = 2; // 서버에서 로그인 요청 응답
+struct StrLoginACK	{					
+	BYTE result;	// 0이면 로긴 성공, 아니면 실패
+};
+
+enum EnumLoginACK
+{
+	LoginACKConnectAllow = 0,		// 접속 허용
+	LoginACKInvalidPasswd = 1,		// 패스워드 불일치
+	LoginACKDuplicateConnect = 2,	// 한 아이디로 중복접속
+};
+
+/////////////////////////////
+
+
 
 // 서버->클라
 struct SC_PACKET_ENTER_PLAYER {

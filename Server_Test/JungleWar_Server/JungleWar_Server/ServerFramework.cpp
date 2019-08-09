@@ -855,6 +855,7 @@ void ServerFramework::WorkerThread() {
 
 			}
 		}
+
 		else if (overlapped_buffer->command == SS_PLAYER_POS_UPDATE) {
 			for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 				//client_lock.lock();
@@ -1102,6 +1103,7 @@ void ServerFramework::WorkerThread() {
 							packets.size = sizeof(SC_PACKET_COLLISION_OB);
 							packets.type = SC_COLLSION_BO;
 							packets.x = obj[j].bounding_box.Center.x;
+
 							// 플레이어의 키 만큼 반영해서
 							packets.y = obj[j].bounding_box.Center.y;
 							packets.z = obj[j].bounding_box.Center.z;
