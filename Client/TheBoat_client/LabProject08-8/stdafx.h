@@ -94,6 +94,7 @@ extern ID3D12Resource *CreateTextureResourceFromFile(ID3D12Device *pd3dDevice, I
 
 #define RANDOM_COLOR	XMFLOAT4(rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX))
 
+#define SAFE_DELETE(p) if(p)  {delete p; p =NULL;}
 #define EPSILON				1.0e-10f
 #define	PI		3.141592654
 #define	DEG(rad)	(rad*180.0/PI)
