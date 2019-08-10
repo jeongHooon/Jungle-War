@@ -6,6 +6,7 @@
 #include "GameFramework.h"
 #include"resource.h"
 #include "ServerMgr.h"
+
 #pragma comment (lib,"winmm")
 int CShader::shootBullet;
 CShader*	CScene::m_pBuildings;
@@ -324,7 +325,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		::SetCapture(hWnd);
 		::GetCursorPos(&m_ptOldCursorPos);
 		for (int i = 0; i < 4; ++i) {
-			//printf("룩 1 %f | %f | %f \n", m_pPlayer[i]->GetLook().x, m_pPlayer[i]->GetLook().y, m_pPlayer[i]->GetLook().z);
+
 		}
 		//printf("=======================\n");
 		if (CShader::shootBullet == 0) {
@@ -346,6 +347,8 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		m_pCamera = m_pPlayer[my_client_id]->ChangeCamera(SPACESHIP_CAMERA, m_GameTimer.GetTimeElapsed());	// 마우스 우클시 카메라 변환
 		printf("마우스 우클릭\n");
 		break;
+	
+
 
 	case WM_LBUTTONUP:
 		//server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
@@ -862,6 +865,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				is_pushed[CS_KEY_PRESS_2] = false;
 			}
 			break;
+
+		case '9':
+			SendLoginREQ();
+			break;
 		case 'Q':
 			if (is_pushed[CS_KEY_PRESS_Q] == true) {
 				//printf("[WM_KEYDOWN] : Q키 놓음 \n");
@@ -1046,6 +1053,41 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	return(0);
 }
 
+void CGameFramework::SendLoginREQ() {
+	char userid[256];
+	char passwd[256];
+
+	cout << "id를 입력해 주세요 ";
+	cin >> userid;
+	cout << "암호를 입력해 주세요 ";
+	cin >> passwd;
+
+	char protoBuffer[1024];
+	ProtoCommand *cmd = (ProtoCommand *)protoBuffer;
+	StrLoginREQ *login = (StrLoginREQ *)cmd->data;
+
+	cmd->command = ComLoginREQ;
+
+	login->userid[maxUserIDLen - 1] = '\0';
+
+	strncpy_s((char *)login->passwd, maxPasswdLen, passwd, maxPasswdLen);
+	login->passwd[maxPasswdLen - 1] = '\0';
+
+	SendChatREQ();
+
+}
+void CGameFramework::SendChatREQ() {
+//	while (true) {
+		char buffer[1024];
+		cout << "전송할 문자열 : ";
+		cin >> buffer;
+
+		//	if (strcmp(buffer, "/w") == 0)  // 입력 문자열이 "/w"라면 귓속말
+		//		SendWisper(toServer);
+//	}
+}
+
+
 void CGameFramework::OnDestroy()
 {
 	ReleaseObjects();
@@ -1101,7 +1143,6 @@ void CGameFramework::BuildObjects()
 	for (int i = 0; i < NUM_OBJECT2; ++i) {
 		m_pScene->m_pObject2[i] = m_pObject2[i] = new CRockObject(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
 		
-
 	}
 	m_pScene->m_pBlueBox[0] = m_pBlueBox[0] = new CBlueBox(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
 	//m_pCamera = m_pPlayer[my_client_id]->GetCamera();
