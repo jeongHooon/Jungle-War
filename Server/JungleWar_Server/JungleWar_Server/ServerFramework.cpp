@@ -177,7 +177,7 @@ void ServerFramework::InitServer() {
 		obj[i].state = obj_state;
 
 		obj[i].SetOOBB(XMFLOAT3(obj[i].x, obj[i].y, obj[i].z),
-			XMFLOAT3(OBB_SCALE_OBJECT_X, OBB_SCALE_OBJECT_Y, OBB_SCALE_OBJECT_Z),
+			XMFLOAT3(OBB_SCALE_TREE_X, OBB_SCALE_TREE_Y, OBB_SCALE_TREE_Z),
 			XMFLOAT4(0, 0, 0, 1));
 		obj[i].bounding_box.Center;
 		obj[i].hp = MAX_OBJECT_HP;
