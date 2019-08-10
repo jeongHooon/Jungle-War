@@ -1100,7 +1100,7 @@ void ServerFramework::WorkerThread() {
 						{
 							SC_PACKET_COLLISION_OB packets;
 							packets.size = sizeof(SC_PACKET_COLLISION_OB);
-							packets.type = SC_COLLSION_BO;
+							packets.type = SC_COLLSION_OB;
 							packets.x = obj[j].bounding_box.Center.x;
 							// 플레이어의 키 만큼 반영해서
 							packets.y = obj[j].bounding_box.Center.y;
@@ -1133,7 +1133,7 @@ void ServerFramework::WorkerThread() {
 						case CONTAINS:
 							SC_PACKET_COLLISION_OB packets;
 							packets.size = sizeof(SC_PACKET_COLLISION_OB);
-							packets.type = SC_COLLSION_BO;
+							packets.type = SC_COLLSION_OB;
 							packets.x = obj[j].bounding_box.Center.x;
 							// 플레이어의 키 만큼 반영해서
 							packets.y = obj[j].bounding_box.Center.y;
