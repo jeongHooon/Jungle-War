@@ -15,25 +15,13 @@ void ServerMgr::ErrorDisplay(const char* msg, int err_no) {
 	LocalFree(lpMsgBuf);
 }
 void ServerMgr::IPInput() {
-
-
 	while (true) {
 		cout << "서버 아이피 입력 : ";
 		cin >> server_ip;
-		cout << "ID 입력 : ";
-		cin >> userid;
-		cout << "pw 입력 : ";
-		cin >> passwd;
-
-		char protoBuffer[1024];
-		ProtoCommand *cmd = (ProtoCommand *)protoBuffer;
-		StrLoginREQ *login = (StrLoginREQ *)cmd->data;
-
-		strncpy_s((char *)login->userid, maxUserIDLen, userid, maxUserIDLen);
-		login->userid[maxUserIDLen - 1] = '\0';// 가장 끝자리에 '\0'을 붙여준다.
-
-	//	send(toServer, protoBuffer,
-	//		sizeof(ProtoCommand) + sizeof(StrLoginREQ), 0);
+//		cout << "아이디 입력 : ";
+//		cin >> userid;
+//		cout << "비밀번호 입력 : ";
+//		cin >> userpw;
 		break;
 	}
 }
@@ -51,13 +39,9 @@ void ServerMgr::Initialize(HWND& hwnd) {
 	ServerAddr.sin_port = htons(SERVER_PORT);
 	// 아이피
 	ServerAddr.sin_addr.s_addr = inet_addr(server_ip.c_str());
-
+	
 	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	//ServerAddr.sin_addr.s_addr = inet_addr("192.168.101.211");
-
-	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	//ServerAddr.sin_addr.s_addr = inet_addr("110.5.195.3");
-
+	
 	int retval = WSAConnect(sock, (sockaddr *)&ServerAddr, sizeof(ServerAddr), NULL, NULL, NULL, NULL);
 	if (retval == SOCKET_ERROR) {
 		printf("소켓 연결 안됨\n");
@@ -116,21 +100,29 @@ void ServerMgr::ProcessPacket(char* ptr) {
 	static bool first_time = true;
 	switch (ptr[1]) {
 	case SC_ENTER_PLAYER: {
+
 		SC_PACKET_ENTER_PLAYER * packets = reinterpret_cast<SC_PACKET_ENTER_PLAYER*>(ptr);
 		if (first_set_id) {
 			clients_id = packets->id;
 			camera_id = packets->id;
 			first_set_id = false;
 		}
-//		strncpy_s((char *)packets->userid, maxUserIDLen, , maxUserIDLen);
 		sc_vec_buff[packets->id].pos.x = packets->x;
 		sc_vec_buff[packets->id].pos.y = packets->y;
 		sc_vec_buff[packets->id].pos.z = packets->z;
-//		strncpy_s((char *)userid, maxUserIDLen, sc_vec_buff[packets->id], maxUserIDLen);
+
+		sc_vec_buff[packets->id].elecX = packets->elecX;
+		sc_vec_buff[packets->id].elecY = packets->elecY;
+		sc_vec_buff[packets->id].elecZ = packets->elecZ;
+
+		if(packets->id == clients_id)
+			elecPos = XMFLOAT3(packets->elecX, packets->elecY, packets->elecZ);
 
 		client_hp[packets->id] = packets->hp;
-		
-		printf("[SC_ENTER_PLAYER] : %d 플레이어 입장 아이디는 %s\n", packets->id, userid);
+		strncpy_s((char *)packets->userid, maxUserIDLen, userid, maxUserIDLen);
+		packets->userid[maxUserIDLen - 1] = '\0';
+		strncpy_s((char *)packets->passwd, maxPasswdLen, userpw, maxPasswdLen);
+		packets->userid[maxPasswdLen - 1] = '\0';
 
 		break;
 	}
@@ -161,6 +153,11 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		sc_vec_buff[packets->id].pos.z = packets->z;
 		// 0 숨쉬기, 1: 걷기, 2: 뛰기
 		sc_vec_buff[packets->id].player_status = packets->player_status;
+
+		//sc_vec_buff[packets->id].elecCount = packets->elecCount;
+		//elecCount = packets->elecCount;
+
+		//printf("elecCount : %d\n", packets->elecCount);
 		
 
 		break;
@@ -170,6 +167,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		clients_id = packets->id;
 		sc_look_vec = packets->look_vec;
 		sc_vec_buff[packets->id].player_status = packets->player_status;
+		elecCount = packets->elecCount;
 
 		break;
 	}
@@ -198,7 +196,8 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		boxes[recvd_box_id].y = packets->y;
 		boxes[recvd_box_id].z = packets->z;
 		boxes[recvd_box_id].hp = packets->hp;
-//		boxes[recvd_box_id].in_use = packets->in_use;
+		boxes[recvd_box_id].in_use = packets->in_use;
+
 
 		//printf("[Bullet] %d 플레이어 총알 ID[%d] \n", clients_id, packets->bullet_id);
 		break;
@@ -209,8 +208,8 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		collision_pos.y = packets->y;
 		collision_pos.z = packets->z;
 		s_is_collide = true;
+		damageCheck = true;
 		client_hp[packets->client_id] = packets->hp;
-		
 		printf("%d 플레이어의 충돌지점 x : %f, y : %f, z : %f, 체력 : %f \n", packets->client_id, collision_pos.x,
 			collision_pos.y, collision_pos.z, client_hp[packets->client_id]);
 
@@ -221,7 +220,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		collision_box_pos.x = packets->x;
 		collision_box_pos.y = packets->y;
 		collision_box_pos.z = packets->z;
-//		boxes[packets->box_id].in_use = packets->in_use;
+		boxes[packets->box_id].in_use = packets->in_use;
 		printf("부딪 박스 %d\n", packets->box_id);
 		box_is_collide = true;
 		box_hp[packets->box_id] = packets->hp;
@@ -256,6 +255,9 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		break;
 	}
 	}
+}
+int ServerMgr::GetElecCount() {
+	return elecCount;
 }
 float ServerMgr::GetPlayerHP(int p_n) {
 	return client_hp[p_n];

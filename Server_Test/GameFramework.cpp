@@ -6,7 +6,6 @@
 #include "GameFramework.h"
 #include"resource.h"
 #include "ServerMgr.h"
-#include "Chat.h"
 
 #pragma comment (lib,"winmm")
 int CShader::shootBullet;

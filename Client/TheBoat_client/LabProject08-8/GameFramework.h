@@ -3,8 +3,6 @@
 #define FRAME_BUFFER_WIDTH		800
 #define FRAME_BUFFER_HEIGHT		600
 
-
-
 #include "Timer.h"
 #include "Player.h"
 #include "Scene.h"
@@ -61,6 +59,12 @@ public:
 
     void BuildObjects();
     void ReleaseObjects();
+
+	// 로긴용
+	void SendLoginREQ();
+	// 채팅용
+	void SendChatREQ();
+
 
     void ProcessInput();
     void AnimateObjects(CCamera *pCamera);

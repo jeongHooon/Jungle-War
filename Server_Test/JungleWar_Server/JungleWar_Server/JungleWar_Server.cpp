@@ -32,6 +32,7 @@ int main()
 	for (auto th : worker_vector) {
 		th->join();
 		delete th;
+	//	worker_vector.clear();
 	}
 	accept_thread.join();
 	timer_thread.join();
