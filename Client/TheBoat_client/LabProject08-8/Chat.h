@@ -174,9 +174,9 @@ const int serverPort = 12345;
 		두 구조체를 연속으로 이어서 한번에 보내야 한다.
 	*/
 
-const int maxUserIDLen = 20;
-const int maxPasswdLen = 20;
-const int maxChatSize = 256;
+//const int maxUserIDLen = 20;
+//const int maxPasswdLen = 20;
+//const int maxChatSize = 256;
 // 먼저 모든 프로토콜에서 공통되는 부분
 struct ProtoCommand
 {
