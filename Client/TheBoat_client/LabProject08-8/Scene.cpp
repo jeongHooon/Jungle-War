@@ -136,7 +136,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	m_pBuildings = pBuildingShader;
 
-	m_nShaders = 5;
+	m_nShaders = 6;
 	m_ppShaders = new CShader*[m_nShaders];
 
 	CRedDotShader *pTreeShader = new CRedDotShader();
@@ -163,11 +163,16 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pBigBoxShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pBigBoxShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
+	CTeamTriShader *pTeamTriShader = new CTeamTriShader();
+	pTeamTriShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pTeamTriShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
 	m_ppShaders[0] = pTreeShader;
 	m_ppShaders[1] = pFlowerShader;
 	m_ppShaders[2] = pBulletShader;
 	m_ppShaders[3] = pParticleShader;
 	m_ppShaders[4] = pObjectsShader;
+	m_ppShaders[5] = pTeamTriShader;
 	// UI
 
 	m_nUIShaders = 28;
@@ -596,10 +601,37 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 	/*if(CGameFramework::m_pCamera->GetMode == SPACESHIP_CAMERA)
 		m_ppShaders[0]*/
 	m_pBuildings->AnimateObjects(fTimeElapsed, pCamera);
+	
+	int myTeamNum;	//미니맵 위치 지정
+	switch (CGameFramework::my_client_id)
+	{
+	case 0:
+		myTeamNum = 1;
+		break;
+	case 1:
+		myTeamNum = 0;
+		break;
+	case 2:
+		myTeamNum = 3;
+		break;
+	case 3:
+		myTeamNum = 2;
+		break;
+	}
 
-	//m_ppShaders[2]->SetPosition(0,XMFLOAT3(m_pPlayer[CGameFramework::my_client_id]->GetPosition().x, m_pPlayer[CGameFramework::my_client_id]->GetPosition().y + 10, m_pPlayer[CGameFramework::my_client_id]->GetPosition().z));
-	m_ppShaders[2]->SetPosition(0, XMFLOAT3(m_pPlayer[CGameFramework::my_client_id]->GetCamera()->GetPosition().x + 10 * m_pPlayer[CGameFramework::my_client_id]->GetCameraLook().x, 
-		m_pPlayer[CGameFramework::my_client_id]->GetCamera()->GetPosition().y + 10 * m_pPlayer[CGameFramework::my_client_id]->GetCameraLook().y, m_pPlayer[CGameFramework::my_client_id]->GetCamera()->GetPosition().z + 10 * m_pPlayer[CGameFramework::my_client_id]->GetCameraLook().z));
+	m_ppShaders[2]->SetPosition(0, XMFLOAT3(
+		CGameFramework::m_pCamera->GetPosition().x + 0.4 * CGameFramework::m_pCamera->GetLookVector().x ,
+		CGameFramework::m_pCamera->GetPosition().y + 0.4 * CGameFramework::m_pCamera->GetLookVector().y + (CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z - 512) / 2048,
+		CGameFramework::m_pCamera->GetPosition().z + 0.4 * CGameFramework::m_pCamera->GetLookVector().z - (CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x - 512) / 2048));
+	
+	m_ppShaders[2]->SetPosition(1, XMFLOAT3(
+		CGameFramework::m_pCamera->GetPosition().x + 0.4 * CGameFramework::m_pCamera->GetLookVector().x,
+		CGameFramework::m_pCamera->GetPosition().y + 0.4 * CGameFramework::m_pCamera->GetLookVector().y + (CGameFramework::m_pPlayer[myTeamNum]->GetPosition().z - 512) / 2048,
+		CGameFramework::m_pCamera->GetPosition().z + 0.4 * CGameFramework::m_pCamera->GetLookVector().z - (CGameFramework::m_pPlayer[myTeamNum]->GetPosition().x - 512) / 2048));
+
+	cout << "X : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x <<
+		"   Y : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().y <<
+		"   Z : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z << endl;
 	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->AnimateObjects(fTimeElapsed, pCamera);
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Animate(fTimeElapsed);
 
@@ -619,7 +651,7 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 		m_pObject[i]->SetScale(0.25f, 0.25f, 0.25f);
 	}
 	//for (int i = 0; i < m_nObjects; i++) m_ppUIShaders[i]->AnimateObjects(fTimeElapsed, pCamera);
-
+	m_ppShaders[5]->SetPosition(0, XMFLOAT3(CGameFramework::m_pPlayer[myTeamNum]->GetPosition().x, CGameFramework::m_pPlayer[myTeamNum]->GetPosition().y + 13, CGameFramework::m_pPlayer[myTeamNum]->GetPosition().z));
 	m_ppUIShaders[0]->AnimateObjects(fTimeElapsed, pCamera);
 }
 
@@ -644,8 +676,10 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	
 	if (m_pBuildings) m_pBuildings->Render(pd3dCommandList, pCamera);
 	
-	for (int i = 1; i < m_nShaders; i++) 
+	for (int i = 1; i < m_nShaders; i++) {
+		if(i!=2)
 			m_ppShaders[i]->Render(pd3dCommandList, pCamera);
+	}
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->UpdateTransform(NULL);
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Render(pd3dCommandList, pCamera);
 }

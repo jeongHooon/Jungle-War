@@ -1197,13 +1197,12 @@ void CGameFramework::ReleaseObjects()
 	if (m_pScene) m_pScene->ReleaseObjects();
 	if (m_pScene) delete m_pScene;
 }
-
 void CGameFramework::ProcessInput()
 {
 	static UCHAR pKeysBuffer[256];
 	bool bProcessedByScene = false;
 	if (GetKeyboardState(pKeysBuffer) && m_pScene) bProcessedByScene = m_pScene->ProcessInput(pKeysBuffer);
-	if (!bProcessedByScene && gameMode != 2)
+	if (!bProcessedByScene && gameMode != 2 && alphaMapOn == false)
 	{
 		DWORD dwDirection = 0;
 		// 플레이어 움직임 (중요)
@@ -1434,10 +1433,16 @@ void CGameFramework::FrameAdvance()
 		if (m_pCamera->GetMode() == SPACESHIP_CAMERA)
 			m_pScene->m_ppUIShaders[1]->Render(m_pd3dCommandList, m_pCamera);// UI렌더 바꿔야함.
 
-		if (alphaMapOn == true)
+		if (alphaMapOn == true) {
+			//m_pCamera->SetLook(XMFLOAT3(m_pCamera->GetLookVector().x, 0, m_pCamera->GetLookVector().z));
+			m_pCamera->SetLook(XMFLOAT3(1, 0, 0));
 			m_pScene->m_ppUIShaders[9]->Render(m_pd3dCommandList, m_pCamera); // 맵
+			m_pScene->m_ppShaders[2]->Render(m_pd3dCommandList, m_pCamera); // 맵에 현재 위치
+		}
+		else
+			m_pCamera->SetLook(XMFLOAT3(m_pPlayer[my_client_id]->GetLook().x, m_pCamera->GetLookVector().y, m_pPlayer[my_client_id]->GetLook().z));
 
-
+		
 
 																			  // 숫자 시작
 		if (m_pPlayer[my_client_id]->GetPlayerBullet() / 10 > 0)
