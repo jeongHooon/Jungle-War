@@ -65,7 +65,7 @@ float4 PSPlayer(VS_DIFFUSED_OUTPUT input) : SV_TARGET
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 Texture2D gtxtTexture : register(t0);
-Texture2D gtxtTextures[6] : register(t5);
+Texture2D gtxtTextures : register(t5);
 SamplerState gWrapSamplerState : register(s0);
 SamplerState gClampSamplerState : register(s1);
 
@@ -101,7 +101,10 @@ float4 PSTextured(VS_TEXTURED_OUTPUT input) : SV_TARGET
 
 	return(cColor);
 }
-
+float4 PSShadowPlayer(VS_TEXTURED_OUTPUT input) : SV_TARGET
+{
+	return(float4(0.1, 0.1, 0.1, 0.3));
+}
 #define _WITH_VERTEX_LIGHTING
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -308,3 +311,93 @@ float4 PS_UI(VS_TEXTURED_OUTPUT input) : SV_TARGET
 	return(cColor);
 	//return(float4(input.uv.x, input.uv.y, 0.0f, 1.0f));
 }
+
+struct INSTANCEDGAMEOBJECTINFO
+{
+	matrix		m_mtxGameObject;
+	uint		gnMaterial;
+};
+
+
+StructuredBuffer<INSTANCEDGAMEOBJECTINFO> gGameObjectInfos : register(t4);
+
+struct VS_INSTANCING_INPUT
+{
+	float3 position : POSITION;
+	float3 normal : NORMAL;
+	float2 uv : TEXCOORD;
+};
+struct VS_INSTANCING_OUTPUT
+{
+	float4 position : SV_POSITION;
+	float3 positionW : POSITION;
+	float3 normalW : NORMAL;
+	float2 uv : TEXCOORD;
+};
+
+VS_INSTANCING_OUTPUT VSInstancing(VS_INSTANCING_INPUT input, uint nInstanceID : SV_InstanceID)
+{
+	VS_INSTANCING_OUTPUT output;
+
+	//output.position = mul(mul(mul(float4(input.position, 1.0f), gGameObjectInfos[nInstanceID].m_mtxGameObject), gmtxView), gmtxProjection);
+	output.normalW = mul(input.normal, (float3x3)gGameObjectInfos[nInstanceID].m_mtxGameObject);
+	output.positionW = (float3)mul(float4(input.position, 1.0f), gGameObjectInfos[nInstanceID].m_mtxGameObject);
+	output.position = mul(mul(float4(output.positionW, 1.0), gmtxView), gmtxProjection);
+
+	output.uv = input.uv;
+
+	return(output);
+}
+//float4 PSInstancing(VS_INSTANCING_OUTPUT input) : SV_TARGET
+//{
+//	float4 cColor = gtxtTextures.Sample(gSamplerState, input.uv);
+//
+//	input.normalW = normalize(input.normalW);
+//	clip(cColor.a - 0.1f);
+//	float4 cIllumination = Lighting(input.positionW, input.normalW);
+//
+//	return(lerp(cColor, cIllumination, 0.5f));
+//}
+
+//============================================================================
+
+struct VS_SHADOW_OUTPUT
+{
+	float4 position : SV_POSITION;
+};
+
+VS_TEXTURED_OUTPUT VSShadow(VS_INSTANCING_INPUT input, uint nInstanceID : SV_InstanceID)
+{
+	VS_TEXTURED_OUTPUT output = (VS_TEXTURED_OUTPUT)0;
+
+
+	float4 mxf4position = float4(input.position, 1.0f);
+	matrix mxf4transform = mul(mul(gGameObjectInfos[nInstanceID].m_mtxGameObject, gmtxView), gmtxProjection);
+
+	output.position = mul(mxf4position, mxf4transform);
+
+	return output;
+}
+
+float4 PSShadow(VS_TEXTURED_OUTPUT input) : SV_Target
+{
+	return (float4(0.0f, 0.0f, 0.0f, 0.5f));
+}
+
+//=====================================
+
+VS_TEXTURED_OUTPUT VSINST(VS_INSTANCING_INPUT input, uint nInstanceID : SV_InstanceID)
+{
+	VS_TEXTURED_OUTPUT output;
+
+	output.position = mul(mul(mul(float4(input.position, 1.0f), gGameObjectInfos[nInstanceID].m_mtxGameObject), gmtxView), gmtxProjection);
+	output.uv = input.uv;
+
+	return(output);
+}
+
+//float4 PSINST(VS_TEXTURED_OUTPUT input) : SV_TARGET
+//{
+//	float4 cColor = gtxtTextures.Sample(gSamplerState, input.uv);
+//	return(cColor);
+//}
