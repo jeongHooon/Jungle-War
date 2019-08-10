@@ -25,6 +25,9 @@ class ServerMgr
 	Box boxes[MAX_BOX_SIZE*MAX_PLAYER_SIZE] = { 0 };
 	int recvd_box_id = 0;
 
+	Map_Object obj[MAX_OBJECT_SIZE] = { 0 };
+	int recvd_obj_id = 0;
+
 	bool first_set_id = true;
 
 	char send_buffer[CLIENT_BUF_SIZE] = { 0 };
@@ -44,6 +47,9 @@ class ServerMgr
 	XMFLOAT3 collision_box_pos;
 	float box_hp[MAX_PLAYER_SIZE * MAX_BOX_SIZE] = { 0 };
 
+	XMFLOAT3 collision_obj_pos;
+	float obj_hp[MAX_OBJECT_SIZE] = { 0 };
+
 	int camera_id = 0;
 	string server_ip;
 
@@ -61,6 +67,7 @@ class ServerMgr
 
 	bool s_is_collide = false;
 	bool box_is_collide = false;
+	bool obj_is_collide = false;
 	
 public:
 	void IPInput();

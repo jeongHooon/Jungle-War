@@ -1084,7 +1084,7 @@ void ServerFramework::WorkerThread() {
 			}
 			}*/
 		}
-		else if (overlapped_buffer->command == SS_COLLISION_BO) {
+		else if (overlapped_buffer->command == SS_COLLISION_OB) {
 			for (int j = 0; j < MAX_OBJECT_SIZE; ++j) {
 				for (int i = 0; i < MAX_PLAYER_SIZE * MAX_BULLET_SIZE; ++i) {
 					if (bullets[i].in_use && obj[j].in_use) {
@@ -1235,7 +1235,7 @@ void ServerFramework::Update(duration<float>& elapsed_time) {
 	//ol_ex[MAX_PLAYER_SIZE + 6].command = SS_COLLISION_MP;
 	//PostQueuedCompletionStatus(iocp_handle, 0, MAX_PLAYER_SIZE + 6, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[MAX_PLAYER_SIZE + 6]));
 
-	ol_ex[MAX_PLAYER_SIZE + 7].command = SS_COLLISION_BO;
+	ol_ex[MAX_PLAYER_SIZE + 7].command = SS_COLLISION_OB;
 	PostQueuedCompletionStatus(iocp_handle, 0, MAX_PLAYER_SIZE + 7, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[MAX_PLAYER_SIZE + 7]));
 
 
