@@ -177,7 +177,7 @@ void ServerFramework::InitServer() {
 		obj[i].state = obj_state;
 
 		obj[i].SetOOBB(XMFLOAT3(obj[i].x, obj[i].y, obj[i].z),
-			XMFLOAT3(OBB_SCALE_OBJECT_X, OBB_SCALE_OBJECT_Y, OBB_SCALE_OBJECT_Z),
+			XMFLOAT3(OBB_SCALE_TREE_X, OBB_SCALE_TREE_Y, OBB_SCALE_TREE_Z),
 			XMFLOAT4(0, 0, 0, 1));
 		obj[i].bounding_box.Center;
 		obj[i].hp = MAX_OBJECT_HP;
@@ -1084,7 +1084,7 @@ void ServerFramework::WorkerThread() {
 			}
 			}*/
 		}
-		else if (overlapped_buffer->command == SS_COLLISION_BO) {
+		else if (overlapped_buffer->command == SS_COLLISION_OB) {
 			for (int j = 0; j < MAX_OBJECT_SIZE; ++j) {
 				for (int i = 0; i < MAX_PLAYER_SIZE * MAX_BULLET_SIZE; ++i) {
 					if (bullets[i].in_use && obj[j].in_use) {
@@ -1100,7 +1100,7 @@ void ServerFramework::WorkerThread() {
 						{
 							SC_PACKET_COLLISION_OB packets;
 							packets.size = sizeof(SC_PACKET_COLLISION_OB);
-							packets.type = SC_COLLSION_BO;
+							packets.type = SC_COLLSION_OB;
 							packets.x = obj[j].bounding_box.Center.x;
 							// 플레이어의 키 만큼 반영해서
 							packets.y = obj[j].bounding_box.Center.y;
@@ -1133,7 +1133,7 @@ void ServerFramework::WorkerThread() {
 						case CONTAINS:
 							SC_PACKET_COLLISION_OB packets;
 							packets.size = sizeof(SC_PACKET_COLLISION_OB);
-							packets.type = SC_COLLSION_BO;
+							packets.type = SC_COLLSION_OB;
 							packets.x = obj[j].bounding_box.Center.x;
 							// 플레이어의 키 만큼 반영해서
 							packets.y = obj[j].bounding_box.Center.y;
@@ -1235,7 +1235,7 @@ void ServerFramework::Update(duration<float>& elapsed_time) {
 	//ol_ex[MAX_PLAYER_SIZE + 6].command = SS_COLLISION_MP;
 	//PostQueuedCompletionStatus(iocp_handle, 0, MAX_PLAYER_SIZE + 6, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[MAX_PLAYER_SIZE + 6]));
 
-	ol_ex[MAX_PLAYER_SIZE + 7].command = SS_COLLISION_BO;
+	ol_ex[MAX_PLAYER_SIZE + 7].command = SS_COLLISION_OB;
 	PostQueuedCompletionStatus(iocp_handle, 0, MAX_PLAYER_SIZE + 7, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[MAX_PLAYER_SIZE + 7]));
 
 

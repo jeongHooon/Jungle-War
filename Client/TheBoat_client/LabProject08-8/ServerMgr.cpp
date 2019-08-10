@@ -233,6 +233,17 @@ void ServerMgr::ProcessPacket(char* ptr) {
 
 		break;
 	}
+	case SC_COLLSION_OB: {
+		SC_PACKET_COLLISION_OB* packets = reinterpret_cast<SC_PACKET_COLLISION_OB*>(ptr);
+		collision_obj_pos.x = packets->x;
+		collision_obj_pos.y = packets->y;
+		collision_obj_pos.z = packets->z;
+		obj[packets->obj_id].in_use = packets->in_use;
+		printf("ºÎµú ³ª¹« %d\n", packets->obj_id);
+		obj_is_collide = true;
+		obj_hp[packets->obj_id] = packets->hp;
+		break;
+	}
 	case SC_COLLSION_BDP: {	// building to player
 		SC_PACKET_COLLISION* packets = reinterpret_cast<SC_PACKET_COLLISION*>(ptr);
 		collision_pos.x = packets->x;

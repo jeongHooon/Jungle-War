@@ -60,6 +60,7 @@ public:
 	virtual void SetBoxPosition(XMFLOAT3 input) { }
 	virtual void SetScale(float x, float y, float z) { }
 	virtual void BoundCheck(XMFLOAT3 playerPosition, float playersize) { }
+	virtual void SetLook(int input, float x, float y, float z) {}
 
 	virtual void OnPrepareRender(ID3D12GraphicsCommandList *pd3dCommandList);
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
@@ -354,6 +355,40 @@ public:
 	CBulletShader();
 	virtual ~CBulletShader();
 
+	virtual void SetLook(int input, float x, float y, float z);
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual void SetPosition(int id, XMFLOAT3 input);
+	virtual D3D12_BLEND_DESC CreateBlendState();
+};
+
+//////////////////////
+class CTeamTriShader : public CTexturedShader
+{
+protected:
+	CBillboard * *m_ppBullet = 0;
+	int								m_nBullet = 0;
+	int								BulletCount = 0;
+	bool							death = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CTeamTriShader();
+	virtual ~CTeamTriShader();
+
+	virtual void SetLook(int input, float x, float y, float z);
 	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
 	virtual void ReleaseObjects();
 	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);

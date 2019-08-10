@@ -351,6 +351,14 @@ struct Box {
 	float hp;
 	float x, y, z;
 };
+
+struct Map_Object {
+	bool in_use = false;
+	bool state;
+	int id;
+	float hp;
+	float x, y, z;
+};
 struct Vertex1 //Overloaded Vertex Structure 
 {
 	Vertex1() {}

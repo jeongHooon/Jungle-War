@@ -51,9 +51,9 @@
 #define OBB_SCALE_BOX_Y			10.f
 #define OBB_SCALE_BOX_Z			10.f
 
-#define OBB_SCALE_OBJECT_X			1.f
-#define OBB_SCALE_OBJECT_Y			10.f
-#define OBB_SCALE_OBJECT_Z			1.f
+#define OBB_SCALE_TREE_X			1.f
+#define OBB_SCALE_TREE_Y			10.f
+#define OBB_SCALE_TREE_Z			1.f
 
 #define AR_SHOOTER				0.2f	// AR 연사속도
 #define AR_SPEED				1000.f	// AR 탄속

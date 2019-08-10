@@ -73,6 +73,8 @@ public:
 	void SetPosition(XMFLOAT3 xmf3Position) { m_xmf3Position = xmf3Position; }
 	XMFLOAT3& GetPosition() { return(m_xmf3Position); }
 
+	void SetLook(XMFLOAT3& vLook);
+
 	void SetLookAtPosition(XMFLOAT3 xmf3LookAtWorld) { m_xmf3LookAtWorld = xmf3LookAtWorld; }
 	XMFLOAT3& GetLookAtPosition() { return(m_xmf3LookAtWorld); }
 
@@ -116,7 +118,7 @@ class CFirstPersonCamera : public CCamera
 public:
 	CFirstPersonCamera(CCamera *pCamera);
 	virtual ~CFirstPersonCamera() { }
-
+	virtual void SetLookAt(XMFLOAT3& vLookAt);
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f);
 };
 

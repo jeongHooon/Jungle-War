@@ -46,7 +46,7 @@
 
 #define SC_ITEM_GEN				10	// Actually Item gen packet
 #define SC_BUILDING_GEN			11
-#define SC_COLLSION_BO			12
+#define SC_COLLSION_OB			12
 
 #define SC_BOX_POS				21
 
@@ -62,7 +62,7 @@
 #define SS_BOX_UPDATE			20
 #define SS_COLLISION_BB			21
 #define SS_COLLISION_MP			22
-#define SS_COLLISION_BO			23
+#define SS_COLLISION_OB			23
 
 
 
