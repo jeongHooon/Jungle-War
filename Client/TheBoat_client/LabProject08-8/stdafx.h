@@ -49,7 +49,7 @@ using namespace std;
 #include <atomic>
 
 #include "d3dx12.h"
-#include "..\..\..\Server\JungleWar_Server\JungleWar_Server\protocol.h"
+#include "\Users\sujin\Desktop\JungleWar_Server\JungleWar_Server\protocol.h"
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
@@ -94,6 +94,7 @@ extern ID3D12Resource *CreateTextureResourceFromFile(ID3D12Device *pd3dDevice, I
 
 #define RANDOM_COLOR	XMFLOAT4(rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX))
 
+#define SAFE_DELETE(p) if(p)  {delete p; p =NULL;}
 #define EPSILON				1.0e-10f
 #define	PI		3.141592654
 #define	DEG(rad)	(rad*180.0/PI)
@@ -346,6 +347,14 @@ struct Bullet {
 };
 struct Box {
 	bool in_use = false;
+	int id;
+	float hp;
+	float x, y, z;
+};
+
+struct Map_Object {
+	bool in_use = false;
+	bool state;
 	int id;
 	float hp;
 	float x, y, z;

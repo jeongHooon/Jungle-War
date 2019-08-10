@@ -51,6 +51,10 @@
 #define OBB_SCALE_BOX_Y			10.f
 #define OBB_SCALE_BOX_Z			10.f
 
+#define OBB_SCALE_TREE_X			1.f
+#define OBB_SCALE_TREE_Y			10.f
+#define OBB_SCALE_TREE_Z			1.f
+
 #define AR_SHOOTER				0.2f	// AR 연사속도
 #define AR_SPEED				1000.f	// AR 탄속
 #define PLAYER_HEIGHT			10.f
@@ -159,6 +163,26 @@ struct Box {
 
 	XMFLOAT3 look_vec;
 	int type;
+	bool is_bound = false;
+	float hp;
+	BoundingOrientedBox bounding_box;
+
+	void SetOOBB(XMFLOAT3 xmCenter, XMFLOAT3 xmExtents, XMFLOAT4 xmOrientation) {
+		bounding_box = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation);
+	}
+};
+
+struct Map_Object {
+
+	bool in_use = true;
+	bool is_send = false;
+	float x, y, z;
+
+	bool state;
+
+	XMFLOAT3 look_vec;
+	int type;
+	int id;
 	bool is_bound = false;
 	float hp;
 	BoundingOrientedBox bounding_box;

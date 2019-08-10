@@ -5,26 +5,32 @@
 #define MAX_BUFFER_SIZE		4000
 #define MAX_PACKET_SIZE		256
 #define MAX_PLAYER_SIZE		4
+#define MAX_OBJECT_SIZE		42
 #define	WM_SOCKET			WM_USER + 1
 #define CLIENT_BUF_SIZE		1024
-#define MAX_BULLET_SIZE			40
-#define MAX_BOX_SIZE			10
+#define MAX_BULLET_SIZE		40
+#define MAX_BOX_SIZE		10
+#define OX_SIZE				30
+#define TERRAIN_SCALE		0.5f
 
-////////////////////////////////
+/////////채팅용 프로토콜/////////
 #define maxUserIDLen		20
 #define maxPasswdLen		20
 #define maxChatSize			256
+/////////////////////////////////
+
 
 // 본인 클라이언트 및 서버에서 사용
 //#define RUN_SPEED				2.78f
 // 위치 테스트용
-#define RUN_SPEED				16.0f
+#define RUN_SPEED				5.0f
 #define METER_PER_PIXEL			0.243f
-#define WALK_SPEED				10.0f
+#define WALK_SPEED				2.78f
 #define JUMP_SPEED              40.0f
 #define G_S 9.8f
-#define MAX_BOX_HP				50.0f;
-#define MAX_BULLET_DAMAGE		25.0f;
+#define MAX_BOX_HP				50.0f
+#define MAX_BULLET_DAMAGE		25.0f
+#define MAX_OBJECT_HP			75.0f
 
 // Object 갯수 정리 
 #define OBJECT_BUILDING			10
@@ -43,6 +49,7 @@
 
 #define SC_ITEM_GEN				10	// Actually Item gen packet
 #define SC_BUILDING_GEN			11
+#define SC_COLLSION_BO			12
 
 #define SC_BOX_POS				21
 
@@ -57,6 +64,8 @@
 #define SS_BOX_GENERATE			19
 #define SS_BOX_UPDATE			20
 #define SS_COLLISION_BB			21
+#define SS_COLLISION_MP			22
+#define SS_COLLISION_BO			23
 
 
 
@@ -95,6 +104,9 @@
 #define CS_PLAYER_READY_CANCLE 101
 #define CS_PLAYER_TEAM_SELECT	102
 
+#define OBJECT_ALIVE		0
+#define OBJECT_DEAD			1
+
 enum GameMode {
 	TEAM_MODE, MELEE
 };
@@ -108,16 +120,47 @@ enum SubWeapons {
 	NON_SUB = 0
 };
 
-// 서버->클라
+/////////채팅용 프로토콜/////////
+struct ProtoCommand
+{
+	WORD command;
+	BYTE data[0];
+};
+const WORD ComLoginREQ = 1; // 로그인 요청
 
+struct StrLoginREQ    {						
+	BYTE userid[maxUserIDLen];
+	BYTE passwd[maxPasswdLen];
+};
+
+const WORD ComLoginACK = 2; // 서버에서 로그인 요청 응답
+struct StrLoginACK	{					
+	BYTE result;	// 0이면 로긴 성공, 아니면 실패
+};
+
+enum EnumLoginACK
+{
+	LoginACKConnectAllow = 0,		// 접속 허용
+	LoginACKInvalidPasswd = 1,		// 패스워드 불일치
+	LoginACKDuplicateConnect = 2,	// 한 아이디로 중복접속
+};
+
+/////////////////////////////
+
+
+
+// 서버->클라
 struct SC_PACKET_ENTER_PLAYER {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	char userid[maxUserIDLen];
+	BYTE userid[maxUserIDLen];
 	BYTE passwd[maxPasswdLen];
 	float x, y, z;
 	// 건물 크기 보낼 때만 사용
+
+	float elecX, elecY, elecZ;
+
 	float hp;
 	float size_x, size_y, size_z;
 };
@@ -130,6 +173,8 @@ struct SC_PACKET_LOOCVEC {
 	BYTE passwd[maxPasswdLen];
 	DirectX::XMFLOAT3 look_vec;
 	int player_status;
+
+	int elecCount;
 };
 
 struct SC_PACKET_POS {
@@ -138,6 +183,8 @@ struct SC_PACKET_POS {
 	WORD id;
 	int player_status;
 	float x, y, z;
+
+	//int elecCount;
 };
 
 struct SC_PACKET_COLLISION {
@@ -153,6 +200,16 @@ struct SC_PACKET_COLLISION_BB {
 	BYTE type;
 	WORD client_id;
 	WORD box_id;
+	float in_use;
+	float x, y, z;
+	float hp;
+};
+
+struct SC_PACKET_COLLISION_OB {
+	BYTE size;
+	BYTE type;
+	WORD client_id;
+	WORD obj_id;
 	float in_use;
 	float x, y, z;
 	float hp;
@@ -176,7 +233,6 @@ struct CS_PACKET_BIGGEST {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	BYTE userid[256];
 	bool player_in[4];
 };
 
@@ -279,3 +335,4 @@ struct SC_PACKET_BOX {
 
 	float x, y, z;
 };
+

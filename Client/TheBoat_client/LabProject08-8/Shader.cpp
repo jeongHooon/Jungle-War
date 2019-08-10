@@ -9,6 +9,7 @@
 
 CPlayer* CGameFramework::m_pPlayer[];
 CPlayer* CGameFramework::m_pObject[];
+CPlayer* CGameFramework::m_pObject2[];
 int CGameFramework::my_client_id;
 XMFLOAT3 CGameFramework::buildingPos[];
 XMFLOAT3 CGameFramework::sendLook;

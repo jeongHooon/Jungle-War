@@ -40,12 +40,8 @@ void ServerMgr::Initialize(HWND& hwnd) {
 	// 아이피
 	ServerAddr.sin_addr.s_addr = inet_addr(server_ip.c_str());
 	
-	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	//ServerAddr.sin_addr.s_addr = inet_addr("192.168.101.211");
-
 	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	//ServerAddr.sin_addr.s_addr = inet_addr("110.5.195.3");
-
+	
 	int retval = WSAConnect(sock, (sockaddr *)&ServerAddr, sizeof(ServerAddr), NULL, NULL, NULL, NULL);
 	if (retval == SOCKET_ERROR) {
 		printf("소켓 연결 안됨\n");
@@ -104,6 +100,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 	static bool first_time = true;
 	switch (ptr[1]) {
 	case SC_ENTER_PLAYER: {
+
 		SC_PACKET_ENTER_PLAYER * packets = reinterpret_cast<SC_PACKET_ENTER_PLAYER*>(ptr);
 		if (first_set_id) {
 			clients_id = packets->id;
@@ -118,23 +115,14 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		sc_vec_buff[packets->id].elecY = packets->elecY;
 		sc_vec_buff[packets->id].elecZ = packets->elecZ;
 
-		//cout <<packets->id<<"번 자기장" << packets->elecX << packets->elecY << packets->elecZ << endl;
 		if(packets->id == clients_id)
 			elecPos = XMFLOAT3(packets->elecX, packets->elecY, packets->elecZ);
-		//cout <<packets->id<<"번" <<elecPos.x << endl;
 
 		client_hp[packets->id] = packets->hp;
 		strncpy_s((char *)packets->userid, maxUserIDLen, userid, maxUserIDLen);
 		packets->userid[maxUserIDLen - 1] = '\0';
 		strncpy_s((char *)packets->passwd, maxPasswdLen, userpw, maxPasswdLen);
 		packets->userid[maxPasswdLen - 1] = '\0';
-
-
-
-		printf("[SC_ENTER_PLAYER] : %d 플레이어 입장 아이디는 %s\n", packets->id, packets->userid);
-
-
-//		printf("[SC_ENTER_PLAYER] : %d 플레이어 입장\n", packets->id);
 
 		break;
 	}
@@ -210,6 +198,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		boxes[recvd_box_id].hp = packets->hp;
 		boxes[recvd_box_id].in_use = packets->in_use;
 
+
 		//printf("[Bullet] %d 플레이어 총알 ID[%d] \n", clients_id, packets->bullet_id);
 		break;
 	}
@@ -242,6 +231,17 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		/*printf("%d 플레이어의 충돌지점 x : %f, y : %f, z : %f, 체력 : %f \n", packets->client_id, collision_box_pos.x,
 			collision_box_pos.y, collision_box_pos.z, box_hp[packets->client_id]);*/
 
+		break;
+	}
+	case SC_COLLSION_OB: {
+		SC_PACKET_COLLISION_OB* packets = reinterpret_cast<SC_PACKET_COLLISION_OB*>(ptr);
+		collision_obj_pos.x = packets->x;
+		collision_obj_pos.y = packets->y;
+		collision_obj_pos.z = packets->z;
+		obj[packets->obj_id].in_use = packets->in_use;
+		printf("부딪 나무 %d\n", packets->obj_id);
+		obj_is_collide = true;
+		obj_hp[packets->obj_id] = packets->hp;
 		break;
 	}
 	case SC_COLLSION_BDP: {	// building to player

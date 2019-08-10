@@ -6,6 +6,8 @@
 #include "GameFramework.h"
 #include"resource.h"
 #include "ServerMgr.h"
+#include "Chat.h"
+
 #pragma comment (lib,"winmm")
 int CShader::shootBullet;
 CShader*	CScene::m_pBuildings;
@@ -42,7 +44,9 @@ CGameFramework::CGameFramework()
 	for (int i = 0; i < 4; ++i)
 		m_pPlayer[i] = NULL;
 	for (int i = 0; i < NUM_OBJECT; ++i)
-		m_pObject[i] = NULL;
+		m_pObject[i] = NULL; 
+	for (int i = 0; i < NUM_OBJECT2; ++i)
+		m_pObject2[i] = NULL;
 	m_pBlueBox[0] = NULL;
 	_tcscpy_s(m_pszFrameRate, _T("Jungle War ("));
 
@@ -322,7 +326,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		::SetCapture(hWnd);
 		::GetCursorPos(&m_ptOldCursorPos);
 		for (int i = 0; i < 4; ++i) {
-			//printf("룩 1 %f | %f | %f \n", m_pPlayer[i]->GetLook().x, m_pPlayer[i]->GetLook().y, m_pPlayer[i]->GetLook().z);
+
 		}
 		//printf("=======================\n");
 		if (CShader::shootBullet == 0) {
@@ -344,6 +348,8 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		m_pCamera = m_pPlayer[my_client_id]->ChangeCamera(SPACESHIP_CAMERA, m_GameTimer.GetTimeElapsed());	// 마우스 우클시 카메라 변환
 		printf("마우스 우클릭\n");
 		break;
+	
+
 
 	case WM_LBUTTONUP:
 		//server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
@@ -860,6 +866,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				is_pushed[CS_KEY_PRESS_2] = false;
 			}
 			break;
+
+		case '9':
+			SendLoginREQ();
+			break;
 		case 'Q':
 			if (is_pushed[CS_KEY_PRESS_Q] == true) {
 				//printf("[WM_KEYDOWN] : Q키 놓음 \n");
@@ -1044,6 +1054,41 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	return(0);
 }
 
+void CGameFramework::SendLoginREQ() {
+	char userid[256];
+	char passwd[256];
+
+	cout << "id를 입력해 주세요 ";
+	cin >> userid;
+	cout << "암호를 입력해 주세요 ";
+	cin >> passwd;
+
+	char protoBuffer[1024];
+	ProtoCommand *cmd = (ProtoCommand *)protoBuffer;
+	StrLoginREQ *login = (StrLoginREQ *)cmd->data;
+
+	cmd->command = ComLoginREQ;
+
+	login->userid[maxUserIDLen - 1] = '\0';
+
+	strncpy_s((char *)login->passwd, maxPasswdLen, passwd, maxPasswdLen);
+	login->passwd[maxPasswdLen - 1] = '\0';
+
+	SendChatREQ();
+
+}
+void CGameFramework::SendChatREQ() {
+//	while (true) {
+		char buffer[1024];
+		cout << "전송할 문자열 : ";
+		cin >> buffer;
+
+		//	if (strcmp(buffer, "/w") == 0)  // 입력 문자열이 "/w"라면 귓속말
+		//		SendWisper(toServer);
+//	}
+}
+
+
 void CGameFramework::OnDestroy()
 {
 	ReleaseObjects();
@@ -1084,7 +1129,7 @@ void CGameFramework::BuildObjects()
 
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pScene->m_pObject[i] = m_pObject[i] = new CTreeObject(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
-		if(i == 0)
+		/*if(i == 0)
 			m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 0.0f));
 		else if(i==1)
 			m_pObject[i]->SetLook(XMFLOAT3(1.0f, 0.0f, 0.0f));
@@ -1093,8 +1138,12 @@ void CGameFramework::BuildObjects()
 		else if(i==3)
 			m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 		else if(i==4)
-			m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, -1.0f));
+			m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, -1.0f));*/
 
+	}
+	for (int i = 0; i < NUM_OBJECT2; ++i) {
+		m_pScene->m_pObject2[i] = m_pObject2[i] = new CRockObject(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
+		
 	}
 	m_pScene->m_pBlueBox[0] = m_pBlueBox[0] = new CBlueBox(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
 	//m_pCamera = m_pPlayer[my_client_id]->GetCamera();
@@ -1167,7 +1216,37 @@ void CGameFramework::BuildObjects()
 		m_pObject[i]->SetOOBB(m_pObject[i]->GetPosition(), XMFLOAT3(1, 1, 1), XMFLOAT4(0, 0, 0, 1));
 		
 	}
+	for (int i = 0; i < NUM_OBJECT2; ++i) {
+		float xPosition;
+		float zPosition;
 
+		if (i == 0) xPosition = 230, zPosition = 280;
+		else if (i == 1) xPosition = 140, zPosition = 270;
+		else if (i == 2) xPosition = 200, zPosition = 200;
+		else if (i == 3) xPosition = 210, zPosition = 340;
+		else if (i == 4) xPosition = 250, zPosition = 230;
+		else if (i == 5) xPosition = 170, zPosition = 370;
+		else if (i == 6) xPosition = 330, zPosition = 150;
+
+		else if (i == 7) xPosition = 412, zPosition = 310;
+		else if (i == 8) xPosition = 526, zPosition = 290;
+		else if (i == 9) xPosition = 342, zPosition = 190;
+		else if (i == 10) xPosition = 256, zPosition = 240;
+		else if (i == 11) xPosition = 332, zPosition = 360;
+		else if (i == 12) xPosition = 173, zPosition = 335;
+		else if (i == 13) xPosition = 642, zPosition = 420;
+
+		else if (i == 14) xPosition = 627, zPosition = 700;
+		else if (i == 15) xPosition = 522, zPosition = 550;
+		else if (i == 16) xPosition = 380, zPosition = 710;
+		else if (i == 17) xPosition = 270, zPosition = 860;
+		else if (i == 18) xPosition = 190, zPosition = 645;
+		else if (i == 19) xPosition = 320, zPosition = 550;
+		
+		float fHeight = m_pScene->GetTerrain()->GetHeight(xPosition, zPosition);
+		m_pObject2[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
+
+	}
 #endif
 
 	m_pd3dCommandList->Close();
@@ -1180,6 +1259,8 @@ void CGameFramework::BuildObjects()
 		if (m_pPlayer[i]) m_pPlayer[i]->ReleaseUploadBuffers();
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pObject[i]) m_pObject[i]->ReleaseUploadBuffers();
+	for (int i = 0; i < NUM_OBJECT2; ++i)
+		if (m_pObject2[i]) m_pObject2[i]->ReleaseUploadBuffers();
 	if (m_pBlueBox[0]) m_pBlueBox[0]->ReleaseUploadBuffers();
 
 	if (m_pScene) m_pScene->ReleaseUploadBuffers();
@@ -1193,6 +1274,8 @@ void CGameFramework::ReleaseObjects()
 		if (m_pPlayer[i]) delete m_pPlayer[i];
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pObject[i]) delete m_pObject[i];
+	for (int i = 0; i < NUM_OBJECT2; ++i)
+		 if (m_pObject2[i]) delete m_pObject2[i];
 	if (m_pBlueBox[0])delete m_pBlueBox[0];
 	if (m_pScene) m_pScene->ReleaseObjects();
 	if (m_pScene) delete m_pScene;
@@ -1290,8 +1373,12 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 			m_pPlayer[i]->rrrotate((atan2(m_pPlayer[i]->LookTemp.z, m_pPlayer[i]->LookTemp.x)));
 		}
 	}
+
+	//애니메이트
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pObject) m_pObject[i]->Animate(fTimeElapsed);
+	for (int i = 0; i < NUM_OBJECT2; ++i)
+		if (m_pObject2) m_pObject2[i]->Animate(fTimeElapsed);
 	if (m_pBlueBox[0])m_pBlueBox[0]->Animate(fTimeElapsed);
 	if (m_pScene) m_pScene->AnimateObjects(fTimeElapsed, pCamera);
 
@@ -1401,7 +1488,11 @@ void CGameFramework::FrameAdvance()
 		m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 		m_pObject[i]->Render(m_pd3dCommandList, m_pCamera);
 	}
-
+	for (int i = 0; i < NUM_OBJECT2; ++i) {
+		m_pObject2[i]->UpdateTransform(NULL);
+		m_pObject2[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
+		m_pObject2[i]->Render(m_pd3dCommandList, m_pCamera);
+	}
 	m_pBlueBox[0]->UpdateTransform(NULL);
 	m_pBlueBox[0]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 	m_pBlueBox[0]->Render(m_pd3dCommandList, m_pCamera);
