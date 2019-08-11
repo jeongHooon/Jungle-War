@@ -26,6 +26,7 @@ class ServerMgr
 	int recvd_box_id = 0;
 
 	Map_Object obj[MAX_OBJECT_SIZE] = { 0 };
+	Map_Object obj2[MAX_OBJECT2_SIZE] = { 0 };
 	int recvd_obj_id = 0;
 
 	bool first_set_id = true;

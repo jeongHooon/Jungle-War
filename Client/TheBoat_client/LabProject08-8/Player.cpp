@@ -27,6 +27,7 @@ CPlayer::CPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dComman
 	m_fPitch = 0.0f;
 	m_fRoll = 0.0f;
 	m_fYaw = 0.0f;
+	
 }
 
 void CPlayer::GetKeyInput(int key) {
@@ -306,6 +307,17 @@ void CPlayer::Animate(float fTimeElapsed)
 	//XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), time, 0.0f);
 	//m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
 }
+void CPlayer::Animate(float fTimeElapsed, int num)
+{
+	m_xmf4x4ToParentTransform._11 = m_xmf3Right.x; m_xmf4x4ToParentTransform._12 = m_xmf3Right.y; m_xmf4x4ToParentTransform._13 = m_xmf3Right.z;
+	m_xmf4x4ToParentTransform._21 = m_xmf3Up.x; m_xmf4x4ToParentTransform._22 = m_xmf3Up.y; m_xmf4x4ToParentTransform._23 = m_xmf3Up.z;
+	m_xmf4x4ToParentTransform._31 = m_xmf3Look.x; m_xmf4x4ToParentTransform._32 = m_xmf3Look.y; m_xmf4x4ToParentTransform._33 = m_xmf3Look.z;
+	m_xmf4x4ToParentTransform._41 = m_xmf3Position.x; m_xmf4x4ToParentTransform._42 = m_xmf3Position.y; m_xmf4x4ToParentTransform._43 = m_xmf3Position.z;
+
+
+	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(num * 5, 90 - num * 5, 0.0f);
+	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
+}
 void CPlayer::rrrotate(float deg)
 {
 
@@ -321,6 +333,10 @@ void CPlayer::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamer
 {
 	DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00;CGameObject::Render(pd3dCommandList, pCamera);
 }
+void CPlayer::Render(ID3D12GraphicsCommandList *pd3dCommandList, UINT nInstances, CCamera *pCamera)
+{
+	DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00; CGameObject::Render(pd3dCommandList, pCamera, nInstances);
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CAirplanePlayer
@@ -329,9 +345,8 @@ CAirplanePlayer::CAirplanePlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommand
 {
 	m_pCamera = ChangeCamera(FIRST_PERSON_CAMERA, 0.0f);
 	if (m_pCamera) m_pCamera->CreateShaderVariables(pd3dDevice, pd3dCommandList);
-
 	LoadGeometryFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Flyer.txt");
-
+	PT = Player;
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
 	SetPlayerUpdatedContext(pTerrain);
 	SetCameraUpdatedContext(pTerrain);
@@ -395,7 +410,7 @@ CTreeObject::CTreeObject(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd
 {
 	m_pCamera = ChangeCamera(FIRST_PERSON_CAMERA, 0.0f);
 	if (m_pCamera) m_pCamera->CreateShaderVariables(pd3dDevice, pd3dCommandList);
-
+	PT = Tree;
 	LoadGeometryFromFile2(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Flyer.txt");
 
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
@@ -513,7 +528,7 @@ CRockObject::CRockObject(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd
 {
 	m_pCamera = ChangeCamera(FIRST_PERSON_CAMERA, 0.0f);
 	if (m_pCamera) m_pCamera->CreateShaderVariables(pd3dDevice, pd3dCommandList);
-
+	PT = Rock;
 	LoadGeometryFromFile4(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Flyer.txt");
 
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
@@ -526,7 +541,7 @@ CRockObject::~CRockObject()
 {
 }
 
-void CRockObject::Animate(float fTimeElapsed)
+void CRockObject::Animate(float fTimeElapsed, int num)
 {
 	/*for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
 		UpdateMD5Model(NewMD5Model, fTimeElapsed *0.4, 0, m_ppMeshes[i], i);
@@ -538,7 +553,7 @@ void CRockObject::Animate(float fTimeElapsed)
 	m_xmf4x4ToParentTransform._41 = m_xmf3Position.x; m_xmf4x4ToParentTransform._42 = m_xmf3Position.y; m_xmf4x4ToParentTransform._43 = m_xmf3Position.z;
 
 
-	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), time, 0.0f);
+	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(num * 5, 90 - num*5, 0.0f);
 	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
 }
 
@@ -597,7 +612,7 @@ CBlueBox::CBlueBox(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCo
 {
 	m_pCamera = ChangeCamera(FIRST_PERSON_CAMERA, 0.0f);
 	if (m_pCamera) m_pCamera->CreateShaderVariables(pd3dDevice, pd3dCommandList);
-
+	PT = Blue;
 	LoadGeometryFromFile3(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Flyer.txt");
 
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;

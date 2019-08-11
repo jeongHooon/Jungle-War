@@ -583,10 +583,23 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				if (charstate == 6) {
 					m_pPlayer[my_client_id]->GetKeyInput(6);
 					charstate = 6;
+					if (is_pushed[CS_KEY_PRESS_SHIFT]) {
+						m_pPlayer[my_client_id]->GetKeyInput(13);
+						charstate = 13;
+					}
 				}
 				else if (charstate == 5) {
 					m_pPlayer[my_client_id]->GetKeyInput(5);
 					charstate = 5;
+					
+				}
+				else if (charstate == 13) {
+					m_pPlayer[my_client_id]->GetKeyInput(13);
+					charstate = 13;
+				}
+				else if (charstate == 14) {
+					m_pPlayer[my_client_id]->GetKeyInput(14);
+					charstate = 14;
 				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(3);
@@ -613,6 +626,16 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					charstate = 6;
 					//printf("215\n");
 				}
+				else if (charstate == 1) {
+					m_pPlayer[my_client_id]->GetKeyInput(13);
+					charstate = 13;
+					
+				}
+				else if (charstate == 10) {
+					m_pPlayer[my_client_id]->GetKeyInput(11);
+					charstate = 11;
+
+				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(6);
 					charstate = 6;
@@ -634,6 +657,14 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					m_pPlayer[my_client_id]->GetKeyInput(8);
 					charstate = 8;
 				}
+				else if (charstate == 13) {
+					m_pPlayer[my_client_id]->GetKeyInput(11);
+					charstate = 11;
+				}
+				else if (charstate == 14) {
+					m_pPlayer[my_client_id]->GetKeyInput(12);
+					charstate = 12;
+				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(4);
 					charstate = 4;
@@ -654,6 +685,14 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				else if (charstate == 3) {
 					m_pPlayer[my_client_id]->GetKeyInput(5);
 					charstate = 5;
+				}
+				else if (charstate == 1) {
+					m_pPlayer[my_client_id]->GetKeyInput(14);
+					charstate = 14;
+				}
+				else if (charstate == 10) {
+					m_pPlayer[my_client_id]->GetKeyInput(12);
+					charstate = 12;
 				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(5);
@@ -775,6 +814,14 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					m_pPlayer[my_client_id]->GetKeyInput(5);
 					charstate = 5;
 				}
+				else if (charstate == 13) {
+					m_pPlayer[my_client_id]->GetKeyInput(13);
+					charstate = 13;
+				}
+				else if (charstate == 14) {
+					m_pPlayer[my_client_id]->GetKeyInput(14);
+					charstate = 14;
+				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(0);
 					charstate = 0;
@@ -794,6 +841,14 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				else if (charstate == 9 && is_pushed[CS_KEY_PRESS_DOWN]) {
 					m_pPlayer[my_client_id]->GetKeyInput(3);
 					charstate = 4;
+				}
+				else if (charstate == 13 ) {
+					m_pPlayer[my_client_id]->GetKeyInput(1);
+					charstate = 1;
+				}
+				else if (charstate == 11) {
+					m_pPlayer[my_client_id]->GetKeyInput(10);
+					charstate = 10;
 				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(0);
@@ -815,6 +870,14 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					m_pPlayer[my_client_id]->GetKeyInput(5);
 					charstate = 5;
 				}
+				else if (charstate == 11) {
+					m_pPlayer[my_client_id]->GetKeyInput(13);
+					charstate = 13;
+				}
+				else if (charstate == 12) {
+					m_pPlayer[my_client_id]->GetKeyInput(14);
+					charstate = 14;
+				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(0);
 					charstate = 0;
@@ -834,6 +897,14 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				else if (charstate == 8 && is_pushed[CS_KEY_PRESS_DOWN]) {
 					m_pPlayer[my_client_id]->GetKeyInput(3);
 					charstate = 4;
+				}
+				else if (charstate == 14) {
+					m_pPlayer[my_client_id]->GetKeyInput(1);
+					charstate = 1;
+				}
+				else if (charstate == 12) {
+					m_pPlayer[my_client_id]->GetKeyInput(10);
+					charstate = 10;
 				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(0);
@@ -1274,6 +1345,7 @@ void CGameFramework::BuildObjects()
 		
 		float fHeight = m_pScene->GetTerrain()->GetHeight(xPosition, zPosition);
 		m_pObject2[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
+		m_pObject2[i]->SetOOBB(m_pObject2[i]->GetPosition(), XMFLOAT3(13, 8, 13), XMFLOAT4(0, 0, 0, 1));
 
 	}
 #endif
@@ -1416,7 +1488,7 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pObject) m_pObject[i]->Animate(fTimeElapsed);
 	for (int i = 0; i < NUM_OBJECT2; ++i)
-		if (m_pObject2) m_pObject2[i]->Animate(fTimeElapsed);
+		if (m_pObject2) m_pObject2[i]->Animate(fTimeElapsed,i);
 	if (m_pBlueBox[0])m_pBlueBox[0]->Animate(fTimeElapsed);
 	if (m_pScene) m_pScene->AnimateObjects(fTimeElapsed, pCamera);
 
@@ -1534,7 +1606,7 @@ void CGameFramework::FrameAdvance()
 		m_pObject[i]->UpdateTransform(NULL);
 		m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 		if(server_mgr.GetTreeInuse(i) == true)
-			m_pObject[i]->Render(m_pd3dCommandList, m_pCamera);
+			m_pObject[i]->Render(m_pd3dCommandList, 1, m_pCamera);
 	}
 	for (int i = 0; i < NUM_OBJECT2; ++i) {
 		m_pObject2[i]->UpdateTransform(NULL);
@@ -1643,6 +1715,7 @@ void CGameFramework::FrameAdvance()
 	/////// 오브젝트 충돌체크
 	
 	bool check = false;
+	bool check2 = false;
 	//충돌체크
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		if (server_mgr.GetTreeInuse(i)) {
@@ -1681,9 +1754,48 @@ void CGameFramework::FrameAdvance()
 			}
 		}
 	}
+	
+
+	for (int i = 0; i < NUM_OBJECT2; ++i) {
+		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pObject2[i]->bounding_box);
+		switch (containType)
+		{
+		case DISJOINT:
+		{
+			break;
+		}
+		case INTERSECTS:
+		{
+			printf("오브젝트충돌예에\n");
+			if ((m_pObject2[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x) * (m_pObject2[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x)
+				< (m_pObject2[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z) * (m_pObject2[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z)) {
+				if (m_pObject2[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z > 0) { m_pObject2[i]->look = XMFLOAT3(0, 0, -1); }
+				else { m_pObject2[i]->look = XMFLOAT3(0, 0, 1); }
+			}
+			else {
+				if (m_pObject2[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x > 0) { m_pObject2[i]->look = XMFLOAT3(-1, 0, 0); }
+				else { m_pObject2[i]->look = XMFLOAT3(1, 0, 0); }
+			}
+			XMFLOAT3 xmf3Result;
+			XMFLOAT3 xmf3Result_1;
+			XMFLOAT3 xmf3Result_2;
+			XMStoreFloat3(&xmf3Result_1, XMVector3Dot(XMLoadFloat3(&CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook()), XMLoadFloat3(&m_pObject2[i]->look)));
+			XMStoreFloat3(&xmf3Result, XMVector3Dot(XMLoadFloat3(&m_pObject2[i]->look), XMLoadFloat3(&xmf3Result_1)));
+			xmf3Result_2 = XMFLOAT3(Vector3::Subtract(CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook(), xmf3Result));
+			CGameFramework::sendLook = XMFLOAT3(2 * xmf3Result_2.x / 3, 2 * xmf3Result_2.y / 3, 2 * xmf3Result_2.z / 3);
+			check2 = true;
+			break;
+		}
+		case CONTAINS:
+
+			break;
+		}
+
+	}
 	if (check == true)
 		CGameFramework::boxBound = 1;
 
+<<<<<<< HEAD
 	
 	// 텍스트
 	/*ID3D12DescriptorHeap* heaps[] = { m_resourceDescriptors->Heap() };
@@ -1699,6 +1811,10 @@ void CGameFramework::FrameAdvance()
 
 	m_spriteBatch->End();*/
 	///////////////////////
+=======
+	if (check2 == true)
+		CGameFramework::boxBound = 1;
+>>>>>>> 13c068c0e9eb6014ff4aec2c025a536e5fb7b657
 	/////////
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;

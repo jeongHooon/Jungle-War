@@ -69,7 +69,18 @@ void CMesh::Render(ID3D12GraphicsCommandList *pd3dCommandList)
 	}
 
 }
+void CMesh::Render(ID3D12GraphicsCommandList *pd3dCommandList, UINT nInstances)
+{
+	pd3dCommandList->IASetVertexBuffers(m_nSlot, 1, &m_d3dVertexBufferView);
+	pd3dCommandList->IASetPrimitiveTopology(m_d3dPrimitiveTopology);
 
+	if (m_pd3dIndexBuffer) {
+		pd3dCommandList->IASetIndexBuffer(&m_d3dIndexBufferView);
+		pd3dCommandList->DrawIndexedInstanced(m_nIndices, nInstances, 0, 0, 0);
+	}
+	else pd3dCommandList->DrawInstanced(m_nVertices, nInstances, m_nOffset, 0);
+
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 CMeshTextured::CMeshTextured(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList) : CMesh(pd3dDevice, pd3dCommandList)
