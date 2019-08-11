@@ -619,7 +619,7 @@ void CGameObject::LoadRock(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 {
 	CMesh *pMesh = NULL;
 	
-	LoadObjectModel(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/WarriorMesh.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
+	LoadObjectModel(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/rock.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
 	SetMesh(0, pMesh);
 	
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
