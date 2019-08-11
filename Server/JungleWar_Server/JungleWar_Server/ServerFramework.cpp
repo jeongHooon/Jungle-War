@@ -325,6 +325,8 @@ void ServerFramework::AcceptPlayer() {
 	clients[client_id].prev_packet_size = 0;
 	clients[client_id].team = Team::NON_TEAM;
 
+	clients[client_id].boxCount = 10;
+
 	clients[client_id].elecX = 500.f;
 	clients[client_id].elecY = 1000.f;
 	clients[client_id].elecZ = 500.f;
@@ -1039,7 +1041,7 @@ void ServerFramework::WorkerThread() {
 			}
 		}
 		else if (overlapped_buffer->command == SS_BOX_GENERATE) {
-			if (clients[overlapped_buffer->box_player_id].boxCount >= 0) {
+			if (clients[overlapped_buffer->box_player_id].boxCount > 0.5) {
 
 				int box_player_id = overlapped_buffer->box_player_id;
 
@@ -1079,6 +1081,10 @@ void ServerFramework::WorkerThread() {
 						XMFLOAT3(OBB_SCALE_BOX_X, OBB_SCALE_BOX_Y, OBB_SCALE_BOX_Z),
 						XMFLOAT4(0, 0, 0, 1));
 
+				box_counter[box_player_id]++;
+				//++clients[overlapped_buffer->box_player_id].box_count;
+				--clients[overlapped_buffer->box_player_id].boxCount;
+
 				for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 					for (int j = 0; j < MAX_BOX_SIZE; ++j) {
 						if (boxes[i * MAX_BOX_SIZE + j].in_use) {
@@ -1103,10 +1109,9 @@ void ServerFramework::WorkerThread() {
 					}
 				}
 
-				box_counter[box_player_id]++;
-				//++clients[overlapped_buffer->box_player_id].box_count;
 				
-				--clients[overlapped_buffer->box_player_id].boxCount;
+				
+				
 			}
 		}
 		else if (overlapped_buffer->command == SS_BOX_UPDATE) {
