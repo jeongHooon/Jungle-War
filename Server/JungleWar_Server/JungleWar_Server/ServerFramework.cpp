@@ -1110,9 +1110,6 @@ void ServerFramework::WorkerThread() {
 					}
 				}
 
-				
-				
-				
 			}
 		}
 		else if (overlapped_buffer->command == SS_BOX_UPDATE) {
