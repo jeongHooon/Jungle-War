@@ -45,6 +45,7 @@ protected:
 
 	float						playerHp = 100.0;
 	int							playerBullet = 40;
+	int							treeNum = 10;
 
 	CCamera						*m_pCamera = NULL;
 	int animation_status = 0;
@@ -93,6 +94,7 @@ public:
 	float GetPitch() const { return(m_fPitch); }
 	float GetRoll() const { return(m_fRoll); }
 	int	  GetPlayerBullet() { return(playerBullet); }
+	int   GetPlayerTree() { return(treeNum); }
 	void  MinusPlayerBullet() { --playerBullet; }
 	int GetPlayerHp() { return(playerHp); }
 	void SetPlayerHp(float input) { playerHp = input; }

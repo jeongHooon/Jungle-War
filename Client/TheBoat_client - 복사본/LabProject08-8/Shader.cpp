@@ -7240,7 +7240,7 @@ void CTreeNumShader0::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	CNumMesh *pCubeMesh[1];
 
 	for (int i = 0; i<m_nTree; ++i)
-		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 1, 0.3, 0.4);
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
 
 	m_ppTree = new CRotatingObject*;
 
@@ -7445,7 +7445,7 @@ void CTreeNumShader1::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	CNumMesh *pCubeMesh[1];
 
 	for (int i = 0; i<m_nTree; ++i)
-		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 1, 0.3, 0.4);
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
 
 	m_ppTree = new CRotatingObject*;
 
@@ -7650,7 +7650,7 @@ void CTreeNumShader2::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	CNumMesh *pCubeMesh[1];
 
 	for (int i = 0; i<m_nTree; ++i)
-		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 1, 0.3, 0.4);
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
 
 	m_ppTree = new CRotatingObject*;
 
@@ -7856,7 +7856,7 @@ void CTreeNumShader3::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	CNumMesh *pCubeMesh[1];
 
 	for (int i = 0; i<m_nTree; ++i)
-		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 1, 0.3, 0.4);
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
 
 	m_ppTree = new CRotatingObject*;
 
@@ -8062,7 +8062,7 @@ void CTreeNumShader4::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	CNumMesh *pCubeMesh[1];
 
 	for (int i = 0; i<m_nTree; ++i)
-		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 1, 0.3, 0.4);
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
 
 	m_ppTree = new CRotatingObject*;
 
@@ -8267,7 +8267,7 @@ void CTreeNumShader5::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	CNumMesh *pCubeMesh[1];
 
 	for (int i = 0; i<m_nTree; ++i)
-		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 1, 0.3, 0.4);
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
 
 	m_ppTree = new CRotatingObject*;
 
@@ -8472,7 +8472,7 @@ void CTreeNumShader6::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	CNumMesh *pCubeMesh[1];
 
 	for (int i = 0; i<m_nTree; ++i)
-		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 1, 0.3, 0.4);
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
 
 	m_ppTree = new CRotatingObject*;
 
@@ -8677,7 +8677,7 @@ void CTreeNumShader7::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	CNumMesh *pCubeMesh[1];
 
 	for (int i = 0; i<m_nTree; ++i)
-		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 1, 0.3, 0.4);
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
 
 	m_ppTree = new CRotatingObject*;
 
@@ -8883,7 +8883,7 @@ void CTreeNumShader8::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	CNumMesh *pCubeMesh[1];
 
 	for (int i = 0; i<m_nTree; ++i)
-		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 1, 0.3, 0.4);
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
 
 	m_ppTree = new CRotatingObject*;
 
@@ -9088,7 +9088,7 @@ void CTreeNumShader9::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	CNumMesh *pCubeMesh[1];
 
 	for (int i = 0; i<m_nTree; ++i)
-		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 1, 0.3, 0.4);
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
 
 	m_ppTree = new CRotatingObject*;
 
@@ -9271,7 +9271,7 @@ void CTreeNumShader10::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComm
 	//m_nTree = 4;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Numbers/Num9.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Numbers/Num1.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -9291,7 +9291,7 @@ void CTreeNumShader10::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComm
 	CNumMesh *pCubeMesh[1];
 
 	for (int i = 0; i<m_nTree; ++i)
-		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 1, 0.3, 0.4);
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 34, 0.3, 0.4);
 
 	m_ppTree = new CRotatingObject*;
 

@@ -1039,7 +1039,7 @@ void ServerFramework::WorkerThread() {
 			}
 		}
 		else if (overlapped_buffer->command == SS_BOX_GENERATE) {
-			if (clients[overlapped_buffer->box_player_id].boxCount > 0) {
+			if (clients[overlapped_buffer->box_player_id].boxCount >= 0) {
 
 				int box_player_id = overlapped_buffer->box_player_id;
 
