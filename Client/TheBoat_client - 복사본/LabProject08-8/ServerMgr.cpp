@@ -197,6 +197,8 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		boxes[recvd_box_id].z = packets->z;
 		boxes[recvd_box_id].hp = packets->hp;
 		boxes[recvd_box_id].in_use = packets->in_use;
+		myBoxCount = packets->boxCount;
+		printf("내 남은 박스는 %d개\n", myBoxCount);
 
 
 		//printf("[Bullet] %d 플레이어 총알 ID[%d] \n", clients_id, packets->bullet_id);

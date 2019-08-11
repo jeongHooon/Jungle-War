@@ -54,6 +54,8 @@ class ServerMgr
 	int camera_id = 0;
 	string server_ip;
 
+	int myBoxCount;
+
 	// ·Î±×ÀÎ
 	char userid[maxUserIDLen];
 	char userpw[maxUserIDLen];
