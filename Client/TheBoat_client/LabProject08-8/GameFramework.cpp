@@ -231,6 +231,7 @@ void CGameFramework::CreateRtvAndDsvDescriptorHeaps()
 	d3dDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 	hResult = m_pd3dDevice->CreateDescriptorHeap(&d3dDescriptorHeapDesc, __uuidof(ID3D12DescriptorHeap), (void **)&m_pd3dDsvDescriptorHeap);
 	m_nDsvDescriptorIncrementSize = m_pd3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+
 }
 
 void CGameFramework::CreateRenderTargetViews()
@@ -736,6 +737,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case 'm':
 		case 'M':
 			alphaMapOn = !alphaMapOn;
+			m_pCamera->SetLook(XMFLOAT3(m_pPlayer[my_client_id]->GetLook().x, 0, m_pPlayer[my_client_id]->GetLook().z));
 			break;
 		case '0':
 			++gameMode;
@@ -1194,7 +1196,40 @@ void CGameFramework::BuildObjects()
 	m_pScene = new CScene();
 	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
 
+<<<<<<< HEAD
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
+=======
+
+	////////////////////텍스트
+
+	m_resourceDescriptors = std::make_unique<DescriptorHeap>(m_pd3dDevice,
+		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
+		D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE,
+		Descriptors::Count);
+
+	ResourceUploadBatch resourceUpload(m_pd3dDevice);
+
+	resourceUpload.Begin();
+
+	m_font = std::make_unique<SpriteFont>(m_pd3dDevice, resourceUpload,
+		L"myfile.spritefont",
+		m_resourceDescriptors->GetCpuHandle(Descriptors::MyFont),
+		m_resourceDescriptors->GetGpuHandle(Descriptors::MyFont));
+
+	RenderTargetState rtState(DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_FORMAT_D32_FLOAT);
+
+	SpriteBatchPipelineStateDescription pd(rtState);
+	m_spriteBatch = std::make_unique<SpriteBatch>(m_pd3dDevice, resourceUpload, pd);
+
+
+	auto uploadResourcesFinished = resourceUpload.End(m_pd3dCommandQueue);
+
+	uploadResourcesFinished.wait();
+
+	///////////////////////////////////////////////////////////////////////////////////
+
+	for (int i = 0; i < MAX_PLAYER_SIZE; ++i)
+>>>>>>> 01690214f56d3158f203ac74503ae057f7c928cb
 		m_pScene->m_pPlayer[i] = m_pPlayer[i] = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
 		m_pPlayer[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 	}
@@ -1317,6 +1352,7 @@ void CGameFramework::BuildObjects()
 		
 		float fHeight = m_pScene->GetTerrain()->GetHeight(xPosition, zPosition);
 		m_pObject2[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
+		m_pObject2[i]->SetOOBB(m_pObject2[i]->GetPosition(), XMFLOAT3(13, 8, 13), XMFLOAT4(0, 0, 0, 1));
 
 	}
 #endif
@@ -1337,7 +1373,16 @@ void CGameFramework::BuildObjects()
 
 	if (m_pScene) m_pScene->ReleaseUploadBuffers();
 
-	m_GameTimer.Reset();
+
+	D3D12_VIEWPORT viewport = { 0.0f, 0.0f,
+		static_cast<float>(FRAME_BUFFER_WIDTH), static_cast<float>(FRAME_BUFFER_HEIGHT),
+		D3D12_MIN_DEPTH, D3D12_MAX_DEPTH };
+	m_spriteBatch->SetViewport(viewport);
+
+	m_fontPos.x = FRAME_BUFFER_WIDTH / 2.f;
+	m_fontPos.y = FRAME_BUFFER_HEIGHT / 2.f;
+
+	
 }
 
 void CGameFramework::ReleaseObjects()
@@ -1469,6 +1514,8 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 			-1000.f, -1000.f));
 	}
 
+	
+
 	//if ((server_mgr.ReturnCollsionPosition(&is_collide).x != 0.0)) {
 	//	m_pScene->m_ppShaders[3]->SetPosition(0, XMFLOAT3(server_mgr.ReturnCollsionPosition(&is_collide).x,
 	//		server_mgr.ReturnCollsionPosition(&is_collide).y + 70.f, server_mgr.ReturnCollsionPosition(&is_collide).z));
@@ -1517,6 +1564,13 @@ void CGameFramework::FrameAdvance()
 
 	HRESULT hResult = m_pd3dCommandAllocator->Reset();
 	hResult = m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
+
+	//텍스트 리셋
+	m_font.reset();
+	m_resourceDescriptors.reset();
+	m_spriteBatch.reset();
+
+	////////////////////////
 
 	D3D12_RESOURCE_BARRIER d3dResourceBarrier;
 	::ZeroMemory(&d3dResourceBarrier, sizeof(D3D12_RESOURCE_BARRIER));
@@ -1603,8 +1657,6 @@ void CGameFramework::FrameAdvance()
 			m_pScene->m_ppUIShaders[9]->Render(m_pd3dCommandList, m_pCamera); // 맵
 			m_pScene->m_ppShaders[2]->Render(m_pd3dCommandList, m_pCamera); // 맵에 현재 위치
 		}
-		else
-			m_pCamera->SetLook(XMFLOAT3(m_pPlayer[my_client_id]->GetLook().x, m_pCamera->GetLookVector().y, m_pPlayer[my_client_id]->GetLook().z));
 
 		
 
@@ -1630,6 +1682,10 @@ void CGameFramework::FrameAdvance()
 		m_pScene->m_ppMainUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//게임오버 화면
 
 	m_pScene->m_ppUIShaders[27]->Render(m_pd3dCommandList, m_pCamera);
+
+
+	
+
 	// 렌더
 	//printf("%f %f %f \n", m_pPlayer[0]->GetPosition().x, m_pPlayer[0]->GetPosition().y, m_pPlayer[0]->GetPosition().z);
 
@@ -1664,6 +1720,7 @@ void CGameFramework::FrameAdvance()
 	/////// 오브젝트 충돌체크
 	
 	bool check = false;
+	bool check2 = false;
 	//충돌체크
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		if (server_mgr.GetTreeInuse(i)) {
@@ -1702,8 +1759,63 @@ void CGameFramework::FrameAdvance()
 			}
 		}
 	}
+	
+
+	for (int i = 0; i < NUM_OBJECT2; ++i) {
+		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pObject2[i]->bounding_box);
+		switch (containType)
+		{
+		case DISJOINT:
+		{
+			break;
+		}
+		case INTERSECTS:
+		{
+			printf("오브젝트충돌예에\n");
+			if ((m_pObject2[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x) * (m_pObject2[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x)
+				< (m_pObject2[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z) * (m_pObject2[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z)) {
+				if (m_pObject2[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z > 0) { m_pObject2[i]->look = XMFLOAT3(0, 0, -1); }
+				else { m_pObject2[i]->look = XMFLOAT3(0, 0, 1); }
+			}
+			else {
+				if (m_pObject2[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x > 0) { m_pObject2[i]->look = XMFLOAT3(-1, 0, 0); }
+				else { m_pObject2[i]->look = XMFLOAT3(1, 0, 0); }
+			}
+			XMFLOAT3 xmf3Result;
+			XMFLOAT3 xmf3Result_1;
+			XMFLOAT3 xmf3Result_2;
+			XMStoreFloat3(&xmf3Result_1, XMVector3Dot(XMLoadFloat3(&CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook()), XMLoadFloat3(&m_pObject2[i]->look)));
+			XMStoreFloat3(&xmf3Result, XMVector3Dot(XMLoadFloat3(&m_pObject2[i]->look), XMLoadFloat3(&xmf3Result_1)));
+			xmf3Result_2 = XMFLOAT3(Vector3::Subtract(CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook(), xmf3Result));
+			CGameFramework::sendLook = XMFLOAT3(2 * xmf3Result_2.x / 3, 2 * xmf3Result_2.y / 3, 2 * xmf3Result_2.z / 3);
+			check2 = true;
+			break;
+		}
+		case CONTAINS:
+
+			break;
+		}
+
+	}
 	if (check == true)
 		CGameFramework::boxBound = 1;
+	if (check2 == true)
+		CGameFramework::boxBound = 1;
+	// 텍스트
+	/*ID3D12DescriptorHeap* heaps[] = { m_resourceDescriptors->Heap() };
+	m_pd3dCommandList->SetDescriptorHeaps(_countof(heaps), heaps);
+
+	m_spriteBatch->Begin(m_pd3dCommandList);
+
+	const wchar_t* output = L"Hello World";
+	SimpleMath::Vector2 origin = m_font->MeasureString(output) / 2.f;
+
+	m_font->DrawString(m_spriteBatch.get(), output,
+		m_fontPos, Colors::White, 0.f, origin);
+
+	m_spriteBatch->End();*/
+	///////////////////////
+	
 	/////////
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -1712,6 +1824,9 @@ void CGameFramework::FrameAdvance()
 	m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
 
 	hResult = m_pd3dCommandList->Close();
+
+
+
 
 	ID3D12CommandList *ppd3dCommandLists[] = { m_pd3dCommandList };
 	m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
@@ -1733,8 +1848,12 @@ void CGameFramework::FrameAdvance()
 #endif
 #endif
 
+	
+
 	//	m_nSwapChainBufferIndex = m_pdxgiSwapChain->GetCurrentBackBufferIndex();
 	MoveToNextFrame();
+
+
 
 	m_GameTimer.GetFrameRate(m_pszFrameRate + 12, 37);
 	::SetWindowText(m_hWnd, m_pszFrameRate);

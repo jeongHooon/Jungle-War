@@ -58,6 +58,7 @@ class ServerFramework
 	int box_counter[MAX_PLAYER_SIZE] = { 0 };
 
 	Map_Object obj[MAX_OBJECT_SIZE] = { 0 };
+	Map_Object obj2[MAX_OBJECT2_SIZE] = { 0 };
 
 	int box_count = 0;
 

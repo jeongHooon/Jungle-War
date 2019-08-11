@@ -6,6 +6,7 @@
 #define MAX_PACKET_SIZE		256
 #define MAX_PLAYER_SIZE		4
 #define MAX_OBJECT_SIZE		42
+#define MAX_OBJECT2_SIZE	20
 #define	WM_SOCKET			WM_USER + 1
 #define CLIENT_BUF_SIZE		1024
 #define MAX_BULLET_SIZE		40
@@ -47,6 +48,7 @@
 #define SC_ITEM_GEN				10	// Actually Item gen packet
 #define SC_BUILDING_GEN			11
 #define SC_COLLSION_OB			12
+#define SC_COLLSION_OB2			13
 
 #define SC_BOX_POS				21
 

@@ -6,9 +6,14 @@
 #pragma once
 
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+#ifdef _DEBUG
+#endif
+
 //#ifdef _DEBUG
+//#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 //#endif
- 
+//#pragma comment(lib, "d3d12.lib")
+
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 // Windows 헤더 파일:
@@ -40,6 +45,14 @@ using namespace std;
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>
 #include <DirectXCollision.h>
+#include "SpriteFont.h"
+#include "DescriptorHeap.h"
+#include "ResourceUploadBatch.h"
+#include "SpriteBatch.h"
+#include <functional>
+#include "SimpleMath.h"
+
+#include "RenderTargetState.h"
 
 #include <Mmsystem.h>
 
@@ -52,6 +65,7 @@ using namespace std;
 #include "..\..\..\Server\JungleWar_Server\JungleWar_Server\protocol.h"
 using namespace DirectX;
 using namespace DirectX::PackedVector;
+
 
 using Microsoft::WRL::ComPtr;
 
@@ -448,3 +462,23 @@ static UINT CalcConstantBufferByteSize(UINT byteSize)
 {
 	return (byteSize + 255) & ~255;
 }
+
+// D3DCOLOR is equivalent to D3DFMT_A8R8G8B8
+#ifndef D3DCOLOR_DEFINED
+typedef DWORD D3DCOLOR;
+#define D3DCOLOR_DEFINED
+#endif
+
+// maps unsigned 8 bits/channel to D3DCOLOR
+#define D3DCOLOR_ARGB(a,r,g,b) \
+    ((D3DCOLOR)((((a)&0xff)<<24)|(((r)&0xff)<<16)|(((g)&0xff)<<8)|((b)&0xff)))
+#define D3DCOLOR_RGBA(r,g,b,a) D3DCOLOR_ARGB(a,r,g,b)
+#define D3DCOLOR_XRGB(r,g,b)   D3DCOLOR_ARGB(0xff,r,g,b)
+
+#define D3DCOLOR_XYUV(y,u,v)   D3DCOLOR_ARGB(0xff,y,u,v)
+#define D3DCOLOR_AYUV(a,y,u,v) D3DCOLOR_ARGB(a,y,u,v)
+
+// maps floating point channels (0.f to 1.f range) to D3DCOLOR
+#define D3DCOLOR_COLORVALUE(r,g,b,a) \
+    D3DCOLOR_RGBA((DWORD)((r)*255.f),(DWORD)((g)*255.f),(DWORD)((b)*255.f),(DWORD)((a)*255.f))
+
