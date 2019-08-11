@@ -231,6 +231,7 @@ void CGameFramework::CreateRtvAndDsvDescriptorHeaps()
 	d3dDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 	hResult = m_pd3dDevice->CreateDescriptorHeap(&d3dDescriptorHeapDesc, __uuidof(ID3D12DescriptorHeap), (void **)&m_pd3dDsvDescriptorHeap);
 	m_nDsvDescriptorIncrementSize = m_pd3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+
 }
 
 void CGameFramework::CreateRenderTargetViews()
@@ -1123,6 +1124,35 @@ void CGameFramework::BuildObjects()
 	m_pScene = new CScene();
 	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
 
+
+	////////////////////텍스트
+
+	m_resourceDescriptors = std::make_unique<DescriptorHeap>(m_pd3dDevice,
+		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV,
+		D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE,
+		Descriptors::Count);
+
+	ResourceUploadBatch resourceUpload(m_pd3dDevice);
+
+	resourceUpload.Begin();
+
+	m_font = std::make_unique<SpriteFont>(m_pd3dDevice, resourceUpload,
+		L"myfile.spritefont",
+		m_resourceDescriptors->GetCpuHandle(Descriptors::MyFont),
+		m_resourceDescriptors->GetGpuHandle(Descriptors::MyFont));
+
+	RenderTargetState rtState(DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_FORMAT_D32_FLOAT);
+
+	SpriteBatchPipelineStateDescription pd(rtState);
+	m_spriteBatch = std::make_unique<SpriteBatch>(m_pd3dDevice, resourceUpload, pd);
+
+
+	auto uploadResourcesFinished = resourceUpload.End(m_pd3dCommandQueue);
+
+	uploadResourcesFinished.wait();
+
+	///////////////////////////////////////////////////////////////////////////////////
+
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i)
 		m_pScene->m_pPlayer[i] = m_pPlayer[i] = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
 
@@ -1264,7 +1294,16 @@ void CGameFramework::BuildObjects()
 
 	if (m_pScene) m_pScene->ReleaseUploadBuffers();
 
-	m_GameTimer.Reset();
+
+	D3D12_VIEWPORT viewport = { 0.0f, 0.0f,
+		static_cast<float>(FRAME_BUFFER_WIDTH), static_cast<float>(FRAME_BUFFER_HEIGHT),
+		D3D12_MIN_DEPTH, D3D12_MAX_DEPTH };
+	m_spriteBatch->SetViewport(viewport);
+
+	m_fontPos.x = FRAME_BUFFER_WIDTH / 2.f;
+	m_fontPos.y = FRAME_BUFFER_HEIGHT / 2.f;
+
+	
 }
 
 void CGameFramework::ReleaseObjects()
@@ -1396,6 +1435,8 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 			-1000.f, -1000.f));
 	}
 
+	
+
 	//if ((server_mgr.ReturnCollsionPosition(&is_collide).x != 0.0)) {
 	//	m_pScene->m_ppShaders[3]->SetPosition(0, XMFLOAT3(server_mgr.ReturnCollsionPosition(&is_collide).x,
 	//		server_mgr.ReturnCollsionPosition(&is_collide).y + 70.f, server_mgr.ReturnCollsionPosition(&is_collide).z));
@@ -1444,6 +1485,13 @@ void CGameFramework::FrameAdvance()
 
 	HRESULT hResult = m_pd3dCommandAllocator->Reset();
 	hResult = m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
+
+	//텍스트 리셋
+	m_font.reset();
+	m_resourceDescriptors.reset();
+	m_spriteBatch.reset();
+
+	////////////////////////
 
 	D3D12_RESOURCE_BARRIER d3dResourceBarrier;
 	::ZeroMemory(&d3dResourceBarrier, sizeof(D3D12_RESOURCE_BARRIER));
@@ -1557,6 +1605,10 @@ void CGameFramework::FrameAdvance()
 		m_pScene->m_ppMainUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//게임오버 화면
 
 	m_pScene->m_ppUIShaders[27]->Render(m_pd3dCommandList, m_pCamera);
+
+
+	
+
 	// 렌더
 	//printf("%f %f %f \n", m_pPlayer[0]->GetPosition().x, m_pPlayer[0]->GetPosition().y, m_pPlayer[0]->GetPosition().z);
 
@@ -1631,6 +1683,22 @@ void CGameFramework::FrameAdvance()
 	}
 	if (check == true)
 		CGameFramework::boxBound = 1;
+
+	
+	// 텍스트
+	/*ID3D12DescriptorHeap* heaps[] = { m_resourceDescriptors->Heap() };
+	m_pd3dCommandList->SetDescriptorHeaps(_countof(heaps), heaps);
+
+	m_spriteBatch->Begin(m_pd3dCommandList);
+
+	const wchar_t* output = L"Hello World";
+	SimpleMath::Vector2 origin = m_font->MeasureString(output) / 2.f;
+
+	m_font->DrawString(m_spriteBatch.get(), output,
+		m_fontPos, Colors::White, 0.f, origin);
+
+	m_spriteBatch->End();*/
+	///////////////////////
 	/////////
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -1639,6 +1707,9 @@ void CGameFramework::FrameAdvance()
 	m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
 
 	hResult = m_pd3dCommandList->Close();
+
+
+
 
 	ID3D12CommandList *ppd3dCommandLists[] = { m_pd3dCommandList };
 	m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
@@ -1660,8 +1731,12 @@ void CGameFramework::FrameAdvance()
 #endif
 #endif
 
+	
+
 	//	m_nSwapChainBufferIndex = m_pdxgiSwapChain->GetCurrentBackBufferIndex();
 	MoveToNextFrame();
+
+
 
 	m_GameTimer.GetFrameRate(m_pszFrameRate + 12, 37);
 	::SetWindowText(m_hWnd, m_pszFrameRate);

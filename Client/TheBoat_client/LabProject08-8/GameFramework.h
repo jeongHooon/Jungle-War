@@ -10,6 +10,7 @@
 #include "ServerMgr.h"
 
 
+
 class CGameFramework
 {
 private:
@@ -70,6 +71,7 @@ public:
     void AnimateObjects(CCamera *pCamera);
     void FrameAdvance();
 
+
 	void WaitForGpuComplete();
 	void MoveToNextFrame();
 
@@ -90,6 +92,18 @@ public:
 	bool						writeMode = true;
 	bool						writeStart = false;
 	int							writeNum = 0;
+
+	unique_ptr<DirectX::DescriptorHeap>	m_resourceDescriptors;
+	unique_ptr<DirectX::SpriteFont>		m_font;
+
+	enum Descriptors
+	{
+		MyFont,
+		Count
+	};
+
+	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
+	DirectX::SimpleMath::Vector2 m_fontPos;
 
 private:
 	int							mainScreenSelect = 0;
@@ -139,5 +153,8 @@ private:
 	POINT						m_ptOldCursorPos;
 
 	_TCHAR						m_pszFrameRate[50];
+
+	
+
 };
 

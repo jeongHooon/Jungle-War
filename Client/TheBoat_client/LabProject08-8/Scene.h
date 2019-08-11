@@ -6,8 +6,15 @@
 
 #include "Shader.h"
 #include "Player.h"
+#include "stdafx.h"
+
+
 #define NUM_OBJECT 42
 #define NUM_OBJECT2 1
+
+
+
+
 struct LIGHT
 {
 	XMFLOAT4				m_xmf4Ambient;
@@ -124,4 +131,16 @@ protected:
 	CHeightMapTerrain			*m_pTerrain = NULL;
 	CSkyBox						*m_pSkyBox = NULL;
 
+
+	unique_ptr<DirectX::DescriptorHeap>	m_resourceDescriptors;
+	unique_ptr<DirectX::SpriteFont>		m_font;
+
+	enum Descriptors
+	{
+		MyFont,
+		Count
+	};
+
+	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
+	DirectX::SimpleMath::Vector2 m_fontPos;
 };

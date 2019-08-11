@@ -16,6 +16,9 @@
     <Filter Include="ServerMgr">
       <UniqueIdentifier>{15c59d79-7b06-4235-8197-7b53b055a02f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Lib">
+      <UniqueIdentifier>{b3247961-1967-4492-a1be-0f04a3c32f10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -150,5 +153,7 @@
     <None Include="..\Assets\Model\Soldier.FBX">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="..\Assets\Image\Fonts\myfile.spritefont" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
