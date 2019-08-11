@@ -634,9 +634,10 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 		CGameFramework::m_pCamera->GetPosition().y + 0.4 * CGameFramework::m_pCamera->GetLookVector().y + (CGameFramework::m_pPlayer[myTeamNum]->GetPosition().z - 512) / 2048,
 		CGameFramework::m_pCamera->GetPosition().z + 0.4 * CGameFramework::m_pCamera->GetLookVector().z - (CGameFramework::m_pPlayer[myTeamNum]->GetPosition().x - 512) / 2048));
 
-	cout << "X : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x <<
+	// 플레이어 위치 출력
+	/*cout << "X : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x <<
 		"   Y : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().y <<
-		"   Z : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z << endl;
+		"   Z : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z << endl;*/
 	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->AnimateObjects(fTimeElapsed, pCamera);
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Animate(fTimeElapsed);
 

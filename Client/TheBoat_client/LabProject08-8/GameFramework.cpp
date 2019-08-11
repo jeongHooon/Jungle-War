@@ -1618,14 +1618,22 @@ void CGameFramework::FrameAdvance()
 	m_pBlueBox[0]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 	m_pBlueBox[0]->Render(m_pd3dCommandList, m_pCamera);
 	
-	if (gameMode == 0) {
+	switch (gameMode) {
+	case 0:	//메인화면
 		m_pScene->m_ppMainUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 메인화면
-		if (mainScreenSelect == 1)
+		switch (mainScreenSelect) {
+		case 1:
 			m_pScene->m_ppMainUIShaders[1]->Render(m_pd3dCommandList, m_pCamera); // 메인화면 선택창
-		if (mainScreenSelect == 2)
+			break;
+			
+		case 2:
 			m_pScene->m_ppMainUIShaders[2]->Render(m_pd3dCommandList, m_pCamera); // 메인화면 선택창
-	}
-	else if (gameMode == 1 || gameMode == 2) { // UI 렌더
+			break;
+		}
+		break;
+		
+	case 1:	//게임시작
+	case 2:	//게임오버
 		m_pScene->m_ppUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 미니맵
 
 																		  //printf("%f", playerHp);
@@ -1640,10 +1648,20 @@ void CGameFramework::FrameAdvance()
 			m_pScene->m_ppUIShaders[8]->Render(m_pd3dCommandList, m_pCamera);
 
 		m_pScene->m_ppUIShaders[10]->Render(m_pd3dCommandList, m_pCamera); // 총
-		//m_pScene->m_ppUIShaders[11]->Render(m_pd3dCommandList, m_pCamera); // 총
+																		   //m_pScene->m_ppUIShaders[11]->Render(m_pd3dCommandList, m_pCamera); // 총
 
 		if (m_pCamera->GetMode() == SPACESHIP_CAMERA)
 			m_pScene->m_ppUIShaders[1]->Render(m_pd3dCommandList, m_pCamera);// UI렌더 바꿔야함.
+
+		
+
+
+
+		// 숫자 시작
+		if (m_pPlayer[my_client_id]->GetPlayerBullet() / 10 > 0)
+			m_pScene->m_ppUIShaders[11 + m_pPlayer[my_client_id]->GetPlayerBullet() / 10]->Render(m_pd3dCommandList, m_pCamera); // 앞 숫자
+		if (m_pPlayer[my_client_id]->GetPlayerBullet() > 0)
+			m_pScene->m_ppUIShaders[16 + m_pPlayer[my_client_id]->GetPlayerBullet() % 10]->Render(m_pd3dCommandList, m_pCamera); // 뒷 숫자
 
 		if (alphaMapOn == true) {
 			//m_pCamera->SetLook(XMFLOAT3(m_pCamera->GetLookVector().x, 0, m_pCamera->GetLookVector().z));
@@ -1652,19 +1670,11 @@ void CGameFramework::FrameAdvance()
 			m_pScene->m_ppShaders[2]->Render(m_pd3dCommandList, m_pCamera); // 맵에 현재 위치
 		}
 
-		
-
-																			  // 숫자 시작
-		if (m_pPlayer[my_client_id]->GetPlayerBullet() / 10 > 0)
-			m_pScene->m_ppUIShaders[11 + m_pPlayer[my_client_id]->GetPlayerBullet() / 10]->Render(m_pd3dCommandList, m_pCamera); // 앞 숫자
-		if (m_pPlayer[my_client_id]->GetPlayerBullet() > 0)
-			m_pScene->m_ppUIShaders[16 + m_pPlayer[my_client_id]->GetPlayerBullet() % 10]->Render(m_pd3dCommandList, m_pCamera); // 뒷 숫자
-		
-		if(blueScreenMode)
+		if (blueScreenMode)
 			m_pScene->m_ppUIShaders[26]->Render(m_pd3dCommandList, m_pCamera);
-		
-		
 
+
+		break;
 	}
 	
 	if (playerHp < 1) {
