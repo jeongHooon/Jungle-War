@@ -23,7 +23,7 @@
     <ProjectGuid>{2DACAA6E-CAD6-43DC-8844-B42287D8CB3C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>LabProject088</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
     <ProjectName>JungleWar</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -167,6 +167,8 @@
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ServerMgr.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="SingleTone.h" />
+    <ClInclude Include="StartScene.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Timer.h" />
@@ -185,6 +187,7 @@
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="ServerMgr.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="StartScene.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

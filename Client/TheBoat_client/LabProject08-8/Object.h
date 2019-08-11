@@ -27,7 +27,11 @@ struct CB_GAMEOBJECT_INFO
 	XMFLOAT4X4						m_xmf4x4World;
 	UINT							m_nMaterial;
 };
-
+struct CB_INSTANCE_INFO
+{
+	XMFLOAT4X4	f4x4World;
+	UINT		nMaterial;
+};
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 struct SRVROOTARGUMENTINFO
