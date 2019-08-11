@@ -1196,6 +1196,7 @@ void CGameFramework::BuildObjects()
 	m_pScene = new CScene();
 	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
 
+	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 
 	////////////////////텍스트
 
@@ -1227,6 +1228,8 @@ void CGameFramework::BuildObjects()
 
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i)
 		m_pScene->m_pPlayer[i] = m_pPlayer[i] = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
+		m_pPlayer[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
+	}
 
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pScene->m_pObject[i] = m_pObject[i] = new CTreeObject(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
@@ -1256,8 +1259,8 @@ void CGameFramework::BuildObjects()
 #ifdef _WITH_GUNSHIP_MODEL
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pPlayer[i]->SetPosition(XMFLOAT3(30 * i, -100.0f, 0.0f));
-		if(i!=my_client_id)
-			m_pPlayer[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
+		/*if(i!=my_client_id)
+			m_pPlayer[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));*/
 	}
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		float xPosition;
@@ -1332,7 +1335,7 @@ void CGameFramework::BuildObjects()
 		else if (i == 7) xPosition = 412, zPosition = 310;
 		else if (i == 8) xPosition = 526, zPosition = 290;
 		else if (i == 9) xPosition = 342, zPosition = 190;
-		else if (i == 10) xPosition = 256, zPosition = 240;
+		else if (i == 10) xPosition = 643, zPosition = 240;
 		else if (i == 11) xPosition = 332, zPosition = 360;
 		else if (i == 12) xPosition = 173, zPosition = 335;
 		else if (i == 13) xPosition = 642, zPosition = 420;
