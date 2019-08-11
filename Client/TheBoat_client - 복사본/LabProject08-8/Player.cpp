@@ -640,8 +640,8 @@ void CBlueBox::Animate(float fTimeElapsed)
 	if (0.05 * ServerMgr::elecCount < 1100)
 		elecCount_ = ServerMgr::elecCount;
 
-	SetScale(1200 - 0.05 * elecCount_, 5000, 1200 - 0.05 * elecCount_);
-	SetOOBB(ServerMgr::elecPos, XMFLOAT3((1200 - 0.05 * elecCount_) / 2, 5000, (1200 - 0.05 * elecCount_) / 2), XMFLOAT4(0, 0, 0, 1));
+	SetScale(1200 - 0.02 * elecCount_, 5000, 1200 - 0.02 * elecCount_);
+	SetOOBB(ServerMgr::elecPos, XMFLOAT3((1200 - 0.02 * elecCount_) / 2, 5000, (1200 - 0.02 * elecCount_) / 2), XMFLOAT4(0, 0, 0, 1));
 	SetPosition(ServerMgr::elecPos);
 }
 

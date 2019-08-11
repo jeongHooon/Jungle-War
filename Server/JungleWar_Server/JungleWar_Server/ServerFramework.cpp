@@ -1083,10 +1083,6 @@ void ServerFramework::WorkerThread() {
 
 				box_counter[box_player_id]++;
 				//++clients[overlapped_buffer->box_player_id].box_count;
-<<<<<<< HEAD
-
-=======
->>>>>>> 74bea441c797019cda98a9481abb482dc8a94ccf
 				--clients[overlapped_buffer->box_player_id].boxCount;
 
 				for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
@@ -1113,12 +1109,6 @@ void ServerFramework::WorkerThread() {
 					}
 				}
 
-				
-<<<<<<< HEAD
-=======
-				
-				
->>>>>>> 74bea441c797019cda98a9481abb482dc8a94ccf
 			}
 		}
 		else if (overlapped_buffer->command == SS_BOX_UPDATE) {
