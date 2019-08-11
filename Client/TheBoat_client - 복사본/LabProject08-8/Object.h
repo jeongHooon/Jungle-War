@@ -341,6 +341,7 @@ public:
 	virtual ~CBillboard();
 
 	virtual void Animate(float fTimeElapsed, CCamera *pCamera);
+	virtual void Animate(float fTimeElapsed, CCamera* pCamera, int num);
 	virtual void SetLookAt(XMFLOAT3& xmf3Target);
 	
 	XMFLOAT3 objectLook;

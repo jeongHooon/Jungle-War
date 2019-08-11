@@ -136,7 +136,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	m_pBuildings = pBuildingShader;
 
-	m_nShaders = 6;
+	m_nShaders = 7;
 	m_ppShaders = new CShader*[m_nShaders];
 
 	CRedDotShader *pTreeShader = new CRedDotShader();
@@ -151,9 +151,13 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pBulletShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pBulletShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
-	CParticleShader *pParticleShader = new CParticleShader();
+	CParticleShader* pParticleShader = new CParticleShader();
 	pParticleShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pParticleShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+	
+	CDropItemShader* pDropItemShader = new CDropItemShader();
+	pDropItemShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pDropItemShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
 	CObjectsShader *pObjectsShader = new CObjectsShader();
 	pObjectsShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
@@ -173,6 +177,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppShaders[3] = pParticleShader;
 	m_ppShaders[4] = pObjectsShader;
 	m_ppShaders[5] = pTeamTriShader;
+	m_ppShaders[6] = pDropItemShader;
 	// UI
 
 	m_nUIShaders = 30;
