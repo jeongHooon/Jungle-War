@@ -321,7 +321,8 @@ void CPlayer::Animate(float fTimeElapsed, int num)
 void CPlayer::rrrotate(float deg)
 {
 
-	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(0.0f, -(deg - PI/2), 0.0f);
+	XMMATRIX mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), -(deg - PI / 2));
+	//XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(0.0f, -(deg - PI/2), 0.0f);
 	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
 }
 
