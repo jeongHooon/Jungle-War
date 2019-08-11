@@ -1039,7 +1039,7 @@ void ServerFramework::WorkerThread() {
 			}
 		}
 		else if (overlapped_buffer->command == SS_BOX_GENERATE) {
-			if (clients[overlapped_buffer->box_player_id].box_count < MAX_BOX_SIZE) {
+			if (clients[overlapped_buffer->box_player_id].boxCount > 0) {
 
 				int box_player_id = overlapped_buffer->box_player_id;
 
@@ -1092,6 +1092,8 @@ void ServerFramework::WorkerThread() {
 							packets.x = boxes[i * MAX_BOX_SIZE + j].x;
 							packets.y = boxes[i * MAX_BOX_SIZE + j].y;
 							packets.z = boxes[i * MAX_BOX_SIZE + j].z;
+							packets.boxCount = clients[i].boxCount;
+							printf("%d의 남은 박스는 %d개\n", i, packets.boxCount);
 
 
 							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
@@ -1102,7 +1104,9 @@ void ServerFramework::WorkerThread() {
 				}
 
 				box_counter[box_player_id]++;
-				++clients[overlapped_buffer->box_player_id].box_count;
+				//++clients[overlapped_buffer->box_player_id].box_count;
+				
+				--clients[overlapped_buffer->box_player_id].boxCount;
 			}
 		}
 		else if (overlapped_buffer->command == SS_BOX_UPDATE) {

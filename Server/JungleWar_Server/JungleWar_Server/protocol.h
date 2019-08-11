@@ -299,6 +299,8 @@ struct SC_PACKET_BOX {
 	BYTE type;
 	WORD id;
 	WORD box_id;
+
+	int boxCount;
 	bool in_use;
 	float hp;
 	DirectX::XMFLOAT3 pos;
