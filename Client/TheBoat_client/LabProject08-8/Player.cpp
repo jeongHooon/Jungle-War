@@ -333,6 +333,10 @@ void CPlayer::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamer
 {
 	DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00;CGameObject::Render(pd3dCommandList, pCamera);
 }
+void CPlayer::Render(ID3D12GraphicsCommandList *pd3dCommandList, UINT nInstances, CCamera *pCamera)
+{
+	DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00; CGameObject::Render(pd3dCommandList, pCamera, nInstances);
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CAirplanePlayer

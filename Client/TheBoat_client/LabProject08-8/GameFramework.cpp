@@ -582,10 +582,23 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				if (charstate == 6) {
 					m_pPlayer[my_client_id]->GetKeyInput(6);
 					charstate = 6;
+					if (is_pushed[CS_KEY_PRESS_SHIFT]) {
+						m_pPlayer[my_client_id]->GetKeyInput(13);
+						charstate = 13;
+					}
 				}
 				else if (charstate == 5) {
 					m_pPlayer[my_client_id]->GetKeyInput(5);
 					charstate = 5;
+					
+				}
+				else if (charstate == 13) {
+					m_pPlayer[my_client_id]->GetKeyInput(13);
+					charstate = 13;
+				}
+				else if (charstate == 14) {
+					m_pPlayer[my_client_id]->GetKeyInput(14);
+					charstate = 14;
 				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(3);
@@ -611,6 +624,11 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					m_pPlayer[my_client_id]->GetKeyInput(6);
 					charstate = 6;
 					//printf("215\n");
+				}
+				else if (charstate == 1) {
+					m_pPlayer[my_client_id]->GetKeyInput(13);
+					charstate = 13;
+					
 				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(6);
@@ -653,6 +671,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				else if (charstate == 3) {
 					m_pPlayer[my_client_id]->GetKeyInput(5);
 					charstate = 5;
+				}
+				else if (charstate == 1) {
+					m_pPlayer[my_client_id]->GetKeyInput(14);
+					charstate = 14;
 				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(5);
@@ -774,6 +796,14 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					m_pPlayer[my_client_id]->GetKeyInput(5);
 					charstate = 5;
 				}
+				else if (charstate == 13) {
+					m_pPlayer[my_client_id]->GetKeyInput(13);
+					charstate = 13;
+				}
+				else if (charstate == 14) {
+					m_pPlayer[my_client_id]->GetKeyInput(14);
+					charstate = 14;
+				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(0);
 					charstate = 0;
@@ -794,6 +824,11 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					m_pPlayer[my_client_id]->GetKeyInput(3);
 					charstate = 4;
 				}
+				else if (charstate == 13 ) {
+					m_pPlayer[my_client_id]->GetKeyInput(1);
+					charstate = 1;
+				}
+				
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(0);
 					charstate = 0;
@@ -833,6 +868,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				else if (charstate == 8 && is_pushed[CS_KEY_PRESS_DOWN]) {
 					m_pPlayer[my_client_id]->GetKeyInput(3);
 					charstate = 4;
+				}
+				else if (charstate == 14) {
+					m_pPlayer[my_client_id]->GetKeyInput(1);
+					charstate = 1;
 				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(0);
@@ -1486,7 +1525,7 @@ void CGameFramework::FrameAdvance()
 		m_pObject[i]->UpdateTransform(NULL);
 		m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 		if(server_mgr.GetTreeInuse(i) == true)
-			m_pObject[i]->Render(m_pd3dCommandList, m_pCamera);
+			m_pObject[i]->Render(m_pd3dCommandList, 1, m_pCamera);
 	}
 	for (int i = 0; i < NUM_OBJECT2; ++i) {
 		m_pObject2[i]->UpdateTransform(NULL);

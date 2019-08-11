@@ -327,16 +327,17 @@ VS_INSTANCING_OUTPUT VSInstancing(VS_INSTANCING_INPUT input, uint nInstanceID : 
 
 	return(output);
 }
-//float4 PSInstancing(VS_INSTANCING_OUTPUT input) : SV_TARGET
-//{
-//	float4 cColor = gtxtTextures.Sample(gSamplerState, input.uv);
-//
-//	input.normalW = normalize(input.normalW);
-//	clip(cColor.a - 0.1f);
-//	float4 cIllumination = Lighting(input.positionW, input.normalW);
-//
-//	return(lerp(cColor, cIllumination, 0.5f));
-//}
+float4 PSInstancing(VS_INSTANCING_OUTPUT input) : SV_TARGET
+{
+	//float4 cColor = gtxtTextures.Sample(gSamplerState, input.uv);
+	//float4 cColor = float4(0.0f, 0.0f, 0.0f, 0.5f)
+	//input.normalW = normalize(input.normalW);
+	//clip(cColor.a - 0.1f);
+	//float4 cIllumination = Lighting(input.positionW, input.normalW);
+	//float4 cIllumination = float4(0.0f, 0.0f, 0.0f, 0.5f)
+	//return(lerp(cColor, cIllumination, 0.5f));
+	return (float4(0.0f, 0.0f, 0.0f, 0.5f));
+}
 
 //============================================================================
 
@@ -375,8 +376,9 @@ VS_TEXTURED_OUTPUT VSINST(VS_INSTANCING_INPUT input, uint nInstanceID : SV_Insta
 	return(output);
 }
 
-//float4 PSINST(VS_TEXTURED_OUTPUT input) : SV_TARGET
-//{
-//	float4 cColor = gtxtTextures.Sample(gSamplerState, input.uv);
-//	return(cColor);
-//}
+float4 PSINST(VS_TEXTURED_OUTPUT input) : SV_TARGET
+{
+	//float4 cColor = gtxtTextures.Sample(gSamplerState, input.uv);
+	//return(cColor);
+	return (float4(0.0f, 0.0f, 0.0f, 0.5f));
+}
