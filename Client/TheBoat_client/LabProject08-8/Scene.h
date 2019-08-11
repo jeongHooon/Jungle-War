@@ -10,15 +10,7 @@
 
 
 #define NUM_OBJECT 42
-<<<<<<< HEAD
-#define NUM_OBJECT2 1
-
-
-
-
-=======
 #define NUM_OBJECT2 20
->>>>>>> 13c068c0e9eb6014ff4aec2c025a536e5fb7b657
 struct LIGHT
 {
 	XMFLOAT4				m_xmf4Ambient;

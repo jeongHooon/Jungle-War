@@ -737,6 +737,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case 'm':
 		case 'M':
 			alphaMapOn = !alphaMapOn;
+			m_pCamera->SetLook(XMFLOAT3(m_pPlayer[my_client_id]->GetLook().x, 0, m_pPlayer[my_client_id]->GetLook().z));
 			break;
 		case '0':
 			++gameMode;
@@ -1650,8 +1651,6 @@ void CGameFramework::FrameAdvance()
 			m_pScene->m_ppUIShaders[9]->Render(m_pd3dCommandList, m_pCamera); // 맵
 			m_pScene->m_ppShaders[2]->Render(m_pd3dCommandList, m_pCamera); // 맵에 현재 위치
 		}
-		else
-			m_pCamera->SetLook(XMFLOAT3(m_pPlayer[my_client_id]->GetLook().x, m_pCamera->GetLookVector().y, m_pPlayer[my_client_id]->GetLook().z));
 
 		
 
@@ -1794,9 +1793,8 @@ void CGameFramework::FrameAdvance()
 	}
 	if (check == true)
 		CGameFramework::boxBound = 1;
-
-<<<<<<< HEAD
-	
+	if (check2 == true)
+		CGameFramework::boxBound = 1;
 	// 텍스트
 	/*ID3D12DescriptorHeap* heaps[] = { m_resourceDescriptors->Heap() };
 	m_pd3dCommandList->SetDescriptorHeaps(_countof(heaps), heaps);
@@ -1811,10 +1809,7 @@ void CGameFramework::FrameAdvance()
 
 	m_spriteBatch->End();*/
 	///////////////////////
-=======
-	if (check2 == true)
-		CGameFramework::boxBound = 1;
->>>>>>> 13c068c0e9eb6014ff4aec2c025a536e5fb7b657
+	
 	/////////
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
