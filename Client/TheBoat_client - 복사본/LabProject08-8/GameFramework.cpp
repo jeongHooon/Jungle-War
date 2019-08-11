@@ -1621,11 +1621,11 @@ void CGameFramework::FrameAdvance()
 		if (m_pPlayer[my_client_id]->GetPlayerBullet() > 0)
 			m_pScene->m_ppUIShaders[16 + m_pPlayer[my_client_id]->GetPlayerBullet() % 10]->Render(m_pd3dCommandList, m_pCamera); // 뒷 숫자
 		
-		if (server_mgr.GetBoxCount() == 10) {
-			m_pScene->m_ppUIShaders[30]->Render(m_pd3dCommandList, m_pCamera); // 나무 숫자
-		}
-		m_pScene->m_ppUIShaders[30 + server_mgr.GetBoxCount()]->Render(m_pd3dCommandList, m_pCamera); // 나무 숫자
 		
+		m_pScene->m_ppUIShaders[30 + server_mgr.GetBoxCount()]->Render(m_pd3dCommandList, m_pCamera); // 나무 숫자
+		//if (server_mgr.GetBoxCount() > 9) {
+		//	m_pScene->m_ppUIShaders[30]->Render(m_pd3dCommandList, m_pCamera); // 나무 숫자
+		//}
 
 		if (alphaMapOn == true) {
 			//m_pCamera->SetLook(XMFLOAT3(m_pCamera->GetLookVector().x, 0, m_pCamera->GetLookVector().z));

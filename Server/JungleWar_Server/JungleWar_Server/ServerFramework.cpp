@@ -1079,6 +1079,11 @@ void ServerFramework::WorkerThread() {
 						XMFLOAT3(OBB_SCALE_BOX_X, OBB_SCALE_BOX_Y, OBB_SCALE_BOX_Z),
 						XMFLOAT4(0, 0, 0, 1));
 
+				box_counter[box_player_id]++;
+				//++clients[overlapped_buffer->box_player_id].box_count;
+
+				--clients[overlapped_buffer->box_player_id].boxCount;
+
 				for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 					for (int j = 0; j < MAX_BOX_SIZE; ++j) {
 						if (boxes[i * MAX_BOX_SIZE + j].in_use) {
@@ -1103,10 +1108,7 @@ void ServerFramework::WorkerThread() {
 					}
 				}
 
-				box_counter[box_player_id]++;
-				//++clients[overlapped_buffer->box_player_id].box_count;
 				
-				--clients[overlapped_buffer->box_player_id].boxCount;
 			}
 		}
 		else if (overlapped_buffer->command == SS_BOX_UPDATE) {
