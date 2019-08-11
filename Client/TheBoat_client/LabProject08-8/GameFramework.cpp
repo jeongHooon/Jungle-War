@@ -630,6 +630,11 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					charstate = 13;
 					
 				}
+				else if (charstate == 10) {
+					m_pPlayer[my_client_id]->GetKeyInput(11);
+					charstate = 11;
+
+				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(6);
 					charstate = 6;
@@ -650,6 +655,14 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				else if (charstate == 5) {
 					m_pPlayer[my_client_id]->GetKeyInput(8);
 					charstate = 8;
+				}
+				else if (charstate == 13) {
+					m_pPlayer[my_client_id]->GetKeyInput(11);
+					charstate = 11;
+				}
+				else if (charstate == 14) {
+					m_pPlayer[my_client_id]->GetKeyInput(12);
+					charstate = 12;
 				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(4);
@@ -675,6 +688,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				else if (charstate == 1) {
 					m_pPlayer[my_client_id]->GetKeyInput(14);
 					charstate = 14;
+				}
+				else if (charstate == 10) {
+					m_pPlayer[my_client_id]->GetKeyInput(12);
+					charstate = 12;
 				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(5);
@@ -828,7 +845,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					m_pPlayer[my_client_id]->GetKeyInput(1);
 					charstate = 1;
 				}
-				
+				else if (charstate == 11) {
+					m_pPlayer[my_client_id]->GetKeyInput(10);
+					charstate = 10;
+				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(0);
 					charstate = 0;
@@ -848,6 +868,14 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				else if (charstate == 8) {
 					m_pPlayer[my_client_id]->GetKeyInput(5);
 					charstate = 5;
+				}
+				else if (charstate == 11) {
+					m_pPlayer[my_client_id]->GetKeyInput(13);
+					charstate = 13;
+				}
+				else if (charstate == 12) {
+					m_pPlayer[my_client_id]->GetKeyInput(14);
+					charstate = 14;
 				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(0);
@@ -872,6 +900,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				else if (charstate == 14) {
 					m_pPlayer[my_client_id]->GetKeyInput(1);
 					charstate = 1;
+				}
+				else if (charstate == 12) {
+					m_pPlayer[my_client_id]->GetKeyInput(10);
+					charstate = 10;
 				}
 				else {
 					m_pPlayer[my_client_id]->GetKeyInput(0);
