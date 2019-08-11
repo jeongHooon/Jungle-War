@@ -175,7 +175,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppShaders[5] = pTeamTriShader;
 	// UI
 
-	m_nUIShaders = 28;
+	m_nUIShaders = 30;
 	m_ppUIShaders = new CShader*[m_nUIShaders];
 
 	CMiniMapShader *pMiniMapShader = new CMiniMapShader();
@@ -221,6 +221,14 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	CGunUIShader_2 *pGunUIShader_2 = new CGunUIShader_2();
 	pGunUIShader_2->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pGunUIShader_2->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CChatScreen *pChatScreenShader = new CChatScreen();
+	pChatScreenShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pChatScreenShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CChatScreenReady *pChatScreenReadyShader = new CChatScreenReady();
+	pChatScreenReadyShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pChatScreenReadyShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
 	// 숫자 시작
 	// 앞자리
@@ -317,6 +325,8 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppUIShaders[25] = pNumShader9;
 	m_ppUIShaders[26] = pBlueScreenShader;
 	m_ppUIShaders[27] = pRedPointShader;
+	m_ppUIShaders[28] = pChatScreenShader;
+	m_ppUIShaders[29] = pChatScreenReadyShader;
 
 	// 메인화면
 	m_nMainUIShaders = 4;
@@ -634,9 +644,11 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 		CGameFramework::m_pCamera->GetPosition().y + 0.4 * CGameFramework::m_pCamera->GetLookVector().y + (CGameFramework::m_pPlayer[myTeamNum]->GetPosition().z - 512) / 2048,
 		CGameFramework::m_pCamera->GetPosition().z + 0.4 * CGameFramework::m_pCamera->GetLookVector().z - (CGameFramework::m_pPlayer[myTeamNum]->GetPosition().x - 512) / 2048));
 
-	cout << "X : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x <<
+	// 플레이어 위치 출력
+	/*cout << "X : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x <<
 		"   Y : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().y <<
-		"   Z : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z << endl;
+		"   Z : " << CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z << endl;*/
+
 	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->AnimateObjects(fTimeElapsed, pCamera);
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Animate(fTimeElapsed);
 
