@@ -13,7 +13,6 @@ int CShader::shootBullet;
 CShader*	CScene::m_pBuildings;
 bool ServerMgr::damageCheck = false;
 
-
 CGameFramework::CGameFramework()
 {
 	m_pdxgiFactory = NULL;
@@ -1486,7 +1485,8 @@ void CGameFramework::FrameAdvance()
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pObject[i]->UpdateTransform(NULL);
 		m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
-		m_pObject[i]->Render(m_pd3dCommandList, m_pCamera);
+		if(server_mgr.GetTreeInuse(i) == true)
+			m_pObject[i]->Render(m_pd3dCommandList, m_pCamera);
 	}
 	for (int i = 0; i < NUM_OBJECT2; ++i) {
 		m_pObject2[i]->UpdateTransform(NULL);
@@ -1593,38 +1593,40 @@ void CGameFramework::FrameAdvance()
 	bool check = false;
 	//충돌체크
 	for (int i = 0; i < NUM_OBJECT; ++i) {
-		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pObject[i]->bounding_box);
-		switch (containType)
-		{
-		case DISJOINT:
-		{
-			break;
-		}
-		case INTERSECTS:
-		{
-			printf("오브젝트충돌예에\n");
-			if ((m_pObject[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x) * (m_pObject[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x)
-				< (m_pObject[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z) * (m_pObject[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z)) {
-				if (m_pObject[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z > 0) { m_pObject[i]->look = XMFLOAT3(0, 0, -1); }
-				else { m_pObject[i]->look = XMFLOAT3(0, 0, 1); }
+		if (server_mgr.GetTreeInuse(i)) {
+			ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pObject[i]->bounding_box);
+			switch (containType)
+			{
+			case DISJOINT:
+			{
+				break;
 			}
-			else {
-				if (m_pObject[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x > 0) { m_pObject[i]->look = XMFLOAT3(-1, 0, 0); }
-				else { m_pObject[i]->look = XMFLOAT3(1, 0, 0); }
+			case INTERSECTS:
+			{
+				printf("오브젝트충돌예에\n");
+				if ((m_pObject[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x) * (m_pObject[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x)
+					< (m_pObject[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z) * (m_pObject[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z)) {
+					if (m_pObject[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z > 0) { m_pObject[i]->look = XMFLOAT3(0, 0, -1); }
+					else { m_pObject[i]->look = XMFLOAT3(0, 0, 1); }
+				}
+				else {
+					if (m_pObject[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x > 0) { m_pObject[i]->look = XMFLOAT3(-1, 0, 0); }
+					else { m_pObject[i]->look = XMFLOAT3(1, 0, 0); }
+				}
+				XMFLOAT3 xmf3Result;
+				XMFLOAT3 xmf3Result_1;
+				XMFLOAT3 xmf3Result_2;
+				XMStoreFloat3(&xmf3Result_1, XMVector3Dot(XMLoadFloat3(&CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook()), XMLoadFloat3(&m_pObject[i]->look)));
+				XMStoreFloat3(&xmf3Result, XMVector3Dot(XMLoadFloat3(&m_pObject[i]->look), XMLoadFloat3(&xmf3Result_1)));
+				xmf3Result_2 = XMFLOAT3(Vector3::Subtract(CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook(), xmf3Result));
+				CGameFramework::sendLook = XMFLOAT3(2 * xmf3Result_2.x / 3, 2 * xmf3Result_2.y / 3, 2 * xmf3Result_2.z / 3);
+				check = true;
+				break;
 			}
-			XMFLOAT3 xmf3Result;
-			XMFLOAT3 xmf3Result_1;
-			XMFLOAT3 xmf3Result_2;
-			XMStoreFloat3(&xmf3Result_1, XMVector3Dot(XMLoadFloat3(&CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook()), XMLoadFloat3(&m_pObject[i]->look)));
-			XMStoreFloat3(&xmf3Result, XMVector3Dot(XMLoadFloat3(&m_pObject[i]->look), XMLoadFloat3(&xmf3Result_1)));
-			xmf3Result_2 = XMFLOAT3(Vector3::Subtract(CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook(), xmf3Result));
-			CGameFramework::sendLook = XMFLOAT3(2 * xmf3Result_2.x / 3, 2 * xmf3Result_2.y / 3, 2 * xmf3Result_2.z / 3);
-			check = true;
-			break;
-		}
-		case CONTAINS:
+			case CONTAINS:
 
-			break;
+				break;
+			}
 		}
 	}
 	if (check == true)

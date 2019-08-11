@@ -83,6 +83,7 @@ public:
 	int ReturnCameraID();
 	float GetBoxHp(int index) { return box_hp[index]; }
 	bool GetBoxInuse(int index) { return boxes[index].in_use; }
+	bool GetTreeInuse(int index) { return obj[index].in_use; }
 	Bullet GetBullet();
 	Box GetBox(int index);
 	SPlayer ReturnPlayerPosStatus(int client_id);

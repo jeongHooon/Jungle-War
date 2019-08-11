@@ -353,7 +353,7 @@ struct Box {
 };
 
 struct Map_Object {
-	bool in_use = false;
+	bool in_use = true;
 	bool state;
 	int id;
 	float hp;
