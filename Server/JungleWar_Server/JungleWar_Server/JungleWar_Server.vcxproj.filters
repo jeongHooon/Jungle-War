@@ -54,6 +54,9 @@
     <ClInclude Include="CHeightMapImage.h">
       <Filter>03.Height</Filter>
     </ClInclude>
+    <ClInclude Include="Chat.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="JungleWar_Server.cpp">
