@@ -7,7 +7,7 @@
 #include "Shader.h"
 #include "Player.h"
 #define NUM_OBJECT 42
-#define NUM_OBJECT2 1
+#define NUM_OBJECT2 20
 struct LIGHT
 {
 	XMFLOAT4				m_xmf4Ambient;

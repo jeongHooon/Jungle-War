@@ -9,7 +9,13 @@
 
 #include "Object.h"
 #include "Camera.h"
-
+enum PlayerType
+{
+	Player,
+	Tree,
+	Rock,
+	Blue
+};
 struct CB_PLAYER_INFO
 {
 	XMFLOAT4X4					m_xmf4x4World;
@@ -42,7 +48,7 @@ protected:
 
 	CCamera						*m_pCamera = NULL;
 	int animation_status = 0;
-
+	PlayerType PT;
 	bool isShot = false;
 	float shotTime = 0.0f;
 public:
@@ -120,7 +126,7 @@ public:
 	virtual void OnPrepareRender();
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera = NULL);
 	virtual void Animate(float fTimeElapsed);
-
+	virtual void Animate(float fTimeElapsed, int num);
 	BoundingOrientedBox bounding_box;
 	void SetOOBB(XMFLOAT3 xmCenter, XMFLOAT3 xmExtents, XMFLOAT4 xmOrientation) {
 		bounding_box = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation);
@@ -156,7 +162,7 @@ class CRockObject : public CPlayer
 public:
 	CRockObject(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext = NULL, int nMeshes = 1);
 	virtual ~CRockObject();
-	void Animate(float fTimeElapsed);
+	void Animate(float fTimeElapsed, int num);
 	virtual CCamera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
 	/*virtual void OnPlayerUpdateCallback(float fTimeElapsed);
 	virtual void OnCameraUpdateCallback(float fTimeElapsed);*/

@@ -1377,7 +1377,7 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pObject) m_pObject[i]->Animate(fTimeElapsed);
 	for (int i = 0; i < NUM_OBJECT2; ++i)
-		if (m_pObject2) m_pObject2[i]->Animate(fTimeElapsed);
+		if (m_pObject2) m_pObject2[i]->Animate(fTimeElapsed,i);
 	if (m_pBlueBox[0])m_pBlueBox[0]->Animate(fTimeElapsed);
 	if (m_pScene) m_pScene->AnimateObjects(fTimeElapsed, pCamera);
 

@@ -623,7 +623,7 @@ void CGameObject::LoadRock(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	SetMesh(0, pMesh);
 	
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Model/warrior.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Model/T_Rock_02_D.dds", 0);
 
 	//pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Trees/Tree.dds", 0);
 
