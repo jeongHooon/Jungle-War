@@ -1283,6 +1283,7 @@ void CGameFramework::BuildObjects()
 		
 		float fHeight = m_pScene->GetTerrain()->GetHeight(xPosition, zPosition);
 		m_pObject2[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
+		m_pObject2[i]->SetOOBB(m_pObject2[i]->GetPosition(), XMFLOAT3(13, 8, 13), XMFLOAT4(0, 0, 0, 1));
 
 	}
 #endif
@@ -1630,6 +1631,7 @@ void CGameFramework::FrameAdvance()
 	/////// 오브젝트 충돌체크
 	
 	bool check = false;
+	bool check2 = false;
 	//충돌체크
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		if (server_mgr.GetTreeInuse(i)) {
@@ -1668,7 +1670,48 @@ void CGameFramework::FrameAdvance()
 			}
 		}
 	}
+	
+
+	for (int i = 0; i < NUM_OBJECT2; ++i) {
+		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pObject2[i]->bounding_box);
+		switch (containType)
+		{
+		case DISJOINT:
+		{
+			break;
+		}
+		case INTERSECTS:
+		{
+			printf("오브젝트충돌예에\n");
+			if ((m_pObject2[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x) * (m_pObject2[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x)
+				< (m_pObject2[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z) * (m_pObject2[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z)) {
+				if (m_pObject2[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z > 0) { m_pObject2[i]->look = XMFLOAT3(0, 0, -1); }
+				else { m_pObject2[i]->look = XMFLOAT3(0, 0, 1); }
+			}
+			else {
+				if (m_pObject2[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x > 0) { m_pObject2[i]->look = XMFLOAT3(-1, 0, 0); }
+				else { m_pObject2[i]->look = XMFLOAT3(1, 0, 0); }
+			}
+			XMFLOAT3 xmf3Result;
+			XMFLOAT3 xmf3Result_1;
+			XMFLOAT3 xmf3Result_2;
+			XMStoreFloat3(&xmf3Result_1, XMVector3Dot(XMLoadFloat3(&CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook()), XMLoadFloat3(&m_pObject2[i]->look)));
+			XMStoreFloat3(&xmf3Result, XMVector3Dot(XMLoadFloat3(&m_pObject2[i]->look), XMLoadFloat3(&xmf3Result_1)));
+			xmf3Result_2 = XMFLOAT3(Vector3::Subtract(CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook(), xmf3Result));
+			CGameFramework::sendLook = XMFLOAT3(2 * xmf3Result_2.x / 3, 2 * xmf3Result_2.y / 3, 2 * xmf3Result_2.z / 3);
+			check2 = true;
+			break;
+		}
+		case CONTAINS:
+
+			break;
+		}
+
+	}
 	if (check == true)
+		CGameFramework::boxBound = 1;
+
+	if (check2 == true)
 		CGameFramework::boxBound = 1;
 	/////////
 

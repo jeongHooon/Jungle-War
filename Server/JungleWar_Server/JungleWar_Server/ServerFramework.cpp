@@ -113,7 +113,6 @@ void ServerFramework::InitServer() {
 	}
 
 	// Map_Object OBB
-
 	for (int i = 0; i < MAX_OBJECT_SIZE; ++i) {
 		float xPosition;
 		float zPosition;
@@ -181,6 +180,48 @@ void ServerFramework::InitServer() {
 			XMFLOAT4(0, 0, 0, 1));
 		obj[i].bounding_box.Center;
 		obj[i].hp = MAX_OBJECT_HP;
+	}
+
+	// Map_Object2 OBB
+	for (int i = 0; i < MAX_OBJECT2_SIZE; ++i) {
+		float xPosition;
+		float zPosition;
+
+		if (i == 0) xPosition = 230, zPosition = 280;
+		else if (i == 1) xPosition = 140, zPosition = 270;
+		else if (i == 2) xPosition = 200, zPosition = 200;
+		else if (i == 3) xPosition = 210, zPosition = 340;
+		else if (i == 4) xPosition = 250, zPosition = 230;
+		else if (i == 5) xPosition = 170, zPosition = 370;
+		else if (i == 6) xPosition = 330, zPosition = 150;
+
+		else if (i == 7) xPosition = 412, zPosition = 310;
+		else if (i == 8) xPosition = 526, zPosition = 290;
+		else if (i == 9) xPosition = 342, zPosition = 190;
+		else if (i == 10) xPosition = 256, zPosition = 240;
+		else if (i == 11) xPosition = 332, zPosition = 360;
+		else if (i == 12) xPosition = 173, zPosition = 335;
+		else if (i == 13) xPosition = 642, zPosition = 420;
+
+		else if (i == 14) xPosition = 627, zPosition = 700;
+		else if (i == 15) xPosition = 522, zPosition = 550;
+		else if (i == 16) xPosition = 380, zPosition = 710;
+		else if (i == 17) xPosition = 270, zPosition = 860;
+		else if (i == 18) xPosition = 190, zPosition = 645;
+		else if (i == 19) xPosition = 320, zPosition = 550;
+		/*else if (i == 28) xPosition = 602, zPosition = 1122;
+		else if (i == 29) xPosition = 3000, zPosition = 3000;*/
+
+		float yPosition = height_map->GetHeight(xPosition, zPosition);
+
+		obj2[i].x = xPosition;
+		obj2[i].y = yPosition;
+		obj2[i].z = zPosition;
+
+		obj2[i].SetOOBB(XMFLOAT3(obj2[i].x, obj2[i].y, obj2[i].z),
+			XMFLOAT3(OBB_SCALE_STONE_X, OBB_SCALE_STONE_Y, OBB_SCALE_TREE_Z),
+			XMFLOAT4(0, 0, 0, 1));
+		obj2[i].bounding_box.Center;
 	}
 
 	// building 
@@ -1160,6 +1201,31 @@ void ServerFramework::WorkerThread() {
 									SendPacket(k, &packets);
 							}
 							//printf("박스 - 총알 충돌 시작\n");
+							bullets[i].in_use = false;
+							break;
+						}
+					}
+				}
+
+			}
+
+			for (int j = 0; j < MAX_OBJECT2_SIZE; ++j) {
+				for (int i = 0; i < MAX_PLAYER_SIZE * MAX_BULLET_SIZE; ++i) {
+					if (bullets[i].in_use && obj2[j].in_use) {
+						ContainmentType containType = obj2[j].bounding_box.Contains(bullets[i].bounding_box);
+						switch (containType)
+						{
+						case DISJOINT:
+						{
+							//printf("충돌 안함ㅠ\n");
+							break;
+						}
+						case INTERSECTS:
+						{
+							bullets[i].in_use = false;
+							break;
+						}
+						case CONTAINS:
 							bullets[i].in_use = false;
 							break;
 						}

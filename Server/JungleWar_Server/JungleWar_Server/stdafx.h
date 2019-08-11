@@ -55,6 +55,11 @@
 #define OBB_SCALE_TREE_Y			10.f
 #define OBB_SCALE_TREE_Z			1.f
 
+#define OBB_SCALE_STONE_X			13.f
+#define OBB_SCALE_STONE_Y			8.f
+#define OBB_SCALE_STONE_Z			13.f
+
+
 #define AR_SHOOTER				0.2f	// AR 연사속도
 #define AR_SPEED				1000.f	// AR 탄속
 #define PLAYER_HEIGHT			10.f
