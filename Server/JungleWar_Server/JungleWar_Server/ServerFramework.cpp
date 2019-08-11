@@ -325,6 +325,8 @@ void ServerFramework::AcceptPlayer() {
 	clients[client_id].prev_packet_size = 0;
 	clients[client_id].team = Team::NON_TEAM;
 
+	clients[client_id].boxCount = 10;
+
 	clients[client_id].elecX = 500.f;
 	clients[client_id].elecY = 1000.f;
 	clients[client_id].elecZ = 500.f;
@@ -1039,7 +1041,7 @@ void ServerFramework::WorkerThread() {
 			}
 		}
 		else if (overlapped_buffer->command == SS_BOX_GENERATE) {
-			if (clients[overlapped_buffer->box_player_id].boxCount >= 0) {
+			if (clients[overlapped_buffer->box_player_id].boxCount > 0.5) {
 
 				int box_player_id = overlapped_buffer->box_player_id;
 
@@ -1081,7 +1083,10 @@ void ServerFramework::WorkerThread() {
 
 				box_counter[box_player_id]++;
 				//++clients[overlapped_buffer->box_player_id].box_count;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 74bea441c797019cda98a9481abb482dc8a94ccf
 				--clients[overlapped_buffer->box_player_id].boxCount;
 
 				for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
@@ -1109,6 +1114,11 @@ void ServerFramework::WorkerThread() {
 				}
 
 				
+<<<<<<< HEAD
+=======
+				
+				
+>>>>>>> 74bea441c797019cda98a9481abb482dc8a94ccf
 			}
 		}
 		else if (overlapped_buffer->command == SS_BOX_UPDATE) {
