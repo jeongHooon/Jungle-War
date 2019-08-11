@@ -7,7 +7,7 @@ struct SPlayer {
 	int elecCount;
 	int player_status;
 };
-
+/////
 
 class ServerMgr
 {
@@ -54,7 +54,7 @@ class ServerMgr
 	int camera_id = 0;
 	string server_ip;
 
-	int myBoxCount;
+	int myBoxCount = 10;
 
 	// ·Î±×ÀÎ
 	char userid[maxUserIDLen];
@@ -87,6 +87,7 @@ public:
 	float GetBoxHp(int index) { return box_hp[index]; }
 	bool GetBoxInuse(int index) { return boxes[index].in_use; }
 	bool GetTreeInuse(int index) { return obj[index].in_use; }
+	int GetBoxCount() { return myBoxCount; }
 	Bullet GetBullet();
 	Box GetBox(int index);
 	SPlayer ReturnPlayerPosStatus(int client_id);

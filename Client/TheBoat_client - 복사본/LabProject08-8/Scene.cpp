@@ -180,7 +180,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppShaders[6] = pDropItemShader;
 	// UI
 
-	m_nUIShaders = 30;
+	m_nUIShaders = 41;
 	m_ppUIShaders = new CShader*[m_nUIShaders];
 
 	CMiniMapShader *pMiniMapShader = new CMiniMapShader();
@@ -294,6 +294,51 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pNumShader9->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pNumShader9->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
+	// 나무숫자
+	CTreeNumShader0 *pTreeNumShader0 = new CTreeNumShader0();
+	pTreeNumShader0->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pTreeNumShader0->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CTreeNumShader1 *pTreeNumShader1 = new CTreeNumShader1();
+	pTreeNumShader1->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pTreeNumShader1->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CTreeNumShader2 *pTreeNumShader2 = new CTreeNumShader2();
+	pTreeNumShader2->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pTreeNumShader2->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CTreeNumShader3 *pTreeNumShader3 = new CTreeNumShader3();
+	pTreeNumShader3->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pTreeNumShader3->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CTreeNumShader4 *pTreeNumShader4 = new CTreeNumShader4();
+	pTreeNumShader4->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pTreeNumShader4->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CTreeNumShader5 *pTreeNumShader5 = new CTreeNumShader5();
+	pTreeNumShader5->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pTreeNumShader5->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CTreeNumShader6 *pTreeNumShader6 = new CTreeNumShader6();
+	pTreeNumShader6->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pTreeNumShader6->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CTreeNumShader7 *pTreeNumShader7 = new CTreeNumShader7();
+	pTreeNumShader7->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pTreeNumShader7->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CTreeNumShader8 *pTreeNumShader8 = new CTreeNumShader8();
+	pTreeNumShader8->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pTreeNumShader8->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CTreeNumShader9 *pTreeNumShader9 = new CTreeNumShader9();
+	pTreeNumShader9->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pTreeNumShader9->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CTreeNumShader10 *pTreeNumShader10 = new CTreeNumShader10();
+	pTreeNumShader10->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pTreeNumShader10->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
 	CBlueScreenShader *pBlueScreenShader = new CBlueScreenShader();
 	pBlueScreenShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pBlueScreenShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
@@ -332,6 +377,17 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppUIShaders[27] = pRedPointShader;
 	m_ppUIShaders[28] = pChatScreenShader;
 	m_ppUIShaders[29] = pChatScreenReadyShader;
+	m_ppUIShaders[30] = pTreeNumShader0;
+	m_ppUIShaders[31] = pTreeNumShader1;
+	m_ppUIShaders[32] = pTreeNumShader2;
+	m_ppUIShaders[33] = pTreeNumShader3;
+	m_ppUIShaders[34] = pTreeNumShader4;
+	m_ppUIShaders[35] = pTreeNumShader5;
+	m_ppUIShaders[36] = pTreeNumShader6;
+	m_ppUIShaders[37] = pTreeNumShader7;
+	m_ppUIShaders[38] = pTreeNumShader8;
+	m_ppUIShaders[39] = pTreeNumShader9;
+	m_ppUIShaders[40] = pTreeNumShader10;
 
 	// 메인화면
 	m_nMainUIShaders = 4;

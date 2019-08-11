@@ -129,7 +129,7 @@ struct Client {
 	int prev_packet_size;
 	char prev_packet[MAX_PACKET_SIZE];
 
-	int boxCount = 10;
+	int boxCount;
 
 	XMFLOAT3 look_vec;
 	mutex client_lock;
