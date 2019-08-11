@@ -389,7 +389,7 @@ VS_TEXTURED_OUTPUT VSShadow(VS_INSTANCING_INPUT input, uint nInstanceID : SV_Ins
 	return output;
 }
 
-float4 PSShadow(VS_TEXTURED_OUTPUT input) : SV_Target
+float4 PSShadow(VS_TEXTURED_OUTPUT input) : SV_TARGET
 {
 	return (float4(0.0f, 0.0f, 0.0f, 0.5f));
 }
