@@ -7160,6 +7160,2265 @@ D3D12_BLEND_DESC CNumShader9::CreateBlendState()
 	return(d3dBlendDesc);
 }
 
+///////////////////////////////////////////////////// 나무숫자
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+// 뒷자리 숫자
+
+
+CTreeNumShader0::CTreeNumShader0() {
+}
+CTreeNumShader0::~CTreeNumShader0() {
+}
+
+D3D12_DEPTH_STENCIL_DESC CTreeNumShader0::CreateDepthStencilState()
+{
+	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
+	::ZeroMemory(&d3dDepthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));
+	d3dDepthStencilDesc.DepthEnable = FALSE;
+	d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	d3dDepthStencilDesc.StencilEnable = FALSE;
+	d3dDepthStencilDesc.StencilReadMask = 0x00;
+	d3dDepthStencilDesc.StencilWriteMask = 0x00;
+	d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+	d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+
+	return(d3dDepthStencilDesc);
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader0::CreateVertexShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VS_UI", "vs_5_1", ppd3dShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader0::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PS_UI", "ps_5_1", ppd3dShaderBlob));
+}
+
+
+void CTreeNumShader0::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
+{
+	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
+
+	float fxPitch = 12.0f * 3.5f;
+	float fyPitch = 12.0f * 3.5f;
+	float fzPitch = 12.0f * 3.5f;
+
+	float fTerrainWidth = pTerrain->GetWidth();
+	float fTerrainLength = pTerrain->GetLength();
+
+	int xObjects = 1;
+	int yObjects = 1;
+	int zObjects = 1;
+	//m_nTree = 4;
+
+	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Numbers/Num0.dds", 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nTree, 6);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nTree, m_pd3dcbGameObjects, ncbElementBytes);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, false);
+
+#ifdef _WITH_BATCH_MATERIAL
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(pTexture);
+#else
+	CMaterial *pCubeMaterial = new CMaterial();
+	pCubeMaterial->SetTexture(pTexture);
+#endif
+
+	CNumMesh *pCubeMesh[1];
+
+	for (int i = 0; i<m_nTree; ++i)
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
+
+	m_ppTree = new CRotatingObject*;
+
+	XMFLOAT3 xmf3RotateAxis, xmf3SurfaceNormal;
+	CRotatingObject *pRotatingObject = NULL;
+	for (int i = 0, x = 0; x < m_nTree; x++)
+	{
+		for (int z = 0; z < zObjects; z++)
+		{
+			for (int y = 0; y < yObjects; y++)
+			{
+				pRotatingObject = new CRotatingObject();
+				pRotatingObject->SetMesh(0, pCubeMesh[i]);
+#ifndef _WITH_BATCH_MATERIAL
+				pRotatingObject->SetMaterial(pCubeMaterial);
+#endif
+				float xPosition = 800;
+				float zPosition = 800;
+				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
+				//pRotatingObject->SetPosition(800, 0, 1000);
+				if (y == 0)
+				{
+					xmf3SurfaceNormal = pTerrain->GetNormal(xPosition, zPosition);
+					xmf3RotateAxis = Vector3::CrossProduct(XMFLOAT3(0.0f, 1.0f, 0.0f), xmf3SurfaceNormal);
+					if (Vector3::IsZero(xmf3RotateAxis)) xmf3RotateAxis = XMFLOAT3(0.0f, 1.0f, 0.0f);
+				}
+				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+				m_ppTree[i++] = pRotatingObject;
+			}
+		}
+	}
+}
+
+void CTreeNumShader0::ReleaseObjects()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) delete m_ppTree[j];
+		delete[] m_ppTree;
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) delete m_pMaterial;
+#endif
+}
+
+void CTreeNumShader0::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
+{
+	for (int j = 0; j < m_nTree; j++)
+	{
+		m_ppTree[j]->Animate(fTimeElapsed);
+	}
+}
+
+void CTreeNumShader0::ReleaseUploadBuffers()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) m_ppTree[j]->ReleaseUploadBuffers();
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->ReleaseUploadBuffers();
+#endif
+}
+
+void CTreeNumShader0::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+{
+	CTexturedShader::Render(pd3dCommandList, pCamera);
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->UpdateShaderVariables(pd3dCommandList);
+#endif
+	//printf("%f\n", hp);
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+}
+
+void CTreeNumShader0::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
+}
+
+void CTreeNumShader0::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+}
+
+void CTreeNumShader0::ReleaseShaderVariables()
+{
+	if (m_pd3dcbGameObjects)
+	{
+		m_pd3dcbGameObjects->Unmap(0, NULL);
+		m_pd3dcbGameObjects->Release();
+	}
+	CTexturedShader::ReleaseShaderVariables();
+}
+
+D3D12_BLEND_DESC CTreeNumShader0::CreateBlendState()
+{
+	D3D12_BLEND_DESC d3dBlendDesc;
+	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
+	d3dBlendDesc.AlphaToCoverageEnable = FALSE;
+	d3dBlendDesc.IndependentBlendEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	return(d3dBlendDesc);
+}
+
+
+CTreeNumShader1::CTreeNumShader1() {
+}
+CTreeNumShader1::~CTreeNumShader1() {
+}
+
+D3D12_DEPTH_STENCIL_DESC CTreeNumShader1::CreateDepthStencilState()
+{
+	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
+	::ZeroMemory(&d3dDepthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));
+	d3dDepthStencilDesc.DepthEnable = FALSE;
+	d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	d3dDepthStencilDesc.StencilEnable = FALSE;
+	d3dDepthStencilDesc.StencilReadMask = 0x00;
+	d3dDepthStencilDesc.StencilWriteMask = 0x00;
+	d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+	d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+
+	return(d3dDepthStencilDesc);
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader1::CreateVertexShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VS_UI", "vs_5_1", ppd3dShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader1::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PS_UI", "ps_5_1", ppd3dShaderBlob));
+}
+
+
+void CTreeNumShader1::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
+{
+	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
+
+	float fxPitch = 12.0f * 3.5f;
+	float fyPitch = 12.0f * 3.5f;
+	float fzPitch = 12.0f * 3.5f;
+
+	float fTerrainWidth = pTerrain->GetWidth();
+	float fTerrainLength = pTerrain->GetLength();
+
+	int xObjects = 1;
+	int yObjects = 1;
+	int zObjects = 1;
+	//m_nTree = 4;
+
+	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Numbers/Num1.dds", 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nTree, 6);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nTree, m_pd3dcbGameObjects, ncbElementBytes);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, false);
+
+#ifdef _WITH_BATCH_MATERIAL
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(pTexture);
+#else
+	CMaterial *pCubeMaterial = new CMaterial();
+	pCubeMaterial->SetTexture(pTexture);
+#endif
+
+	CNumMesh *pCubeMesh[1];
+
+	for (int i = 0; i<m_nTree; ++i)
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
+
+	m_ppTree = new CRotatingObject*;
+
+	XMFLOAT3 xmf3RotateAxis, xmf3SurfaceNormal;
+	CRotatingObject *pRotatingObject = NULL;
+	for (int i = 0, x = 0; x < m_nTree; x++)
+	{
+		for (int z = 0; z < zObjects; z++)
+		{
+			for (int y = 0; y < yObjects; y++)
+			{
+				pRotatingObject = new CRotatingObject();
+				pRotatingObject->SetMesh(0, pCubeMesh[i]);
+#ifndef _WITH_BATCH_MATERIAL
+				pRotatingObject->SetMaterial(pCubeMaterial);
+#endif
+				float xPosition = 800;
+				float zPosition = 800;
+				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
+				//pRotatingObject->SetPosition(800, 0, 1000);
+				if (y == 0)
+				{
+					xmf3SurfaceNormal = pTerrain->GetNormal(xPosition, zPosition);
+					xmf3RotateAxis = Vector3::CrossProduct(XMFLOAT3(0.0f, 1.0f, 0.0f), xmf3SurfaceNormal);
+					if (Vector3::IsZero(xmf3RotateAxis)) xmf3RotateAxis = XMFLOAT3(0.0f, 1.0f, 0.0f);
+				}
+				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+				m_ppTree[i++] = pRotatingObject;
+			}
+		}
+	}
+}
+
+void CTreeNumShader1::ReleaseObjects()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) delete m_ppTree[j];
+		delete[] m_ppTree;
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) delete m_pMaterial;
+#endif
+}
+
+void CTreeNumShader1::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
+{
+	for (int j = 0; j < m_nTree; j++)
+	{
+		m_ppTree[j]->Animate(fTimeElapsed);
+	}
+}
+
+void CTreeNumShader1::ReleaseUploadBuffers()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) m_ppTree[j]->ReleaseUploadBuffers();
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->ReleaseUploadBuffers();
+#endif
+}
+
+void CTreeNumShader1::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+{
+	CTexturedShader::Render(pd3dCommandList, pCamera);
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->UpdateShaderVariables(pd3dCommandList);
+#endif
+	//printf("%f\n", hp);
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+}
+
+void CTreeNumShader1::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
+}
+
+void CTreeNumShader1::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+}
+
+void CTreeNumShader1::ReleaseShaderVariables()
+{
+	if (m_pd3dcbGameObjects)
+	{
+		m_pd3dcbGameObjects->Unmap(0, NULL);
+		m_pd3dcbGameObjects->Release();
+	}
+	CTexturedShader::ReleaseShaderVariables();
+}
+
+D3D12_BLEND_DESC CTreeNumShader1::CreateBlendState()
+{
+	D3D12_BLEND_DESC d3dBlendDesc;
+	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
+	d3dBlendDesc.AlphaToCoverageEnable = FALSE;
+	d3dBlendDesc.IndependentBlendEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	return(d3dBlendDesc);
+}
+
+
+CTreeNumShader2::CTreeNumShader2() {
+}
+CTreeNumShader2::~CTreeNumShader2() {
+}
+
+D3D12_DEPTH_STENCIL_DESC CTreeNumShader2::CreateDepthStencilState()
+{
+	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
+	::ZeroMemory(&d3dDepthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));
+	d3dDepthStencilDesc.DepthEnable = FALSE;
+	d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	d3dDepthStencilDesc.StencilEnable = FALSE;
+	d3dDepthStencilDesc.StencilReadMask = 0x00;
+	d3dDepthStencilDesc.StencilWriteMask = 0x00;
+	d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+	d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+
+	return(d3dDepthStencilDesc);
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader2::CreateVertexShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VS_UI", "vs_5_1", ppd3dShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader2::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PS_UI", "ps_5_1", ppd3dShaderBlob));
+}
+
+
+void CTreeNumShader2::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
+{
+	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
+
+	float fxPitch = 12.0f * 3.5f;
+	float fyPitch = 12.0f * 3.5f;
+	float fzPitch = 12.0f * 3.5f;
+
+	float fTerrainWidth = pTerrain->GetWidth();
+	float fTerrainLength = pTerrain->GetLength();
+
+	int xObjects = 1;
+	int yObjects = 1;
+	int zObjects = 1;
+	//m_nTree = 4;
+
+	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Numbers/Num2.dds", 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nTree, 6);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nTree, m_pd3dcbGameObjects, ncbElementBytes);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, false);
+
+#ifdef _WITH_BATCH_MATERIAL
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(pTexture);
+#else
+	CMaterial *pCubeMaterial = new CMaterial();
+	pCubeMaterial->SetTexture(pTexture);
+#endif
+
+	CNumMesh *pCubeMesh[1];
+
+	for (int i = 0; i<m_nTree; ++i)
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
+
+	m_ppTree = new CRotatingObject*;
+
+	XMFLOAT3 xmf3RotateAxis, xmf3SurfaceNormal;
+	CRotatingObject *pRotatingObject = NULL;
+	for (int i = 0, x = 0; x < m_nTree; x++)
+	{
+		for (int z = 0; z < zObjects; z++)
+		{
+			for (int y = 0; y < yObjects; y++)
+			{
+				pRotatingObject = new CRotatingObject();
+				pRotatingObject->SetMesh(0, pCubeMesh[i]);
+#ifndef _WITH_BATCH_MATERIAL
+				pRotatingObject->SetMaterial(pCubeMaterial);
+#endif
+				float xPosition = 800;
+				float zPosition = 800;
+				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
+				//pRotatingObject->SetPosition(800, 0, 1000);
+				if (y == 0)
+				{
+					xmf3SurfaceNormal = pTerrain->GetNormal(xPosition, zPosition);
+					xmf3RotateAxis = Vector3::CrossProduct(XMFLOAT3(0.0f, 1.0f, 0.0f), xmf3SurfaceNormal);
+					if (Vector3::IsZero(xmf3RotateAxis)) xmf3RotateAxis = XMFLOAT3(0.0f, 1.0f, 0.0f);
+				}
+				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+				m_ppTree[i++] = pRotatingObject;
+			}
+		}
+	}
+}
+
+void CTreeNumShader2::ReleaseObjects()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) delete m_ppTree[j];
+		delete[] m_ppTree;
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) delete m_pMaterial;
+#endif
+}
+
+void CTreeNumShader2::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
+{
+	for (int j = 0; j < m_nTree; j++)
+	{
+		m_ppTree[j]->Animate(fTimeElapsed);
+	}
+}
+
+void CTreeNumShader2::ReleaseUploadBuffers()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) m_ppTree[j]->ReleaseUploadBuffers();
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->ReleaseUploadBuffers();
+#endif
+}
+
+void CTreeNumShader2::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+{
+	CTexturedShader::Render(pd3dCommandList, pCamera);
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->UpdateShaderVariables(pd3dCommandList);
+#endif
+	//printf("%f\n", hp);
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+}
+
+void CTreeNumShader2::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
+}
+
+void CTreeNumShader2::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+}
+
+void CTreeNumShader2::ReleaseShaderVariables()
+{
+	if (m_pd3dcbGameObjects)
+	{
+		m_pd3dcbGameObjects->Unmap(0, NULL);
+		m_pd3dcbGameObjects->Release();
+	}
+	CTexturedShader::ReleaseShaderVariables();
+}
+
+D3D12_BLEND_DESC CTreeNumShader2::CreateBlendState()
+{
+	D3D12_BLEND_DESC d3dBlendDesc;
+	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
+	d3dBlendDesc.AlphaToCoverageEnable = FALSE;
+	d3dBlendDesc.IndependentBlendEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	return(d3dBlendDesc);
+}
+
+
+// 뒷숫자3
+CTreeNumShader3::CTreeNumShader3() {
+}
+CTreeNumShader3::~CTreeNumShader3() {
+}
+
+D3D12_DEPTH_STENCIL_DESC CTreeNumShader3::CreateDepthStencilState()
+{
+	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
+	::ZeroMemory(&d3dDepthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));
+	d3dDepthStencilDesc.DepthEnable = FALSE;
+	d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	d3dDepthStencilDesc.StencilEnable = FALSE;
+	d3dDepthStencilDesc.StencilReadMask = 0x00;
+	d3dDepthStencilDesc.StencilWriteMask = 0x00;
+	d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+	d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+
+	return(d3dDepthStencilDesc);
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader3::CreateVertexShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VS_UI", "vs_5_1", ppd3dShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader3::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PS_UI", "ps_5_1", ppd3dShaderBlob));
+}
+
+
+void CTreeNumShader3::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
+{
+	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
+
+	float fxPitch = 12.0f * 3.5f;
+	float fyPitch = 12.0f * 3.5f;
+	float fzPitch = 12.0f * 3.5f;
+
+	float fTerrainWidth = pTerrain->GetWidth();
+	float fTerrainLength = pTerrain->GetLength();
+
+	int xObjects = 1;
+	int yObjects = 1;
+	int zObjects = 1;
+	//m_nTree = 4;
+
+	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Numbers/Num3.dds", 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nTree, 6);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nTree, m_pd3dcbGameObjects, ncbElementBytes);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, false);
+
+#ifdef _WITH_BATCH_MATERIAL
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(pTexture);
+#else
+	CMaterial *pCubeMaterial = new CMaterial();
+	pCubeMaterial->SetTexture(pTexture);
+#endif
+
+	CNumMesh *pCubeMesh[1];
+
+	for (int i = 0; i<m_nTree; ++i)
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
+
+	m_ppTree = new CRotatingObject*;
+
+	XMFLOAT3 xmf3RotateAxis, xmf3SurfaceNormal;
+	CRotatingObject *pRotatingObject = NULL;
+	for (int i = 0, x = 0; x < m_nTree; x++)
+	{
+		for (int z = 0; z < zObjects; z++)
+		{
+			for (int y = 0; y < yObjects; y++)
+			{
+				pRotatingObject = new CRotatingObject();
+				pRotatingObject->SetMesh(0, pCubeMesh[i]);
+#ifndef _WITH_BATCH_MATERIAL
+				pRotatingObject->SetMaterial(pCubeMaterial);
+#endif
+				float xPosition = 800;
+				float zPosition = 800;
+				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
+				//pRotatingObject->SetPosition(800, 0, 1000);
+				if (y == 0)
+				{
+					xmf3SurfaceNormal = pTerrain->GetNormal(xPosition, zPosition);
+					xmf3RotateAxis = Vector3::CrossProduct(XMFLOAT3(0.0f, 1.0f, 0.0f), xmf3SurfaceNormal);
+					if (Vector3::IsZero(xmf3RotateAxis)) xmf3RotateAxis = XMFLOAT3(0.0f, 1.0f, 0.0f);
+				}
+				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+				m_ppTree[i++] = pRotatingObject;
+			}
+		}
+	}
+}
+
+void CTreeNumShader3::ReleaseObjects()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) delete m_ppTree[j];
+		delete[] m_ppTree;
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) delete m_pMaterial;
+#endif
+}
+
+void CTreeNumShader3::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
+{
+	for (int j = 0; j < m_nTree; j++)
+	{
+		m_ppTree[j]->Animate(fTimeElapsed);
+	}
+}
+
+void CTreeNumShader3::ReleaseUploadBuffers()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) m_ppTree[j]->ReleaseUploadBuffers();
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->ReleaseUploadBuffers();
+#endif
+}
+
+void CTreeNumShader3::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+{
+	CTexturedShader::Render(pd3dCommandList, pCamera);
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->UpdateShaderVariables(pd3dCommandList);
+#endif
+	//printf("%f\n", hp);
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+}
+
+void CTreeNumShader3::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
+}
+
+void CTreeNumShader3::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+}
+
+void CTreeNumShader3::ReleaseShaderVariables()
+{
+	if (m_pd3dcbGameObjects)
+	{
+		m_pd3dcbGameObjects->Unmap(0, NULL);
+		m_pd3dcbGameObjects->Release();
+	}
+	CTexturedShader::ReleaseShaderVariables();
+}
+
+D3D12_BLEND_DESC CTreeNumShader3::CreateBlendState()
+{
+	D3D12_BLEND_DESC d3dBlendDesc;
+	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
+	d3dBlendDesc.AlphaToCoverageEnable = FALSE;
+	d3dBlendDesc.IndependentBlendEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	return(d3dBlendDesc);
+}
+
+
+// 뒷숫자4
+CTreeNumShader4::CTreeNumShader4() {
+}
+CTreeNumShader4::~CTreeNumShader4() {
+}
+
+D3D12_DEPTH_STENCIL_DESC CTreeNumShader4::CreateDepthStencilState()
+{
+	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
+	::ZeroMemory(&d3dDepthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));
+	d3dDepthStencilDesc.DepthEnable = FALSE;
+	d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	d3dDepthStencilDesc.StencilEnable = FALSE;
+	d3dDepthStencilDesc.StencilReadMask = 0x00;
+	d3dDepthStencilDesc.StencilWriteMask = 0x00;
+	d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+	d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+
+	return(d3dDepthStencilDesc);
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader4::CreateVertexShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VS_UI", "vs_5_1", ppd3dShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader4::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PS_UI", "ps_5_1", ppd3dShaderBlob));
+}
+
+
+void CTreeNumShader4::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
+{
+	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
+
+	float fxPitch = 12.0f * 3.5f;
+	float fyPitch = 12.0f * 3.5f;
+	float fzPitch = 12.0f * 3.5f;
+
+	float fTerrainWidth = pTerrain->GetWidth();
+	float fTerrainLength = pTerrain->GetLength();
+
+	int xObjects = 1;
+	int yObjects = 1;
+	int zObjects = 1;
+	//m_nTree = 4;
+
+	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Numbers/Num4.dds", 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nTree, 6);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nTree, m_pd3dcbGameObjects, ncbElementBytes);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, false);
+
+#ifdef _WITH_BATCH_MATERIAL
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(pTexture);
+#else
+	CMaterial *pCubeMaterial = new CMaterial();
+	pCubeMaterial->SetTexture(pTexture);
+#endif
+
+	CNumMesh *pCubeMesh[1];
+
+	for (int i = 0; i<m_nTree; ++i)
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
+
+	m_ppTree = new CRotatingObject*;
+
+	XMFLOAT3 xmf3RotateAxis, xmf3SurfaceNormal;
+	CRotatingObject *pRotatingObject = NULL;
+	for (int i = 0, x = 0; x < m_nTree; x++)
+	{
+		for (int z = 0; z < zObjects; z++)
+		{
+			for (int y = 0; y < yObjects; y++)
+			{
+				pRotatingObject = new CRotatingObject();
+				pRotatingObject->SetMesh(0, pCubeMesh[i]);
+#ifndef _WITH_BATCH_MATERIAL
+				pRotatingObject->SetMaterial(pCubeMaterial);
+#endif
+				float xPosition = 800;
+				float zPosition = 800;
+				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
+				//pRotatingObject->SetPosition(800, 0, 1000);
+				if (y == 0)
+				{
+					xmf3SurfaceNormal = pTerrain->GetNormal(xPosition, zPosition);
+					xmf3RotateAxis = Vector3::CrossProduct(XMFLOAT3(0.0f, 1.0f, 0.0f), xmf3SurfaceNormal);
+					if (Vector3::IsZero(xmf3RotateAxis)) xmf3RotateAxis = XMFLOAT3(0.0f, 1.0f, 0.0f);
+				}
+				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+				m_ppTree[i++] = pRotatingObject;
+			}
+		}
+	}
+}
+
+void CTreeNumShader4::ReleaseObjects()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) delete m_ppTree[j];
+		delete[] m_ppTree;
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) delete m_pMaterial;
+#endif
+}
+
+void CTreeNumShader4::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
+{
+	for (int j = 0; j < m_nTree; j++)
+	{
+		m_ppTree[j]->Animate(fTimeElapsed);
+	}
+}
+
+void CTreeNumShader4::ReleaseUploadBuffers()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) m_ppTree[j]->ReleaseUploadBuffers();
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->ReleaseUploadBuffers();
+#endif
+}
+
+void CTreeNumShader4::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+{
+	CTexturedShader::Render(pd3dCommandList, pCamera);
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->UpdateShaderVariables(pd3dCommandList);
+#endif
+	//printf("%f\n", hp);
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+}
+
+void CTreeNumShader4::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
+}
+
+void CTreeNumShader4::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+}
+
+void CTreeNumShader4::ReleaseShaderVariables()
+{
+	if (m_pd3dcbGameObjects)
+	{
+		m_pd3dcbGameObjects->Unmap(0, NULL);
+		m_pd3dcbGameObjects->Release();
+	}
+	CTexturedShader::ReleaseShaderVariables();
+}
+
+D3D12_BLEND_DESC CTreeNumShader4::CreateBlendState()
+{
+	D3D12_BLEND_DESC d3dBlendDesc;
+	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
+	d3dBlendDesc.AlphaToCoverageEnable = FALSE;
+	d3dBlendDesc.IndependentBlendEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	return(d3dBlendDesc);
+}
+
+
+CTreeNumShader5::CTreeNumShader5() {
+}
+CTreeNumShader5::~CTreeNumShader5() {
+}
+
+D3D12_DEPTH_STENCIL_DESC CTreeNumShader5::CreateDepthStencilState()
+{
+	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
+	::ZeroMemory(&d3dDepthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));
+	d3dDepthStencilDesc.DepthEnable = FALSE;
+	d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	d3dDepthStencilDesc.StencilEnable = FALSE;
+	d3dDepthStencilDesc.StencilReadMask = 0x00;
+	d3dDepthStencilDesc.StencilWriteMask = 0x00;
+	d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+	d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+
+	return(d3dDepthStencilDesc);
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader5::CreateVertexShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VS_UI", "vs_5_1", ppd3dShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader5::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PS_UI", "ps_5_1", ppd3dShaderBlob));
+}
+
+
+void CTreeNumShader5::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
+{
+	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
+
+	float fxPitch = 12.0f * 3.5f;
+	float fyPitch = 12.0f * 3.5f;
+	float fzPitch = 12.0f * 3.5f;
+
+	float fTerrainWidth = pTerrain->GetWidth();
+	float fTerrainLength = pTerrain->GetLength();
+
+	int xObjects = 1;
+	int yObjects = 1;
+	int zObjects = 1;
+	//m_nTree = 4;
+
+	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Numbers/Num5.dds", 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nTree, 6);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nTree, m_pd3dcbGameObjects, ncbElementBytes);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, false);
+
+#ifdef _WITH_BATCH_MATERIAL
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(pTexture);
+#else
+	CMaterial *pCubeMaterial = new CMaterial();
+	pCubeMaterial->SetTexture(pTexture);
+#endif
+
+	CNumMesh *pCubeMesh[1];
+
+	for (int i = 0; i<m_nTree; ++i)
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
+
+	m_ppTree = new CRotatingObject*;
+
+	XMFLOAT3 xmf3RotateAxis, xmf3SurfaceNormal;
+	CRotatingObject *pRotatingObject = NULL;
+	for (int i = 0, x = 0; x < m_nTree; x++)
+	{
+		for (int z = 0; z < zObjects; z++)
+		{
+			for (int y = 0; y < yObjects; y++)
+			{
+				pRotatingObject = new CRotatingObject();
+				pRotatingObject->SetMesh(0, pCubeMesh[i]);
+#ifndef _WITH_BATCH_MATERIAL
+				pRotatingObject->SetMaterial(pCubeMaterial);
+#endif
+				float xPosition = 800;
+				float zPosition = 800;
+				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
+				//pRotatingObject->SetPosition(800, 0, 1000);
+				if (y == 0)
+				{
+					xmf3SurfaceNormal = pTerrain->GetNormal(xPosition, zPosition);
+					xmf3RotateAxis = Vector3::CrossProduct(XMFLOAT3(0.0f, 1.0f, 0.0f), xmf3SurfaceNormal);
+					if (Vector3::IsZero(xmf3RotateAxis)) xmf3RotateAxis = XMFLOAT3(0.0f, 1.0f, 0.0f);
+				}
+				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+				m_ppTree[i++] = pRotatingObject;
+			}
+		}
+	}
+}
+
+void CTreeNumShader5::ReleaseObjects()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) delete m_ppTree[j];
+		delete[] m_ppTree;
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) delete m_pMaterial;
+#endif
+}
+
+void CTreeNumShader5::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
+{
+	for (int j = 0; j < m_nTree; j++)
+	{
+		m_ppTree[j]->Animate(fTimeElapsed);
+	}
+}
+
+void CTreeNumShader5::ReleaseUploadBuffers()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) m_ppTree[j]->ReleaseUploadBuffers();
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->ReleaseUploadBuffers();
+#endif
+}
+
+void CTreeNumShader5::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+{
+	CTexturedShader::Render(pd3dCommandList, pCamera);
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->UpdateShaderVariables(pd3dCommandList);
+#endif
+	//printf("%f\n", hp);
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+}
+
+void CTreeNumShader5::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
+}
+
+void CTreeNumShader5::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+}
+
+void CTreeNumShader5::ReleaseShaderVariables()
+{
+	if (m_pd3dcbGameObjects)
+	{
+		m_pd3dcbGameObjects->Unmap(0, NULL);
+		m_pd3dcbGameObjects->Release();
+	}
+	CTexturedShader::ReleaseShaderVariables();
+}
+
+D3D12_BLEND_DESC CTreeNumShader5::CreateBlendState()
+{
+	D3D12_BLEND_DESC d3dBlendDesc;
+	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
+	d3dBlendDesc.AlphaToCoverageEnable = FALSE;
+	d3dBlendDesc.IndependentBlendEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	return(d3dBlendDesc);
+}
+
+
+CTreeNumShader6::CTreeNumShader6() {
+}
+CTreeNumShader6::~CTreeNumShader6() {
+}
+
+D3D12_DEPTH_STENCIL_DESC CTreeNumShader6::CreateDepthStencilState()
+{
+	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
+	::ZeroMemory(&d3dDepthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));
+	d3dDepthStencilDesc.DepthEnable = FALSE;
+	d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	d3dDepthStencilDesc.StencilEnable = FALSE;
+	d3dDepthStencilDesc.StencilReadMask = 0x00;
+	d3dDepthStencilDesc.StencilWriteMask = 0x00;
+	d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+	d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+
+	return(d3dDepthStencilDesc);
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader6::CreateVertexShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VS_UI", "vs_5_1", ppd3dShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader6::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PS_UI", "ps_5_1", ppd3dShaderBlob));
+}
+
+
+void CTreeNumShader6::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
+{
+	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
+
+	float fxPitch = 12.0f * 3.5f;
+	float fyPitch = 12.0f * 3.5f;
+	float fzPitch = 12.0f * 3.5f;
+
+	float fTerrainWidth = pTerrain->GetWidth();
+	float fTerrainLength = pTerrain->GetLength();
+
+	int xObjects = 1;
+	int yObjects = 1;
+	int zObjects = 1;
+	//m_nTree = 4;
+
+	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Numbers/Num6.dds", 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nTree, 6);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nTree, m_pd3dcbGameObjects, ncbElementBytes);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, false);
+
+#ifdef _WITH_BATCH_MATERIAL
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(pTexture);
+#else
+	CMaterial *pCubeMaterial = new CMaterial();
+	pCubeMaterial->SetTexture(pTexture);
+#endif
+
+	CNumMesh *pCubeMesh[1];
+
+	for (int i = 0; i<m_nTree; ++i)
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
+
+	m_ppTree = new CRotatingObject*;
+
+	XMFLOAT3 xmf3RotateAxis, xmf3SurfaceNormal;
+	CRotatingObject *pRotatingObject = NULL;
+	for (int i = 0, x = 0; x < m_nTree; x++)
+	{
+		for (int z = 0; z < zObjects; z++)
+		{
+			for (int y = 0; y < yObjects; y++)
+			{
+				pRotatingObject = new CRotatingObject();
+				pRotatingObject->SetMesh(0, pCubeMesh[i]);
+#ifndef _WITH_BATCH_MATERIAL
+				pRotatingObject->SetMaterial(pCubeMaterial);
+#endif
+				float xPosition = 800;
+				float zPosition = 800;
+				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
+				//pRotatingObject->SetPosition(800, 0, 1000);
+				if (y == 0)
+				{
+					xmf3SurfaceNormal = pTerrain->GetNormal(xPosition, zPosition);
+					xmf3RotateAxis = Vector3::CrossProduct(XMFLOAT3(0.0f, 1.0f, 0.0f), xmf3SurfaceNormal);
+					if (Vector3::IsZero(xmf3RotateAxis)) xmf3RotateAxis = XMFLOAT3(0.0f, 1.0f, 0.0f);
+				}
+				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+				m_ppTree[i++] = pRotatingObject;
+			}
+		}
+	}
+}
+
+void CTreeNumShader6::ReleaseObjects()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) delete m_ppTree[j];
+		delete[] m_ppTree;
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) delete m_pMaterial;
+#endif
+}
+
+void CTreeNumShader6::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
+{
+	for (int j = 0; j < m_nTree; j++)
+	{
+		m_ppTree[j]->Animate(fTimeElapsed);
+	}
+}
+
+void CTreeNumShader6::ReleaseUploadBuffers()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) m_ppTree[j]->ReleaseUploadBuffers();
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->ReleaseUploadBuffers();
+#endif
+}
+
+void CTreeNumShader6::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+{
+	CTexturedShader::Render(pd3dCommandList, pCamera);
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->UpdateShaderVariables(pd3dCommandList);
+#endif
+	//printf("%f\n", hp);
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+}
+
+void CTreeNumShader6::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
+}
+
+void CTreeNumShader6::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+}
+
+void CTreeNumShader6::ReleaseShaderVariables()
+{
+	if (m_pd3dcbGameObjects)
+	{
+		m_pd3dcbGameObjects->Unmap(0, NULL);
+		m_pd3dcbGameObjects->Release();
+	}
+	CTexturedShader::ReleaseShaderVariables();
+}
+
+D3D12_BLEND_DESC CTreeNumShader6::CreateBlendState()
+{
+	D3D12_BLEND_DESC d3dBlendDesc;
+	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
+	d3dBlendDesc.AlphaToCoverageEnable = FALSE;
+	d3dBlendDesc.IndependentBlendEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	return(d3dBlendDesc);
+}
+
+
+CTreeNumShader7::CTreeNumShader7() {
+}
+CTreeNumShader7::~CTreeNumShader7() {
+}
+
+D3D12_DEPTH_STENCIL_DESC CTreeNumShader7::CreateDepthStencilState()
+{
+	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
+	::ZeroMemory(&d3dDepthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));
+	d3dDepthStencilDesc.DepthEnable = FALSE;
+	d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	d3dDepthStencilDesc.StencilEnable = FALSE;
+	d3dDepthStencilDesc.StencilReadMask = 0x00;
+	d3dDepthStencilDesc.StencilWriteMask = 0x00;
+	d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+	d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+
+	return(d3dDepthStencilDesc);
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader7::CreateVertexShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VS_UI", "vs_5_1", ppd3dShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader7::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PS_UI", "ps_5_1", ppd3dShaderBlob));
+}
+
+
+void CTreeNumShader7::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
+{
+	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
+
+	float fxPitch = 12.0f * 3.5f;
+	float fyPitch = 12.0f * 3.5f;
+	float fzPitch = 12.0f * 3.5f;
+
+	float fTerrainWidth = pTerrain->GetWidth();
+	float fTerrainLength = pTerrain->GetLength();
+
+	int xObjects = 1;
+	int yObjects = 1;
+	int zObjects = 1;
+	//m_nTree = 4;
+
+	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Numbers/Num7.dds", 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nTree, 6);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nTree, m_pd3dcbGameObjects, ncbElementBytes);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, false);
+
+#ifdef _WITH_BATCH_MATERIAL
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(pTexture);
+#else
+	CMaterial *pCubeMaterial = new CMaterial();
+	pCubeMaterial->SetTexture(pTexture);
+#endif
+
+	CNumMesh *pCubeMesh[1];
+
+	for (int i = 0; i<m_nTree; ++i)
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
+
+	m_ppTree = new CRotatingObject*;
+
+	XMFLOAT3 xmf3RotateAxis, xmf3SurfaceNormal;
+	CRotatingObject *pRotatingObject = NULL;
+	for (int i = 0, x = 0; x < m_nTree; x++)
+	{
+		for (int z = 0; z < zObjects; z++)
+		{
+			for (int y = 0; y < yObjects; y++)
+			{
+				pRotatingObject = new CRotatingObject();
+				pRotatingObject->SetMesh(0, pCubeMesh[i]);
+#ifndef _WITH_BATCH_MATERIAL
+				pRotatingObject->SetMaterial(pCubeMaterial);
+#endif
+				float xPosition = 800;
+				float zPosition = 800;
+				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
+				//pRotatingObject->SetPosition(800, 0, 1000);
+				if (y == 0)
+				{
+					xmf3SurfaceNormal = pTerrain->GetNormal(xPosition, zPosition);
+					xmf3RotateAxis = Vector3::CrossProduct(XMFLOAT3(0.0f, 1.0f, 0.0f), xmf3SurfaceNormal);
+					if (Vector3::IsZero(xmf3RotateAxis)) xmf3RotateAxis = XMFLOAT3(0.0f, 1.0f, 0.0f);
+				}
+				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+				m_ppTree[i++] = pRotatingObject;
+			}
+		}
+	}
+}
+
+void CTreeNumShader7::ReleaseObjects()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) delete m_ppTree[j];
+		delete[] m_ppTree;
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) delete m_pMaterial;
+#endif
+}
+
+void CTreeNumShader7::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
+{
+	for (int j = 0; j < m_nTree; j++)
+	{
+		m_ppTree[j]->Animate(fTimeElapsed);
+	}
+}
+
+void CTreeNumShader7::ReleaseUploadBuffers()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) m_ppTree[j]->ReleaseUploadBuffers();
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->ReleaseUploadBuffers();
+#endif
+}
+
+void CTreeNumShader7::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+{
+	CTexturedShader::Render(pd3dCommandList, pCamera);
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->UpdateShaderVariables(pd3dCommandList);
+#endif
+	//printf("%f\n", hp);
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+}
+
+void CTreeNumShader7::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
+}
+
+void CTreeNumShader7::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+}
+
+void CTreeNumShader7::ReleaseShaderVariables()
+{
+	if (m_pd3dcbGameObjects)
+	{
+		m_pd3dcbGameObjects->Unmap(0, NULL);
+		m_pd3dcbGameObjects->Release();
+	}
+	CTexturedShader::ReleaseShaderVariables();
+}
+
+D3D12_BLEND_DESC CTreeNumShader7::CreateBlendState()
+{
+	D3D12_BLEND_DESC d3dBlendDesc;
+	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
+	d3dBlendDesc.AlphaToCoverageEnable = FALSE;
+	d3dBlendDesc.IndependentBlendEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	return(d3dBlendDesc);
+}
+
+
+// 뒷숫자3
+CTreeNumShader8::CTreeNumShader8() {
+}
+CTreeNumShader8::~CTreeNumShader8() {
+}
+
+D3D12_DEPTH_STENCIL_DESC CTreeNumShader8::CreateDepthStencilState()
+{
+	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
+	::ZeroMemory(&d3dDepthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));
+	d3dDepthStencilDesc.DepthEnable = FALSE;
+	d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	d3dDepthStencilDesc.StencilEnable = FALSE;
+	d3dDepthStencilDesc.StencilReadMask = 0x00;
+	d3dDepthStencilDesc.StencilWriteMask = 0x00;
+	d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+	d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+
+	return(d3dDepthStencilDesc);
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader8::CreateVertexShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VS_UI", "vs_5_1", ppd3dShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader8::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PS_UI", "ps_5_1", ppd3dShaderBlob));
+}
+
+
+void CTreeNumShader8::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
+{
+	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
+
+	float fxPitch = 12.0f * 3.5f;
+	float fyPitch = 12.0f * 3.5f;
+	float fzPitch = 12.0f * 3.5f;
+
+	float fTerrainWidth = pTerrain->GetWidth();
+	float fTerrainLength = pTerrain->GetLength();
+
+	int xObjects = 1;
+	int yObjects = 1;
+	int zObjects = 1;
+	//m_nTree = 4;
+
+	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Numbers/Num8.dds", 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nTree, 6);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nTree, m_pd3dcbGameObjects, ncbElementBytes);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, false);
+
+#ifdef _WITH_BATCH_MATERIAL
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(pTexture);
+#else
+	CMaterial *pCubeMaterial = new CMaterial();
+	pCubeMaterial->SetTexture(pTexture);
+#endif
+
+	CNumMesh *pCubeMesh[1];
+
+	for (int i = 0; i<m_nTree; ++i)
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
+
+	m_ppTree = new CRotatingObject*;
+
+	XMFLOAT3 xmf3RotateAxis, xmf3SurfaceNormal;
+	CRotatingObject *pRotatingObject = NULL;
+	for (int i = 0, x = 0; x < m_nTree; x++)
+	{
+		for (int z = 0; z < zObjects; z++)
+		{
+			for (int y = 0; y < yObjects; y++)
+			{
+				pRotatingObject = new CRotatingObject();
+				pRotatingObject->SetMesh(0, pCubeMesh[i]);
+#ifndef _WITH_BATCH_MATERIAL
+				pRotatingObject->SetMaterial(pCubeMaterial);
+#endif
+				float xPosition = 800;
+				float zPosition = 800;
+				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
+				//pRotatingObject->SetPosition(800, 0, 1000);
+				if (y == 0)
+				{
+					xmf3SurfaceNormal = pTerrain->GetNormal(xPosition, zPosition);
+					xmf3RotateAxis = Vector3::CrossProduct(XMFLOAT3(0.0f, 1.0f, 0.0f), xmf3SurfaceNormal);
+					if (Vector3::IsZero(xmf3RotateAxis)) xmf3RotateAxis = XMFLOAT3(0.0f, 1.0f, 0.0f);
+				}
+				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+				m_ppTree[i++] = pRotatingObject;
+			}
+		}
+	}
+}
+
+void CTreeNumShader8::ReleaseObjects()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) delete m_ppTree[j];
+		delete[] m_ppTree;
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) delete m_pMaterial;
+#endif
+}
+
+void CTreeNumShader8::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
+{
+	for (int j = 0; j < m_nTree; j++)
+	{
+		m_ppTree[j]->Animate(fTimeElapsed);
+	}
+}
+
+void CTreeNumShader8::ReleaseUploadBuffers()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) m_ppTree[j]->ReleaseUploadBuffers();
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->ReleaseUploadBuffers();
+#endif
+}
+
+void CTreeNumShader8::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+{
+	CTexturedShader::Render(pd3dCommandList, pCamera);
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->UpdateShaderVariables(pd3dCommandList);
+#endif
+	//printf("%f\n", hp);
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+}
+
+void CTreeNumShader8::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
+}
+
+void CTreeNumShader8::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+}
+
+void CTreeNumShader8::ReleaseShaderVariables()
+{
+	if (m_pd3dcbGameObjects)
+	{
+		m_pd3dcbGameObjects->Unmap(0, NULL);
+		m_pd3dcbGameObjects->Release();
+	}
+	CTexturedShader::ReleaseShaderVariables();
+}
+
+D3D12_BLEND_DESC CTreeNumShader8::CreateBlendState()
+{
+	D3D12_BLEND_DESC d3dBlendDesc;
+	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
+	d3dBlendDesc.AlphaToCoverageEnable = FALSE;
+	d3dBlendDesc.IndependentBlendEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	return(d3dBlendDesc);
+}
+
+
+// 뒷숫자4
+CTreeNumShader9::CTreeNumShader9() {
+}
+CTreeNumShader9::~CTreeNumShader9() {
+}
+
+D3D12_DEPTH_STENCIL_DESC CTreeNumShader9::CreateDepthStencilState()
+{
+	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
+	::ZeroMemory(&d3dDepthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));
+	d3dDepthStencilDesc.DepthEnable = FALSE;
+	d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	d3dDepthStencilDesc.StencilEnable = FALSE;
+	d3dDepthStencilDesc.StencilReadMask = 0x00;
+	d3dDepthStencilDesc.StencilWriteMask = 0x00;
+	d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+	d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+
+	return(d3dDepthStencilDesc);
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader9::CreateVertexShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VS_UI", "vs_5_1", ppd3dShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader9::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PS_UI", "ps_5_1", ppd3dShaderBlob));
+}
+
+void CTreeNumShader9::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
+{
+	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
+
+	float fxPitch = 12.0f * 3.5f;
+	float fyPitch = 12.0f * 3.5f;
+	float fzPitch = 12.0f * 3.5f;
+
+	float fTerrainWidth = pTerrain->GetWidth();
+	float fTerrainLength = pTerrain->GetLength();
+
+	int xObjects = 1;
+	int yObjects = 1;
+	int zObjects = 1;
+	//m_nTree = 4;
+
+	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Numbers/Num9.dds", 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nTree, 6);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nTree, m_pd3dcbGameObjects, ncbElementBytes);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, false);
+
+#ifdef _WITH_BATCH_MATERIAL
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(pTexture);
+#else
+	CMaterial *pCubeMaterial = new CMaterial();
+	pCubeMaterial->SetTexture(pTexture);
+#endif
+
+	CNumMesh *pCubeMesh[1];
+
+	for (int i = 0; i<m_nTree; ++i)
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 35, 0.3, 0.4);
+
+	m_ppTree = new CRotatingObject*;
+
+	XMFLOAT3 xmf3RotateAxis, xmf3SurfaceNormal;
+	CRotatingObject *pRotatingObject = NULL;
+	for (int i = 0, x = 0; x < m_nTree; x++)
+	{
+		for (int z = 0; z < zObjects; z++)
+		{
+			for (int y = 0; y < yObjects; y++)
+			{
+				pRotatingObject = new CRotatingObject();
+				pRotatingObject->SetMesh(0, pCubeMesh[i]);
+#ifndef _WITH_BATCH_MATERIAL
+				pRotatingObject->SetMaterial(pCubeMaterial);
+#endif
+				float xPosition = 800;
+				float zPosition = 800;
+				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
+				//pRotatingObject->SetPosition(800, 0, 1000);
+				if (y == 0)
+				{
+					xmf3SurfaceNormal = pTerrain->GetNormal(xPosition, zPosition);
+					xmf3RotateAxis = Vector3::CrossProduct(XMFLOAT3(0.0f, 1.0f, 0.0f), xmf3SurfaceNormal);
+					if (Vector3::IsZero(xmf3RotateAxis)) xmf3RotateAxis = XMFLOAT3(0.0f, 1.0f, 0.0f);
+				}
+				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+				m_ppTree[i++] = pRotatingObject;
+			}
+		}
+	}
+}
+
+void CTreeNumShader9::ReleaseObjects()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) delete m_ppTree[j];
+		delete[] m_ppTree;
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) delete m_pMaterial;
+#endif
+}
+
+void CTreeNumShader9::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
+{
+	for (int j = 0; j < m_nTree; j++)
+	{
+		m_ppTree[j]->Animate(fTimeElapsed);
+	}
+}
+
+void CTreeNumShader9::ReleaseUploadBuffers()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) m_ppTree[j]->ReleaseUploadBuffers();
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->ReleaseUploadBuffers();
+#endif
+}
+
+void CTreeNumShader9::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+{
+	CTexturedShader::Render(pd3dCommandList, pCamera);
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->UpdateShaderVariables(pd3dCommandList);
+#endif
+	//printf("%f\n", hp);
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+}
+
+void CTreeNumShader9::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
+}
+
+void CTreeNumShader9::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+}
+
+void CTreeNumShader9::ReleaseShaderVariables()
+{
+	if (m_pd3dcbGameObjects)
+	{
+		m_pd3dcbGameObjects->Unmap(0, NULL);
+		m_pd3dcbGameObjects->Release();
+	}
+	CTexturedShader::ReleaseShaderVariables();
+}
+
+D3D12_BLEND_DESC CTreeNumShader9::CreateBlendState()
+{
+	D3D12_BLEND_DESC d3dBlendDesc;
+	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
+	d3dBlendDesc.AlphaToCoverageEnable = FALSE;
+	d3dBlendDesc.IndependentBlendEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	return(d3dBlendDesc);
+}
+
+CTreeNumShader10::CTreeNumShader10() {
+}
+CTreeNumShader10::~CTreeNumShader10() {
+}
+
+D3D12_DEPTH_STENCIL_DESC CTreeNumShader10::CreateDepthStencilState()
+{
+	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
+	::ZeroMemory(&d3dDepthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));
+	d3dDepthStencilDesc.DepthEnable = FALSE;
+	d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	d3dDepthStencilDesc.StencilEnable = FALSE;
+	d3dDepthStencilDesc.StencilReadMask = 0x00;
+	d3dDepthStencilDesc.StencilWriteMask = 0x00;
+	d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+	d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+
+	return(d3dDepthStencilDesc);
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader10::CreateVertexShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VS_UI", "vs_5_1", ppd3dShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE CTreeNumShader10::CreatePixelShader(ID3DBlob **ppd3dShaderBlob)
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PS_UI", "ps_5_1", ppd3dShaderBlob));
+}
+
+void CTreeNumShader10::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
+{
+	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
+
+	float fxPitch = 12.0f * 3.5f;
+	float fyPitch = 12.0f * 3.5f;
+	float fzPitch = 12.0f * 3.5f;
+
+	float fTerrainWidth = pTerrain->GetWidth();
+	float fTerrainLength = pTerrain->GetLength();
+
+	int xObjects = 1;
+	int yObjects = 1;
+	int zObjects = 1;
+	//m_nTree = 4;
+
+	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Numbers/Num1.dds", 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nTree, 6);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateConstantBufferViews(pd3dDevice, pd3dCommandList, m_nTree, m_pd3dcbGameObjects, ncbElementBytes);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, false);
+
+#ifdef _WITH_BATCH_MATERIAL
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(pTexture);
+#else
+	CMaterial *pCubeMaterial = new CMaterial();
+	pCubeMaterial->SetTexture(pTexture);
+#endif
+
+	CNumMesh *pCubeMesh[1];
+
+	for (int i = 0; i<m_nTree; ++i)
+		pCubeMesh[i] = new CNumMesh(pd3dDevice, pd3dCommandList, 34, 0.3, 0.4);
+
+	m_ppTree = new CRotatingObject*;
+
+	XMFLOAT3 xmf3RotateAxis, xmf3SurfaceNormal;
+	CRotatingObject *pRotatingObject = NULL;
+	for (int i = 0, x = 0; x < m_nTree; x++)
+	{
+		for (int z = 0; z < zObjects; z++)
+		{
+			for (int y = 0; y < yObjects; y++)
+			{
+				pRotatingObject = new CRotatingObject();
+				pRotatingObject->SetMesh(0, pCubeMesh[i]);
+#ifndef _WITH_BATCH_MATERIAL
+				pRotatingObject->SetMaterial(pCubeMaterial);
+#endif
+				float xPosition = 800;
+				float zPosition = 800;
+				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
+				//pRotatingObject->SetPosition(800, 0, 1000);
+				if (y == 0)
+				{
+					xmf3SurfaceNormal = pTerrain->GetNormal(xPosition, zPosition);
+					xmf3RotateAxis = Vector3::CrossProduct(XMFLOAT3(0.0f, 1.0f, 0.0f), xmf3SurfaceNormal);
+					if (Vector3::IsZero(xmf3RotateAxis)) xmf3RotateAxis = XMFLOAT3(0.0f, 1.0f, 0.0f);
+				}
+				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+				m_ppTree[i++] = pRotatingObject;
+			}
+		}
+	}
+}
+
+void CTreeNumShader10::ReleaseObjects()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) delete m_ppTree[j];
+		delete[] m_ppTree;
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) delete m_pMaterial;
+#endif
+}
+
+void CTreeNumShader10::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
+{
+	for (int j = 0; j < m_nTree; j++)
+	{
+		m_ppTree[j]->Animate(fTimeElapsed);
+	}
+}
+
+void CTreeNumShader10::ReleaseUploadBuffers()
+{
+	if (m_ppTree)
+	{
+		for (int j = 0; j < m_nTree; j++) if (m_ppTree[j]) m_ppTree[j]->ReleaseUploadBuffers();
+	}
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->ReleaseUploadBuffers();
+#endif
+}
+
+void CTreeNumShader10::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+{
+	CTexturedShader::Render(pd3dCommandList, pCamera);
+
+#ifdef _WITH_BATCH_MATERIAL
+	if (m_pMaterial) m_pMaterial->UpdateShaderVariables(pd3dCommandList);
+#endif
+	//printf("%f\n", hp);
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+
+	for (int i = 0; i < m_nTree; ++i)
+	{
+		if (m_ppTree[i]) m_ppTree[i]->Render(pd3dCommandList, pCamera);
+	}
+}
+
+void CTreeNumShader10::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbGameObjects = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes * m_nTree, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbGameObjects->Map(0, NULL, (void **)&m_pcbMappedGameObjects);
+}
+
+void CTreeNumShader10::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+}
+
+void CTreeNumShader10::ReleaseShaderVariables()
+{
+	if (m_pd3dcbGameObjects)
+	{
+		m_pd3dcbGameObjects->Unmap(0, NULL);
+		m_pd3dcbGameObjects->Release();
+	}
+	CTexturedShader::ReleaseShaderVariables();
+}
+
+D3D12_BLEND_DESC CTreeNumShader10::CreateBlendState()
+{
+	D3D12_BLEND_DESC d3dBlendDesc;
+	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
+	d3dBlendDesc.AlphaToCoverageEnable = FALSE;
+	d3dBlendDesc.IndependentBlendEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+	d3dBlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
+	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	return(d3dBlendDesc);
+}
 
 ///////////////////////////////////////////////////////////// 메인화면
 

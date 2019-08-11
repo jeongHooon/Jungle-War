@@ -1225,6 +1225,350 @@ public:
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
 };
 
+//나무숫자
+// 뒷숫자
+
+class CTreeNumShader0 : public CTexturedShader
+{
+protected:
+	CRotatingObject * *m_ppTree = 0;
+	int								m_nTree = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CTreeNumShader0();
+	virtual ~CTreeNumShader0();
+
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual D3D12_BLEND_DESC CreateBlendState();
+	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob **ppd3dShaderBlob);
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
+};
+
+class CTreeNumShader1 : public CTexturedShader
+{
+protected:
+	CRotatingObject * *m_ppTree = 0;
+	int								m_nTree = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CTreeNumShader1();
+	virtual ~CTreeNumShader1();
+
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual D3D12_BLEND_DESC CreateBlendState();
+	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob **ppd3dShaderBlob);
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
+};
+
+class CTreeNumShader2 : public CTexturedShader
+{
+protected:
+	CRotatingObject * *m_ppTree = 0;
+	int								m_nTree = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CTreeNumShader2();
+	virtual ~CTreeNumShader2();
+
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual D3D12_BLEND_DESC CreateBlendState();
+	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob **ppd3dShaderBlob);
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
+};
+
+class CTreeNumShader3 : public CTexturedShader
+{
+protected:
+	CRotatingObject * *m_ppTree = 0;
+	int								m_nTree = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CTreeNumShader3();
+	virtual ~CTreeNumShader3();
+
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual D3D12_BLEND_DESC CreateBlendState();
+	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob **ppd3dShaderBlob);
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
+};
+
+class CTreeNumShader4 : public CTexturedShader
+{
+protected:
+	CRotatingObject * *m_ppTree = 0;
+	int								m_nTree = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CTreeNumShader4();
+	virtual ~CTreeNumShader4();
+
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual D3D12_BLEND_DESC CreateBlendState();
+	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob **ppd3dShaderBlob);
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
+};
+
+class CTreeNumShader5 : public CTexturedShader
+{
+protected:
+	CRotatingObject * *m_ppTree = 0;
+	int								m_nTree = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CTreeNumShader5();
+	virtual ~CTreeNumShader5();
+
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual D3D12_BLEND_DESC CreateBlendState();
+	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob **ppd3dShaderBlob);
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
+};
+
+class CTreeNumShader6 : public CTexturedShader
+{
+protected:
+	CRotatingObject * *m_ppTree = 0;
+	int								m_nTree = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CTreeNumShader6();
+	virtual ~CTreeNumShader6();
+
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual D3D12_BLEND_DESC CreateBlendState();
+	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob **ppd3dShaderBlob);
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
+};
+
+class CTreeNumShader7 : public CTexturedShader
+{
+protected:
+	CRotatingObject * *m_ppTree = 0;
+	int								m_nTree = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CTreeNumShader7();
+	virtual ~CTreeNumShader7();
+
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual D3D12_BLEND_DESC CreateBlendState();
+	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob **ppd3dShaderBlob);
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
+};
+
+class CTreeNumShader8 : public CTexturedShader
+{
+protected:
+	CRotatingObject * *m_ppTree = 0;
+	int								m_nTree = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CTreeNumShader8();
+	virtual ~CTreeNumShader8();
+
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual D3D12_BLEND_DESC CreateBlendState();
+	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob **ppd3dShaderBlob);
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
+};
+
+class CTreeNumShader9 : public CTexturedShader
+{
+protected:
+	CRotatingObject * *m_ppTree = 0;
+	int								m_nTree = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CTreeNumShader9();
+	virtual ~CTreeNumShader9();
+
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual D3D12_BLEND_DESC CreateBlendState();
+	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob **ppd3dShaderBlob);
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
+};
+
+class CTreeNumShader10 : public CTexturedShader
+{
+protected:
+	CRotatingObject * *m_ppTree = 0;
+	int								m_nTree = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CTreeNumShader10();
+	virtual ~CTreeNumShader10();
+
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual D3D12_BLEND_DESC CreateBlendState();
+	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob **ppd3dShaderBlob);
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob **ppd3dShaderBlob);
+};
+
 /////////////////////////////
 // 메인화면
 
