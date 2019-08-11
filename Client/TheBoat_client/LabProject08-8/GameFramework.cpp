@@ -1196,9 +1196,7 @@ void CGameFramework::BuildObjects()
 	m_pScene = new CScene();
 	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
 
-<<<<<<< HEAD
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-=======
 
 	////////////////////텍스트
 
@@ -1229,7 +1227,6 @@ void CGameFramework::BuildObjects()
 	///////////////////////////////////////////////////////////////////////////////////
 
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i)
->>>>>>> 01690214f56d3158f203ac74503ae057f7c928cb
 		m_pScene->m_pPlayer[i] = m_pPlayer[i] = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
 		m_pPlayer[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 	}
