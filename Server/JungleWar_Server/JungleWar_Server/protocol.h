@@ -151,6 +151,7 @@ struct SC_PACKET_POS {
 	BYTE size;
 	BYTE type;
 	WORD id;
+	DirectX::XMFLOAT3 look_vec;
 	int player_status;
 	float x, y, z;
 

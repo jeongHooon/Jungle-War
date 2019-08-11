@@ -710,6 +710,7 @@ void ServerFramework::WorkerThread() {
 				packets.x = clients[client_id].x;
 				packets.y = clients[client_id].y;
 				packets.z = clients[client_id].z;
+				packets.look_vec = clients[client_id].look_vec;
 
 				//packets.elecCount = elecCount;
 
