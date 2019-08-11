@@ -7,7 +7,7 @@ struct SPlayer {
 	int elecCount;
 	int player_status;
 };
-
+/////
 
 class ServerMgr
 {
