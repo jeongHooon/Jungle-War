@@ -288,9 +288,6 @@ float4 PS_UI(VS_TEXTURED_OUTPUT input) : SV_TARGET
 	}
 
 	return(cColor);
-<<<<<<< HEAD
-}
-=======
 	//return(float4(input.uv.x, input.uv.y, 0.0f, 1.0f));
 }
 
@@ -383,4 +380,3 @@ VS_TEXTURED_OUTPUT VSINST(VS_INSTANCING_INPUT input, uint nInstanceID : SV_Insta
 //	float4 cColor = gtxtTextures.Sample(gSamplerState, input.uv);
 //	return(cColor);
 //}
->>>>>>> 229216878947ee7733fe9764d506e238208e3b57
