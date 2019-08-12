@@ -6,6 +6,7 @@ struct SPlayer {
 	float elecX, elecY, elecZ;
 	int elecCount;
 	int player_status;
+	bool is_die;
 };
 /////
 

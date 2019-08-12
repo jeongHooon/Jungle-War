@@ -108,7 +108,7 @@ struct Client {
 	bool is_die;
 
 	bool is_crouch;
-	float hp = 100.f;
+	float hp;
 	int box_count = 0;
 
 	float elecX;

@@ -327,6 +327,8 @@ void ServerFramework::AcceptPlayer() {
 
 	clients[client_id].boxCount = 10;
 
+	clients[client_id].hp = 100.f;
+
 	clients[client_id].elecX = 500.f;
 	clients[client_id].elecY = 1000.f;
 	clients[client_id].elecZ = 500.f;
@@ -711,6 +713,7 @@ void ServerFramework::WorkerThread() {
 				packets.y = clients[client_id].y;
 				packets.z = clients[client_id].z;
 				packets.look_vec = clients[client_id].look_vec;
+				packets.is_die = clients[client_id].is_die;
 
 				//packets.elecCount = elecCount;
 
@@ -749,7 +752,7 @@ void ServerFramework::WorkerThread() {
 				//packets.player_status = clients[client_id].is_running;
 				//printf("≥Ù¿Ã : %f\n", clients[client_id].y);
 				for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-					if (clients[i].in_use == true) {
+					if (clients[i].in_use) {
 						SendPacket(i, &packets);
 					}
 				}
@@ -783,6 +786,14 @@ void ServerFramework::WorkerThread() {
 							//
 							//packets.hp = clients[j].hp;
 							packets.hp = (-1) * MAX_BULLET_DAMAGE;
+							
+							if (!(clients[j].is_die))
+							{
+								clients[j].hp -= MAX_BULLET_DAMAGE;
+								if (clients[j].hp <= 0)
+									clients[j].is_die = true;
+							}
+
 							/*if ( clients[j].hp < 0.f) {
 							clients[j].is_die = true;
 							}*/

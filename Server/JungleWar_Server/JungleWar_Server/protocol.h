@@ -154,6 +154,7 @@ struct SC_PACKET_POS {
 	DirectX::XMFLOAT3 look_vec;
 	int player_status;
 	float x, y, z;
+	bool is_die;
 
 	//int elecCount;
 };
@@ -164,6 +165,8 @@ struct SC_PACKET_COLLISION {
 	WORD client_id;
 	float x, y, z;
 	float hp;
+
+	float hp_p1;
 };
 
 struct SC_PACKET_COLLISION_BB {
