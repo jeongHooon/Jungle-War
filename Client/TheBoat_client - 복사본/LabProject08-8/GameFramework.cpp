@@ -1650,6 +1650,8 @@ void CGameFramework::FrameAdvance()
 	if (playerHp < 1) {
 		gameMode = 2;
 		m_pPlayer[my_client_id]->ImDie();
+		if (m_pPlayer[my_client_id]->isDie)
+			server_mgr.SendPacket(PlayerDie, m_pPlayer[my_client_id]->GetLook());
 	}
 
 	if(gameMode == 2)

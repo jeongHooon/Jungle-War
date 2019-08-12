@@ -94,6 +94,7 @@
 #define CS_MOUSE_MOVE				21
 #define CS_KEY_PRESS_CROUCH			22
 #define CS_KEY_RELEASE_CROUCH		23
+#define PlayerDie					26
 
 //=============================
 #define CS_KEY_PRESS_Q 24
@@ -154,6 +155,7 @@ struct SC_PACKET_POS {
 	DirectX::XMFLOAT3 look_vec;
 	int player_status;
 	float x, y, z;
+	bool is_die;
 
 	//int elecCount;
 };
@@ -164,6 +166,8 @@ struct SC_PACKET_COLLISION {
 	WORD client_id;
 	float x, y, z;
 	float hp;
+
+	float hp_p1;
 };
 
 struct SC_PACKET_COLLISION_BB {

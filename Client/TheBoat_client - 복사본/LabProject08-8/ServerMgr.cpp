@@ -40,7 +40,7 @@ void ServerMgr::Initialize(HWND& hwnd) {
 	// ¾ÆÀÌÇÇ
 	ServerAddr.sin_addr.s_addr = inet_addr(server_ip.c_str());
 	
-	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	
 	int retval = WSAConnect(sock, (sockaddr *)&ServerAddr, sizeof(ServerAddr), NULL, NULL, NULL, NULL);
 	if (retval == SOCKET_ERROR) {
@@ -151,6 +151,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		sc_vec_buff[packets->id].pos.x = packets->x;
 		sc_vec_buff[packets->id].pos.y = packets->y;
 		sc_vec_buff[packets->id].pos.z = packets->z;
+		sc_vec_buff[packets->id].is_die = packets->is_die;
 		sc_look_vec = packets->look_vec;
 		// 0 ¼û½¬±â, 1: °È±â, 2: ¶Ù±â
 		sc_vec_buff[packets->id].player_status = packets->player_status;

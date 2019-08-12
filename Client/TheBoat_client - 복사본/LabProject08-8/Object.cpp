@@ -1008,6 +1008,12 @@ void CBillboard::Animate(float fTimeElapsed, CCamera *pCamera) {
 	XMFLOAT3 xmf3CameraPosition = pCamera->GetPosition();
 	SetLookAt(xmf3CameraPosition);
 }
+void CBillboard::Animate(float fTimeElapsed, CCamera* pCamera, int num) {
+	XMFLOAT3 xmf3CameraPosition = pCamera->GetPosition();
+	SetLookAt(xmf3CameraPosition);
+	XMMATRIX xmmtxRotate = XMMatrixRotationY(XMConvertToRadians(360.0f * 3.0f) * fTimeElapsed);
+	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(xmmtxRotate, m_xmf4x4ToParentTransform);
+}
 void CBillboard::SetLookAt(XMFLOAT3& xmf3Target) {
 	XMFLOAT3 xmf3Up(0.0f, 1.0f, 0.0f);
 	XMFLOAT3 xmf3Position(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43);

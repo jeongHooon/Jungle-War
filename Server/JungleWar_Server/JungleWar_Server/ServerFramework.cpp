@@ -327,6 +327,8 @@ void ServerFramework::AcceptPlayer() {
 
 	clients[client_id].boxCount = 10;
 
+	clients[client_id].hp = 100.f;
+
 	clients[client_id].elecX = 500.f;
 	clients[client_id].elecY = 1000.f;
 	clients[client_id].elecZ = 500.f;
@@ -500,7 +502,10 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	case CS_KEY_RELEASE_Q:
 		clients[cl_id].is_q = false;
 		break;
-
+	case PlayerDie:
+		clients[cl_id].is_die = true;
+		//clients[cl_id].player_status = 17;
+		break;
 	case CS_MOUSE_MOVE: {
 		clients[cl_id].look_vec = packet_buffer->look_vec;
 		SC_PACKET_LOOCVEC packets;
@@ -550,6 +555,8 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		if ((clients[cl_id].is_crouch)) {
 			packets.player_status = 7;
 		}
+		//if(clients[cl_id].is_die)
+			//packets.player_status = 17;
 		//////////////////////////
 		for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 			if (clients[i].in_use) {
@@ -711,6 +718,7 @@ void ServerFramework::WorkerThread() {
 				packets.y = clients[client_id].y;
 				packets.z = clients[client_id].z;
 				packets.look_vec = clients[client_id].look_vec;
+				packets.is_die = clients[client_id].is_die;
 
 				//packets.elecCount = elecCount;
 
@@ -743,13 +751,13 @@ void ServerFramework::WorkerThread() {
 				/*else if (clients[client_id].is_jump) {
 					packets.player_status = 15;
 				}*/
-				/*else if (clients[client_id].is_die) {
+				else if (clients[client_id].is_die) {
 				packets.player_status = 17;
-				}*/
+				}
 				//packets.player_status = clients[client_id].is_running;
 				//printf("³ôÀÌ : %f\n", clients[client_id].y);
 				for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-					if (clients[i].in_use == true) {
+					if (clients[i].in_use) {
 						SendPacket(i, &packets);
 					}
 				}
@@ -783,6 +791,14 @@ void ServerFramework::WorkerThread() {
 							//
 							//packets.hp = clients[j].hp;
 							packets.hp = (-1) * MAX_BULLET_DAMAGE;
+							
+							if (!(clients[j].is_die))
+							{
+								clients[j].hp -= MAX_BULLET_DAMAGE;
+								if (clients[j].hp <= 0)
+									clients[j].is_die = true;
+							}
+
 							/*if ( clients[j].hp < 0.f) {
 							clients[j].is_die = true;
 							}*/
