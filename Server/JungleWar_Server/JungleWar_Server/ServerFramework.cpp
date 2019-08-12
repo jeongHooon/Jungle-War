@@ -500,7 +500,10 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	case CS_KEY_RELEASE_Q:
 		clients[cl_id].is_q = false;
 		break;
-
+	case PlayerDie:
+		clients[cl_id].is_die = true;
+		//clients[cl_id].player_status = 17;
+		break;
 	case CS_MOUSE_MOVE: {
 		clients[cl_id].look_vec = packet_buffer->look_vec;
 		SC_PACKET_LOOCVEC packets;
@@ -550,6 +553,8 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		if ((clients[cl_id].is_crouch)) {
 			packets.player_status = 7;
 		}
+		//if(clients[cl_id].is_die)
+			//packets.player_status = 17;
 		//////////////////////////
 		for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 			if (clients[i].in_use) {
@@ -743,9 +748,9 @@ void ServerFramework::WorkerThread() {
 				/*else if (clients[client_id].is_jump) {
 					packets.player_status = 15;
 				}*/
-				/*else if (clients[client_id].is_die) {
+				else if (clients[client_id].is_die) {
 				packets.player_status = 17;
-				}*/
+				}
 				//packets.player_status = clients[client_id].is_running;
 				//printf("³ôÀÌ : %f\n", clients[client_id].y);
 				for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {

@@ -94,6 +94,7 @@
 #define CS_MOUSE_MOVE				21
 #define CS_KEY_PRESS_CROUCH			22
 #define CS_KEY_RELEASE_CROUCH		23
+#define PlayerDie					26
 
 //=============================
 #define CS_KEY_PRESS_Q 24
