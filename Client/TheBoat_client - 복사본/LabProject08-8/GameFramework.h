@@ -70,6 +70,8 @@ public:
 	// 채팅용
 	void SendChatREQ();
 
+	void SwapText();
+
 
     void ProcessInput();
     void AnimateObjects(CCamera *pCamera);
@@ -132,6 +134,13 @@ private:
 	ID3D12Fence					*m_pd3dFence = NULL;
 	UINT64						m_nFenceValues[m_nSwapChainBuffers];
 	HANDLE						m_hFenceEvent;
+
+	//채팅
+	wchar_t						inputtext[100] = L"";
+	wchar_t						*outputtext = L"";
+	wchar_t						outputtexts[15][100] = {L"",L"",L"",L"",L"",L"",L"",L"",L"",L"" };
+	wchar_t						playerName[4][100] = {L"SangWooo", L"", L"", L""};
+	int							playerChat[16] = {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4};
 
 #if defined(_DEBUG)
 	ID3D12Debug					*m_pd3dDebugController;

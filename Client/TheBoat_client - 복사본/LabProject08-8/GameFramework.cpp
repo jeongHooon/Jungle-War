@@ -242,10 +242,10 @@ void CGameFramework::CreateDirect2DDevice()
 	m_pd2dDeviceContext->CreateSolidColorBrush(D2D1::ColorF(0.3f, 0.0f, 0.0f, 0.5f), &m_pd2dbrBackground);
 	m_pd2dDeviceContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF(0x9ACD32, 1.0f)), &m_pd2dbrBorder);
 
-	hResult = m_pdWriteFactory->CreateTextFormat(L"궁서체", NULL, DWRITE_FONT_WEIGHT_DEMI_BOLD, DWRITE_FONT_STYLE_ITALIC, DWRITE_FONT_STRETCH_NORMAL, 48.0f, L"en-US", &m_pdwFont);
-	hResult = m_pdwFont->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+	hResult = m_pdWriteFactory->CreateTextFormat(L"굴림체", NULL, DWRITE_FONT_WEIGHT_DEMI_BOLD, DWRITE_FONT_STYLE_NORMAL, DWRITE_FONT_STRETCH_NORMAL, 20.0f, L"en-US", &m_pdwFont);
+	hResult = m_pdwFont->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
 	hResult = m_pdwFont->SetParagraphAlignment(DWRITE_PARAGRAPH_ALIGNMENT_CENTER);
-	m_pd2dDeviceContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::Purple, 1.0f), &m_pd2dbrText);
+	m_pd2dDeviceContext->CreateSolidColorBrush(D2D1::ColorF(D2D1::ColorF::White, 1.0f), &m_pd2dbrText);
 	hResult = m_pdWriteFactory->CreateTextLayout(L"텍스트 레이아웃", 8, m_pdwFont, 4096.0f, 4096.0f, &m_pdwTextLayout);
 
 #ifdef _WITH_DIRECT2D_IMAGE_EFFECT
@@ -259,6 +259,7 @@ void CGameFramework::CreateDirect2DDevice()
 	m_pd2dfxBitmapSource->SetValue(D2D1_BITMAPSOURCE_PROP_WIC_BITMAP_SOURCE, m_pwicFormatConverter);
 	m_pd2dfxGaussianBlur->SetInputEffect(0, m_pd2dfxBitmapSource);
 #endif
+
 }
 #endif
 
@@ -460,137 +461,137 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			switch (key_buffer) {
 			case 'a':
 			case 'A':
-				cout << "a";
+				outputtext = wcscat(inputtext, L"a");
 				break;
 			case 'b':
 			case 'B':
-				cout << "b";
+				outputtext = wcscat(inputtext, L"b");
 				break;
 			case 'c':
 			case 'C':
-				cout << "c";
+				outputtext = wcscat(inputtext, L"c");
 				break;
 			case 'd':
 			case 'D':
-				cout << "d";
+				outputtext = wcscat(inputtext, L"d");
 				break;
 			case 'e':
 			case 'E':
-				cout << "e";
+				outputtext = wcscat(inputtext, L"e");
 				break;
 			case 'f':
 			case 'F':
-				cout << "f";
+				outputtext = wcscat(inputtext, L"f");
 				break;
 			case 'g':
 			case 'G':
-				cout << "g";
+				outputtext = wcscat(inputtext, L"g");
 				break;
 			case 'h':
 			case 'H':
-				cout << "h";
+				outputtext = wcscat(inputtext, L"h");
 				break;
 			case 'i':
 			case 'I':
-				cout << "i";
+				outputtext = wcscat(inputtext, L"i");
 				break;
 			case 'j':
 			case 'J':
-				cout << "j";
+				outputtext = wcscat(inputtext, L"j");
 				break;
 			case 'k':
 			case 'K':
-				cout << "k";
+				outputtext = wcscat(inputtext, L"k");
 				break;
 			case 'l':
 			case 'L':
-				cout << "l";
+				outputtext = wcscat(inputtext, L"l");
 				break;
 			case 'm':
 			case 'M':
-				cout << "m";
+				outputtext = wcscat(inputtext, L"m");
 				break;
 			case 'n':
 			case 'N':
-				cout << "n";
+				outputtext = wcscat(inputtext, L"n");
 				break;
 			case 'o':
 			case 'O':
-				cout << "o";
+				outputtext = wcscat(inputtext, L"o");
 				break;
 			case 'p':
 			case 'P':
-				cout << "p";
+				outputtext = wcscat(inputtext, L"p");
 				break;
 			case 'q':
 			case 'Q':
-				cout << "q";
+				outputtext = wcscat(inputtext, L"q");
 				break;
 			case 'r':
 			case 'R':
-				cout << "r";
+				outputtext = wcscat(inputtext, L"r");
 				break;
 			case 's':
 			case 'S':
-				cout << "s";
+				outputtext = wcscat(inputtext, L"s");
 				break;
 			case 't':
 			case 'T':
-				cout << "t";
+				outputtext = wcscat(inputtext, L"t");
 				break;
 			case 'u':
 			case 'U':
-				cout << "u";
+				outputtext = wcscat(inputtext, L"u");
 				break;
 			case 'v':
 			case 'V':
-				cout << "v";
+				outputtext = wcscat(inputtext, L"v");
 				break;
 			case 'w':
 			case 'W':
-				cout << "w";
+				outputtext = wcscat(inputtext, L"w");
 				break;
 			case 'x':
 			case 'X':
-				cout << "x";
+				outputtext = wcscat(inputtext, L"x");
 				break;
 			case 'y':
 			case 'Y':
-				cout << "y";
+				outputtext = wcscat(inputtext, L"y");
 				break;
 			case 'z':
 			case 'Z':
-				cout << "z";
+				outputtext = wcscat(inputtext, L"z");
 				break;
 			case '1':
-				cout << "1";
+				outputtext = wcscat(inputtext, L"1");
 				break;
 			case '2':
-				cout << "2";
+				outputtext = wcscat(inputtext, L"2");
 				break;
 			case '3':
-				cout << "3";
+				outputtext = wcscat(inputtext, L"3");
 				break;
 			case '4':
-				cout << "4";
+				outputtext = wcscat(inputtext, L"4");
 				break;
 			case '5':
-				cout << "5";
+				outputtext = wcscat(inputtext, L"5");
 				break;
 			case '6':
-				cout << "6";
+				outputtext = wcscat(inputtext, L"6");
 				break;
 			case '7':
-				cout << "7";
+				outputtext = wcscat(inputtext, L"7");
 				break;
 			case '8':
-				cout << "8";
+				outputtext = wcscat(inputtext, L"8");
 				break;
 			case '9':
-				cout << "9";
+				outputtext = wcscat(inputtext, L"9");
 				break;
 			case '0':
-				cout << "0";
+				outputtext = wcscat(inputtext, L"0");
 				break;
 			}
 
@@ -1042,6 +1043,8 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				gameMode = 3;
 			else if (gameMode == 4)
 				gameMode = 1;
+			else
+				SwapText();
 			break;
 		}
 		switch (wParam)
@@ -1931,20 +1934,27 @@ void CGameFramework::FrameAdvance()
 //	m_pd2dDeviceContext->DrawRectangle(&rcText, m_pd2dbrBorder);
 //	m_pd2dDeviceContext->FillRectangle(&rcText, m_pd2dbrBackground);
 #endif
-	D2D1_SIZE_F szRenderTarget = m_ppd2dRenderTargets[m_nSwapChainBufferIndex]->GetSize();
-	m_GameTimer.GetFrameRate(m_pszFrameRate + 12, 37);
-	
-	D2D1_RECT_F rcUpperText = D2D1::RectF(0, 0, szRenderTarget.width, szRenderTarget.height * 0.5f);
-	m_pd2dDeviceContext->DrawTextW(m_pszFrameRate, (UINT32)wcslen(m_pszFrameRate), m_pdwFont, &rcUpperText, m_pd2dbrText);
-	
-	D2D1_RECT_F rcLowerText = D2D1::RectF(0, szRenderTarget.height * 0.5f, szRenderTarget.width, szRenderTarget.height);
-	m_pd2dDeviceContext->DrawTextW(L"JungleWar", (UINT32)wcslen(L"JungleWar"), m_pdwFont, &rcLowerText, m_pd2dbrText);
 
-	
-	m_pd2dDeviceContext->EndDraw();
+	if (gameMode > 2) {
+		D2D1_SIZE_F szRenderTarget = m_ppd2dRenderTargets[m_nSwapChainBufferIndex]->GetSize();
 
-	m_pd3d11On12Device->ReleaseWrappedResources(&m_ppd3d11WrappedBackBuffers[m_nSwapChainBufferIndex], 1);
+		D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * 0.85f, szRenderTarget.width, szRenderTarget.height);
+		m_pd2dDeviceContext->DrawTextW(outputtext, (UINT32)wcslen(outputtext), m_pdwFont, &rcLowerText, m_pd2dbrText);
+		
+		for (int i = 0; i < 14; ++i) {
+			D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.2, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+			m_pd2dDeviceContext->DrawTextW(outputtexts[i], (UINT32)wcslen(outputtexts[i]), m_pdwFont, &rcChatText, m_pd2dbrText);
+		}
 
+		for (int i = 0; i < 14; ++i) {
+			D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+			m_pd2dDeviceContext->DrawTextW(playerName[playerChat[i]], (UINT32)wcslen(playerName[playerChat[i]]), m_pdwFont, &rcChatText, m_pd2dbrText);
+		}
+
+		m_pd2dDeviceContext->EndDraw();
+
+		m_pd3d11On12Device->ReleaseWrappedResources(&m_ppd3d11WrappedBackBuffers[m_nSwapChainBufferIndex], 1);
+	}
 	m_pd3d11DeviceContext->Flush();
 #endif
 
@@ -1962,13 +1972,20 @@ void CGameFramework::FrameAdvance()
 	m_pdxgiSwapChain->Present(0, 0);
 #endif
 #endif
-
-	//	m_nSwapChainBufferIndex = m_pdxgiSwapChain->GetCurrentBackBufferIndex();
 	MoveToNextFrame();
 
 	m_GameTimer.GetFrameRate(m_pszFrameRate + 12, 37);
 	::SetWindowText(m_hWnd, m_pszFrameRate);
-	//for(int i=0;i<50;++i)
-	//	printf("%d\t", m_pszFrameRate[i]);
 }
 
+void CGameFramework::SwapText() {
+	for (int i = 0; i < 14; ++i) {
+		wcscpy(outputtexts[14 - i],outputtexts[13 - i]);
+		playerChat[14 - i] = playerChat[13 - i];
+	}
+	wcscpy(outputtexts[0], inputtext);
+	playerChat[0] = 0;
+	for (int i = 0; i < 50; ++i)
+		inputtext[i] = {};
+	outputtext = L"";
+}
