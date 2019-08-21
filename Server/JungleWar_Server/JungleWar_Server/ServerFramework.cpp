@@ -822,7 +822,12 @@ void ServerFramework::WorkerThread() {
 							//packets.hp = clients[j].hp;
 
 							packets.hp = (-1) * MAX_BULLET_DAMAGE;
-
+							if (!(clients[j].is_die))
+							{
+								clients[j].hp -= MAX_BULLET_DAMAGE;
+								if (clients[j].hp <= 0)
+									clients[j].is_die = true;
+							}
 							printf("플레이어 - 총알 충돌\n");
 							bullets[i].in_use = false;
 							break;

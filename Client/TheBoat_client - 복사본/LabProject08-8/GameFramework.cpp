@@ -1731,8 +1731,14 @@ void CGameFramework::FrameAdvance()
 			}
 		}
 	}
-	
 
+	for (int i = 0; i < 4; ++i) {
+		if (!m_pPlayer[i]->isDie)
+			printf("P%d : 생존 ", i + 1);
+		else
+			printf("P%d : 사망 ", i + 1);
+	}
+	printf("\n");
 	for (int i = 0; i < NUM_OBJECT2; ++i) {
 		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pObject2[i]->bounding_box);
 		switch (containType)
