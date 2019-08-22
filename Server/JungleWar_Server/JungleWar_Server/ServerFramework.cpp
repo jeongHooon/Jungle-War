@@ -795,8 +795,10 @@ void ServerFramework::WorkerThread() {
 							if (!(clients[j].is_die))
 							{
 								clients[j].hp -= MAX_BULLET_DAMAGE;
-								if (clients[j].hp <= 0)
+								if (clients[j].hp <= 0) {
+									printf("%d 플레이어 죽음\n", j);
 									clients[j].is_die = true;
+								}
 							}
 
 							/*if ( clients[j].hp < 0.f) {
@@ -822,6 +824,13 @@ void ServerFramework::WorkerThread() {
 							//packets.hp = clients[j].hp;
 
 							packets.hp = (-1) * MAX_BULLET_DAMAGE;
+
+							if (!(clients[j].is_die))
+							{
+								clients[j].hp -= MAX_BULLET_DAMAGE;
+								if (clients[j].hp <= 0)
+									clients[j].is_die = true;
+							}
 
 							printf("플레이어 - 총알 충돌\n");
 							bullets[i].in_use = false;
