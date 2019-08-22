@@ -104,6 +104,8 @@
 #define CS_PLAYER_READY_CANCLE 101
 #define CS_PLAYER_TEAM_SELECT	102
 
+///////////////////////////////////////
+#define CS_PLAYER_LOGIN 50
 #define OBJECT_ALIVE		0
 #define OBJECT_DEAD			1
 
