@@ -328,6 +328,7 @@ void ServerFramework::AcceptPlayer() {
 	clients[client_id].boxCount = 10;
 
 	clients[client_id].hp = 100.f;
+	printf("%d번 플레이어 체력 %f\n",client_id, clients[client_id].hp);
 
 	clients[client_id].elecX = 500.f;
 	clients[client_id].elecY = 1000.f;
@@ -795,12 +796,28 @@ void ServerFramework::WorkerThread() {
 							//
 							//packets.hp = clients[j].hp;
 							packets.hp = (-1) * MAX_BULLET_DAMAGE;
-							
+							printf("%d번 플레이어 체력 %f\n", j, clients[j].hp);
 							if (!(clients[j].is_die))
 							{
 								clients[j].hp -= MAX_BULLET_DAMAGE;
-								if (clients[j].hp <= 0)
+								if (clients[j].hp <= 0) {
+									printf("%d번 플레이어 죽음\n", j);
 									clients[j].is_die = true;
+
+									SC_PACKET_IS_DIE die_packet;
+									die_packet.size = sizeof(SC_PACKET_IS_DIE);
+									die_packet.type = SC_IS_DIE;
+									die_packet.id = j;
+									die_packet.is_die = clients[j].is_die;
+									die_packet.look_vec = clients[j].look_vec;
+									die_packet.player_status = 17;
+
+									for (int k = 0; k < MAX_PLAYER_SIZE; ++k) {
+										if (clients[k].in_use) {
+											SendPacket(k, &die_packet);
+										}
+									}
+								}
 							}
 
 							/*if ( clients[j].hp < 0.f) {
@@ -826,12 +843,14 @@ void ServerFramework::WorkerThread() {
 							//packets.hp = clients[j].hp;
 
 							packets.hp = (-1) * MAX_BULLET_DAMAGE;
+
 							if (!(clients[j].is_die))
 							{
 								clients[j].hp -= MAX_BULLET_DAMAGE;
 								if (clients[j].hp <= 0)
 									clients[j].is_die = true;
 							}
+
 							printf("플레이어 - 총알 충돌\n");
 							bullets[i].in_use = false;
 							break;
