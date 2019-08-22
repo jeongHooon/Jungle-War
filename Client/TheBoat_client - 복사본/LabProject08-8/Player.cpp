@@ -36,6 +36,8 @@ void CPlayer::GetKeyInput(int key) {
 	//check
 	//NewMD5Model.animations[key].currAnimTime = 0;
 	animation_status = key;
+	if (animation_status == 17)
+		isDie = true;
 }
 
 
@@ -285,7 +287,7 @@ void CPlayer::Animate(float fTimeElapsed)
 		shotTime = 0.0f;
 		isShot = false;
 	}
-	if (dieTime > 2.0) {
+	if (dieTime > 1.0) {
 		shotTime = 0.0f;
 		gameend = true;
 	}
