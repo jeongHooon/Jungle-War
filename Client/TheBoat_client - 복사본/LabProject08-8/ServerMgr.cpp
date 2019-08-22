@@ -151,7 +151,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		sc_vec_buff[packets->id].pos.x = packets->x;
 		sc_vec_buff[packets->id].pos.y = packets->y;
 		sc_vec_buff[packets->id].pos.z = packets->z;
-		sc_vec_buff[packets->id].is_die = packets->is_die;
+		//sc_vec_buff[packets->id].is_die = packets->is_die;
 		sc_look_vec = packets->look_vec;
 
 		for (int i = 0; i < 4; ++i)
@@ -167,6 +167,28 @@ void ServerMgr::ProcessPacket(char* ptr) {
 
 		//printf("elecCount : %d\n", packets->elecCount);
 		
+
+		break;
+	}
+	case SC_IS_DIE: {
+		SC_PACKET_IS_DIE* packets = reinterpret_cast<SC_PACKET_IS_DIE*>(ptr);
+		clients_id = packets->id;
+		sc_look_vec = packets->look_vec;
+		sc_vec_buff[packets->id].is_die = packets->is_die;
+
+		for (int i = 0; i < 4; ++i)
+			if (sc_vec_buff[i].is_die)
+				printf("%d Å¬¶ó Á×À½\n");
+		// 0 ¼û½¬±â, 1: °È±â, 2: ¶Ù±â
+		sc_vec_buff[packets->id].player_status = packets->player_status;
+		if (packets->is_die) {
+			sc_vec_buff[packets->id].player_status = 17;
+		}
+		//sc_vec_buff[packets->id].elecCount = packets->elecCount;
+		//elecCount = packets->elecCount;
+
+		//printf("elecCount : %d\n", packets->elecCount);
+
 
 		break;
 	}
