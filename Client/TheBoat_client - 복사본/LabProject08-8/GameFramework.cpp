@@ -1041,8 +1041,14 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case VK_RETURN:
 			if (gameMode == 0 && mainScreenSelect == 1)
 				gameMode = 3;
-			else if (gameMode == 4)
+			else if (gameMode == 5)
 				gameMode = 1;
+			else if (gameMode == 3) {
+				gameMode = 4;
+				wcscpy(playerName[0], inputtext);
+				for (int i = 0; i < 100; ++i)
+					inputtext[i] = {};
+			}
 			else
 				SwapText();
 			break;
@@ -1060,8 +1066,8 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			m_pCamera = m_pPlayer[my_client_id]->ChangeCamera((DWORD)(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
 			break;
 		case VK_F5:
-			if(gameMode == 3)
-				gameMode = 4;
+			if(gameMode == 4)
+				gameMode = 5;
 			break;
 		case VK_F9:
 		{
@@ -1756,13 +1762,14 @@ void CGameFramework::FrameAdvance()
 
 		if (blueScreenMode)
 			m_pScene->m_ppUIShaders[26]->Render(m_pd3dCommandList, m_pCamera);
-
-
 		break;
 	case 3:
-		m_pScene->m_ppUIShaders[28]->Render(m_pd3dCommandList, m_pCamera);
+		m_pScene->m_ppMainUIShaders[4]->Render(m_pd3dCommandList, m_pCamera);
 		break;
 	case 4:
+		m_pScene->m_ppUIShaders[28]->Render(m_pd3dCommandList, m_pCamera);
+		break;
+	case 5:
 		m_pScene->m_ppUIShaders[29]->Render(m_pd3dCommandList, m_pCamera);
 		break;
 	}
@@ -1944,9 +1951,14 @@ void CGameFramework::FrameAdvance()
 	if (gameMode > 2) {
 		D2D1_SIZE_F szRenderTarget = m_ppd2dRenderTargets[m_nSwapChainBufferIndex]->GetSize();
 
-		D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * 0.85f, szRenderTarget.width, szRenderTarget.height);
-		m_pd2dDeviceContext->DrawTextW(outputtext, (UINT32)wcslen(outputtext), m_pdwFont, &rcLowerText, m_pd2dbrText);
-		
+		if (gameMode == 3) {
+			D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.42, szRenderTarget.height * 0.32f, szRenderTarget.width, szRenderTarget.height);
+			m_pd2dDeviceContext->DrawTextW(outputtext, (UINT32)wcslen(outputtext), m_pdwFont, &rcLowerText, m_pd2dbrText);
+		}
+		else {
+			D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * 0.83f, szRenderTarget.width, szRenderTarget.height);
+			m_pd2dDeviceContext->DrawTextW(outputtext, (UINT32)wcslen(outputtext), m_pdwFont, &rcLowerText, m_pd2dbrText);
+		}
 		for (int i = 0; i < 14; ++i) {
 			D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.2, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
 			m_pd2dDeviceContext->DrawTextW(outputtexts[i], (UINT32)wcslen(outputtexts[i]), m_pdwFont, &rcChatText, m_pd2dbrText);
@@ -1991,7 +2003,7 @@ void CGameFramework::SwapText() {
 	}
 	wcscpy(outputtexts[0], inputtext);
 	playerChat[0] = 0;
-	for (int i = 0; i < 50; ++i)
+	for (int i = 0; i < 100; ++i)
 		inputtext[i] = {};
 	outputtext = L"";
 }
