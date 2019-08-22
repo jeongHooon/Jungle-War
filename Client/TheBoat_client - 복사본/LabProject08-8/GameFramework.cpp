@@ -1957,13 +1957,20 @@ void CGameFramework::FrameAdvance()
 		else {
 			D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * 0.83f, szRenderTarget.width, szRenderTarget.height);
 			m_pd2dDeviceContext->DrawTextW(outputtext, (UINT32)wcslen(outputtext), m_pdwFont, &rcLowerText, m_pd2dbrText);
+
+			//플레이어 이름 출력
+			for (int i = 0; i < 4; ++i) {
+				D2D1_RECT_F rcPlayerText = D2D1::RectF(szRenderTarget.width * 0.7, szRenderTarget.height * (-0.83f + 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+				m_pd2dDeviceContext->DrawTextW(playerName[i], (UINT32)wcslen(playerName[i]), m_pdwFont, &rcPlayerText, m_pd2dbrText);
+			}
 		}
-		for (int i = 0; i < 14; ++i) {
+
+		for (int i = 0; i < 16; ++i) {
 			D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.2, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
 			m_pd2dDeviceContext->DrawTextW(outputtexts[i], (UINT32)wcslen(outputtexts[i]), m_pdwFont, &rcChatText, m_pd2dbrText);
 		}
 
-		for (int i = 0; i < 14; ++i) {
+		for (int i = 0; i < 16; ++i) {
 			D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
 			m_pd2dDeviceContext->DrawTextW(playerName[playerChat[i]], (UINT32)wcslen(playerName[playerChat[i]]), m_pdwFont, &rcChatText, m_pd2dbrText);
 		}
@@ -1996,7 +2003,7 @@ void CGameFramework::FrameAdvance()
 }
 
 void CGameFramework::SwapText() {
-	for (int i = 0; i < 14; ++i) {
+	for (int i = 0; i < 16; ++i) {
 		wcscpy(outputtexts[14 - i],outputtexts[13 - i]);
 		playerChat[14 - i] = playerChat[13 - i];
 	}

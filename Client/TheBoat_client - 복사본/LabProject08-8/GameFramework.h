@@ -138,9 +138,9 @@ private:
 	//Ã¤ÆÃ
 	wchar_t						inputtext[100] = L"";
 	wchar_t						*outputtext = L"";
-	wchar_t						outputtexts[15][100] = {L"",L"",L"",L"",L"",L"",L"",L"",L"",L"" };
-	wchar_t						playerName[4][100] = {L"", L"", L"", L""};
-	int							playerChat[16] = {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4};
+	wchar_t						outputtexts[17][100] = {L"",L"",L"",L"",L"",L"",L"",L"",L"",L"" };
+	wchar_t						playerName[4][100] = {L"", L"Byungchul", L"Sujin", L"JeongHoon"};
+	int							playerChat[17] = {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4};
 
 #if defined(_DEBUG)
 	ID3D12Debug					*m_pd3dDebugController;
