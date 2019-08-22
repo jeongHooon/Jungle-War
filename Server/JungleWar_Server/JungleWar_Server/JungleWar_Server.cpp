@@ -18,7 +18,6 @@ void AcceptPlayer();
 void WorkerThread();
 void TimerThreadFunc();
 
-
 int main()
 {
 	vector<thread*> worker_vector;

@@ -18,10 +18,13 @@ void ServerMgr::IPInput() {
 	while (true) {
 		cout << "서버 아이피 입력 : ";
 		cin >> server_ip;
+
 //		cout << "아이디 입력 : ";
 //		cin >> userid;
 //		cout << "비밀번호 입력 : ";
 //		cin >> userpw;
+
+
 		break;
 	}
 }
@@ -151,7 +154,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		sc_vec_buff[packets->id].pos.x = packets->x;
 		sc_vec_buff[packets->id].pos.y = packets->y;
 		sc_vec_buff[packets->id].pos.z = packets->z;
-		sc_vec_buff[packets->id].is_die = packets->is_die;
+		//sc_vec_buff[packets->id].is_die = packets->is_die;
 		sc_look_vec = packets->look_vec;
 
 		for (int i = 0; i < 4; ++i)
@@ -167,6 +170,28 @@ void ServerMgr::ProcessPacket(char* ptr) {
 
 		//printf("elecCount : %d\n", packets->elecCount);
 		
+
+		break;
+	}
+	case SC_IS_DIE: {
+		SC_PACKET_IS_DIE* packets = reinterpret_cast<SC_PACKET_IS_DIE*>(ptr);
+		clients_id = packets->id;
+		sc_look_vec = packets->look_vec;
+		sc_vec_buff[packets->id].is_die = packets->is_die;
+
+		for (int i = 0; i < 4; ++i)
+			if (sc_vec_buff[i].is_die)
+				printf("%d 클라 죽음\n");
+		// 0 숨쉬기, 1: 걷기, 2: 뛰기
+		sc_vec_buff[packets->id].player_status = packets->player_status;
+		if (packets->is_die) {
+			sc_vec_buff[packets->id].player_status = 17;
+		}
+		//sc_vec_buff[packets->id].elecCount = packets->elecCount;
+		//elecCount = packets->elecCount;
+
+		//printf("elecCount : %d\n", packets->elecCount);
+
 
 		break;
 	}
@@ -437,6 +462,11 @@ void ServerMgr::SendPacket(int type) {
 		break;
 	case CS_PLAYER_READY_CANCLE:
 		packet_buffer->type = CS_PLAYER_READY_CANCLE;
+		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
+		break;
+
+	case CS_PLAYER_LOGIN:
+		packet_buffer->type = CS_PLAYER_LOGIN;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
 	}

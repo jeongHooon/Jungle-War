@@ -49,6 +49,7 @@
 #define SC_BUILDING_GEN			11
 #define SC_COLLSION_OB			12
 #define SC_COLLSION_OB2			13
+#define SC_IS_DIE				14
 
 #define SC_BOX_POS				21
 
@@ -104,6 +105,8 @@
 #define CS_PLAYER_READY_CANCLE 101
 #define CS_PLAYER_TEAM_SELECT	102
 
+///////////////////////////////////////
+#define CS_PLAYER_LOGIN 50
 #define OBJECT_ALIVE		0
 #define OBJECT_DEAD			1
 
@@ -157,6 +160,16 @@ struct SC_PACKET_POS {
 	float x, y, z;
 	bool is_die;
 
+	//int elecCount;
+};
+
+struct SC_PACKET_IS_DIE {
+	BYTE size;
+	BYTE type;
+	WORD id;
+	DirectX::XMFLOAT3 look_vec;
+	int player_status;
+	bool is_die;
 	//int elecCount;
 };
 

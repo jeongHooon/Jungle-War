@@ -36,6 +36,8 @@ void CPlayer::GetKeyInput(int key) {
 	//check
 	//NewMD5Model.animations[key].currAnimTime = 0;
 	animation_status = key;
+	if (animation_status == 17)
+		isDie = true;
 }
 
 
