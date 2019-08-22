@@ -159,7 +159,9 @@ void ServerMgr::ProcessPacket(char* ptr) {
 				printf("%d Å¬¶ó Á×À½\n");
 		// 0 ¼û½¬±â, 1: °È±â, 2: ¶Ù±â
 		sc_vec_buff[packets->id].player_status = packets->player_status;
-
+		if (packets->is_die) {
+			sc_vec_buff[packets->id].player_status = 17;
+		}
 		//sc_vec_buff[packets->id].elecCount = packets->elecCount;
 		//elecCount = packets->elecCount;
 
