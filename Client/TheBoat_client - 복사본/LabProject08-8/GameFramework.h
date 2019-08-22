@@ -92,11 +92,7 @@ public:
 	static CCamera				*m_pCamera;
 	static int					boxBound;
 	float						playerHp = 100;
-<<<<<<< HEAD
-	int							gameMode = 3;
-=======
-	int							gameMode = 1;
->>>>>>> 7ce32df5f3e53438e133504c499b7d5aa6d73641
+	int							gameMode = 0;
 	bool						damageCheck = false;
 	bool						writeMode = true;
 	bool						writeStart = false;
