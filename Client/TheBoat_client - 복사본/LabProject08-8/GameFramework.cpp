@@ -427,8 +427,6 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		printf("마우스 우클릭\n");
 		break;
 	
-
-
 	case WM_LBUTTONUP:
 		//server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
 		//m_pPlayer[my_client_id]->ActiveShot();
@@ -829,7 +827,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			}
 			break;
 		}
-		//
+	
 		break;
 	}
 	case WM_KEYUP:
@@ -1232,7 +1230,11 @@ void CGameFramework::SendLoginREQ() {
 	strncpy_s((char *)login->passwd, maxPasswdLen, passwd, maxPasswdLen);
 	login->passwd[maxPasswdLen - 1] = '\0';
 
-	SendChatREQ();
+
+	server_mgr.SendPacket(CS_PLAYER_LOGIN);
+
+
+//	SendChatREQ();
 
 }
 void CGameFramework::SendChatREQ() {
@@ -1732,9 +1734,6 @@ void CGameFramework::FrameAdvance()
 			m_pScene->m_ppUIShaders[1]->Render(m_pd3dCommandList, m_pCamera);// UI렌더 바꿔야함.
 
 
-
-
-
 																			 // 숫자 시작
 		if (m_pPlayer[my_client_id]->GetPlayerBullet() / 10 > 0)
 			m_pScene->m_ppUIShaders[11 + m_pPlayer[my_client_id]->GetPlayerBullet() / 10]->Render(m_pd3dCommandList, m_pCamera); // 앞 숫자
@@ -1852,6 +1851,16 @@ void CGameFramework::FrameAdvance()
 		}
 	}
 
+<<<<<<< HEAD
+//	for (int i = 0; i < 4; ++i) {
+//		if (!m_pPlayer[i]->isDie)
+//			printf("P%d : 생존 ", i + 1);
+//		else
+//			printf("P%d : 사망 ", i + 1);
+//	}
+
+	printf("\n");
+=======
 	/*for (int i = 0; i < 4; ++i) {
 		if (!m_pPlayer[i]->isDie)
 			printf("P%d : 생존 ", i + 1);
@@ -1859,6 +1868,7 @@ void CGameFramework::FrameAdvance()
 			printf("P%d : 사망 ", i + 1);
 	}*/
 	//printf("\n");
+>>>>>>> 7ce32df5f3e53438e133504c499b7d5aa6d73641
 	for (int i = 0; i < NUM_OBJECT2; ++i) {
 		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pObject2[i]->bounding_box);
 		switch (containType)
@@ -1995,3 +2005,4 @@ void CGameFramework::SwapText() {
 		inputtext[i] = {};
 	outputtext = L"";
 }
+

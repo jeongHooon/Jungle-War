@@ -18,10 +18,13 @@ void ServerMgr::IPInput() {
 	while (true) {
 		cout << "서버 아이피 입력 : ";
 		cin >> server_ip;
+
 //		cout << "아이디 입력 : ";
 //		cin >> userid;
 //		cout << "비밀번호 입력 : ";
 //		cin >> userpw;
+
+
 		break;
 	}
 }
@@ -459,6 +462,11 @@ void ServerMgr::SendPacket(int type) {
 		break;
 	case CS_PLAYER_READY_CANCLE:
 		packet_buffer->type = CS_PLAYER_READY_CANCLE;
+		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
+		break;
+
+	case CS_PLAYER_LOGIN:
+		packet_buffer->type = CS_PLAYER_LOGIN;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
 	}

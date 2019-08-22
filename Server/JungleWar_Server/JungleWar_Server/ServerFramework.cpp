@@ -586,6 +586,10 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		break;
 	case CS_PLAYER_TEAM_SELECT:
 		break;
+
+	case CS_PLAYER_LOGIN:
+		printf("·Î±×ÀÎ!!");
+		break;
 	}
 
 }
