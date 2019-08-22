@@ -59,6 +59,7 @@ using namespace std;
 
 #include "d3dx12.h"
 #include "..\..\..\Server\JungleWar_Server\JungleWar_Server\protocol.h"
+
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 
