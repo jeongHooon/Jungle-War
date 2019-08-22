@@ -287,7 +287,7 @@ void CPlayer::Animate(float fTimeElapsed)
 		shotTime = 0.0f;
 		isShot = false;
 	}
-	if (dieTime > 1.0) {
+	if (dieTime > 2.0) {
 		shotTime = 0.0f;
 		gameend = true;
 	}
