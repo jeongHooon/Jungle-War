@@ -365,6 +365,7 @@ void ServerMgr::SendDeadPacket() {
 		ErrorDisplay("[WSASend] 에러 : ", error_code);
 	}
 }
+
 void ServerMgr::SendPacket(int type) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(send_buffer);
 	packet_buffer->size = sizeof(CS_PACKET_KEYUP);
@@ -497,7 +498,7 @@ void ServerMgr::SendPacket(int type) {
 
 }
 
-void ServerMgr::SendPacket(int type, CHAR id) {
+void ServerMgr::SendPacket(int type, char* id) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(send_buffer);
 	packet_buffer->size = sizeof(CS_PACKET_KEYUP);
 	send_wsabuf.len = sizeof(CS_PACKET_KEYUP);
@@ -506,12 +507,15 @@ void ServerMgr::SendPacket(int type, CHAR id) {
 	switch (type) {
 	case CS_PLAYER_LOGIN:
 		packet_buffer->type = CS_PLAYER_LOGIN;
-		packet_buffer->userID = id;
+	//	packet_buffer->userID = id;
+		strncpy_s((char *)packet_buffer->userID, maxUserIDLen, id, maxUserIDLen);
 
-		cout << "로그인한 ID" << id << endl;
+		cout << "로그인한 ID" << packet_buffer->userID << endl;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
 	}
+
+
 	if (retval == 1) {
 		int error_code = WSAGetLastError();
 		ErrorDisplay("[WSASend] 에러 : ", error_code);
@@ -572,8 +576,6 @@ void ServerMgr::SendPacket(int type, XMFLOAT3& xmvector) {
 		//packet_buffer->box_pos = xmvector; 오류 무엇?
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
-
-
 	case CS_KEY_RELEASE_UP:
 		packet_buffer->type = CS_KEY_RELEASE_UP;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);

@@ -87,7 +87,7 @@ struct OverlappedExtensionSet {
 
 struct Client {
 	///////////////////////////////
-	char id;
+	char userid[256];
 	///////////////////////////////
 
 	SOCKET s;

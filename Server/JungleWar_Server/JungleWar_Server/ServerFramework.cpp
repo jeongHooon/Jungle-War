@@ -616,7 +616,12 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 
 		break;
 	}
+<<<<<<< HEAD
+
+	case CS_PLAYER_READY_CANCLE:
+=======
 	case CS_PLAYER_READY_CANCLE: {
+>>>>>>> 86a54b30edc44a1dadec9f5e22c6e2816a8d7cbb
 		printf("%d 플레이어 레디취소\n", cl_id);
 		player_ready[cl_id] = false;
 		ready_count--;
@@ -637,18 +642,20 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	case CS_PLAYER_TEAM_SELECT:
 		break;
 
-
 	case CS_PLAYER_LOGIN:
 		printf("로그인!!\n");
-		clients[cl_id].look_vec = packet_buffer->look_vec;
-		clients[cl_id].id = packet_buffer->userID;
+	//	clients[cl_id].id = packet_buffer->userID;
+		strncpy_s((char *)clients[cl_id].userid, maxUserIDLen, packet_buffer->userID, maxUserIDLen);
+	
 		SC_PACKET_LOGIN_PLAYER packets;
 		packets.id = cl_id;
-		packets.userid = clients[cl_id].id;
+		strncpy_s((char *)packets.userid, maxUserIDLen, clients[cl_id].userid, maxUserIDLen);
+
+//		packets.userid = clients[cl_id].id;
 		packets.size = sizeof(SC_PACKET_LOGIN_PLAYER);
 		packets.type = SC_PLAYER_LOGIN;
 	
-		cout << clients[cl_id].id << "로그인" << endl;
+		cout << clients[cl_id].userid << "로그인" << endl;
 
 		for (int k = 0; k < MAX_PACKET_SIZE; ++k) {
 			if (clients[k].in_use) {

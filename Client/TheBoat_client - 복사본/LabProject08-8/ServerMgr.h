@@ -83,7 +83,7 @@ public:
 	void ReadPacket();
 	void SendPacket(int type);
 	void SendPacket(int type, XMFLOAT3& xmvector);
-	void SendPacket(int type, CHAR id);
+	void SendPacket(int type, char* id);
 	void SendDeadPacket();
 
 
