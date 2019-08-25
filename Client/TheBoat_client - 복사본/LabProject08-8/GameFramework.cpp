@@ -1824,6 +1824,10 @@ void CGameFramework::FrameAdvance()
 		}
 		}
 	}
+	//// 플레이어 죽는지 체크
+
+	if (m_pPlayer[my_client_id]->isDie)
+		server_mgr.SetIsPlayerdead(my_client_id);
 	////
 
 	/////// 오브젝트 충돌체크
