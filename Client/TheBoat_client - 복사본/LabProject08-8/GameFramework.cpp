@@ -1793,7 +1793,6 @@ void CGameFramework::FrameAdvance()
 	// 렌더
 	//printf("%f %f %f \n", m_pPlayer[0]->GetPosition().x, m_pPlayer[0]->GetPosition().y, m_pPlayer[0]->GetPosition().z);
 
-	m_pBlueBox[0]->SetBoxScale(server_mgr.GetElecCount());
 
 	// 자기장 충돌체크
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
