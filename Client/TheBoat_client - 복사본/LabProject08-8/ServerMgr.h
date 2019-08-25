@@ -61,6 +61,8 @@ class ServerMgr
 	char userid[maxUserIDLen];
 	char userpw[maxUserIDLen];
 
+	bool player_ready[MAX_PLAYER_SIZE] = { 0 };
+	bool game_start = false;
 
 	// 아이템 생성 부분
 	XMFLOAT3 item_pos;

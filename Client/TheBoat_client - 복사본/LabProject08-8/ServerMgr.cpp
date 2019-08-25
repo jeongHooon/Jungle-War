@@ -300,6 +300,19 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		is_item_gen = true;
 		break;
 	}
+	case SC_READY: {
+		SC_PACKET_READY* packets = reinterpret_cast<SC_PACKET_READY*>(ptr);
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+		{
+			player_ready[k] = packets->player_ready[k];
+			if (player_ready[k])
+				printf("%d 플레이어 레디\n", k);
+		}
+		game_start = packets->game_start;
+		if (game_start)
+			printf("게임 시작임 ㄱㄱㄱㄱㄱ\n");
+		break;
+	}
 	}
 }
 int ServerMgr::GetElecCount() {

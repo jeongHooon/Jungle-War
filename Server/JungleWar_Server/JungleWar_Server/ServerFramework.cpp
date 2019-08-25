@@ -426,7 +426,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		break;
 	case CS_KEY_PRESS_CROUCH:
 		clients[cl_id].is_crouch = true;
-//		printf("clients[cl_id].is_crouch %d\n", clients[cl_id].is_crouch);
+		//		printf("clients[cl_id].is_crouch %d\n", clients[cl_id].is_crouch);
 		break;
 
 	case CS_KEY_PRESS_1:
@@ -441,7 +441,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		clients[cl_id].is_running = true;
 		break;
 	case CS_KEY_PRESS_SPACE:
-	//	clients[cl_id].is_jump = true;
+		//	clients[cl_id].is_jump = true;
 		break;
 
 
@@ -531,7 +531,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 			packets.player_status = 2;
 		}
 		else if (clients[cl_id].is_move_backward == false && clients[cl_id].is_move_foward == false &&
-			clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false ) {
+			clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false) {
 			//clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false && clients[cl_id].is_jump == false) {
 			packets.player_status = 0;
 		}
@@ -567,49 +567,72 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		break;
 	}
 	case CS_PLAYER_READY: {
-		int ready_count = 0;
 		printf("%d 플레이어 레디\n", cl_id);
 		player_ready[cl_id] = true;
-		for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-			if (player_ready[i]) {
-				ready_count++;
-			}
+		ready_count++;
+
+		SC_PACKET_READY packets;
+		packets.size = sizeof(SC_PACKET_READY);
+		packets.type = SC_READY;
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+		{
+			packets.player_ready[k] = player_ready[k];
+			if (player_ready[k])
+				printf("%d 플레이어 레디\n", k);
 		}
+
 		if (ready_count == MAX_PLAYER_SIZE) {
-			GameStart();
+			//GameStart();
+			packets.game_start = true;
 		}
+
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+			if (clients[k].in_use)
+				SendPacket(k, &packets);
+
 		break;
 	}
-	case CS_PLAYER_READY_CANCLE:
-		printf("%d 플레이어 레디취소\n", cl_id);
+	case CS_PLAYER_READY_CANCLE: {
 		player_ready[cl_id] = false;
-		break;
-	case CS_PLAYER_TEAM_SELECT:
-		break;
+		ready_count--;
 
+		SC_PACKET_READY packets;
+		packets.size = sizeof(SC_PACKET_READY);
+		packets.type = SC_READY;
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+			packets.player_ready[k] = player_ready[k];
 
-	case CS_PLAYER_LOGIN:
-	//	printf("로그인!!");
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+			if (clients[k].in_use)
+				SendPacket(k, &packets);
+		break;
+	}
+	case CS_PLAYER_TEAM_SELECT: {
+		break;
+	}
+
+	case CS_PLAYER_LOGIN: {
+		//	printf("로그인!!");
 		SC_PACKET_LOGIN_PLAYER packets;
 		packets.id = cl_id;
 		packets.size = sizeof(SC_PACKET_LOGIN_PLAYER);
 		packets.type = SC_PLAYER_LOGIN;
 
 
-//		strncpy_s((char *)login->passwd, maxPasswdLen, passwd, maxPasswdLen);
-//		strncmp(packets.userid, (char *)clients[cl_id].id,
-//			maxUserIDLen);
+		//		strncpy_s((char *)login->passwd, maxPasswdLen, passwd, maxPasswdLen);
+		//		strncmp(packets.userid, (char *)clients[cl_id].id,
+		//			maxUserIDLen);
 
-	//	packets.userid = clients[cl_id].id;
+			//	packets.userid = clients[cl_id].id;
 
-	//	cout << packets.userid << "로그인" << endl;
+			//	cout << packets.userid << "로그인" << endl;
 		cout << packets.id << "로그인" << endl;
 		cout << cl_id << "로그인" << endl;
 
 		cout << clients[cl_id].id << "로그인" << endl;
 		break;
 	}
-
+	}
 }
 
 void ServerFramework::GameStart() {
