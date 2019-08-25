@@ -55,7 +55,6 @@
 
 ///////////////////////////////////////
 #define SC_PLAYER_LOGIN			51
-#define SC_READY				52
 
 
 // Server To Server
@@ -134,7 +133,7 @@ struct SC_PACKET_ENTER_PLAYER {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	BYTE userid[maxUserIDLen];
+	char userid;
 	BYTE passwd[maxPasswdLen];
 	float x, y, z;
 	// 건물 크기 보낼 때만 사용
@@ -151,7 +150,7 @@ struct SC_PACKET_LOGIN_PLAYER {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	char userid[maxUserIDLen];
+	char userid;
 	BYTE passwd[maxPasswdLen];
 };
 
@@ -222,9 +221,7 @@ struct SC_PACKET_COLLISION_OB {
 
 
 struct SC_PAKCET_CLIENT_BUILDING_COLLSION {
-	BYTE size;
-	BYTE type;
-	int player_ready[MAX_PLAYER_SIZE];
+
 };
 
 struct SC_PACKET_ITEM_GEN {
@@ -233,13 +230,6 @@ struct SC_PACKET_ITEM_GEN {
 	float x, y, z;
 };
 
-struct SC_PACKET_READY {
-	BYTE size;
-	BYTE type;
-	bool player_ready[MAX_PLAYER_SIZE];
-	bool game_start = false;
-	
-};
 
 
 // 클라->서버
@@ -254,6 +244,7 @@ struct CS_PACKET_BIGGEST {
 struct CS_PACKET_KEYUP {
 	BYTE size;
 	BYTE type;
+	char userID;
 	DirectX::XMFLOAT3 look_vec;
 	bool isPlayerdead[MAX_PLAYER_SIZE] = { false };
 };

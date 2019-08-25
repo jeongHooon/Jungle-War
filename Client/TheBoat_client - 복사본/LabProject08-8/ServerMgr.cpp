@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "GameFramework.h"
 #include "ServerMgr.h"
 
 void ServerMgr::ErrorDisplay(const char* msg, int err_no) {
@@ -17,12 +18,7 @@ void ServerMgr::ErrorDisplay(const char* msg, int err_no) {
 void ServerMgr::IPInput() {
 	while (true) {
 		cout << "서버 아이피 입력 : ";
-		//cin >> server_ip;
-
-//		cout << "아이디 입력 : ";
-//		cin >> userid;
-//		cout << "비밀번호 입력 : ";
-//		cin >> userpw;
+		cin >> server_ip;
 		break;
 	}
 }
@@ -122,12 +118,12 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		break;
 	}
 
-//	case SC_PLAYER_LOGIN: {
-//		SC_PACKET_LOGIN_PLAYER* packets = reinterpret_cast<SC_PACKET_LOGIN_PLAYER*>(ptr);
-//
-//
-//		break;
-//	}
+	case SC_PLAYER_LOGIN: {
+		SC_PACKET_LOGIN_PLAYER* packets = reinterpret_cast<SC_PACKET_LOGIN_PLAYER*>(ptr);
+		loginID[packets->userid] = packets->userid;
+		cout << loginID[packets->userid] << "로그인했당" << endl;
+		break;
+	}
 
 	case SC_BUILDING_GEN: {
 		SC_PACKET_ENTER_PLAYER* packets = reinterpret_cast<SC_PACKET_ENTER_PLAYER*>(ptr);
@@ -216,6 +212,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		//printf("[Bullet] %d 플레이어 총알 ID[%d] \n", clients_id, packets->bullet_id);
 		break;
 	}
+
 	case SC_BOX_POS: {
 		SC_PACKET_BOX* packets = reinterpret_cast<SC_PACKET_BOX*>(ptr);
 		clients_id = packets->id;
@@ -298,19 +295,6 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		item_pos.z = packets->z;
 		printf("아템 생성\n");
 		is_item_gen = true;
-		break;
-	}
-	case SC_READY: {
-		SC_PACKET_READY* packets = reinterpret_cast<SC_PACKET_READY*>(ptr);
-		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
-		{
-			player_ready[k] = packets->player_ready[k];
-			if (player_ready[k])
-				printf("%d 플레이어 레디\n", k);
-		}
-		game_start = packets->game_start;
-		if (game_start)
-			printf("게임 시작임 ㄱㄱㄱㄱㄱ\n");
 		break;
 	}
 	}
@@ -492,11 +476,6 @@ void ServerMgr::SendPacket(int type) {
 		packet_buffer->type = CS_PLAYER_READY_CANCLE;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
-
-//	case CS_PLAYER_LOGIN:
-//		packet_buffer->type = CS_PLAYER_LOGIN;
-//		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
-//		break;
 	}
 
 	if (retval == 1) {
@@ -506,7 +485,7 @@ void ServerMgr::SendPacket(int type) {
 
 }
 
-void ServerMgr::SendPacket(int type, _TCHAR* argv[]) {
+void ServerMgr::SendPacket(int type, CHAR id) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(send_buffer);
 	packet_buffer->size = sizeof(CS_PACKET_KEYUP);
 	send_wsabuf.len = sizeof(CS_PACKET_KEYUP);
@@ -515,6 +494,9 @@ void ServerMgr::SendPacket(int type, _TCHAR* argv[]) {
 	switch (type) {
 	case CS_PLAYER_LOGIN:
 		packet_buffer->type = CS_PLAYER_LOGIN;
+		packet_buffer->userID = id;
+
+		cout << "로그인한 ID" << id << endl;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
 	}
@@ -523,6 +505,7 @@ void ServerMgr::SendPacket(int type, _TCHAR* argv[]) {
 		ErrorDisplay("[WSASend] 에러 : ", error_code);
 	}
 }
+
 
 void ServerMgr::SendPacket(int type, XMFLOAT3& xmvector) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(send_buffer);

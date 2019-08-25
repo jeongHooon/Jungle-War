@@ -3,6 +3,7 @@
 #include "CHeightMapImage.h"
 #include "Building.h"
 #include "Object.h"
+#include "string.h"
 
 void ErrorDisplay(const char* msg, int err_no) {
 	WCHAR *lpMsgBuf;
@@ -357,9 +358,9 @@ void ServerFramework::AcceptPlayer() {
 	packet.elecX = 500.f;
 	packet.elecY = 1000.f;
 	packet.elecZ = 500.f;
-
-	
 	SendPacket(client_id, &packet);
+
+
 	//printf("%d 자기장 중심 %f \n", client_id, clients[client_id].elecX);
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		if (clients[i].in_use && (client_id != i)) {
@@ -388,6 +389,7 @@ void ServerFramework::AcceptPlayer() {
 		}
 	}*/
 
+
 	// 해당 클라이언트에게도 다른 클라이언트의 위치를 보내줘야한당!~
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		ZeroMemory(&packet, sizeof(packet));
@@ -412,6 +414,8 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(packet);
 
 	switch (packet_buffer->type) {
+
+
 	case CS_PLAYER_DIE: {
 		clients[cl_id].is_die = true;
 
@@ -444,7 +448,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		break;
 	case CS_KEY_PRESS_CROUCH:
 		clients[cl_id].is_crouch = true;
-		//		printf("clients[cl_id].is_crouch %d\n", clients[cl_id].is_crouch);
+//		printf("clients[cl_id].is_crouch %d\n", clients[cl_id].is_crouch);
 		break;
 
 	case CS_KEY_PRESS_1:
@@ -459,7 +463,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		clients[cl_id].is_running = true;
 		break;
 	case CS_KEY_PRESS_SPACE:
-		//	clients[cl_id].is_jump = true;
+	//	clients[cl_id].is_jump = true;
 		break;
 
 
@@ -549,7 +553,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 			packets.player_status = 2;
 		}
 		else if (clients[cl_id].is_move_backward == false && clients[cl_id].is_move_foward == false &&
-			clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false) {
+			clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false ) {
 			//clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false && clients[cl_id].is_jump == false) {
 			packets.player_status = 0;
 		}
@@ -585,73 +589,48 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		break;
 	}
 	case CS_PLAYER_READY: {
+		int ready_count = 0;
 		printf("%d 플레이어 레디\n", cl_id);
 		player_ready[cl_id] = true;
-		ready_count++;
-
-		SC_PACKET_READY packets;
-		packets.size = sizeof(SC_PACKET_READY);
-		packets.type = SC_READY;
-		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
-		{
-			packets.player_ready[k] = player_ready[k];
-			if (player_ready[k])
-				printf("%d 플레이어 레디\n", k);
+		for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
+			if (player_ready[i]) {
+				ready_count++;
+			}
 		}
-
 		if (ready_count == MAX_PLAYER_SIZE) {
-			//GameStart();
-			game_start = true;
-			packets.game_start = game_start;
+			GameStart();
 		}
-
-		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
-			if (clients[k].in_use)
-				SendPacket(k, &packets);
-
 		break;
 	}
-	case CS_PLAYER_READY_CANCLE: {
+	case CS_PLAYER_READY_CANCLE:
+		printf("%d 플레이어 레디취소\n", cl_id);
 		player_ready[cl_id] = false;
-		ready_count--;
-
-		SC_PACKET_READY packets;
-		packets.size = sizeof(SC_PACKET_READY);
-		packets.type = SC_READY;
-		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
-			packets.player_ready[k] = player_ready[k];
-
-		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
-			if (clients[k].in_use)
-				SendPacket(k, &packets);
 		break;
-	}
-	case CS_PLAYER_TEAM_SELECT: {
+	case CS_PLAYER_TEAM_SELECT:
 		break;
-	}
 
-	case CS_PLAYER_LOGIN: {
-		//	printf("로그인!!");
+
+	case CS_PLAYER_LOGIN:
+		printf("로그인!!\n");
+		clients[cl_id].look_vec = packet_buffer->look_vec;
+		clients[cl_id].id = packet_buffer->userID;
 		SC_PACKET_LOGIN_PLAYER packets;
 		packets.id = cl_id;
+		packets.userid = clients[cl_id].id;
 		packets.size = sizeof(SC_PACKET_LOGIN_PLAYER);
 		packets.type = SC_PLAYER_LOGIN;
-
-
-		//		strncpy_s((char *)login->passwd, maxPasswdLen, passwd, maxPasswdLen);
-		//		strncmp(packets.userid, (char *)clients[cl_id].id,
-		//			maxUserIDLen);
-
-			//	packets.userid = clients[cl_id].id;
-
-			//	cout << packets.userid << "로그인" << endl;
-		cout << packets.id << "로그인" << endl;
-		cout << cl_id << "로그인" << endl;
-
+	
 		cout << clients[cl_id].id << "로그인" << endl;
+
+		for (int k = 0; k < MAX_PACKET_SIZE; ++k) {
+			if (clients[k].in_use) {
+				SendPacket(k, &packets);
+			}
+		}
+		cout << packets.userid << "로그인" << endl;
 		break;
 	}
-	}
+
 }
 
 void ServerFramework::GameStart() {
@@ -758,6 +737,7 @@ void ServerFramework::WorkerThread() {
 		}
 		// TimerThread에서 호출
 		// 1/20 마다 모든 플레이어에게 정보 전송
+
 		else if (overlapped_buffer->command == SS_ITEM_GEN) {
 			printf("아이템 생성띠\n");
 			SC_PACKET_ITEM_GEN packets;
@@ -1435,9 +1415,7 @@ void ServerFramework::TimerSend(duration<float>& elapsed_time) {
 				ol_ex[i].command = SC_PLAYER_MOVE;
 				PostQueuedCompletionStatus(iocp_handle, 0, i, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[i]));
 			}
-			
-			if(game_start)
-				++elecCount;
+			++elecCount;
 		}
 		sender_time = 0;
 	}

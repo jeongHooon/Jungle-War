@@ -9,8 +9,11 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CPlayer
 
+<<<<<<< HEAD
 #define BluBoxSpeed 0.01
 
+=======
+>>>>>>> bbab988807e8103da02cb12973335d0e5085013e
 int ServerMgr::elecCount;
 XMFLOAT3 ServerMgr::elecPos;
 
@@ -144,8 +147,9 @@ void CPlayer::Rotate(float x, float y, float z)
 			//XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), XMConvertToDegrees(atan2(m_pCamera->GetLookVector().x, m_pCamera->GetLookVector().z)), 0.0f);
 			//XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), 90.f, 0.0f);
 			//m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
-			///캐릭터 회전
-			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), XMConvertToRadians(y));
+			///캐릭터 회전XMMatrixRotationRollPitchYaw
+			//XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), XMConvertToRadians(y));
+			XMMATRIX xmmtxRotate = XMMatrixRotationRollPitchYaw(0.0f,XMConvertToRadians(y),0.0f);
 			m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
 			m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
 		}
@@ -648,11 +652,13 @@ void CBlueBox::Animate(float fTimeElapsed)
 	if (0.05 * ServerMgr::elecCount < 1100)
 		elecCount_ = ServerMgr::elecCount;
 
-	SetScale(1200 - BluBoxSpeed * elecCount_, 5000, 1200 - BluBoxSpeed * elecCount_);
-	SetOOBB(ServerMgr::elecPos, XMFLOAT3((1200 - BluBoxSpeed * elecCount_) / 2, 5000, (1200 - BluBoxSpeed * elecCount_) / 2), XMFLOAT4(0, 0, 0, 1));
+	SetScale(1200 - 0.02 * elecCount_, 5000, 1200 - 0.02 * elecCount_);
+	SetOOBB(ServerMgr::elecPos, XMFLOAT3((1200 - 0.02 * elecCount_) / 2, 5000, (1200 - 0.02 * elecCount_) / 2), XMFLOAT4(0, 0, 0, 1));
 	SetPosition(ServerMgr::elecPos);
 }
 
+void CBlueBox::SetBoxScale(int input) {
+}
 
 CCamera * CBlueBox::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 {
@@ -790,10 +796,10 @@ void CShadow::Animate(float fTimeElapsed, int num, XMFLOAT4X4 worldMt)
 	if (!m_bActive) return;
 	//SetWMatrix(Matrix4x4::Multiply(worldMt, MTShadow));
 	SetWMatrix(Matrix4x4::Multiply(worldMt, XMMatrixIdentity()));
-	//m_xmf4x4ToParentTransform._11 = m_xmf3Right.x; m_xmf4x4ToParentTransform._12 = m_xmf3Right.y; m_xmf4x4ToParentTransform._13 = m_xmf3Right.z;
-	//m_xmf4x4ToParentTransform._21 = m_xmf3Up.x; m_xmf4x4ToParentTransform._22 = m_xmf3Up.y; m_xmf4x4ToParentTransform._23 = m_xmf3Up.z;
-	//m_xmf4x4ToParentTransform._31 = m_xmf3Look.x; m_xmf4x4ToParentTransform._32 = m_xmf3Look.y; m_xmf4x4ToParentTransform._33 = m_xmf3Look.z;
-	m_xmf4x4ToParentTransform._43 -= 5;
+	m_xmf4x4ToParentTransform._11 = m_xmf3Right.x; m_xmf4x4ToParentTransform._12 = m_xmf3Right.y; m_xmf4x4ToParentTransform._13 = m_xmf3Right.z;
+	m_xmf4x4ToParentTransform._21 = m_xmf3Up.x; m_xmf4x4ToParentTransform._22 = m_xmf3Up.y; m_xmf4x4ToParentTransform._23 = m_xmf3Up.z;
+	m_xmf4x4ToParentTransform._31 = m_xmf3Look.x; m_xmf4x4ToParentTransform._32 = m_xmf3Look.y; m_xmf4x4ToParentTransform._33 = m_xmf3Look.z;
+	//m_xmf4x4ToParentTransform._43 -= 5;
 	/*if (m_nMeshes > 0)
 		for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
 			UpdateMD5Model(NewMD5Model, fTimeElapsed * 0.85, 0, m_ppMeshes[i], i);*/
@@ -804,19 +810,20 @@ void CShadow::Animate(float fTimeElapsed, int num, XMFLOAT4X4 worldMt)
 		if (isShot) {
 
 			for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
-				UpdateMD5Model(NewMD5Model, fTimeElapsed * 0.85, 2, m_ppMeshes[i], i);
+				UpdateMD5Model2(NewMD5Model, fTimeElapsed * 0.85, 2, m_ppMeshes[i], i);
 			shotTime += fTimeElapsed;
 		}
 		else if (isDie) {
 			for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
-				UpdateMD5Model(NewMD5Model, fTimeElapsed * 0.4, 17, m_ppMeshes[i], i);
+				UpdateMD5Model2(NewMD5Model, fTimeElapsed * 0.4, 17, m_ppMeshes[i], i);
 			dieTime += fTimeElapsed;
 		}
 		else {
 			for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
-				UpdateMD5Model(NewMD5Model, fTimeElapsed * 0.85, animation_status, m_ppMeshes[i], i);
+				UpdateMD5Model2(NewMD5Model, fTimeElapsed * 0.85, animation_status, m_ppMeshes[i], i);
 		}
 	}
+	
 	if (shotTime > 0.5) {
 		shotTime = 0.0f;
 		isShot = false;
@@ -894,4 +901,76 @@ CCamera* CShadow::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 	Update(fTimeElapsed);
 
 	return(m_pCamera);
+}
+
+void CShadow::rrrotate(float deg)
+{
+	//XMMATRIX mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), -(deg - PI / 2));
+	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(-90.0f,0.0f, 0.0f);
+	//m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
+}
+
+void CShadow::Rotate(float x, float y, float z)
+{
+	DWORD nCurrentCameraMode = m_pCamera->GetMode();
+	if ((nCurrentCameraMode == FIRST_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA))
+	{
+		if (x != 0.0f)
+		{
+			m_fPitch += x;
+			if (m_fPitch > +89.0f) { x -= (m_fPitch - 89.0f); m_fPitch = +89.0f; }
+			if (m_fPitch < -89.0f) { x -= (m_fPitch + 89.0f); m_fPitch = -89.0f; }
+		}
+		if (y != 0.0f)
+		{
+			m_fYaw += y;
+			if (m_fYaw > 360.0f) m_fYaw -= 360.0f;
+			if (m_fYaw < 0.0f) m_fYaw += 360.0f;
+		}
+		if (z != 0.0f)
+		{
+			m_fRoll += z;
+			if (m_fRoll > +20.0f) { z -= (m_fRoll - 20.0f); m_fRoll = +20.0f; }
+			if (m_fRoll < -20.0f) { z -= (m_fRoll + 20.0f); m_fRoll = -20.0f; }
+		}
+		m_pCamera->Rotate(x, y, z);
+		if (y != 0.0f)
+		{
+
+			//XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), XMConvertToDegrees(atan2(m_pCamera->GetLookVector().x, m_pCamera->GetLookVector().z)), 0.0f);
+			//XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), 90.f, 0.0f);
+			//m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
+			///캐릭터 회전XMMatrixRotationRollPitchYaw
+			//XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), XMConvertToRadians(y));
+			XMMATRIX xmmtxRotate = XMMatrixRotationRollPitchYaw(-90.0f, XMConvertToRadians(y), 0.0f);
+			m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
+			m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
+		}
+	}
+	else if (nCurrentCameraMode == SPACESHIP_CAMERA)
+	{
+		m_pCamera->Rotate(x, y, z);
+		if (x != 0.0f)
+		{
+			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Right), XMConvertToRadians(x));
+			m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
+			m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
+		}
+		if (y != 0.0f)
+		{
+			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), XMConvertToRadians(y));
+			m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
+			m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
+		}
+		if (z != 0.0f)
+		{
+			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Look), XMConvertToRadians(z));
+			m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
+			m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
+		}
+	}
+
+	m_xmf3Look = Vector3::Normalize(m_xmf3Look);
+	m_xmf3Right = Vector3::CrossProduct(m_xmf3Up, m_xmf3Look, true);
+	m_xmf3Up = Vector3::CrossProduct(m_xmf3Look, m_xmf3Right, true);
 }

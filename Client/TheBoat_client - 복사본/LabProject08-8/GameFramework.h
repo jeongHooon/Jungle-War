@@ -8,7 +8,7 @@
 #include "Scene.h"
 #include "Shader.h"
 #include "ServerMgr.h"
-
+#include "ServerMgr.h"
 
 class CGameFramework
 {
@@ -96,7 +96,12 @@ public:
 	static CCamera				*m_pCamera;
 	static int					boxBound;
 	float						playerHp = 100;
+<<<<<<< HEAD
 	int							gameMode = 0;
+=======
+	int							gameMode = 3;
+
+>>>>>>> bbab988807e8103da02cb12973335d0e5085013e
 	bool						damageCheck = false;
 	bool						writeMode = true;
 	bool						writeStart = false;

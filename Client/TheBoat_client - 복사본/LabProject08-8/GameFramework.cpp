@@ -1026,7 +1026,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				//printf("[WM_KEYDOWN] : Q키 놓음 \n");
 				server_mgr.SendPacket(CS_KEY_RELEASE_Q);
 				is_pushed[CS_KEY_PRESS_Q] = false;
-				
 			}
 			break;
 		case VK_UP:
@@ -1222,6 +1221,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	return(0);
 }
 
+<<<<<<< HEAD
 void CGameFramework::SendLoginREQ(char userid[]) {
 	cout << "id를 입력해 주세요 ";
 	cin >> userid;
@@ -1229,6 +1229,14 @@ void CGameFramework::SendLoginREQ(char userid[]) {
 	for (int i = 0; i < 10; ++i) {
 		cout << userid[i];
 	}
+=======
+void CGameFramework::SendLoginREQ() {
+	char userid;
+
+	cout << "id를 입력해 주세요 ";
+	cin >> userid;
+
+>>>>>>> bbab988807e8103da02cb12973335d0e5085013e
 
 	char protoBuffer[1024];
 	ProtoCommand *cmd = (ProtoCommand *)protoBuffer;
@@ -1236,17 +1244,30 @@ void CGameFramework::SendLoginREQ(char userid[]) {
 
 	cmd->command = ComLoginREQ;
 
-	login->userid[maxUserIDLen - 1] = '\0';
+//	strncpy_s((char *)login->userid, maxUserIDLen, userid, maxUserIDLen);
+	login->userid[maxUserIDLen - 1] = '\0';  // 제한된 길이만큼만 복사
+
+<<<<<<< HEAD
+=======
+	cout << "로그인한 아이디는" << userid << endl;
+	
+>>>>>>> bbab988807e8103da02cb12973335d0e5085013e
 
 
-
-	server_mgr.SendPacket(CS_PLAYER_LOGIN);
+	server_mgr.SendPacket(CS_PLAYER_LOGIN,userid);
+//	server_mgr.SendPacket(CS_PLAYER_LOGIN, userid);
+	
 //	send(s, protoBuffer, sizeof(ProtoCommand) + sizeof(StrLoginREQ), 0);
 	
 //	SendChatREQ();
 
 }
+<<<<<<< HEAD
 void CGameFramework::SendChatREQ(char buffer[256]) {
+=======
+
+void CGameFramework::SendChatREQ() {
+>>>>>>> bbab988807e8103da02cb12973335d0e5085013e
 //	while (true) {
 		cout << "전송할 문자열 : ";
 		cin >> buffer;
@@ -1629,13 +1650,7 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 	if (fColors[1] > 1.0f) fColors[1] = 0.0f;
 	m_pd2dfxGaussianBlur->SetValue(D2D1_GAUSSIANBLUR_PROP_STANDARD_DEVIATION, 0.3f + fColors[1] * 10.0f);
 #endif
-	if (gameMode > 3) {
-		for (int i = 0; i < 4; ++i) {
-			playerReady[i] = server_mgr.GetPlayerReady(i);
-		}
-		if (server_mgr.GetGameStart())
-			gameMode = 1;
-	}
+
 }
 
 void CGameFramework::WaitForGpuComplete()
@@ -1714,7 +1729,7 @@ void CGameFramework::FrameAdvance()
 				m_pPlayer[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));*/
 			m_pPlayer[i]->Render(m_pd3dCommandList, m_pCamera);
 		}
-			m_pShadow[0]->Render(m_pd3dCommandList, m_pCamera);
+			//m_pShadow[0]->Render(m_pd3dCommandList, m_pCamera);
 	}
 	/*for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pShadow[i]->SetPosition(XMFLOAT3(m_pPlayer[i]->GetPosition().x + 1, m_pPlayer[i]->GetPosition().y, m_pPlayer[i]->GetPosition().z+1));
@@ -1819,6 +1834,7 @@ void CGameFramework::FrameAdvance()
 	// 렌더
 	//printf("%f %f %f \n", m_pPlayer[0]->GetPosition().x, m_pPlayer[0]->GetPosition().y, m_pPlayer[0]->GetPosition().z);
 
+	m_pBlueBox[0]->SetBoxScale(server_mgr.GetElecCount());
 
 	// 자기장 충돌체크
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
@@ -2062,6 +2078,7 @@ void CGameFramework::SwapText(int clientID, wchar_t inputChat[100]) {
 	playerChat[0] = clientID;
 }
 
+<<<<<<< HEAD
 char *CGameFramework::ConvertWCtoC(wchar_t* str)
 {
 	//반환할 char* 변수 선언
@@ -2091,3 +2108,7 @@ wchar_t* CGameFramework::ConverCtoWC(char* str)
 	MultiByteToWideChar(CP_ACP, 0, str, strlen(str) + 1, pStr, strSize);
 	return pStr;
 }
+=======
+
+
+>>>>>>> bbab988807e8103da02cb12973335d0e5085013e
