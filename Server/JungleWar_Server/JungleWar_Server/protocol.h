@@ -53,6 +53,10 @@
 
 #define SC_BOX_POS				21
 
+///////////////////////////////////////
+#define SC_PLAYER_LOGIN			51
+
+
 // Server To Server
 #define SS_COLLISION			12
 #define SS_PLAYER_POS_UPDATE	13
@@ -138,6 +142,17 @@ struct SC_PACKET_ENTER_PLAYER {
 	float hp;
 	float size_x, size_y, size_z;
 };
+
+////////////////////////////
+
+struct SC_PACKET_LOGIN_PLAYER {
+	BYTE size;
+	BYTE type;
+	WORD id;
+	char userid[maxUserIDLen];
+	BYTE passwd[maxPasswdLen];
+};
+
 
 struct SC_PACKET_LOOCVEC {
 	BYTE size;

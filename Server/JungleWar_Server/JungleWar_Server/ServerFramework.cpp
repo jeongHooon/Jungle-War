@@ -587,8 +587,26 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	case CS_PLAYER_TEAM_SELECT:
 		break;
 
+
 	case CS_PLAYER_LOGIN:
-		printf("로그인!!");
+	//	printf("로그인!!");
+		SC_PACKET_LOGIN_PLAYER packets;
+		packets.id = cl_id;
+		packets.size = sizeof(SC_PACKET_LOGIN_PLAYER);
+		packets.type = SC_PLAYER_LOGIN;
+
+
+//		strncpy_s((char *)login->passwd, maxPasswdLen, passwd, maxPasswdLen);
+//		strncmp(packets.userid, (char *)clients[cl_id].id,
+//			maxUserIDLen);
+
+	//	packets.userid = clients[cl_id].id;
+
+	//	cout << packets.userid << "로그인" << endl;
+		cout << packets.id << "로그인" << endl;
+		cout << cl_id << "로그인" << endl;
+
+		cout << clients[cl_id].id << "로그인" << endl;
 		break;
 	}
 

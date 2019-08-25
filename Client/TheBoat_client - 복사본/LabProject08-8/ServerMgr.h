@@ -80,6 +80,8 @@ public:
 	void ReadPacket();
 	void SendPacket(int type);
 	void SendPacket(int type, XMFLOAT3& xmvector);
+	///////////////////////
+	void SendPacket(int type, _TCHAR* argv[]);
 	void ProcessPacket(char* ptr);
 	void ErrorDisplay(const char* msg, int err_no);
 	int GetElecCount();
