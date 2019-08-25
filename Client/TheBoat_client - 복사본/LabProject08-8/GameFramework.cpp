@@ -45,8 +45,10 @@ CGameFramework::CGameFramework()
 	m_nWndClientHeight = FRAME_BUFFER_HEIGHT;
 
 	m_pScene = NULL;
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < 4; ++i) {
 		m_pPlayer[i] = NULL;
+		m_pShadow[i] = NULL;
+	}
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		m_pObject[i] = NULL; 
 	for (int i = 0; i < NUM_OBJECT2; ++i)
@@ -1160,12 +1162,12 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 			}
 			if (server_mgr.GetClientID() != my_client_id) {
 				m_pPlayer[server_mgr.GetClientID()]->SetLookTemp(server_mgr.ReturnLookVector());
+				//m_pShadow[server_mgr.GetClientID()]->SetLookTemp(server_mgr.ReturnLookVector());
 				//m_pPlayer[server_mgr.GetClientID()]->SetLook(XMFLOAT3(0.0f,0.0f,1.0f));
 			}
 
 			m_pPlayer[server_mgr.GetClientID()]->SetPosition(server_mgr.ReturnPlayerPosStatus(server_mgr.GetClientID()).pos);
-			
-
+			//m_pShadow[server_mgr.GetClientID()]->SetPosition(XMFLOAT3(m_pPlayer[server_mgr.GetClientID()]->GetPosition().x + 5, m_pPlayer[server_mgr.GetClientID()]->GetPosition().y, m_pPlayer[server_mgr.GetClientID()]->GetPosition().z + 5));
 
 			//printf("상태 : %d\n",server_mgr.ReturnPlayerPosStatus(server_mgr.GetClientID()).player_status);
 
@@ -1322,8 +1324,10 @@ void CGameFramework::BuildObjects()
 	m_pScene = new CScene();
 	m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
 
-	for (int i = 0; i < MAX_PLAYER_SIZE; ++i)
+	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pScene->m_pPlayer[i] = m_pPlayer[i] = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
+		m_pScene->m_pShadow[i] = m_pShadow[i] = new CShadow(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
+	}
 
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pScene->m_pObject[i] = m_pObject[i] = new CTreeObject(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
@@ -1355,6 +1359,9 @@ void CGameFramework::BuildObjects()
 		m_pPlayer[i]->SetPosition(XMFLOAT3(30 * i, -100.0f, 0.0f));
 		if(i!=my_client_id)
 			m_pPlayer[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
+		float fHeight = m_pScene->GetTerrain()->GetHeight(30 * i, 200.0f);
+		m_pShadow[i]->SetPosition(XMFLOAT3(0.f, 0.f, 0.f));
+		m_pShadow[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 	}
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		float xPosition;
@@ -1454,8 +1461,10 @@ void CGameFramework::BuildObjects()
 
 	WaitForGpuComplete();
 
-	for (int i = 0; i < MAX_PLAYER_SIZE; ++i)
+	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		if (m_pPlayer[i]) m_pPlayer[i]->ReleaseUploadBuffers();
+		if (m_pShadow[i]) m_pShadow[i]->ReleaseUploadBuffers();
+	}
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pObject[i]) m_pObject[i]->ReleaseUploadBuffers();
 	for (int i = 0; i < NUM_OBJECT2; ++i)
@@ -1469,8 +1478,10 @@ void CGameFramework::BuildObjects()
 
 void CGameFramework::ReleaseObjects()
 {
-	for (int i = 0; i < MAX_PLAYER_SIZE; ++i)
+	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		if (m_pPlayer[i]) delete m_pPlayer[i];
+		if (m_pShadow[i]) delete m_pShadow[i];
+	}
 	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pObject[i]) delete m_pObject[i];
 	for (int i = 0; i < NUM_OBJECT2; ++i)
@@ -1523,8 +1534,10 @@ void CGameFramework::ProcessInput()
 						;// m_pPlayer[my_client_id]->Rotate(cyDelta, 0.0f, -cxDelta);
 					else
 						for (int i = 0; i < MAX_PLAYER_SIZE; ++i)
-							if (i == my_client_id)
+							if (i == my_client_id) {
 								m_pPlayer[i]->Rotate(cyDelta, cxDelta, 0.0f);
+								m_pShadow[i]->Rotate(cyDelta, cxDelta, 0.0f);
+							}
 				}
 				if (dwDirection) {
 					for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
@@ -1538,8 +1551,10 @@ void CGameFramework::ProcessInput()
 				if (cxDelta || cyDelta)
 				{
 					//줌 회전
-					if (pKeysBuffer[VK_RBUTTON] & 0xF0)
-						 m_pPlayer[my_client_id]->Rotate(cyDelta, cxDelta, 0.0f);
+					if (pKeysBuffer[VK_RBUTTON] & 0xF0) {
+						m_pPlayer[my_client_id]->Rotate(cyDelta, cxDelta, 0.0f);
+						m_pShadow[my_client_id]->Rotate(cyDelta, cxDelta, 0.0f);
+					}
 					else
 						;// m_pPlayer[my_client_id]->Rotate(cyDelta, 0.0f, -cxDelta);
 				}
@@ -1555,6 +1570,7 @@ void CGameFramework::ProcessInput()
 	}
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pPlayer[i]->Update(m_GameTimer.GetTimeElapsed());
+		m_pShadow[i]->Update(m_GameTimer.GetTimeElapsed());
 	}
 	
 }
@@ -1563,13 +1579,17 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-		if (m_pPlayer) m_pPlayer[i]->Animate(fTimeElapsed);
+		if (m_pPlayer) {
+			m_pPlayer[i]->Animate(fTimeElapsed);
+			m_pShadow[i]->Animate(fTimeElapsed,1,m_pPlayer[i]->GetWMatrix());
+		}
 		if (i == my_client_id)
 		{
 			;
 		}
 		else if (i != my_client_id) {
 			m_pPlayer[i]->rrrotate((atan2(m_pPlayer[i]->LookTemp.z, m_pPlayer[i]->LookTemp.x)));
+			m_pShadow[i]->rrrotate((atan2(m_pShadow[i]->LookTemp.z, m_pShadow[i]->LookTemp.x)));
 		}
 	}
 
@@ -1691,14 +1711,18 @@ void CGameFramework::FrameAdvance()
 #endif
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pPlayer[i]->UpdateTransform(NULL);
+		m_pShadow[i]->UpdateTransform(NULL);
 		if (i == my_client_id && m_pCamera->GetMode() == SPACESHIP_CAMERA);
 		else {
 			/*if(i != my_client_id)
 				m_pPlayer[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));*/
 			m_pPlayer[i]->Render(m_pd3dCommandList, m_pCamera);
 		}
+			m_pShadow[0]->Render(m_pd3dCommandList, m_pCamera);
 	}
-
+	/*for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
+		m_pShadow[i]->SetPosition(XMFLOAT3(m_pPlayer[i]->GetPosition().x + 1, m_pPlayer[i]->GetPosition().y, m_pPlayer[i]->GetPosition().z+1));
+	}*/
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pObject[i]->UpdateTransform(NULL);
 		m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));

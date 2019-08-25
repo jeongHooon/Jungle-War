@@ -85,6 +85,7 @@ public:
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
 	static CPlayer				*m_pPlayer[4];
+	static CShadow				*m_pShadow[4];
 	static CPlayer				*m_pObject[NUM_OBJECT];
 	static CPlayer				*m_pObject2[NUM_OBJECT2];
 	CPlayer						*m_pBlueBox[1];

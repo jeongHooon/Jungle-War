@@ -8,6 +8,7 @@
 #include "DDSTextureLoader12.h"
 
 CPlayer* CGameFramework::m_pPlayer[];
+CShadow* CGameFramework::m_pShadow[];
 CPlayer* CGameFramework::m_pObject[];
 CPlayer* CGameFramework::m_pObject2[];
 int CGameFramework::my_client_id;
@@ -181,8 +182,17 @@ void CShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12RootSignature *pd3dGr
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dPipelineStateDesc;
 	::ZeroMemory(&d3dPipelineStateDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 	d3dPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
-	d3dPipelineStateDesc.VS = CreateVertexShader(&pd3dVertexShaderBlob);
-	d3dPipelineStateDesc.PS = CreatePixelShader(&pd3dPixelShaderBlob);
+	
+	if (isShadow) {
+		d3dPipelineStateDesc.VS = CreateVertexShader(&pd3dVertexShaderBlob);
+		//d3dPipelineStateDesc.VS = CreateShadowVertexShader(&pd3dVertexShaderBlob);
+		d3dPipelineStateDesc.PS = CreateShadowMovePixelShader(&pd3dPixelShaderBlob);
+	}
+	else
+	{
+		d3dPipelineStateDesc.VS = CreateVertexShader(&pd3dVertexShaderBlob);
+		d3dPipelineStateDesc.PS = CreatePixelShader(&pd3dPixelShaderBlob);
+	}
 	d3dPipelineStateDesc.RasterizerState = CreateRasterizerState();
 	d3dPipelineStateDesc.BlendState = CreateBlendState();
 	d3dPipelineStateDesc.DepthStencilState = CreateDepthStencilState();
@@ -11839,208 +11849,208 @@ void CInstancingShader::Initialize(ID3D12Device * pd3dDevice, ID3D12GraphicsComm
 
 	//}
 
-	//if (m_GameObjects.size() > 0) {
-	//	m_GameObjects[0]->SetMaterial(m_pMaterial);
-	//	m_GameObjects[0]->SetMesh(0, pMesh);
-	//}
+	if (m_GameObjects.size() > 0) {
+		m_GameObjects[0]->SetMaterial(m_pMaterial);
+		m_GameObjects[0]->SetMesh(0, pMesh);
+	}
 }
 
-//void CInstancingShader::InitializeStone(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, CMesh*& pMesh)
-//{
-//	m_nObjects = 400;
-//	CTexture *tex = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-//	tex->LoadTextureFromFile(pd3dDevice, pd3dCommandList, _T("Assets/Model/Static/Stone/stone.dds"), 0);
-//
-//	UINT ncbElementBytes = ((sizeof(CB_INSTANCE_INFO) + 255) & ~255);
-//
-//	m_pMaterial = new CMaterial();
-//	m_pMaterial->SetTexture(tex);
-//
-//	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
-//	CreateShaderVariables(pd3dDevice, pd3dCommandList);
-//	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, tex, 8, true);
-//
-//	CGameObject* tempObj = NULL;
-//	int i = 0;
-//	for (int y = 0; y < MAPSIZE; ++y) {
-//		for (int x = 0; x < MAPSIZE; ++x) {
-//			//for (int i = 0; i < m_GameObjects.capacity(); ++i) {
-//			if (CMapData::GET_SINGLE()->Stage1[y][x] != READ_DATA::TREE) {
-//				tempObj = new CStone();
-//				tempObj->SetWPosition(30 * x - 15, 0, -30 * y + 10);
-//				tempObj->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize *i));
-//				m_GameObjects.push_back(tempObj);
-//				++i;
-//			}
-//			//}
-//		}
-//
-//	}
-//
-//	if (m_GameObjects.size() > 0) {
-//		m_GameObjects[0]->SetMaterial(m_pMaterial);
-//		m_GameObjects[0]->SetMesh(0, pMesh);
-//	}
-//}
-//
-//void CInstancingShader::InitializeStone2(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, CMesh *& pMesh)
-//{
-//	m_nObjects = 400;
-//	CTexture *tex = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-//	tex->LoadTextureFromFile(pd3dDevice, pd3dCommandList, _T("Assets/Model/Static/Stone/stone.dds"), 0);
-//
-//	UINT ncbElementBytes = ((sizeof(CB_INSTANCE_INFO) + 255) & ~255);
-//
-//	m_pMaterial = new CMaterial();
-//	m_pMaterial->SetTexture(tex);
-//
-//	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
-//	CreateShaderVariables(pd3dDevice, pd3dCommandList);
-//	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, tex, 8, true);
-//
-//	CGameObject* tempObj = NULL;
-//	int i = 0;
-//	for (int y = 0; y < MAPSIZE; ++y) {
-//		for (int x = 0; x < MAPSIZE; ++x) {
-//			//for (int i = 0; i < m_GameObjects.capacity(); ++i) {
-//			if (CMapData::GET_SINGLE()->Stage1[y][x] != READ_DATA::TREE) {
-//				tempObj = new CStone();
-//				tempObj->SetWPosition(30 * x - 10, 0, -30 * y + 5);
-//				tempObj->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize *i));
-//				m_GameObjects.push_back(tempObj);
-//				++i;
-//			}
-//			//}
-//		}
-//
-//	}
-//
-//	if (m_GameObjects.size() > 0) {
-//		m_GameObjects[0]->SetMaterial(m_pMaterial);
-//		m_GameObjects[0]->SetMesh(0, pMesh);
-//	}
-//}
-//
-//void CInstancingShader::InitializeStone3(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, CMesh *& pMesh)
-//{
-//	m_nObjects = 400;
-//	CTexture *tex = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-//	tex->LoadTextureFromFile(pd3dDevice, pd3dCommandList, _T("Assets/Model/Static/Stone/stone.dds"), 0);
-//
-//	UINT ncbElementBytes = ((sizeof(CB_INSTANCE_INFO) + 255) & ~255);
-//
-//	m_pMaterial = new CMaterial();
-//	m_pMaterial->SetTexture(tex);
-//
-//	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
-//	CreateShaderVariables(pd3dDevice, pd3dCommandList);
-//	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, tex, 8, true);
-//
-//	CGameObject* tempObj = NULL;
-//	int i = 0;
-//	for (int y = 0; y < MAPSIZE; ++y) {
-//		for (int x = 0; x < MAPSIZE; ++x) {
-//			//for (int i = 0; i < m_GameObjects.capacity(); ++i) {
-//			if (CMapData::GET_SINGLE()->Stage1[y][x] != READ_DATA::TREE) {
-//				tempObj = new CStone();
-//				tempObj->SetWPosition(30 * x + 10, 0, -30 * y + 7);
-//				tempObj->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize *i));
-//				m_GameObjects.push_back(tempObj);
-//				++i;
-//			}
-//			//}
-//		}
-//
-//	}
-//
-//	if (m_GameObjects.size() > 0) {
-//		m_GameObjects[0]->SetMaterial(m_pMaterial);
-//		m_GameObjects[0]->SetMesh(0, pMesh);
-//	}
-//}
-//
-//void CInstancingShader::InitializeMush(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, CMesh*& pMesh)
-//{
-//	m_nObjects = 400;
-//	CTexture *tex = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-//	tex->LoadTextureFromFile(pd3dDevice, pd3dCommandList, _T("Assets/Model/Static/Mushroom/Mushroom3.dds"), 0);
-//
-//	UINT ncbElementBytes = ((sizeof(CB_INSTANCE_INFO) + 255) & ~255);
-//
-//	m_pMaterial = new CMaterial();
-//	m_pMaterial->SetTexture(tex);
-//
-//	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
-//	CreateShaderVariables(pd3dDevice, pd3dCommandList);
-//	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, tex, 8, true);
-//
-//	CGameObject* tempObj = NULL;
-//	int i = 0;
-//	for (int y = 0; y < MAPSIZE; ++y) {
-//		for (int x = 0; x < MAPSIZE; ++x) {
-//			//for (int i = 0; i < m_GameObjects.capacity(); ++i) {
-//			if (CMapData::GET_SINGLE()->Stage1[y][x] != READ_DATA::TREE) {
-//				tempObj = new CMushroom();
-//				tempObj->SetWPosition(30 * x - 15, 0, -30 * y - 5);
-//				tempObj->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize *i));
-//				m_GameObjects.push_back(tempObj);
-//				++i;
-//			}
-//			//}
-//		}
-//
-//	}
-//
-//	if (m_GameObjects.size() > 0) {
-//		m_GameObjects[0]->SetMaterial(m_pMaterial);
-//		m_GameObjects[0]->SetMesh(0, pMesh);
-//	}
-//}
-//
-//void CInstancingShader::InitializeShadow(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, CMesh*& pMesh)
-//{
-//	m_nObjects = 400;
-//
-//	XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // xz평면
-//	XMVECTOR toMainLight = -XMLoadFloat3(new XMFLOAT3(-0.5f, -1.0f, 0.0f));
-//	XMMATRIX S = XMMatrixShadow(shadowPlane, toMainLight);
-//	XMMATRIX shadowOffSetY = XMMatrixTranslation(0.0f, 0.001f, 0.0f);
-//
-//	CTexture *tex = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-//	tex->LoadTextureFromFile(pd3dDevice, pd3dCommandList, _T("Assets/Model/Static/Tree/Trees3x3Map.dds"), 0);
-//
-//	UINT ncbElementBytes = ((sizeof(CB_INSTANCE_INFO) + 255) & ~255);
-//
-//	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
-//	CreateShaderVariables(pd3dDevice, pd3dCommandList);
-//	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, tex, 8, true);
-//
-//	m_pMaterial = new CMaterial();
-//	m_pMaterial->SetTexture(tex);
-//
-//	CGameObject* tempObj = NULL;
-//	int i = 0;
-//	for (int y = 0; y < MAPSIZE; ++y) {
-//		for (int x = 0; x < MAPSIZE; ++x) {
-//			//for (int i = 0; i < m_GameObjects.capacity(); ++i) {
-//			if (CMapData::GET_SINGLE()->Stage1[y][x] == READ_DATA::TREE) {
-//				tempObj = new CTree();
-//				tempObj->SetWPosition(30 * x, 0, -30 * y);
-//				tempObj->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize *i));
-//				XMFLOAT4X4 TempShadow = tempObj->GetWMatrix();
-//				tempObj->SetWMatrix(Matrix4x4::Multiply(TempShadow, S*shadowOffSetY));
-//				m_GameObjects.push_back(tempObj);
-//				++i;
-//			}
-//			//}
-//		}
-//
-//	}
-//	if (m_GameObjects.size() > 0) {
-//		m_GameObjects[0]->SetMaterial(m_pMaterial);
-//		m_GameObjects[0]->SetMesh(0, pMesh);
-//	}
-//}
+void CInstancingShader::InitializeStone(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, CMesh*& pMesh)
+{
+	m_nObjects = 400;
+	CTexture *tex = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	tex->LoadTextureFromFile(pd3dDevice, pd3dCommandList, _T("Assets/Model/Static/Stone/stone.dds"), 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_INSTANCE_INFO) + 255) & ~255);
+
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(tex);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, tex, 8, true);
+
+	CGameObject* tempObj = NULL;
+	int i = 0;
+	//for (int y = 0; y < MAPSIZE; ++y) {
+	//	for (int x = 0; x < MAPSIZE; ++x) {
+	//		//for (int i = 0; i < m_GameObjects.capacity(); ++i) {
+	//		if (CMapData::GET_SINGLE()->Stage1[y][x] != READ_DATA::TREE) {
+	//			tempObj = new CStone();
+	//			tempObj->SetWPosition(30 * x - 15, 0, -30 * y + 10);
+	//			tempObj->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize *i));
+	//			m_GameObjects.push_back(tempObj);
+	//			++i;
+	//		}
+	//		//}
+	//	}
+
+	//}
+
+	if (m_GameObjects.size() > 0) {
+		m_GameObjects[0]->SetMaterial(m_pMaterial);
+		m_GameObjects[0]->SetMesh(0, pMesh);
+	}
+}
+
+void CInstancingShader::InitializeStone2(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, CMesh *& pMesh)
+{
+	m_nObjects = 400;
+	CTexture *tex = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	tex->LoadTextureFromFile(pd3dDevice, pd3dCommandList, _T("Assets/Model/Static/Stone/stone.dds"), 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_INSTANCE_INFO) + 255) & ~255);
+
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(tex);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, tex, 8, true);
+
+	CGameObject* tempObj = NULL;
+	int i = 0;
+	//for (int y = 0; y < MAPSIZE; ++y) {
+	//	for (int x = 0; x < MAPSIZE; ++x) {
+	//		//for (int i = 0; i < m_GameObjects.capacity(); ++i) {
+	//		if (CMapData::GET_SINGLE()->Stage1[y][x] != READ_DATA::TREE) {
+	//			tempObj = new CStone();
+	//			tempObj->SetWPosition(30 * x - 10, 0, -30 * y + 5);
+	//			tempObj->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize *i));
+	//			m_GameObjects.push_back(tempObj);
+	//			++i;
+	//		}
+	//		//}
+	//	}
+
+	//}
+
+	if (m_GameObjects.size() > 0) {
+		m_GameObjects[0]->SetMaterial(m_pMaterial);
+		m_GameObjects[0]->SetMesh(0, pMesh);
+	}
+}
+
+void CInstancingShader::InitializeStone3(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, CMesh *& pMesh)
+{
+	m_nObjects = 400;
+	CTexture *tex = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	tex->LoadTextureFromFile(pd3dDevice, pd3dCommandList, _T("Assets/Model/Static/Stone/stone.dds"), 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_INSTANCE_INFO) + 255) & ~255);
+
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(tex);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, tex, 8, true);
+
+	//CGameObject* tempObj = NULL;
+	//int i = 0;
+	//for (int y = 0; y < MAPSIZE; ++y) {
+	//	for (int x = 0; x < MAPSIZE; ++x) {
+	//		//for (int i = 0; i < m_GameObjects.capacity(); ++i) {
+	//		if (CMapData::GET_SINGLE()->Stage1[y][x] != READ_DATA::TREE) {
+	//			tempObj = new CStone();
+	//			tempObj->SetWPosition(30 * x + 10, 0, -30 * y + 7);
+	//			tempObj->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize *i));
+	//			m_GameObjects.push_back(tempObj);
+	//			++i;
+	//		}
+	//		//}
+	//	}
+
+	//}
+
+	if (m_GameObjects.size() > 0) {
+		m_GameObjects[0]->SetMaterial(m_pMaterial);
+		m_GameObjects[0]->SetMesh(0, pMesh);
+	}
+}
+
+void CInstancingShader::InitializeMush(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, CMesh*& pMesh)
+{
+	m_nObjects = 400;
+	CTexture *tex = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	tex->LoadTextureFromFile(pd3dDevice, pd3dCommandList, _T("Assets/Model/Static/Mushroom/Mushroom3.dds"), 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_INSTANCE_INFO) + 255) & ~255);
+
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(tex);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, tex, 8, true);
+
+	CGameObject* tempObj = NULL;
+	int i = 0;
+	//for (int y = 0; y < MAPSIZE; ++y) {
+	//	for (int x = 0; x < MAPSIZE; ++x) {
+	//		//for (int i = 0; i < m_GameObjects.capacity(); ++i) {
+	//		if (CMapData::GET_SINGLE()->Stage1[y][x] != READ_DATA::TREE) {
+	//			tempObj = new CMushroom();
+	//			tempObj->SetWPosition(30 * x - 15, 0, -30 * y - 5);
+	//			tempObj->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize *i));
+	//			m_GameObjects.push_back(tempObj);
+	//			++i;
+	//		}
+	//		//}
+	//	}
+
+	//}
+
+	if (m_GameObjects.size() > 0) {
+		m_GameObjects[0]->SetMaterial(m_pMaterial);
+		m_GameObjects[0]->SetMesh(0, pMesh);
+	}
+}
+
+void CInstancingShader::InitializeShadow(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, CMesh*& pMesh)
+{
+	m_nObjects = 400;
+
+	XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f); // xz평면
+	XMVECTOR toMainLight = -XMLoadFloat3(new XMFLOAT3(-0.5f, -1.0f, 0.0f));
+	XMMATRIX S = XMMatrixShadow(shadowPlane, toMainLight);
+	XMMATRIX shadowOffSetY = XMMatrixTranslation(0.0f, 0.001f, 0.0f);
+
+	CTexture *tex = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	tex->LoadTextureFromFile(pd3dDevice, pd3dCommandList, _T("Assets/Model/Static/Tree/Trees3x3Map.dds"), 0);
+
+	UINT ncbElementBytes = ((sizeof(CB_INSTANCE_INFO) + 255) & ~255);
+
+	CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, m_nObjects, 1);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	CreateShaderResourceViews(pd3dDevice, pd3dCommandList, tex, 8, true);
+
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(tex);
+
+	CGameObject* tempObj = NULL;
+	int i = 0;
+	//for (int y = 0; y < MAPSIZE; ++y) {
+	//	for (int x = 0; x < MAPSIZE; ++x) {
+	//		//for (int i = 0; i < m_GameObjects.capacity(); ++i) {
+	//		if (CMapData::GET_SINGLE()->Stage1[y][x] == READ_DATA::TREE) {
+	//			tempObj = new CTree();
+	//			tempObj->SetWPosition(30 * x, 0, -30 * y);
+	//			tempObj->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize *i));
+	//			XMFLOAT4X4 TempShadow = tempObj->GetWMatrix();
+	//			tempObj->SetWMatrix(Matrix4x4::Multiply(TempShadow, S*shadowOffSetY));
+	//			m_GameObjects.push_back(tempObj);
+	//			++i;
+	//		}
+	//		//}
+	//	}
+
+	//}
+	if (m_GameObjects.size() > 0) {
+		m_GameObjects[0]->SetMaterial(m_pMaterial);
+		m_GameObjects[0]->SetMesh(0, pMesh);
+	}
+}
 void CInstancingShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
 	CTexturedShader::Render(pd3dCommandList, pCamera);

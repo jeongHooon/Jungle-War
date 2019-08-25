@@ -142,7 +142,7 @@ public:
 	
 	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dCbvGPUDescriptorHandle;
 	XMFLOAT3						look;
-
+	XMMATRIX MTShadow;
 protected:
 	ID3D12Resource					*m_pd3dcbGameObject = NULL;
 	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObject = NULL;
@@ -153,7 +153,7 @@ public:
 	void SetMesh(int nIndex, CMesh *pMesh);
 	void SetShader(CShader *pShader);
 	void SetMaterial(CMaterial *pMaterial);
-
+	void SetWMatrix(XMFLOAT4X4 float4x4) { m_xmf4x4ToParentTransform = float4x4; }
 	void ResizeMeshes(int nMeshes);
 
 	void SetCbvGPUDescriptorHandle(D3D12_GPU_DESCRIPTOR_HANDLE d3dCbvGPUDescriptorHandle) { m_d3dCbvGPUDescriptorHandle = d3dCbvGPUDescriptorHandle; }
@@ -176,7 +176,7 @@ public:
 	BoundingOrientedBox bounding_box;
 	virtual void SetOOBB(XMFLOAT3 xmCenter, XMFLOAT3 xmExtents, XMFLOAT4 xmOrientation) { }
 
-	XMFLOAT4X4                      GetWMatrix()   const { return m_xmf4x4World; }
+	XMFLOAT4X4                      GetWMatrix()   const { return m_xmf4x4ToParentTransform; }
 	XMFLOAT3 GetPosition();
 	XMFLOAT3 GetLook();
 	XMFLOAT3 GetUp();
