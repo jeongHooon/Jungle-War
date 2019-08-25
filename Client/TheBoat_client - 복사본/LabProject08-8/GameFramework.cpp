@@ -1242,8 +1242,8 @@ void CGameFramework::SendLoginREQ() {
 
 
 	server_mgr.SendPacket(CS_PLAYER_LOGIN);
-
-
+//	send(s, protoBuffer, sizeof(ProtoCommand) + sizeof(StrLoginREQ), 0);
+	
 //	SendChatREQ();
 
 }
