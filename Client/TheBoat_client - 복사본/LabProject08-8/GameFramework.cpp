@@ -1045,7 +1045,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				gameMode = 1;
 			else if (gameMode == 3) {
 				gameMode = 4;
-				SendLoginREQ(ConvertWCtoC(inputtext));
+				//SendLoginREQ(ConvertWCtoC(inputtext));
 				wcscpy(playerName[my_client_id], inputtext);
 				for (int i = 0; i < 100; ++i)
 					inputtext[i] = {};
@@ -1221,22 +1221,12 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	return(0);
 }
 
-<<<<<<< HEAD
-void CGameFramework::SendLoginREQ(char userid[]) {
-	cout << "id를 입력해 주세요 ";
-	cin >> userid;
-
-	for (int i = 0; i < 10; ++i) {
-		cout << userid[i];
-	}
-=======
 void CGameFramework::SendLoginREQ() {
 	char userid;
 
 	cout << "id를 입력해 주세요 ";
 	cin >> userid;
 
->>>>>>> bbab988807e8103da02cb12973335d0e5085013e
 
 	char protoBuffer[1024];
 	ProtoCommand *cmd = (ProtoCommand *)protoBuffer;
@@ -1247,12 +1237,7 @@ void CGameFramework::SendLoginREQ() {
 //	strncpy_s((char *)login->userid, maxUserIDLen, userid, maxUserIDLen);
 	login->userid[maxUserIDLen - 1] = '\0';  // 제한된 길이만큼만 복사
 
-<<<<<<< HEAD
-=======
 	cout << "로그인한 아이디는" << userid << endl;
-	
->>>>>>> bbab988807e8103da02cb12973335d0e5085013e
-
 
 	server_mgr.SendPacket(CS_PLAYER_LOGIN,userid);
 //	server_mgr.SendPacket(CS_PLAYER_LOGIN, userid);
@@ -1262,12 +1247,8 @@ void CGameFramework::SendLoginREQ() {
 //	SendChatREQ();
 
 }
-<<<<<<< HEAD
-void CGameFramework::SendChatREQ(char buffer[256]) {
-=======
-
 void CGameFramework::SendChatREQ() {
->>>>>>> bbab988807e8103da02cb12973335d0e5085013e
+	char buffer;
 //	while (true) {
 		cout << "전송할 문자열 : ";
 		cin >> buffer;
@@ -2077,8 +2058,6 @@ void CGameFramework::SwapText(int clientID, wchar_t inputChat[100]) {
 	wcscpy(outputtexts[0], inputChat);
 	playerChat[0] = clientID;
 }
-
-<<<<<<< HEAD
 char *CGameFramework::ConvertWCtoC(wchar_t* str)
 {
 	//반환할 char* 변수 선언
@@ -2108,7 +2087,3 @@ wchar_t* CGameFramework::ConverCtoWC(char* str)
 	MultiByteToWideChar(CP_ACP, 0, str, strlen(str) + 1, pStr, strSize);
 	return pStr;
 }
-=======
-
-
->>>>>>> bbab988807e8103da02cb12973335d0e5085013e

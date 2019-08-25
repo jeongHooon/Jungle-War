@@ -9,11 +9,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CPlayer
 
-<<<<<<< HEAD
 #define BluBoxSpeed 0.01
 
-=======
->>>>>>> bbab988807e8103da02cb12973335d0e5085013e
 int ServerMgr::elecCount;
 XMFLOAT3 ServerMgr::elecPos;
 
