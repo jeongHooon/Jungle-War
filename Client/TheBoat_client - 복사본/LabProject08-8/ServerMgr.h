@@ -61,7 +61,7 @@ class ServerMgr
 	// 로그인
 	char loginID[MAX_PLAYER_SIZE];
 	char userpw[maxUserIDLen];
-
+	bool newMessage;
 
 	// 아이템 생성 부분
 	XMFLOAT3 item_pos;
@@ -96,6 +96,8 @@ public:
 	float GetBoxHp(int index) { return box_hp[index]; }
 	bool GetBoxInuse(int index) { return boxes[index].in_use; }
 	bool GetTreeInuse(int index) { return obj[index].in_use; }
+	bool GetMessageCheck() { return newMessage;	}
+	void SetMessageCheck() { !newMessage; }
 	int GetBoxCount() { return myBoxCount; }
 	Bullet GetBullet();
 	Box GetBox(int index);

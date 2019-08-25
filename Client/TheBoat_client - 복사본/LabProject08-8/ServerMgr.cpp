@@ -244,7 +244,6 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		client_hp[packets->client_id] = packets->hp;
 		printf("%d 플레이어의 충돌지점 x : %f, y : %f, z : %f, 체력 : %f \n", packets->client_id, collision_pos.x,
 			collision_pos.y, collision_pos.z, client_hp[packets->client_id]);
-
 		break;
 	}
 	case SC_COLLSION_BB: {

@@ -1849,6 +1849,12 @@ void CGameFramework::FrameAdvance()
 	}
 	////
 
+	//// 채팅 왔는지 체크
+	if (server_mgr.GetMessageCheck()) {
+		//client id, text SwapText(id, text);
+		server_mgr.SetMessageCheck();
+	}
+
 	/////// 오브젝트 충돌체크
 	
 	bool check = false;
