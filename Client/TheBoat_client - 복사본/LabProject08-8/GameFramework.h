@@ -66,9 +66,9 @@ public:
     void ReleaseObjects();
 
 	// 로긴용
-	void SendLoginREQ();
+	void SendLoginREQ(char userID[]);
 	// 채팅용
-	void SendChatREQ();
+	void SendChatREQ(char userID[]);
 	void SwapText(int clientID, wchar_t inputChat[100]);
 	void SwapText();
 
@@ -79,6 +79,9 @@ public:
 
 	void WaitForGpuComplete();
 	void MoveToNextFrame();
+
+	char *ConvertWCtoC(wchar_t* str);
+	wchar_t* ConverCtoWC(char* str);
 
 	void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
@@ -93,7 +96,7 @@ public:
 	static CCamera				*m_pCamera;
 	static int					boxBound;
 	float						playerHp = 100;
-	int							gameMode = 1;
+	int							gameMode = 0;
 	bool						damageCheck = false;
 	bool						writeMode = true;
 	bool						writeStart = false;

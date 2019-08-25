@@ -1020,7 +1020,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 
 		case '9':
-			SendLoginREQ();
 			break;
 		case 'Q':
 			if (is_pushed[CS_KEY_PRESS_Q] == true) {
@@ -1047,6 +1046,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				gameMode = 1;
 			else if (gameMode == 3) {
 				gameMode = 4;
+				SendLoginREQ(ConvertWCtoC(inputtext));
 				wcscpy(playerName[my_client_id], inputtext);
 				for (int i = 0; i < 100; ++i)
 					inputtext[i] = {};
@@ -1222,14 +1222,13 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	return(0);
 }
 
-void CGameFramework::SendLoginREQ() {
-	char userid[256];
-	char passwd[256];
-
+void CGameFramework::SendLoginREQ(char userid[]) {
 	cout << "id를 입력해 주세요 ";
 	cin >> userid;
-	cout << "암호를 입력해 주세요 ";
-	cin >> passwd;
+
+	for (int i = 0; i < 10; ++i) {
+		cout << userid[i];
+	}
 
 	char protoBuffer[1024];
 	ProtoCommand *cmd = (ProtoCommand *)protoBuffer;
@@ -1239,8 +1238,6 @@ void CGameFramework::SendLoginREQ() {
 
 	login->userid[maxUserIDLen - 1] = '\0';
 
-	strncpy_s((char *)login->passwd, maxPasswdLen, passwd, maxPasswdLen);
-	login->passwd[maxPasswdLen - 1] = '\0';
 
 
 	server_mgr.SendPacket(CS_PLAYER_LOGIN);
@@ -1249,9 +1246,8 @@ void CGameFramework::SendLoginREQ() {
 //	SendChatREQ();
 
 }
-void CGameFramework::SendChatREQ() {
+void CGameFramework::SendChatREQ(char buffer[256]) {
 //	while (true) {
-		char buffer[1024];
 		cout << "전송할 문자열 : ";
 		cin >> buffer;
 
@@ -2066,3 +2062,32 @@ void CGameFramework::SwapText(int clientID, wchar_t inputChat[100]) {
 	playerChat[0] = clientID;
 }
 
+char *CGameFramework::ConvertWCtoC(wchar_t* str)
+{
+	//반환할 char* 변수 선언
+	char* pStr;
+
+	//입력받은 wchar_t 변수의 길이를 구함
+	int strSize = WideCharToMultiByte(CP_ACP, 0, str, -1, NULL, 0, NULL, NULL);
+	//char* 메모리 할당
+	pStr = new char[strSize];
+
+	//형 변환 
+	WideCharToMultiByte(CP_ACP, 0, str, -1, pStr, strSize, 0, 0);
+	return pStr;
+}
+
+///////////////////////////////////////////////////////////////////////
+//char 에서 wchar_t 로의 형변환 함수
+wchar_t* CGameFramework::ConverCtoWC(char* str)
+{
+	//wchar_t형 변수 선언
+	wchar_t* pStr;
+	//멀티 바이트 크기 계산 길이 반환
+	int strSize = MultiByteToWideChar(CP_ACP, 0, str, -1, NULL, NULL);
+	//wchar_t 메모리 할당
+	pStr = new WCHAR[strSize];
+	//형 변환
+	MultiByteToWideChar(CP_ACP, 0, str, strlen(str) + 1, pStr, strSize);
+	return pStr;
+}
