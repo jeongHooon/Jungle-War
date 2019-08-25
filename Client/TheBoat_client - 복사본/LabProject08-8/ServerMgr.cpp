@@ -18,7 +18,7 @@ void ServerMgr::ErrorDisplay(const char* msg, int err_no) {
 void ServerMgr::IPInput() {
 	while (true) {
 		cout << "서버 아이피 입력 : ";
-		cin >> server_ip;
+		//cin >> server_ip;
 		break;
 	}
 }
@@ -244,7 +244,6 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		client_hp[packets->client_id] = packets->hp;
 		printf("%d 플레이어의 충돌지점 x : %f, y : %f, z : %f, 체력 : %f \n", packets->client_id, collision_pos.x,
 			collision_pos.y, collision_pos.z, client_hp[packets->client_id]);
-
 		break;
 	}
 	case SC_COLLSION_BB: {
@@ -295,6 +294,19 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		item_pos.z = packets->z;
 		printf("아템 생성\n");
 		is_item_gen = true;
+		break;
+	}
+	case SC_READY: {
+		SC_PACKET_READY* packets = reinterpret_cast<SC_PACKET_READY*>(ptr);
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+		{
+			player_ready[k] = packets->player_ready[k];
+			if (player_ready[k])
+				printf("%d 레디 완료\n", k);
+		}
+		game_start = packets->game_start;
+		if (game_start)
+			printf("게임시작 ㄱㄱㄱ\n");
 		break;
 	}
 	}

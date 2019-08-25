@@ -589,24 +589,56 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		break;
 	}
 	case CS_PLAYER_READY: {
-		int ready_count = 0;
 		printf("%d 플레이어 레디\n", cl_id);
 		player_ready[cl_id] = true;
-		for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-			if (player_ready[i]) {
-				ready_count++;
-			}
+		ready_count++;
+
+		SC_PACKET_READY packets;
+		packets.size = sizeof(SC_PACKET_READY);
+		packets.type = SC_READY;
+
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+		{
+			packets.player_ready[k] = player_ready[k];
+			if (player_ready[k])
+				printf("%d 레디 완료\n",k);
 		}
+		
 		if (ready_count == MAX_PLAYER_SIZE) {
-			GameStart();
+			//GameStart();
+			game_start = true;
+			packets.game_start = game_start;
 		}
+
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+			if (clients[k].in_use)
+				SendPacket(k, &packets);
+
 		break;
 	}
+<<<<<<< HEAD
 
 	case CS_PLAYER_READY_CANCLE:
+=======
+	case CS_PLAYER_READY_CANCLE: {
+>>>>>>> 86a54b30edc44a1dadec9f5e22c6e2816a8d7cbb
 		printf("%d 플레이어 레디취소\n", cl_id);
 		player_ready[cl_id] = false;
-		break;
+		ready_count--;
+
+		SC_PACKET_READY packets;
+		packets.size = sizeof(SC_PACKET_READY);
+		packets.type = SC_READY;
+
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+			packets.player_ready[k] = player_ready[k];
+
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+			if (clients[k].in_use)
+				SendPacket(k, &packets);
+
+		break; 
+	}
 	case CS_PLAYER_TEAM_SELECT:
 		break;
 
@@ -1418,7 +1450,8 @@ void ServerFramework::TimerSend(duration<float>& elapsed_time) {
 				ol_ex[i].command = SC_PLAYER_MOVE;
 				PostQueuedCompletionStatus(iocp_handle, 0, i, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[i]));
 			}
-			++elecCount;
+			if(game_start)
+				++elecCount;
 		}
 		sender_time = 0;
 	}

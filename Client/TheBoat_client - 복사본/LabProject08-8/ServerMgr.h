@@ -55,13 +55,15 @@ class ServerMgr
 	int camera_id = 0;
 	string server_ip;
 	bool isplayerdead[MAX_PLAYER_SIZE] = { 0,0,0,0 };
+	bool player_ready[MAX_PLAYER_SIZE] = { 0 };
+	bool game_start = false;
 
 	int myBoxCount = 10;
 
 	// 로그인
 	char loginID[MAX_PLAYER_SIZE];
 	char userpw[maxUserIDLen];
-
+	bool newMessage;
 
 	// 아이템 생성 부분
 	XMFLOAT3 item_pos;
@@ -93,9 +95,13 @@ public:
 	int GetElecCount();
 	int GetClientID();
 	int ReturnCameraID();
+	bool GetGameStart() { return game_start; }
+	bool GetPlayerReady(int input) { return player_ready[input]; }
 	float GetBoxHp(int index) { return box_hp[index]; }
 	bool GetBoxInuse(int index) { return boxes[index].in_use; }
 	bool GetTreeInuse(int index) { return obj[index].in_use; }
+	bool GetMessageCheck() { return newMessage;	}
+	void SetMessageCheck() { !newMessage; }
 	int GetBoxCount() { return myBoxCount; }
 	Bullet GetBullet();
 	Box GetBox(int index);
