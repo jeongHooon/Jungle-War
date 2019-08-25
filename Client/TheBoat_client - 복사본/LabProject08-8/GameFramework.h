@@ -69,7 +69,7 @@ public:
 	void SendLoginREQ();
 	// 채팅용
 	void SendChatREQ();
-
+	void SwapText(int clientID, wchar_t inputChat[100]);
 	void SwapText();
 
 
@@ -139,9 +139,10 @@ private:
 	//채팅
 	wchar_t						inputtext[100] = L"";
 	wchar_t						*outputtext = L"";
-	wchar_t						outputtexts[15][100] = {L"",L"",L"",L"",L"",L"",L"",L"",L"",L"" };
-	wchar_t						playerName[4][100] = {L"", L"", L"", L""};
-	int							playerChat[16] = {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4};
+	wchar_t						outputtexts[17][100] = {L"",L"",L"",L"",L"",L"",L"",L"",L"",L"" };
+	wchar_t						playerName[4][100] = {L"SangWoo", L"Byungchul", L"Sujin", L"JeongHoon"};
+	bool						playerReady[4] = { 0,0,0,0 };
+	int							playerChat[17] = {4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4};
 
 #if defined(_DEBUG)
 	ID3D12Debug					*m_pd3dDebugController;

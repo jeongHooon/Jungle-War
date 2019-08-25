@@ -53,6 +53,11 @@
 
 #define SC_BOX_POS				21
 
+///////////////////////////////////////
+#define SC_PLAYER_LOGIN			51
+#define SC_READY				52
+
+
 // Server To Server
 #define SS_COLLISION			12
 #define SS_PLAYER_POS_UPDATE	13
@@ -139,6 +144,17 @@ struct SC_PACKET_ENTER_PLAYER {
 	float size_x, size_y, size_z;
 };
 
+////////////////////////////
+
+struct SC_PACKET_LOGIN_PLAYER {
+	BYTE size;
+	BYTE type;
+	WORD id;
+	char userid[maxUserIDLen];
+	BYTE passwd[maxPasswdLen];
+};
+
+
 struct SC_PACKET_LOOCVEC {
 	BYTE size;
 	BYTE type;
@@ -205,7 +221,9 @@ struct SC_PACKET_COLLISION_OB {
 
 
 struct SC_PAKCET_CLIENT_BUILDING_COLLSION {
-
+	BYTE size;
+	BYTE type;
+	int player_ready[MAX_PLAYER_SIZE];
 };
 
 struct SC_PACKET_ITEM_GEN {
@@ -214,6 +232,13 @@ struct SC_PACKET_ITEM_GEN {
 	float x, y, z;
 };
 
+struct SC_PACKET_READY {
+	BYTE size;
+	BYTE type;
+	bool player_ready[MAX_PLAYER_SIZE];
+	bool game_start = false;
+	
+};
 
 
 // 클라->서버
@@ -222,6 +247,12 @@ struct CS_PACKET_BIGGEST {
 	BYTE type;
 	WORD id;
 	bool player_in[4];
+};
+
+struct CS_PLAYER_IS_DIE {
+	BYTE size;
+	BYTE type;
+	bool isPlayerdead[MAX_PLAYER_SIZE] = { false };
 };
 
 struct CS_PACKET_KEYUP {

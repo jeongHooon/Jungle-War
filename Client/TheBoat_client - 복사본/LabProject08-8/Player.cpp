@@ -9,6 +9,8 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CPlayer
 
+#define BluBoxSpeed 0.03
+
 int ServerMgr::elecCount;
 XMFLOAT3 ServerMgr::elecPos;
 
@@ -319,6 +321,10 @@ void CPlayer::Animate(float fTimeElapsed, int num)
 
 	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(num * 5, 90 - num * 5, 0.0f);
 	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
+
+	if (playerHp < 0) {
+		isDie = true;
+	}
 }
 void CPlayer::rrrotate(float deg)
 {
@@ -642,13 +648,11 @@ void CBlueBox::Animate(float fTimeElapsed)
 	if (0.05 * ServerMgr::elecCount < 1100)
 		elecCount_ = ServerMgr::elecCount;
 
-	SetScale(1200 - 0.02 * elecCount_, 5000, 1200 - 0.02 * elecCount_);
-	SetOOBB(ServerMgr::elecPos, XMFLOAT3((1200 - 0.02 * elecCount_) / 2, 5000, (1200 - 0.02 * elecCount_) / 2), XMFLOAT4(0, 0, 0, 1));
+	SetScale(1200 - BluBoxSpeed * elecCount_, 5000, 1200 - BluBoxSpeed * elecCount_);
+	SetOOBB(ServerMgr::elecPos, XMFLOAT3((1200 - BluBoxSpeed * elecCount_) / 2, 5000, (1200 - BluBoxSpeed * elecCount_) / 2), XMFLOAT4(0, 0, 0, 1));
 	SetPosition(ServerMgr::elecPos);
 }
 
-void CBlueBox::SetBoxScale(int input) {
-}
 
 CCamera * CBlueBox::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 {

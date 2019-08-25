@@ -17,17 +17,16 @@ void ServerMgr::ErrorDisplay(const char* msg, int err_no) {
 void ServerMgr::IPInput() {
 	while (true) {
 		cout << "서버 아이피 입력 : ";
-		cin >> server_ip;
+		//cin >> server_ip;
 
 //		cout << "아이디 입력 : ";
 //		cin >> userid;
 //		cout << "비밀번호 입력 : ";
 //		cin >> userpw;
-
-
 		break;
 	}
 }
+
 void ServerMgr::Initialize(HWND& hwnd) {
 	WSADATA	wsadata;
 	WSAStartup(MAKEWORD(2, 2), &wsadata);
@@ -120,15 +119,16 @@ void ServerMgr::ProcessPacket(char* ptr) {
 
 		if(packets->id == clients_id)
 			elecPos = XMFLOAT3(packets->elecX, packets->elecY, packets->elecZ);
-
-		client_hp[packets->id] = packets->hp;
-		strncpy_s((char *)packets->userid, maxUserIDLen, userid, maxUserIDLen);
-		packets->userid[maxUserIDLen - 1] = '\0';
-		strncpy_s((char *)packets->passwd, maxPasswdLen, userpw, maxPasswdLen);
-		packets->userid[maxPasswdLen - 1] = '\0';
-
 		break;
 	}
+
+//	case SC_PLAYER_LOGIN: {
+//		SC_PACKET_LOGIN_PLAYER* packets = reinterpret_cast<SC_PACKET_LOGIN_PLAYER*>(ptr);
+//
+//
+//		break;
+//	}
+
 	case SC_BUILDING_GEN: {
 		SC_PACKET_ENTER_PLAYER* packets = reinterpret_cast<SC_PACKET_ENTER_PLAYER*>(ptr);
 		building_pos[packets->id].x = packets->x;
@@ -300,6 +300,19 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		is_item_gen = true;
 		break;
 	}
+	case SC_READY: {
+		SC_PACKET_READY* packets = reinterpret_cast<SC_PACKET_READY*>(ptr);
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+		{
+			player_ready[k] = packets->player_ready[k];
+			if (player_ready[k])
+				printf("%d 플레이어 레디\n", k);
+		}
+		game_start = packets->game_start;
+		if (game_start)
+			printf("게임 시작임 ㄱㄱㄱㄱㄱ\n");
+		break;
+	}
 	}
 }
 int ServerMgr::GetElecCount() {
@@ -341,6 +354,9 @@ XMFLOAT3 ServerMgr::ReturnCollsionPosition(bool* is_collide) {
 	return collision_pos;
 }
 
+void ServerMgr::SendDeadPacket() {
+
+}
 void ServerMgr::SendPacket(int type) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(send_buffer);
 	packet_buffer->size = sizeof(CS_PACKET_KEYUP);
@@ -465,10 +481,10 @@ void ServerMgr::SendPacket(int type) {
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
 
-	case CS_PLAYER_LOGIN:
-		packet_buffer->type = CS_PLAYER_LOGIN;
-		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
-		break;
+//	case CS_PLAYER_LOGIN:
+//		packet_buffer->type = CS_PLAYER_LOGIN;
+//		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
+//		break;
 	}
 
 	if (retval == 1) {
@@ -477,6 +493,25 @@ void ServerMgr::SendPacket(int type) {
 	}
 
 }
+
+void ServerMgr::SendPacket(int type, _TCHAR* argv[]) {
+	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(send_buffer);
+	packet_buffer->size = sizeof(CS_PACKET_KEYUP);
+	send_wsabuf.len = sizeof(CS_PACKET_KEYUP);
+	int retval = 0;
+	DWORD iobytes;
+	switch (type) {
+	case CS_PLAYER_LOGIN:
+		packet_buffer->type = CS_PLAYER_LOGIN;
+		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
+		break;
+	}
+	if (retval == 1) {
+		int error_code = WSAGetLastError();
+		ErrorDisplay("[WSASend] 에러 : ", error_code);
+	}
+}
+
 void ServerMgr::SendPacket(int type, XMFLOAT3& xmvector) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(send_buffer);
 	packet_buffer->size = sizeof(CS_PACKET_KEYUP);
@@ -604,6 +639,7 @@ void ServerMgr::SendPacket(int type, XMFLOAT3& xmvector) {
 	}
 
 }
+
 
 void ServerMgr::ClientError() {
 	exit(-1);

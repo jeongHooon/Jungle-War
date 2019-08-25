@@ -180,7 +180,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppShaders[6] = pDropItemShader;
 	// UI
 
-	m_nUIShaders = 41;
+	m_nUIShaders = 42;
 	m_ppUIShaders = new CShader*[m_nUIShaders];
 
 	CMiniMapShader *pMiniMapShader = new CMiniMapShader();
@@ -234,6 +234,10 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	CChatScreenReady *pChatScreenReadyShader = new CChatScreenReady();
 	pChatScreenReadyShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pChatScreenReadyShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CChatReadyShader *pChatReadyShader = new CChatReadyShader();
+	pChatReadyShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pChatReadyShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
 	// 숫자 시작
 	// 앞자리
@@ -388,7 +392,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppUIShaders[38] = pTreeNumShader8;
 	m_ppUIShaders[39] = pTreeNumShader9;
 	m_ppUIShaders[40] = pTreeNumShader10;
-
+	m_ppUIShaders[41] = pChatReadyShader;
 	// 메인화면
 	m_nMainUIShaders = 5;
 	m_ppMainUIShaders = new CShader*[m_nMainUIShaders];

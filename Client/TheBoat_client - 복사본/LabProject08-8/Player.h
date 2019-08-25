@@ -98,7 +98,6 @@ public:
 	void  MinusPlayerBullet() { --playerBullet; }
 	int GetPlayerHp() { return(playerHp); }
 	void SetPlayerHp(float input) { playerHp = input; }
-	virtual void SetBoxScale(int input) {}
 
 
 	CCamera *GetCamera() { return(m_pCamera); }
@@ -178,7 +177,6 @@ private:
 public:
 	CBlueBox(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, ID3D12RootSignature * pd3dGraphicsRootSignature, void * pContext = NULL, int nMeshes = 1);
 	virtual ~CBlueBox();
-	virtual void SetBoxScale(int input);
 	void Animate(float fTimeElapsed);
 	virtual CCamera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
 	/*virtual void OnPlayerUpdateCallback(float fTimeElapsed);
