@@ -1223,13 +1223,10 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 
 void CGameFramework::SendLoginREQ() {
 	char userid;
-	char passwd[256];
 
 	cout << "id를 입력해 주세요 ";
 	cin >> userid;
 
-	cout << "암호를 입력해 주세요 ";
-	cin >> passwd;
 
 	char protoBuffer[1024];
 	ProtoCommand *cmd = (ProtoCommand *)protoBuffer;
@@ -1242,9 +1239,7 @@ void CGameFramework::SendLoginREQ() {
 
 	cout << "로그인한 아이디는" << userid << endl;
 	
-	
-	strncpy_s((char *)login->passwd, maxPasswdLen, passwd, maxPasswdLen);
-	login->passwd[maxPasswdLen - 1] = '\0';
+
 
 	server_mgr.SendPacket(CS_PLAYER_LOGIN,userid);
 //	server_mgr.SendPacket(CS_PLAYER_LOGIN, userid);
