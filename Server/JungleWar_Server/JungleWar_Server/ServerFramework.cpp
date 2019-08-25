@@ -616,10 +616,24 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 
 		break;
 	}
-	case CS_PLAYER_READY_CANCLE:
+	case CS_PLAYER_READY_CANCLE: {
 		printf("%d 플레이어 레디취소\n", cl_id);
 		player_ready[cl_id] = false;
-		break;
+		ready_count--;
+
+		SC_PACKET_READY packets;
+		packets.size = sizeof(SC_PACKET_READY);
+		packets.type = SC_READY;
+
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+			packets.player_ready[k] = player_ready[k];
+
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+			if (clients[k].in_use)
+				SendPacket(k, &packets);
+
+		break; 
+	}
 	case CS_PLAYER_TEAM_SELECT:
 		break;
 
@@ -1429,7 +1443,8 @@ void ServerFramework::TimerSend(duration<float>& elapsed_time) {
 				ol_ex[i].command = SC_PLAYER_MOVE;
 				PostQueuedCompletionStatus(iocp_handle, 0, i, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[i]));
 			}
-			++elecCount;
+			if(game_start)
+				++elecCount;
 		}
 		sender_time = 0;
 	}

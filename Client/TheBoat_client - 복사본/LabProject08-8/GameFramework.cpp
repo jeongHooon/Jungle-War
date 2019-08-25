@@ -1855,6 +1855,15 @@ void CGameFramework::FrameAdvance()
 		server_mgr.SetMessageCheck();
 	}
 
+	if (gameMode > 3) {
+		for (int i = 0; i < 4; ++i) {
+			playerReady[i] = server_mgr.GetPlayerReady(i);
+		}
+		if (server_mgr.GetGameStart())
+			gameMode = 1;
+	}
+
+
 	/////// 오브젝트 충돌체크
 	
 	bool check = false;

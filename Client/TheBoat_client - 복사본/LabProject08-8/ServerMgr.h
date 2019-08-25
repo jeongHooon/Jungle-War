@@ -95,6 +95,8 @@ public:
 	int GetElecCount();
 	int GetClientID();
 	int ReturnCameraID();
+	bool GetGameStart() { return game_start; }
+	bool GetPlayerReady(int input) { return player_ready[input]; }
 	float GetBoxHp(int index) { return box_hp[index]; }
 	bool GetBoxInuse(int index) { return boxes[index].in_use; }
 	bool GetTreeInuse(int index) { return obj[index].in_use; }
