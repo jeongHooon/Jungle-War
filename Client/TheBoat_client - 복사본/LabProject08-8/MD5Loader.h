@@ -9,4 +9,6 @@
 	bool LoadMD5Anim(std::wstring filename, Model3D& MD5Model);
 	void UpdateMD5Model(Model3D& MD5Model, float deltaTime, int animation, CMesh*& pMesh, int meshnum);
 
+	void UpdateMD5Model2(Model3D& MD5Model, float deltaTime, int animation, CMesh*& pMesh, int meshnum);
+
 

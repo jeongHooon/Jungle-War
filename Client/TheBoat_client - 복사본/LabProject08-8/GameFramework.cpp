@@ -1718,7 +1718,7 @@ void CGameFramework::FrameAdvance()
 				m_pPlayer[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));*/
 			m_pPlayer[i]->Render(m_pd3dCommandList, m_pCamera);
 		}
-			m_pShadow[0]->Render(m_pd3dCommandList, m_pCamera);
+			//m_pShadow[0]->Render(m_pd3dCommandList, m_pCamera);
 	}
 	/*for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pShadow[i]->SetPosition(XMFLOAT3(m_pPlayer[i]->GetPosition().x + 1, m_pPlayer[i]->GetPosition().y, m_pPlayer[i]->GetPosition().z+1));

@@ -87,7 +87,7 @@ public:
 	void SetVelocity(const XMFLOAT3& xmf3Velocity) { m_xmf3Velocity = xmf3Velocity; }
 	void SetPosition(const XMFLOAT3& xmf3Position) { Move(XMFLOAT3(xmf3Position.x - m_xmf3Position.x, xmf3Position.y - m_xmf3Position.y, xmf3Position.z - m_xmf3Position.z), false); }
 	void SetLook(XMFLOAT3 xmf3Look) { m_xmf3Look = xmf3Look; }
-	void rrrotate(float deg);
+	virtual void rrrotate(float deg);
 	void ImDie() { isDie = true; }
 	const XMFLOAT3& GetVelocity() const { return(m_xmf3Velocity); }
 	float GetYaw() const { return(m_fYaw); }
@@ -107,7 +107,7 @@ public:
 	void Move(DWORD dwDirection, float fDistance, bool bUpdateVelocity);
 	void Move(const XMFLOAT3& xmf3Shift, bool bVelocity = false);
 	void Move(float fxOffset = 0.0f, float fyOffset = 0.0f, float fzOffset = 0.0f);
-	void Rotate(float x, float y, float z);
+	virtual void Rotate(float x, float y, float z);
 
 	void Update(float fTimeElapsed);
 
@@ -190,6 +190,8 @@ public:
 	void Animate(float fTimeElapsed, int num, XMFLOAT4X4 worldMt);
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, UINT nInstances = 1);
 	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
+	virtual void rrrotate(float deg);
+	virtual void Rotate(float x, float y, float z);
 	/*virtual void OnPlayerUpdateCallback(float fTimeElapsed);
 	virtual void OnCameraUpdateCallback(float fTimeElapsed);*/
 };
