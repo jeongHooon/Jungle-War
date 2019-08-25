@@ -729,6 +729,7 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		//m_pPlayer[i]->SetScale(0.093, 0.093, 0.093);	// 캐릭터 크기 조정
 		m_pPlayer[i]->SetScale(0.125, 0.125, 0.125);	// 캐릭터 크기 조정
+		m_pShadow[i]->SetScale(0.125, 0.125, 0.125);
 	}
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pObject[i]->SetScale(0.25f, 0.25f, 0.25f);

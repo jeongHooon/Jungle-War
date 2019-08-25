@@ -699,3 +699,195 @@ CCamera * CBlueBox::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 
 	return(m_pCamera);
 }
+
+CShadow::CShadow(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, void* pContext, int nMeshes) : CPlayer(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, pContext, nMeshes)
+{
+	m_pCamera = ChangeCamera(FIRST_PERSON_CAMERA, 0.0f);
+	if (m_pCamera) m_pCamera->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	PT = Player;
+	//LoadGeometryFromFile2(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Flyer.txt");
+	CMesh* pMesh = NULL;
+	CMesh* pMesh1 = NULL;
+
+	ResizeMeshes(2);
+
+
+	LoadMD5Model(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Soldier_Mesh.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
+	SetMesh(0, pMesh);
+	//AddRef();
+	LoadMD5Model(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Soldier_Rifle.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh1);
+	SetMesh(1, pMesh1);
+	LoadMD5Anim(L"../Assets/Model/1241.MD5ANIM", NewMD5Model);//0
+	LoadMD5Anim(L"../Assets/Model/Soldier_Run.MD5ANIM", NewMD5Model);//1
+	LoadMD5Anim(L"../Assets/Model/Soldier_Shot.MD5ANIM", NewMD5Model);//2
+	LoadMD5Anim(L"../Assets/Model/Soldier_WalkFront.MD5ANIM", NewMD5Model);//3
+	LoadMD5Anim(L"../Assets/Model/Soldier_WalkBack.MD5ANIM", NewMD5Model);//4
+	LoadMD5Anim(L"../Assets/Model/Soldier_WalkRight.MD5ANIM", NewMD5Model);//5
+	LoadMD5Anim(L"../Assets/Model/Soldier_WalkLeft.MD5ANIM", NewMD5Model);//6
+	LoadMD5Anim(L"../Assets/Model/Soldier_Crouch.MD5ANIM", NewMD5Model);//7
+
+	LoadMD5Anim(L"../Assets/Model/wbr.MD5ANIM", NewMD5Model);//8
+	LoadMD5Anim(L"../Assets/Model/wbl.MD5ANIM", NewMD5Model);//9
+	LoadMD5Anim(L"../Assets/Model/RunBack.MD5ANIM", NewMD5Model);//10
+	LoadMD5Anim(L"../Assets/Model/RunBackLeft.MD5ANIM", NewMD5Model);//11
+	LoadMD5Anim(L"../Assets/Model/RunBackRight.MD5ANIM", NewMD5Model);//12
+	LoadMD5Anim(L"../Assets/Model/RunLeft.MD5ANIM", NewMD5Model);//13
+	LoadMD5Anim(L"../Assets/Model/RunRight.MD5ANIM", NewMD5Model);//14
+	LoadMD5Anim(L"../Assets/Model/jumpM.MD5ANIM", NewMD5Model);//15
+	LoadMD5Anim(L"../Assets/Model/takedamage.MD5ANIM", NewMD5Model);//16
+	LoadMD5Anim(L"../Assets/Model/die.MD5ANIM", NewMD5Model);//17
+	LoadMD5Anim(L"../Assets/Model/jump3.MD5ANIM", NewMD5Model);//7
+	//LoadMD5Anim(L"../Assets/Model/CrouchShot.MD5ANIM", NewMD5Model); //15
+	//LoadMD5Anim(L"../Assets/Model/CrouchWalk.MD5ANIM", NewMD5Model); //16
+
+
+
+	m_pMaterial = new CMaterial();
+	CTexture* pTexture = new CTexture(2, RESOURCE_TEXTURE2D, 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Model/demo_soldier.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Model/warrior.dds", 1);
+
+
+	m_pMaterial->SetTexture(pTexture);
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	ID3D12Resource* pd3dcbResource = CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+
+	CTexturedShader* pShader = new CTexturedShader();
+	pShader->isShadow = true;
+	pShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
+	pShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	pShader->CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 1, 2);
+	//pShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, 1, m_pd3dcbGameObject, ncbElementBytes);
+	pShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, 1, pd3dcbResource, ncbElementBytes);
+	pShader->CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, true);
+
+	SetCbvGPUDescriptorHandle(pShader->GetGPUCbvDescriptorStartHandle());
+
+	m_pMaterial->SetShader(pShader);
+	XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+	XMVECTOR toMainLight = -XMLoadFloat3(new XMFLOAT3(-0.3f, -1.0f, 0.0f));
+	XMMATRIX S = XMMatrixShadow(shadowPlane, toMainLight);
+	XMMATRIX shadowOffSetY = XMMatrixTranslation(0.0f, 0.003f, 0.0f);
+	MTShadow = S * shadowOffSetY;
+
+	CHeightMapTerrain* pTerrain = (CHeightMapTerrain*)pContext;
+	SetPlayerUpdatedContext(pTerrain);
+	SetCameraUpdatedContext(pTerrain);
+}
+
+CShadow::~CShadow()
+{
+}
+
+void CShadow::Animate(float fTimeElapsed, int num, XMFLOAT4X4 worldMt)
+{	
+	if (!m_bActive) return;
+	//SetWMatrix(Matrix4x4::Multiply(worldMt, MTShadow));
+	SetWMatrix(Matrix4x4::Multiply(worldMt, XMMatrixIdentity()));
+	//m_xmf4x4ToParentTransform._11 = m_xmf3Right.x; m_xmf4x4ToParentTransform._12 = m_xmf3Right.y; m_xmf4x4ToParentTransform._13 = m_xmf3Right.z;
+	//m_xmf4x4ToParentTransform._21 = m_xmf3Up.x; m_xmf4x4ToParentTransform._22 = m_xmf3Up.y; m_xmf4x4ToParentTransform._23 = m_xmf3Up.z;
+	//m_xmf4x4ToParentTransform._31 = m_xmf3Look.x; m_xmf4x4ToParentTransform._32 = m_xmf3Look.y; m_xmf4x4ToParentTransform._33 = m_xmf3Look.z;
+	m_xmf4x4ToParentTransform._43 -= 5;
+	/*if (m_nMeshes > 0)
+		for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
+			UpdateMD5Model(NewMD5Model, fTimeElapsed * 0.85, 0, m_ppMeshes[i], i);*/
+	/*else if (m_AnimState == ATTACKSTATE) {
+		if ((m_pModels[CurMeshNum].animations[ATTACKSTATE].currAnimTime == 0.f)) m_AnimState = IDLESTATE;
+	}*/
+	if (!gameend) {
+		if (isShot) {
+
+			for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
+				UpdateMD5Model(NewMD5Model, fTimeElapsed * 0.85, 2, m_ppMeshes[i], i);
+			shotTime += fTimeElapsed;
+		}
+		else if (isDie) {
+			for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
+				UpdateMD5Model(NewMD5Model, fTimeElapsed * 0.4, 17, m_ppMeshes[i], i);
+			dieTime += fTimeElapsed;
+		}
+		else {
+			for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
+				UpdateMD5Model(NewMD5Model, fTimeElapsed * 0.85, animation_status, m_ppMeshes[i], i);
+		}
+	}
+	if (shotTime > 0.5) {
+		shotTime = 0.0f;
+		isShot = false;
+	}
+	if (dieTime > 2.0) {
+		shotTime = 0.0f;
+		gameend = true;
+	}
+	time += fTimeElapsed;
+}
+
+void CShadow::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera, UINT nInstances)
+{
+	if (!m_bActive) return;
+	if (m_pMaterial)
+	{
+		if (m_pMaterial->m_pShader) {
+			m_pMaterial->m_pShader->Render(pd3dCommandList, pCamera);
+			m_pMaterial->m_pShader->UpdateShaderVariables(pd3dCommandList);
+			UpdateShaderVariables(pd3dCommandList);
+		}
+		if (m_pMaterial->m_pTexture)
+			m_pMaterial->m_pTexture->UpdateShaderVariables(pd3dCommandList);
+	}
+	pd3dCommandList->SetGraphicsRootDescriptorTable(2, m_d3dCbvGPUDescriptorHandle);
+	if (m_nMeshes > 0) for (int i = 0; i < m_nMeshes; i++)
+		if (m_ppMeshes[i]) m_ppMeshes[i]->Render(pd3dCommandList, nInstances);
+}
+
+CCamera* CShadow::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
+{
+	DWORD nCurrentCameraMode = (m_pCamera) ? m_pCamera->GetMode() : 0x00;
+	if (nCurrentCameraMode == nNewCameraMode) return(m_pCamera);
+	switch (nNewCameraMode)
+	{
+	case FIRST_PERSON_CAMERA:
+		SetFriction(200.0f);
+		SetGravity(XMFLOAT3(0.0f, 0.0f, 0.0f));
+		SetMaxVelocityXZ(125.0f);
+		SetMaxVelocityY(400.0f);
+		m_pCamera = OnChangeCamera(FIRST_PERSON_CAMERA, nCurrentCameraMode);
+		m_pCamera->SetTimeLag(0.0f);
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 20.0f, 0.0f));
+		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
+		m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
+		m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+		break;
+	case SPACESHIP_CAMERA:
+		SetFriction(125.0f);
+		SetGravity(XMFLOAT3(0.0f, 0.0f, 0.0f));
+		SetMaxVelocityXZ(400.0f);
+		SetMaxVelocityY(400.0f);
+		m_pCamera = OnChangeCamera(SPACESHIP_CAMERA, nCurrentCameraMode);
+		m_pCamera->SetTimeLag(0.0f);
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 0.0f, 0.0f));
+		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
+		m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
+		m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+		break;
+	case THIRD_PERSON_CAMERA:
+		SetFriction(250.0f);
+		SetGravity(XMFLOAT3(0.0f, 0.0f, 0.0f));
+		SetMaxVelocityXZ(125.0f);
+		SetMaxVelocityY(400.0f);
+		m_pCamera = OnChangeCamera(THIRD_PERSON_CAMERA, nCurrentCameraMode);
+		m_pCamera->SetTimeLag(0.25f);
+		m_pCamera->SetOffset(XMFLOAT3(0.0f, 20.0f, -40.0f));
+		m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
+		m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
+		m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+		break;
+	default:
+		break;
+	}
+	Update(fTimeElapsed);
+
+	return(m_pCamera);
+}
