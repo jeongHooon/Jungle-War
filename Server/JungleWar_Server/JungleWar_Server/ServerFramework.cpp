@@ -589,17 +589,31 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		break;
 	}
 	case CS_PLAYER_READY: {
-		int ready_count = 0;
 		printf("%d 플레이어 레디\n", cl_id);
 		player_ready[cl_id] = true;
-		for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-			if (player_ready[i]) {
-				ready_count++;
-			}
+		ready_count++;
+
+		SC_PACKET_READY packets;
+		packets.size = sizeof(SC_PACKET_READY);
+		packets.type = SC_READY;
+
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+		{
+			packets.player_ready[k] = player_ready[k];
+			if (player_ready[k])
+				printf("%d 레디 완료\n",k);
 		}
+		
 		if (ready_count == MAX_PLAYER_SIZE) {
-			GameStart();
+			//GameStart();
+			game_start = true;
+			packets.game_start = game_start;
 		}
+
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+			if (clients[k].in_use)
+				SendPacket(k, &packets);
+
 		break;
 	}
 	case CS_PLAYER_READY_CANCLE:

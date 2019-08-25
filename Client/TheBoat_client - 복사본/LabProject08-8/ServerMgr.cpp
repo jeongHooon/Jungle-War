@@ -18,7 +18,7 @@ void ServerMgr::ErrorDisplay(const char* msg, int err_no) {
 void ServerMgr::IPInput() {
 	while (true) {
 		cout << "서버 아이피 입력 : ";
-		cin >> server_ip;
+		//cin >> server_ip;
 		break;
 	}
 }
@@ -38,7 +38,7 @@ void ServerMgr::Initialize(HWND& hwnd) {
 	// 아이피
 	ServerAddr.sin_addr.s_addr = inet_addr(server_ip.c_str());
 	
-	/*ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");*/
+	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	
 	int retval = WSAConnect(sock, (sockaddr *)&ServerAddr, sizeof(ServerAddr), NULL, NULL, NULL, NULL);
 	if (retval == SOCKET_ERROR) {
@@ -294,6 +294,19 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		item_pos.z = packets->z;
 		printf("아템 생성\n");
 		is_item_gen = true;
+		break;
+	}
+	case SC_READY: {
+		SC_PACKET_READY* packets = reinterpret_cast<SC_PACKET_READY*>(ptr);
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
+		{
+			player_ready[k] = packets->player_ready[k];
+			if (player_ready[k])
+				printf("%d 레디 완료\n", k);
+		}
+		game_start = packets->game_start;
+		if (game_start)
+			printf("게임시작 ㄱㄱㄱ\n");
 		break;
 	}
 	}

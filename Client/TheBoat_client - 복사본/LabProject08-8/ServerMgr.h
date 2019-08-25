@@ -55,6 +55,8 @@ class ServerMgr
 	int camera_id = 0;
 	string server_ip;
 	bool isplayerdead[MAX_PLAYER_SIZE] = { 0,0,0,0 };
+	bool player_ready[MAX_PLAYER_SIZE] = { 0 };
+	bool game_start = false;
 
 	int myBoxCount = 10;
 
