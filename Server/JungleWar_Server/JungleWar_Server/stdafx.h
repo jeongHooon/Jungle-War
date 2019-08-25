@@ -87,7 +87,7 @@ struct OverlappedExtensionSet {
 
 struct Client {
 	///////////////////////////////
-	BYTE id[maxUserIDLen];  // 접속한 클라이언트의 id
+	char id;
 	///////////////////////////////
 
 	SOCKET s;

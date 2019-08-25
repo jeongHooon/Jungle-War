@@ -1027,7 +1027,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				//printf("[WM_KEYDOWN] : Q키 놓음 \n");
 				server_mgr.SendPacket(CS_KEY_RELEASE_Q);
 				is_pushed[CS_KEY_PRESS_Q] = false;
-				
 			}
 			break;
 		case VK_UP:
@@ -1223,13 +1222,11 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 }
 
 void CGameFramework::SendLoginREQ() {
-	char userid[256];
-	char passwd[256];
+	char userid;
 
 	cout << "id를 입력해 주세요 ";
 	cin >> userid;
-	cout << "암호를 입력해 주세요 ";
-	cin >> passwd;
+
 
 	char protoBuffer[1024];
 	ProtoCommand *cmd = (ProtoCommand *)protoBuffer;
@@ -1237,18 +1234,22 @@ void CGameFramework::SendLoginREQ() {
 
 	cmd->command = ComLoginREQ;
 
-	login->userid[maxUserIDLen - 1] = '\0';
+//	strncpy_s((char *)login->userid, maxUserIDLen, userid, maxUserIDLen);
+	login->userid[maxUserIDLen - 1] = '\0';  // 제한된 길이만큼만 복사
 
-	strncpy_s((char *)login->passwd, maxPasswdLen, passwd, maxPasswdLen);
-	login->passwd[maxPasswdLen - 1] = '\0';
+	cout << "로그인한 아이디는" << userid << endl;
+	
 
 
-	server_mgr.SendPacket(CS_PLAYER_LOGIN);
+	server_mgr.SendPacket(CS_PLAYER_LOGIN,userid);
+//	server_mgr.SendPacket(CS_PLAYER_LOGIN, userid);
+	
 //	send(s, protoBuffer, sizeof(ProtoCommand) + sizeof(StrLoginREQ), 0);
 	
 //	SendChatREQ();
 
 }
+
 void CGameFramework::SendChatREQ() {
 //	while (true) {
 		char buffer[1024];
@@ -1633,13 +1634,7 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 	if (fColors[1] > 1.0f) fColors[1] = 0.0f;
 	m_pd2dfxGaussianBlur->SetValue(D2D1_GAUSSIANBLUR_PROP_STANDARD_DEVIATION, 0.3f + fColors[1] * 10.0f);
 #endif
-	if (gameMode > 3) {
-		for (int i = 0; i < 4; ++i) {
-			playerReady[i] = server_mgr.GetPlayerReady(i);
-		}
-		if (server_mgr.GetGameStart())
-			gameMode = 1;
-	}
+
 }
 
 void CGameFramework::WaitForGpuComplete()
@@ -1823,6 +1818,7 @@ void CGameFramework::FrameAdvance()
 	// 렌더
 	//printf("%f %f %f \n", m_pPlayer[0]->GetPosition().x, m_pPlayer[0]->GetPosition().y, m_pPlayer[0]->GetPosition().z);
 
+	m_pBlueBox[0]->SetBoxScale(server_mgr.GetElecCount());
 
 	// 자기장 충돌체크
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
@@ -1850,8 +1846,10 @@ void CGameFramework::FrameAdvance()
 	}
 	//// 플레이어 죽는지 체크
 
-	if (m_pPlayer[my_client_id]->isDie)
+	if (m_pPlayer[my_client_id]->isDie) {
 		server_mgr.SetIsPlayerdead(my_client_id);
+		server_mgr.SendDeadPacket();
+	}
 	////
 
 	/////// 오브젝트 충돌체크
@@ -2063,4 +2061,6 @@ void CGameFramework::SwapText(int clientID, wchar_t inputChat[100]) {
 	wcscpy(outputtexts[0], inputChat);
 	playerChat[0] = clientID;
 }
+
+
 

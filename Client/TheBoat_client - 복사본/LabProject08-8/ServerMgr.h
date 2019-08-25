@@ -59,11 +59,9 @@ class ServerMgr
 	int myBoxCount = 10;
 
 	// 로그인
-	char userid[maxUserIDLen];
+	char loginID[MAX_PLAYER_SIZE];
 	char userpw[maxUserIDLen];
 
-	bool player_ready[MAX_PLAYER_SIZE] = { 0 };
-	bool game_start = false;
 
 	// 아이템 생성 부분
 	XMFLOAT3 item_pos;
@@ -83,10 +81,13 @@ public:
 	void ReadPacket();
 	void SendPacket(int type);
 	void SendPacket(int type, XMFLOAT3& xmvector);
+	void SendPacket(int type, CHAR id);
 	void SendDeadPacket();
-	///////////////////////
+
+
+
 	void SetIsPlayerdead(int index) { isplayerdead[index] = true; }
-	void SendPacket(int type, _TCHAR* argv[]);
+
 	void ProcessPacket(char* ptr);
 	void ErrorDisplay(const char* msg, int err_no);
 	int GetElecCount();
@@ -96,8 +97,6 @@ public:
 	bool GetBoxInuse(int index) { return boxes[index].in_use; }
 	bool GetTreeInuse(int index) { return obj[index].in_use; }
 	int GetBoxCount() { return myBoxCount; }
-	bool GetGameStart() { return game_start; }
-	bool GetPlayerReady(int input) { return player_ready[input]; }
 	Bullet GetBullet();
 	Box GetBox(int index);
 	SPlayer ReturnPlayerPosStatus(int client_id);
