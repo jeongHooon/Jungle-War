@@ -23,11 +23,7 @@
     <ProjectGuid>{2DACAA6E-CAD6-43DC-8844-B42287D8CB3C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>LabProject088</RootNamespace>
-<<<<<<< HEAD
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
-=======
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
->>>>>>> 1b07afc3fc8564df95a6ed42f3b16f1884caa1dc
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
     <ProjectName>JungleWar</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />

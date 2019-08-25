@@ -17,18 +17,12 @@ void ServerMgr::ErrorDisplay(const char* msg, int err_no) {
 void ServerMgr::IPInput() {
 	while (true) {
 		cout << "서버 아이피 입력 : ";
-<<<<<<< HEAD
 		//cin >> server_ip;
 
 //		cout << "아이디 입력 : ";
 //		cin >> userid;
 //		cout << "비밀번호 입력 : ";
 //		cin >> userpw;
-
-
-=======
-		cin >> server_ip;
->>>>>>> 8cca9d06a234ec5189ea23144cdf5564ad46ddc5
 		break;
 	}
 }
