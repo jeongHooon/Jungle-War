@@ -32,6 +32,7 @@ class ServerFramework
 													// Client_ID에 맞는 배열 true
 													// 모두 true가 되면 게임 시작 함수 실행
 	int ready_count = 0;
+	bool game_start = false;
 
 	CHeightMapImage* height_map;
 	time_point<system_clock> prev_time = system_clock::now();
