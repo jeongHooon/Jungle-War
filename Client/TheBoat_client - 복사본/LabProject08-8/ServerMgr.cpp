@@ -17,7 +17,7 @@ void ServerMgr::ErrorDisplay(const char* msg, int err_no) {
 void ServerMgr::IPInput() {
 	while (true) {
 		cout << "서버 아이피 입력 : ";
-		cin >> server_ip;
+		//cin >> server_ip;
 
 //		cout << "아이디 입력 : ";
 //		cin >> userid;

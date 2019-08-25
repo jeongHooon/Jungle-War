@@ -638,15 +638,17 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			}
 		}
 		if (wParam == VK_F5) {
-			if (player_ready) {
+			if (player_ready && playerChat[my_client_id]) {
 				//printf("Ready 취소\n");
 				server_mgr.SendPacket(CS_PLAYER_READY_CANCLE);
 				player_ready = false;
+				playerReady[my_client_id] = false;
 			}
 			else {
 				//printf("Ready\n");
 				server_mgr.SendPacket(CS_PLAYER_READY);
 				player_ready = true;
+				playerReady[my_client_id] = true;
 			}
 		}
 
@@ -1043,7 +1045,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				gameMode = 1;
 			else if (gameMode == 3) {
 				gameMode = 4;
-				wcscpy(playerName[0], inputtext);
+				wcscpy(playerName[my_client_id], inputtext);
 				for (int i = 0; i < 100; ++i)
 					inputtext[i] = {};
 			}
@@ -1064,8 +1066,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			m_pCamera = m_pPlayer[my_client_id]->ChangeCamera((DWORD)(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
 			break;
 		case VK_F5:
-			if(gameMode == 4)
-				gameMode = 5;
+			if (gameMode == 4)
+				++gameMode;
+			else if (gameMode == 5)
+				--gameMode;
 			break;
 		case VK_F9:
 		{
@@ -1767,9 +1771,11 @@ void CGameFramework::FrameAdvance()
 		break;
 	case 4:
 		m_pScene->m_ppUIShaders[28]->Render(m_pd3dCommandList, m_pCamera);
+		m_pScene->m_ppUIShaders[41]->Render(m_pd3dCommandList, m_pCamera, playerReady);
 		break;
 	case 5:
 		m_pScene->m_ppUIShaders[29]->Render(m_pd3dCommandList, m_pCamera);
+		m_pScene->m_ppUIShaders[41]->Render(m_pd3dCommandList, m_pCamera, playerReady);
 		break;
 	}
 	
@@ -1971,8 +1977,10 @@ void CGameFramework::FrameAdvance()
 		}
 
 		for (int i = 0; i < 16; ++i) {
-			D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
-			m_pd2dDeviceContext->DrawTextW(playerName[playerChat[i]], (UINT32)wcslen(playerName[playerChat[i]]), m_pdwFont, &rcChatText, m_pd2dbrText);
+			if (playerChat[i] < 4) {
+				D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+				m_pd2dDeviceContext->DrawTextW(playerName[playerChat[i]], (UINT32)wcslen(playerName[playerChat[i]]), m_pdwFont, &rcChatText, m_pd2dbrText);
+			}
 		}
 
 		m_pd2dDeviceContext->EndDraw();
@@ -2008,9 +2016,18 @@ void CGameFramework::SwapText() {
 		playerChat[14 - i] = playerChat[13 - i];
 	}
 	wcscpy(outputtexts[0], inputtext);
-	playerChat[0] = 0;
+	playerChat[0] = my_client_id;
 	for (int i = 0; i < 100; ++i)
 		inputtext[i] = {};
 	outputtext = L"";
+}
+
+void CGameFramework::SwapText(int clientID, wchar_t inputChat[100]) {
+	for (int i = 0; i < 16; ++i) {
+		wcscpy(outputtexts[14 - i], outputtexts[13 - i]);
+		playerChat[14 - i] = playerChat[13 - i];
+	}
+	wcscpy(outputtexts[0], inputChat);
+	playerChat[0] = clientID;
 }
 
