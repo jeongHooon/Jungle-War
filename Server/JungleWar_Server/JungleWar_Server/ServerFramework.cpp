@@ -583,7 +583,8 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 
 		if (ready_count == MAX_PLAYER_SIZE) {
 			//GameStart();
-			packets.game_start = true;
+			game_start = true;
+			packets.game_start = game_start;
 		}
 
 		for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
@@ -1416,7 +1417,9 @@ void ServerFramework::TimerSend(duration<float>& elapsed_time) {
 				ol_ex[i].command = SC_PLAYER_MOVE;
 				PostQueuedCompletionStatus(iocp_handle, 0, i, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[i]));
 			}
-			++elecCount;
+			
+			if(game_start)
+				++elecCount;
 		}
 		sender_time = 0;
 	}
