@@ -354,6 +354,9 @@ XMFLOAT3 ServerMgr::ReturnCollsionPosition(bool* is_collide) {
 	return collision_pos;
 }
 
+void ServerMgr::SendDeadPacket() {
+
+}
 void ServerMgr::SendPacket(int type) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(send_buffer);
 	packet_buffer->size = sizeof(CS_PACKET_KEYUP);

@@ -249,6 +249,12 @@ struct CS_PACKET_BIGGEST {
 	bool player_in[4];
 };
 
+struct CS_PLAYER_IS_DIE {
+	BYTE size;
+	BYTE type;
+	bool isPlayerdead[MAX_PLAYER_SIZE] = { false };
+};
+
 struct CS_PACKET_KEYUP {
 	BYTE size;
 	BYTE type;
