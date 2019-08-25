@@ -101,6 +101,7 @@
 #define CS_KEY_PRESS_CROUCH			22
 #define CS_KEY_RELEASE_CROUCH		23
 #define PlayerDie					26
+#define CS_PLAYER_DIE				27
 
 //=============================
 #define CS_KEY_PRESS_Q 24
@@ -247,18 +248,14 @@ struct CS_PACKET_BIGGEST {
 	BYTE type;
 	WORD id;
 	bool player_in[4];
-};
 
-struct CS_PLAYER_IS_DIE {
-	BYTE size;
-	BYTE type;
-	bool isPlayerdead[MAX_PLAYER_SIZE] = { false };
 };
 
 struct CS_PACKET_KEYUP {
 	BYTE size;
 	BYTE type;
 	DirectX::XMFLOAT3 look_vec;
+	bool isPlayerdead[MAX_PLAYER_SIZE] = { false };
 };
 struct CS_PACKET_KEYDOWN {
 	BYTE size;
