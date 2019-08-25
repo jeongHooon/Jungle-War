@@ -93,6 +93,8 @@ public:
 	bool GetBoxInuse(int index) { return boxes[index].in_use; }
 	bool GetTreeInuse(int index) { return obj[index].in_use; }
 	int GetBoxCount() { return myBoxCount; }
+	bool GetGameStart() { return game_start; }
+	bool GetPlayerReady(int input) { return player_ready[input]; }
 	Bullet GetBullet();
 	Box GetBox(int index);
 	SPlayer ReturnPlayerPosStatus(int client_id);

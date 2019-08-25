@@ -1613,7 +1613,13 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 	if (fColors[1] > 1.0f) fColors[1] = 0.0f;
 	m_pd2dfxGaussianBlur->SetValue(D2D1_GAUSSIANBLUR_PROP_STANDARD_DEVIATION, 0.3f + fColors[1] * 10.0f);
 #endif
-
+	if (gameMode > 3) {
+		for (int i = 0; i < 4; ++i) {
+			playerReady[i] = server_mgr.GetPlayerReady(i);
+		}
+		if (server_mgr.GetGameStart())
+			gameMode = 1;
+	}
 }
 
 void CGameFramework::WaitForGpuComplete()
