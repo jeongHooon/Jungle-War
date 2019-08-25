@@ -9,7 +9,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CPlayer
 
-#define BluBoxSpeed 0.01
+#define BluBoxSpeed 0.03
 
 int ServerMgr::elecCount;
 XMFLOAT3 ServerMgr::elecPos;
@@ -321,6 +321,10 @@ void CPlayer::Animate(float fTimeElapsed, int num)
 
 	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(num * 5, 90 - num * 5, 0.0f);
 	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
+
+	if (playerHp < 0) {
+		isDie = true;
+	}
 }
 void CPlayer::rrrotate(float deg)
 {

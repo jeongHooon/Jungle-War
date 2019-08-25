@@ -54,6 +54,7 @@ class ServerMgr
 
 	int camera_id = 0;
 	string server_ip;
+	bool isplayerdead[MAX_PLAYER_SIZE] = { 0,0,0,0 };
 
 	int myBoxCount = 10;
 
@@ -84,6 +85,7 @@ public:
 	void SendPacket(int type, XMFLOAT3& xmvector);
 	void SendDeadPacket();
 	///////////////////////
+	void SetIsPlayerdead(int index) { isplayerdead[index] = true; }
 	void SendPacket(int type, _TCHAR* argv[]);
 	void ProcessPacket(char* ptr);
 	void ErrorDisplay(const char* msg, int err_no);
@@ -94,6 +96,8 @@ public:
 	bool GetBoxInuse(int index) { return boxes[index].in_use; }
 	bool GetTreeInuse(int index) { return obj[index].in_use; }
 	int GetBoxCount() { return myBoxCount; }
+	bool GetGameStart() { return game_start; }
+	bool GetPlayerReady(int input) { return player_ready[input]; }
 	Bullet GetBullet();
 	Box GetBox(int index);
 	SPlayer ReturnPlayerPosStatus(int client_id);
