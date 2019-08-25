@@ -425,7 +425,8 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		//::SetCapture(hWnd);
 		//::GetCursorPos(&m_ptOldCursorPos);
 		server_mgr.SendPacket(CS_RIGHT_BUTTON_DOWN, m_pPlayer[my_client_id]->GetLook());
-		m_pCamera = m_pPlayer[my_client_id]->ChangeCamera(SPACESHIP_CAMERA, m_GameTimer.GetTimeElapsed());	// 마우스 우클시 카메라 변환
+		if( !m_pPlayer[my_client_id]->isDie)
+			m_pCamera = m_pPlayer[my_client_id]->ChangeCamera(SPACESHIP_CAMERA, m_GameTimer.GetTimeElapsed());	// 마우스 우클시 카메라 변환
 		printf("마우스 우클릭\n");
 		break;
 	
@@ -598,7 +599,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 
 		}
 
-		if (wParam == VK_SHIFT) {
+		if (wParam == VK_SHIFT ) {
 			if (is_pushed[CS_KEY_PRESS_SHIFT] == false) {
 				//printf("[WM_KEYUP] : Shift 키 입력\n");
 				isRun = true;
@@ -655,181 +656,183 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		}
 
 		// char 형 key들 입력 처리 
-		switch (key_buffer) {
-		case 'w':
-		case 'W':
-			if (is_pushed[CS_KEY_PRESS_UP] == false) {
-				//server_mgr.SendPacket(CS_KEY_PRESS_UP);
-				if (charstate == 6) {
-					m_pPlayer[my_client_id]->GetKeyInput(6);
-					charstate = 6;
-					if (is_pushed[CS_KEY_PRESS_SHIFT]) {
+		if (!m_pPlayer[my_client_id]->isDie) {
+			switch (key_buffer) {
+			case 'w':
+			case 'W':
+				if (is_pushed[CS_KEY_PRESS_UP] == false) {
+					//server_mgr.SendPacket(CS_KEY_PRESS_UP);
+					if (charstate == 6) {
+						m_pPlayer[my_client_id]->GetKeyInput(6);
+						charstate = 6;
+						if (is_pushed[CS_KEY_PRESS_SHIFT]) {
+							m_pPlayer[my_client_id]->GetKeyInput(13);
+							charstate = 13;
+						}
+					}
+					else if (charstate == 5) {
+						m_pPlayer[my_client_id]->GetKeyInput(5);
+						charstate = 5;
+
+					}
+					else if (charstate == 13) {
 						m_pPlayer[my_client_id]->GetKeyInput(13);
 						charstate = 13;
 					}
+					else if (charstate == 14) {
+						m_pPlayer[my_client_id]->GetKeyInput(14);
+						charstate = 14;
+					}
+					else {
+						m_pPlayer[my_client_id]->GetKeyInput(3);
+						m_pPlayer[my_client_id]->InitAnimation(3);
+						charstate = 3;
+					}
+					server_mgr.SendPacket(CS_KEY_PRESS_UP, m_pPlayer[my_client_id]->GetLook());
+					//printf("Look Vector : %lf, %lf, %lf\n", m_pPlayer[my_client_id]->GetLook().x, m_pPlayer[my_client_id]->GetLook().y, m_pPlayer[my_client_id]->GetLook().z);
+					//printf("w를 눌렀는데 my_client_id는 이거임  %d  \n", my_client_id);
+					is_pushed[CS_KEY_PRESS_UP] = true;
+					//sndPlaySound(L"../Assets/Sounds/FootStep.wav", SND_ASYNC);	//���� ���
 				}
-				else if (charstate == 5) {
-					m_pPlayer[my_client_id]->GetKeyInput(5);
-					charstate = 5;
-					
-				}
-				else if (charstate == 13) {
-					m_pPlayer[my_client_id]->GetKeyInput(13);
-					charstate = 13;
-				}
-				else if (charstate == 14) {
-					m_pPlayer[my_client_id]->GetKeyInput(14);
-					charstate = 14;
-				}
-				else {
-					m_pPlayer[my_client_id]->GetKeyInput(3);
-					m_pPlayer[my_client_id]->InitAnimation(3);
-					charstate = 3;
-				}
-				server_mgr.SendPacket(CS_KEY_PRESS_UP, m_pPlayer[my_client_id]->GetLook());
-				//printf("Look Vector : %lf, %lf, %lf\n", m_pPlayer[my_client_id]->GetLook().x, m_pPlayer[my_client_id]->GetLook().y, m_pPlayer[my_client_id]->GetLook().z);
-				//printf("w를 눌렀는데 my_client_id는 이거임  %d  \n", my_client_id);
-				is_pushed[CS_KEY_PRESS_UP] = true;
-				//sndPlaySound(L"../Assets/Sounds/FootStep.wav", SND_ASYNC);	//���� ���
-			}
-			break;
-		case 'a':
-		case 'A':
-			if (is_pushed[CS_KEY_PRESS_LEFT] == false) {
-				//server_mgr.SendPacket(CS_KEY_PRESS_LEFT);
-				if (charstate == 4) {
-					m_pPlayer[my_client_id]->GetKeyInput(9);
-					charstate = 9;
-				}
-				else if (charstate == 3) {
-					m_pPlayer[my_client_id]->GetKeyInput(6);
-					charstate = 6;
-					//printf("215\n");
-				}
-				else if (charstate == 1) {
-					m_pPlayer[my_client_id]->GetKeyInput(13);
-					charstate = 13;
-					
-				}
-				else if (charstate == 10) {
-					m_pPlayer[my_client_id]->GetKeyInput(11);
-					charstate = 11;
+				break;
+			case 'a':
+			case 'A':
+				if (is_pushed[CS_KEY_PRESS_LEFT] == false) {
+					//server_mgr.SendPacket(CS_KEY_PRESS_LEFT);
+					if (charstate == 4) {
+						m_pPlayer[my_client_id]->GetKeyInput(9);
+						charstate = 9;
+					}
+					else if (charstate == 3) {
+						m_pPlayer[my_client_id]->GetKeyInput(6);
+						charstate = 6;
+						//printf("215\n");
+					}
+					else if (charstate == 1) {
+						m_pPlayer[my_client_id]->GetKeyInput(13);
+						charstate = 13;
 
-				}
-				else {
-					m_pPlayer[my_client_id]->GetKeyInput(6);
-					charstate = 6;
-				}
-				server_mgr.SendPacket(CS_KEY_PRESS_LEFT, m_pPlayer[my_client_id]->GetLook());
+					}
+					else if (charstate == 10) {
+						m_pPlayer[my_client_id]->GetKeyInput(11);
+						charstate = 11;
 
-				is_pushed[CS_KEY_PRESS_LEFT] = true;
-			}
-			break;
-		case 's':
-		case 'S':
-			if (is_pushed[CS_KEY_PRESS_DOWN] == false) {
-				//server_mgr.SendPacket(CS_KEY_PRESS_DOWN);
-				if (charstate == 6) {
-					m_pPlayer[my_client_id]->GetKeyInput(9);
-					charstate = 9;
-				}
-				else if (charstate == 5) {
-					m_pPlayer[my_client_id]->GetKeyInput(8);
-					charstate = 8;
-				}
-				else if (charstate == 13) {
-					m_pPlayer[my_client_id]->GetKeyInput(11);
-					charstate = 11;
-				}
-				else if (charstate == 14) {
-					m_pPlayer[my_client_id]->GetKeyInput(12);
-					charstate = 12;
-				}
-				else {
-					m_pPlayer[my_client_id]->GetKeyInput(4);
-					charstate = 4;
-				}
-				server_mgr.SendPacket(CS_KEY_PRESS_DOWN, m_pPlayer[my_client_id]->GetLook());
+					}
+					else {
+						m_pPlayer[my_client_id]->GetKeyInput(6);
+						charstate = 6;
+					}
+					server_mgr.SendPacket(CS_KEY_PRESS_LEFT, m_pPlayer[my_client_id]->GetLook());
 
-				is_pushed[CS_KEY_PRESS_DOWN] = true;
-			}
-			break;
-		case 'd':
-		case 'D':
-			if (is_pushed[CS_KEY_PRESS_RIGHT] == false) {
-				//server_mgr.SendPacket(CS_KEY_PRESS_RIGHT);
-				if (charstate == 4) {
-					m_pPlayer[my_client_id]->GetKeyInput(8);
-					charstate = 8;
+					is_pushed[CS_KEY_PRESS_LEFT] = true;
 				}
-				else if (charstate == 3) {
-					m_pPlayer[my_client_id]->GetKeyInput(5);
-					charstate = 5;
-				}
-				else if (charstate == 1) {
-					m_pPlayer[my_client_id]->GetKeyInput(14);
-					charstate = 14;
-				}
-				else if (charstate == 10) {
-					m_pPlayer[my_client_id]->GetKeyInput(12);
-					charstate = 12;
-				}
-				else {
-					m_pPlayer[my_client_id]->GetKeyInput(5);
-					charstate = 5;
-				}
-				server_mgr.SendPacket(CS_KEY_PRESS_RIGHT, m_pPlayer[my_client_id]->GetLook());
+				break;
+			case 's':
+			case 'S':
+				if (is_pushed[CS_KEY_PRESS_DOWN] == false) {
+					//server_mgr.SendPacket(CS_KEY_PRESS_DOWN);
+					if (charstate == 6) {
+						m_pPlayer[my_client_id]->GetKeyInput(9);
+						charstate = 9;
+					}
+					else if (charstate == 5) {
+						m_pPlayer[my_client_id]->GetKeyInput(8);
+						charstate = 8;
+					}
+					else if (charstate == 13) {
+						m_pPlayer[my_client_id]->GetKeyInput(11);
+						charstate = 11;
+					}
+					else if (charstate == 14) {
+						m_pPlayer[my_client_id]->GetKeyInput(12);
+						charstate = 12;
+					}
+					else {
+						m_pPlayer[my_client_id]->GetKeyInput(4);
+						charstate = 4;
+					}
+					server_mgr.SendPacket(CS_KEY_PRESS_DOWN, m_pPlayer[my_client_id]->GetLook());
 
-				is_pushed[CS_KEY_PRESS_RIGHT] = true;
-			}
-			break;
-		case 'c':
-		case 'C':
+					is_pushed[CS_KEY_PRESS_DOWN] = true;
+				}
+				break;
+			case 'd':
+			case 'D':
+				if (is_pushed[CS_KEY_PRESS_RIGHT] == false) {
+					//server_mgr.SendPacket(CS_KEY_PRESS_RIGHT);
+					if (charstate == 4) {
+						m_pPlayer[my_client_id]->GetKeyInput(8);
+						charstate = 8;
+					}
+					else if (charstate == 3) {
+						m_pPlayer[my_client_id]->GetKeyInput(5);
+						charstate = 5;
+					}
+					else if (charstate == 1) {
+						m_pPlayer[my_client_id]->GetKeyInput(14);
+						charstate = 14;
+					}
+					else if (charstate == 10) {
+						m_pPlayer[my_client_id]->GetKeyInput(12);
+						charstate = 12;
+					}
+					else {
+						m_pPlayer[my_client_id]->GetKeyInput(5);
+						charstate = 5;
+					}
+					server_mgr.SendPacket(CS_KEY_PRESS_RIGHT, m_pPlayer[my_client_id]->GetLook());
 
-			//printf("캐릭터 Y %f  \n", m_pPlayer[my_client_id]->GetPosition().y);
-			//printf("터레인 높이 %f \n", m_pScene->GetTerrain()->GetHeight(m_pPlayer[my_client_id]->GetPosition().x, m_pPlayer[my_client_id]->GetPosition().z));
-			if (is_pushed[CS_KEY_PRESS_CROUCH] == false) {
-				m_pPlayer[my_client_id]->GetKeyInput(7);
-				server_mgr.SendPacket(CS_KEY_PRESS_CROUCH, m_pPlayer[my_client_id]->GetLook());
-				is_pushed[CS_KEY_PRESS_CROUCH] = true;
+					is_pushed[CS_KEY_PRESS_RIGHT] = true;
+				}
+				break;
+			case 'c':
+			case 'C':
+
+				//printf("캐릭터 Y %f  \n", m_pPlayer[my_client_id]->GetPosition().y);
+				//printf("터레인 높이 %f \n", m_pScene->GetTerrain()->GetHeight(m_pPlayer[my_client_id]->GetPosition().x, m_pPlayer[my_client_id]->GetPosition().z));
+				if (is_pushed[CS_KEY_PRESS_CROUCH] == false) {
+					m_pPlayer[my_client_id]->GetKeyInput(7);
+					server_mgr.SendPacket(CS_KEY_PRESS_CROUCH, m_pPlayer[my_client_id]->GetLook());
+					is_pushed[CS_KEY_PRESS_CROUCH] = true;
+				}
+				break;
+			case '1':
+				if (is_pushed[CS_KEY_PRESS_1] == false) {
+					server_mgr.SendPacket(CS_KEY_PRESS_1);
+					is_pushed[CS_KEY_PRESS_1] = true;
+				}
+				itemUI[0] = !itemUI[0];
+				break;
+			case '2':
+				if (is_pushed[CS_KEY_PRESS_2] == false) {
+					server_mgr.SendPacket(CS_KEY_PRESS_2);
+					is_pushed[CS_KEY_PRESS_2] = true;
+				}
+				itemUI[1] = !itemUI[1];
+				break;
+			case '3':
+				itemUI[2] = !itemUI[2];
+				break;
+			case '4':
+				itemUI[3] = !itemUI[3];
+				break;
+			case 'm':
+			case 'M':
+				alphaMapOn = !alphaMapOn;
+				m_pCamera->SetLook(XMFLOAT3(m_pPlayer[my_client_id]->GetLook().x, 0, m_pPlayer[my_client_id]->GetLook().z));
+				break;
+			case '0':
+				++gameMode;
+				if (gameMode > 2)
+					gameMode = 0;
+				break;
+			case 'Q':
+				if (is_pushed[CS_KEY_PRESS_Q] == false) {
+					server_mgr.SendPacket(CS_KEY_PRESS_Q, m_pPlayer[my_client_id]->GetLook());
+					is_pushed[CS_KEY_PRESS_Q] = true;
+				}
+				break;
 			}
-			break;
-		case '1':
-			if (is_pushed[CS_KEY_PRESS_1] == false) {
-				server_mgr.SendPacket(CS_KEY_PRESS_1);
-				is_pushed[CS_KEY_PRESS_1] = true;
-			}
-			itemUI[0] = !itemUI[0];
-			break;
-		case '2':
-			if (is_pushed[CS_KEY_PRESS_2] == false) {
-				server_mgr.SendPacket(CS_KEY_PRESS_2);
-				is_pushed[CS_KEY_PRESS_2] = true;
-			}
-			itemUI[1] = !itemUI[1];
-			break;
-		case '3':
-			itemUI[2] = !itemUI[2];
-			break;
-		case '4':
-			itemUI[3] = !itemUI[3];
-			break;
-		case 'm':
-		case 'M':
-			alphaMapOn = !alphaMapOn;
-			m_pCamera->SetLook(XMFLOAT3(m_pPlayer[my_client_id]->GetLook().x, 0, m_pPlayer[my_client_id]->GetLook().z));
-			break;
-		case '0':
-			++gameMode;
-			if (gameMode > 2)
-				gameMode = 0;
-			break;
-		case 'Q':
-			if (is_pushed[CS_KEY_PRESS_Q] == false) {
-				server_mgr.SendPacket(CS_KEY_PRESS_Q, m_pPlayer[my_client_id]->GetLook());
-				is_pushed[CS_KEY_PRESS_Q] = true;
-			}
-			break;
 		}
 	
 		break;
@@ -2019,7 +2022,7 @@ void CGameFramework::FrameAdvance()
 			m_pd2dDeviceContext->DrawTextW(outputtexts[i], (UINT32)wcslen(outputtexts[i]), m_pdwFont, &rcChatText, m_pd2dbrText);
 		}
 
-		for (int i = 0; i < 16; ++i) {
+		for (int i = 0; i < 16; ++i) {	//플레이어 이름
 			if (playerChat[i] < 4) {
 				D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
 				m_pd2dDeviceContext->DrawTextW(playerName[playerChat[i]], (UINT32)wcslen(playerName[playerChat[i]]), m_pdwFont, &rcChatText, m_pd2dbrText);
@@ -2060,6 +2063,9 @@ void CGameFramework::SwapText() {
 	}
 	wcscpy(outputtexts[0], inputtext);
 	playerChat[0] = my_client_id;
+	cout << ConvertWCtoC(outputtext) << endl;
+	cout << ConvertWCtoC(inputtext) << endl;
+	cout << ConvertWCtoC(outputtexts[0]) << endl;
 	for (int i = 0; i < 100; ++i)
 		inputtext[i] = {};
 	outputtext = L"";
@@ -2073,6 +2079,7 @@ void CGameFramework::SwapText(int clientID, wchar_t inputChat[100]) {
 	wcscpy(outputtexts[0], inputChat);
 	playerChat[0] = clientID;
 }
+
 char *CGameFramework::ConvertWCtoC(wchar_t* str)
 {
 	//반환할 char* 변수 선언
