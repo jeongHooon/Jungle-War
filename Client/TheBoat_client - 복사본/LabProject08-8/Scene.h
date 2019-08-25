@@ -77,6 +77,7 @@ public:
 	CHeightMapTerrain *GetTerrain() { return(m_pTerrain); }
 
 	CPlayer						*m_pPlayer[4];
+	CShadow						*m_pShadow[4];
 	CPlayer						*m_pObject[NUM_OBJECT]; //오브젝트 갯수
 	CPlayer						*m_pObject2[NUM_OBJECT2]; //오브젝트 갯수
 	CPlayer						*m_pBlueBox[1];

@@ -85,6 +85,7 @@ public:
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
 	static CPlayer				*m_pPlayer[4];
+	static CShadow				*m_pShadow[4];
 	static CPlayer				*m_pObject[NUM_OBJECT];
 	static CPlayer				*m_pObject2[NUM_OBJECT2];
 	CPlayer						*m_pBlueBox[1];
@@ -92,7 +93,11 @@ public:
 	static CCamera				*m_pCamera;
 	static int					boxBound;
 	float						playerHp = 100;
+<<<<<<< HEAD
 	int							gameMode = 3;
+=======
+	int							gameMode = 1;
+>>>>>>> a5747adf214a8b426d41a185716e98bbb658a453
 	bool						damageCheck = false;
 	bool						writeMode = true;
 	bool						writeStart = false;

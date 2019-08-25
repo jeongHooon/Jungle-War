@@ -413,6 +413,24 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(packet);
 
 	switch (packet_buffer->type) {
+	case CS_PLAYER_DIE: {
+		clients[cl_id].is_die = true;
+
+		SC_PACKET_IS_DIE die_packet;
+		die_packet.size = sizeof(SC_PACKET_IS_DIE);
+		die_packet.type = SC_IS_DIE;
+		die_packet.id = cl_id;
+		die_packet.is_die = clients[cl_id].is_die;
+		die_packet.look_vec = clients[cl_id].look_vec;
+		die_packet.player_status = 17;
+
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k) {
+			if (clients[k].in_use) {
+				SendPacket(k, &die_packet);
+			}
+		}
+		break; 
+	}
 	case CS_KEY_PRESS_UP:
 		clients[cl_id].is_move_foward = true;
 		break;
@@ -816,7 +834,7 @@ void ServerFramework::WorkerThread() {
 							//
 							//packets.hp = clients[j].hp;
 							packets.hp = (-1) * MAX_BULLET_DAMAGE;
-							printf("%d번 플레이어 체력 %f\n", j, clients[j].hp);
+							/*printf("%d번 플레이어 체력 %f\n", j, clients[j].hp);
 							if (!(clients[j].is_die))
 							{
 								clients[j].hp -= MAX_BULLET_DAMAGE;
@@ -838,7 +856,7 @@ void ServerFramework::WorkerThread() {
 										}
 									}
 								}
-							}
+							}*/
 
 							/*if ( clients[j].hp < 0.f) {
 							clients[j].is_die = true;

@@ -18,7 +18,7 @@ private:
 
 public:
 	static int	shootBullet;
-
+	bool	isShadow = false;
 	void AddRef() { m_nReferences++; }
 	void Release() { if (--m_nReferences <= 0) delete this; }
 

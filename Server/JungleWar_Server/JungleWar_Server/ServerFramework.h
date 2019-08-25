@@ -26,6 +26,8 @@ class ServerFramework
 
 	BOOL mode_selector;	// 
 
+
+
 	Client clients[MAX_PLAYER_SIZE];
 	bool player_entered[MAX_PLAYER_SIZE] = { 0 };
 	bool player_ready[MAX_PLAYER_SIZE] = { 0 };		// Player_Ready 패킷 도착하면 해당 

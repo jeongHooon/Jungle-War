@@ -339,6 +339,21 @@ XMFLOAT3 ServerMgr::ReturnCollsionPosition(bool* is_collide) {
 	return collision_pos;
 }
 
+void ServerMgr::SendDeadPacket() {
+	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(send_buffer);
+	packet_buffer->size = sizeof(CS_PACKET_KEYUP);
+	send_wsabuf.len = sizeof(CS_PACKET_KEYUP);
+	int retval = 0;
+	DWORD iobytes;
+	packet_buffer->type = CS_PLAYER_DIE;
+	packet_buffer->isPlayerdead[camera_id] = isplayerdead[camera_id];
+	retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
+
+	if (retval == 1) {
+		int error_code = WSAGetLastError();
+		ErrorDisplay("[WSASend] ¿¡·¯ : ", error_code);
+	}
+}
 void ServerMgr::SendPacket(int type) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(send_buffer);
 	packet_buffer->size = sizeof(CS_PACKET_KEYUP);

@@ -54,6 +54,7 @@ class ServerMgr
 
 	int camera_id = 0;
 	string server_ip;
+	bool isplayerdead[MAX_PLAYER_SIZE] = { 0,0,0,0 };
 
 	int myBoxCount = 10;
 
@@ -80,8 +81,14 @@ public:
 	void ReadPacket();
 	void SendPacket(int type);
 	void SendPacket(int type, XMFLOAT3& xmvector);
+	void SendDeadPacket();
 	///////////////////////
+<<<<<<< HEAD
 	void SendPacket(int type, CHAR id);
+=======
+	void SetIsPlayerdead(int index) { isplayerdead[index] = true; }
+	void SendPacket(int type, _TCHAR* argv[]);
+>>>>>>> a5747adf214a8b426d41a185716e98bbb658a453
 	void ProcessPacket(char* ptr);
 	void ErrorDisplay(const char* msg, int err_no);
 	int GetElecCount();
