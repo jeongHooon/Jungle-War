@@ -1020,6 +1020,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 
 		case '9':
+			SendLoginREQ();
 			break;
 		case 'Q':
 			if (is_pushed[CS_KEY_PRESS_Q] == true) {
@@ -1222,11 +1223,11 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 }
 
 void CGameFramework::SendLoginREQ() {
-	char userid;
+	char userid[256];
 
 	cout << "id를 입력해 주세요 ";
 	cin >> userid;
-
+	 
 
 	char protoBuffer[1024];
 	ProtoCommand *cmd = (ProtoCommand *)protoBuffer;
@@ -1234,16 +1235,13 @@ void CGameFramework::SendLoginREQ() {
 
 	cmd->command = ComLoginREQ;
 
-//	strncpy_s((char *)login->userid, maxUserIDLen, userid, maxUserIDLen);
+	strncpy_s((char *)login->userid, maxUserIDLen, userid, maxUserIDLen);
 	login->userid[maxUserIDLen - 1] = '\0';  // 제한된 길이만큼만 복사
 
 	cout << "로그인한 아이디는" << userid << endl;
 
 	server_mgr.SendPacket(CS_PLAYER_LOGIN,userid);
-//	server_mgr.SendPacket(CS_PLAYER_LOGIN, userid);
-	
-//	send(s, protoBuffer, sizeof(ProtoCommand) + sizeof(StrLoginREQ), 0);
-	
+
 //	SendChatREQ();
 
 }
@@ -2086,4 +2084,5 @@ wchar_t* CGameFramework::ConverCtoWC(char* str)
 	//형 변환
 	MultiByteToWideChar(CP_ACP, 0, str, strlen(str) + 1, pStr, strSize);
 	return pStr;
+
 }
