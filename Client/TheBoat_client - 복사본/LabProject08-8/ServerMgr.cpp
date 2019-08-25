@@ -2,7 +2,6 @@
 #include "GameFramework.h"
 #include "ServerMgr.h"
 
-
 void ServerMgr::ErrorDisplay(const char* msg, int err_no) {
 	_wsetlocale(LC_ALL, L"korean");
 	WCHAR *lpMsgBuf;
@@ -119,12 +118,12 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		break;
 	}
 
-//	case SC_PLAYER_LOGIN: {
-//		SC_PACKET_LOGIN_PLAYER* packets = reinterpret_cast<SC_PACKET_LOGIN_PLAYER*>(ptr);
-//
-//
-//		break;
-//	}
+	case SC_PLAYER_LOGIN: {
+		SC_PACKET_LOGIN_PLAYER* packets = reinterpret_cast<SC_PACKET_LOGIN_PLAYER*>(ptr);
+		loginID[packets->userid] = packets->userid;
+		cout << loginID[packets->userid] << "로그인했당" << endl;
+		break;
+	}
 
 	case SC_BUILDING_GEN: {
 		SC_PACKET_ENTER_PLAYER* packets = reinterpret_cast<SC_PACKET_ENTER_PLAYER*>(ptr);
@@ -477,25 +476,14 @@ void ServerMgr::SendPacket(int type) {
 		packet_buffer->type = CS_PLAYER_READY_CANCLE;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
-
-//	case CS_PLAYER_LOGIN:
-//		packet_buffer->type = CS_PLAYER_LOGIN;
-//		cout << "로그인한 ID" << loginID << endl;
-//		cout<<"로그인로그인"<<packet_buffer->userID << endl;
-//		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
-//		
-//		break;
-
 	}
 
-		
 	if (retval == 1) {
 		int error_code = WSAGetLastError();
 		ErrorDisplay("[WSASend] 에러 : ", error_code);
 	}
 
 }
-
 
 void ServerMgr::SendPacket(int type, CHAR id) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(send_buffer);
@@ -509,7 +497,6 @@ void ServerMgr::SendPacket(int type, CHAR id) {
 		packet_buffer->userID = id;
 
 		cout << "로그인한 ID" << id << endl;
-	//	packet_buffer->userID = userid;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
 	}

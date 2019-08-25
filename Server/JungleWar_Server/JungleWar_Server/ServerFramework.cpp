@@ -358,9 +358,9 @@ void ServerFramework::AcceptPlayer() {
 	packet.elecX = 500.f;
 	packet.elecY = 1000.f;
 	packet.elecZ = 500.f;
-
-	
 	SendPacket(client_id, &packet);
+
+
 	//printf("%d 자기장 중심 %f \n", client_id, clients[client_id].elecX);
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		if (clients[i].in_use && (client_id != i)) {
@@ -389,6 +389,7 @@ void ServerFramework::AcceptPlayer() {
 		}
 	}*/
 
+
 	// 해당 클라이언트에게도 다른 클라이언트의 위치를 보내줘야한당!~
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		ZeroMemory(&packet, sizeof(packet));
@@ -413,6 +414,8 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(packet);
 
 	switch (packet_buffer->type) {
+
+
 	case CS_PLAYER_DIE: {
 		clients[cl_id].is_die = true;
 
@@ -613,20 +616,18 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		clients[cl_id].id = packet_buffer->userID;
 		SC_PACKET_LOGIN_PLAYER packets;
 		packets.id = cl_id;
+		packets.userid = clients[cl_id].id;
 		packets.size = sizeof(SC_PACKET_LOGIN_PLAYER);
 		packets.type = SC_PLAYER_LOGIN;
-
-		
-
-//		strncpy_s((char *)packets, maxPasswdLen, passwd, maxPasswdLen);
-		
-	//	packets.userid = clients[cl_id].id;
-
-		cout << packets.userid << "로그인" << endl;
-	//	cout << packets.id << "로그인" << endl;
-		cout << cl_id << "로그인" << endl;
-
+	
 		cout << clients[cl_id].id << "로그인" << endl;
+
+		for (int k = 0; k < MAX_PACKET_SIZE; ++k) {
+			if (clients[k].in_use) {
+				SendPacket(k, &packets);
+			}
+		}
+		cout << packets.userid << "로그인" << endl;
 		break;
 	}
 
@@ -736,6 +737,7 @@ void ServerFramework::WorkerThread() {
 		}
 		// TimerThread에서 호출
 		// 1/20 마다 모든 플레이어에게 정보 전송
+
 		else if (overlapped_buffer->command == SS_ITEM_GEN) {
 			printf("아이템 생성띠\n");
 			SC_PACKET_ITEM_GEN packets;

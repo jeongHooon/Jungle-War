@@ -133,7 +133,7 @@ struct SC_PACKET_ENTER_PLAYER {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	BYTE userid[maxUserIDLen];
+	char userid;
 	BYTE passwd[maxPasswdLen];
 	float x, y, z;
 	// 건물 크기 보낼 때만 사용
@@ -150,7 +150,7 @@ struct SC_PACKET_LOGIN_PLAYER {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	char userid[maxUserIDLen];
+	char userid;
 	BYTE passwd[maxPasswdLen];
 };
 

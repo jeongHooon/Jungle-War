@@ -59,7 +59,7 @@ class ServerMgr
 	int myBoxCount = 10;
 
 	// ·Î±×ÀÎ
-	char loginID[maxUserIDLen];
+	char loginID[MAX_PLAYER_SIZE];
 	char userpw[maxUserIDLen];
 
 
