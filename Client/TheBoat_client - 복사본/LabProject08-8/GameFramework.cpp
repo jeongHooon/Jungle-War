@@ -596,7 +596,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				break;
 			}
 
-
 		}
 
 		if (wParam == VK_SHIFT ) {
@@ -1045,14 +1044,14 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		case VK_RETURN:
 			if (gameMode == 0 && mainScreenSelect == 1)
 				gameMode = 3;
-			else if (gameMode == 5)
-				gameMode = 1;
 			else if (gameMode == 3) {
 				gameMode = 4;
 				//SendLoginREQ(ConvertWCtoC(inputtext));
 				wcscpy(playerName[my_client_id], inputtext);
+				cout << ConvertWCtoC(inputtext) << endl;
 				for (int i = 0; i < 100; ++i)
 					inputtext[i] = {};
+				cout << ConvertWCtoC(inputtext) << endl;
 			}
 			else
 				SwapText();
@@ -2067,15 +2066,9 @@ void CGameFramework::SwapText() {
 	for (int i = 0; i < 16; ++i) {
 		wcscpy(outputtexts[14 - i],outputtexts[13 - i]);
 		playerChat[14 - i] = playerChat[13 - i];
-		cout << ConvertWCtoC(outputtexts[14 - i]) << endl;
 	}
-	wcscpy(outputtext, outputtexts[0]);
-	//wcscpy(outputtexts[0], inputtext);
+	wcscpy(outputtexts[0], wcscat(inputtext, outputtexts[0]));
 	playerChat[0] = my_client_id;
-	cout << "-----------------------------" << endl;
-	cout << ConvertWCtoC(outputtext) << endl;
-	cout << ConvertWCtoC(inputtext) << endl;
-	cout << ConvertWCtoC(outputtexts[0]) << endl;
 	for (int i = 0; i < 100; ++i)
 		inputtext[i] = {};
 	outputtext = L"";
