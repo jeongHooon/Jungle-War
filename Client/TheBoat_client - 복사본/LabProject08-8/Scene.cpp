@@ -136,7 +136,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	m_pBuildings = pBuildingShader;
 
-	m_nShaders = 7;
+	m_nShaders = 11;
 	m_ppShaders = new CShader*[m_nShaders];
 
 	CRedDotShader *pTreeShader = new CRedDotShader();
@@ -171,6 +171,22 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pTeamTriShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pTeamTriShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
+	CSkillShader_1 *pSkillShader_1 = new CSkillShader_1();
+	pSkillShader_1->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pSkillShader_1->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CSkillShader_2 *pSkillShader_2 = new CSkillShader_2();
+	pSkillShader_2->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pSkillShader_2->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CSkillShader_3 *pSkillShader_3 = new CSkillShader_3();
+	pSkillShader_3->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pSkillShader_3->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CSkillShader_4 *pSkillShader_4 = new CSkillShader_4();
+	pSkillShader_4->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pSkillShader_4->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
 	m_ppShaders[0] = pTreeShader;
 	m_ppShaders[1] = pFlowerShader;
 	m_ppShaders[2] = pBulletShader;
@@ -178,6 +194,10 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppShaders[4] = pObjectsShader;
 	m_ppShaders[5] = pTeamTriShader;
 	m_ppShaders[6] = pDropItemShader;
+	m_ppShaders[7] = pSkillShader_1;
+	m_ppShaders[8] = pSkillShader_2;
+	m_ppShaders[9] = pSkillShader_3;
+	m_ppShaders[10] = pSkillShader_4;
 	// UI
 
 	m_nUIShaders = 42;
@@ -743,6 +763,7 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 	}
 	//for (int i = 0; i < m_nObjects; i++) m_ppUIShaders[i]->AnimateObjects(fTimeElapsed, pCamera);
 	m_ppShaders[5]->SetPosition(0, XMFLOAT3(CGameFramework::m_pPlayer[myTeamNum]->GetPosition().x, CGameFramework::m_pPlayer[myTeamNum]->GetPosition().y + 13, CGameFramework::m_pPlayer[myTeamNum]->GetPosition().z));
+	m_ppShaders[7]->SetPosition(0, XMFLOAT3(CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x, CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().y + 13, CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z));
 	m_ppUIShaders[0]->AnimateObjects(fTimeElapsed, pCamera);
 }
 

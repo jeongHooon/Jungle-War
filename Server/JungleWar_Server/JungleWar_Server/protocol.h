@@ -253,8 +253,8 @@ struct CS_PACKET_BIGGEST {
 struct CS_PACKET_KEYUP {
 	BYTE size;
 	BYTE type;
-	char userID[256];
-	char chatbuffer[1024];
+	char userID[10];
+	char chatbuffer[10];
 	DirectX::XMFLOAT3 look_vec;
 	bool isPlayerdead[MAX_PLAYER_SIZE] = { false };
 };

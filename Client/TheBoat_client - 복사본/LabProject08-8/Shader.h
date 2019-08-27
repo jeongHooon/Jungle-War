@@ -404,6 +404,140 @@ public:
 	virtual D3D12_BLEND_DESC CreateBlendState();
 };
 
+//////////////////////
+class CSkillShader_1 : public CTexturedShader
+{
+protected:
+	CBillboard * *m_ppBullet = 0;
+	int								m_nBullet = 0;
+	int								BulletCount = 0;
+	bool							death = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CSkillShader_1();
+	virtual ~CSkillShader_1();
+
+	virtual void SetLook(int input, float x, float y, float z);
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual void SetPosition(int id, XMFLOAT3 input);
+	virtual D3D12_BLEND_DESC CreateBlendState();
+};
+
+//////////////////////
+class CSkillShader_2 : public CTexturedShader
+{
+protected:
+	CBillboard * *m_ppBullet = 0;
+	int								m_nBullet = 0;
+	int								BulletCount = 0;
+	bool							death = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CSkillShader_2();
+	virtual ~CSkillShader_2();
+
+	virtual void SetLook(int input, float x, float y, float z);
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual void SetPosition(int id, XMFLOAT3 input);
+	virtual D3D12_BLEND_DESC CreateBlendState();
+};
+
+//////////////////////
+class CSkillShader_3 : public CTexturedShader
+{
+protected:
+	CBillboard * *m_ppBullet = 0;
+	int								m_nBullet = 0;
+	int								BulletCount = 0;
+	bool							death = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CSkillShader_3();
+	virtual ~CSkillShader_3();
+
+	virtual void SetLook(int input, float x, float y, float z);
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual void SetPosition(int id, XMFLOAT3 input);
+	virtual D3D12_BLEND_DESC CreateBlendState();
+};
+
+//////////////////////
+class CSkillShader_4 : public CTexturedShader
+{
+protected:
+	CBillboard * *m_ppBullet = 0;
+	int								m_nBullet = 0;
+	int								BulletCount = 0;
+	bool							death = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CSkillShader_4();
+	virtual ~CSkillShader_4();
+
+	virtual void SetLook(int input, float x, float y, float z);
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual void SetPosition(int id, XMFLOAT3 input);
+	virtual D3D12_BLEND_DESC CreateBlendState();
+};
+
+//////////////////////
+
 class CParticleShader : public CTexturedShader
 {
 protected:

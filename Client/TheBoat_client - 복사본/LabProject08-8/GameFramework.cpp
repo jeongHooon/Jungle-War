@@ -2024,7 +2024,6 @@ void CGameFramework::FrameAdvance()
 				m_pd2dDeviceContext->DrawTextW(playerName[i], (UINT32)wcslen(playerName[i]), m_pdwFont, &rcPlayerText, m_pd2dbrText);
 			}
 		}
-
 		for (int i = 0; i < 16; ++i) {
 			D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.2, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
 			m_pd2dDeviceContext->DrawTextW(outputtexts[i], (UINT32)wcslen(outputtexts[i]), m_pdwFont, &rcChatText, m_pd2dbrText);
@@ -2068,9 +2067,12 @@ void CGameFramework::SwapText() {
 	for (int i = 0; i < 16; ++i) {
 		wcscpy(outputtexts[14 - i],outputtexts[13 - i]);
 		playerChat[14 - i] = playerChat[13 - i];
+		cout << ConvertWCtoC(outputtexts[14 - i]) << endl;
 	}
-	wcscpy(outputtexts[0], inputtext);
+	wcscpy(outputtext, outputtexts[0]);
+	//wcscpy(outputtexts[0], inputtext);
 	playerChat[0] = my_client_id;
+	cout << "-----------------------------" << endl;
 	cout << ConvertWCtoC(outputtext) << endl;
 	cout << ConvertWCtoC(inputtext) << endl;
 	cout << ConvertWCtoC(outputtexts[0]) << endl;
