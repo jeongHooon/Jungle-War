@@ -154,7 +154,7 @@ struct SC_PACKET_LOGIN_PLAYER {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	char userid;
+	char userid[256];
 };
 
 
