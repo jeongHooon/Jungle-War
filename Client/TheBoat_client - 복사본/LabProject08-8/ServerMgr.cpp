@@ -120,8 +120,9 @@ void ServerMgr::ProcessPacket(char* ptr) {
 
 	case SC_PLAYER_LOGIN: {
 		SC_PACKET_LOGIN_PLAYER* packets = reinterpret_cast<SC_PACKET_LOGIN_PLAYER*>(ptr);
-		loginID[packets->userid] = packets->userid;
-		cout << loginID[packets->userid] << "로그인했당" << endl;
+//strncpy_s((char*)loginID[packets->userid], maxUserIDLen, packets->userid, maxUserIDLen);
+
+//cout << loginID[packets->userid] << "로그인했당" << endl;
 		break;
 	}
 
