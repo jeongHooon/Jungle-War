@@ -616,10 +616,14 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 
 		break;
 	}
+<<<<<<< HEAD
 
 
 	case CS_PLAYER_READY_CANCLE: {
 
+=======
+	case CS_PLAYER_READY_CANCLE: {
+>>>>>>> 2a7e884fbb15e3b2e5c0982cee7769dc357ebabd
 		printf("%d 플레이어 레디취소\n", cl_id);
 		player_ready[cl_id] = false;
 		ready_count--;

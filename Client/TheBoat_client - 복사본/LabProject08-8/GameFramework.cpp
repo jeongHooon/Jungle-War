@@ -1856,6 +1856,7 @@ void CGameFramework::FrameAdvance()
 	if (m_pPlayer[my_client_id]->isDie) {
 		server_mgr.SetIsPlayerdead(my_client_id);
 		server_mgr.SendDeadPacket();
+		m_pPlayer[my_client_id]->ChangeCamera(THIRD_PERSON_CAMERA, m_GameTimer.GetTimeElapsed());
 	}
 	////
 
