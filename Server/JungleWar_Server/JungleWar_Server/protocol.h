@@ -113,6 +113,9 @@
 
 ///////////////////////////////////////
 #define CS_PLAYER_LOGIN 50
+#define CS_PLAYER_CHAT	51
+///////////////////////////////////////
+
 #define OBJECT_ALIVE		0
 #define OBJECT_DEAD			1
 
@@ -152,7 +155,6 @@ struct SC_PACKET_LOGIN_PLAYER {
 	BYTE type;
 	WORD id;
 	char userid;
-	BYTE passwd[maxPasswdLen];
 };
 
 
@@ -252,6 +254,7 @@ struct CS_PACKET_KEYUP {
 	BYTE size;
 	BYTE type;
 	char userID[256];
+	char chatbuffer[1024];
 	DirectX::XMFLOAT3 look_vec;
 	bool isPlayerdead[MAX_PLAYER_SIZE] = { false };
 };

@@ -498,6 +498,7 @@ void ServerMgr::SendPacket(int type) {
 
 }
 
+
 void ServerMgr::SendPacket(int type, char* id) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(send_buffer);
 	packet_buffer->size = sizeof(CS_PACKET_KEYUP);
@@ -507,19 +508,29 @@ void ServerMgr::SendPacket(int type, char* id) {
 	switch (type) {
 	case CS_PLAYER_LOGIN:
 		packet_buffer->type = CS_PLAYER_LOGIN;
-	//	packet_buffer->userID = id;
 		strncpy_s((char *)packet_buffer->userID, maxUserIDLen, id, maxUserIDLen);
 
-		cout << "로그인한 ID" << packet_buffer->userID << endl;
+		cout << "패킷보내 ID" << packet_buffer->userID << endl;
 		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 		break;
-	}
 
+	case CS_PLAYER_CHAT:
+		packet_buffer->type = CS_PLAYER_CHAT;
+		strncpy_s((char *)packet_buffer->chatbuffer, maxChatSize, id, maxChatSize);
+
+		cout << "패킷보내 채팅 " << packet_buffer->chatbuffer << endl;
+		retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
+
+		break;
+
+
+	}
 
 	if (retval == 1) {
 		int error_code = WSAGetLastError();
 		ErrorDisplay("[WSASend] 에러 : ", error_code);
 	}
+
 }
 
 

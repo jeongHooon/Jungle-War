@@ -1245,14 +1245,23 @@ void CGameFramework::SendLoginREQ() {
 
 	server_mgr.SendPacket(CS_PLAYER_LOGIN,userid);
 
-//	SendChatREQ();
+	SendChatREQ();
 
 }
 void CGameFramework::SendChatREQ() {
-	char buffer;
-//	while (true) {
+	char buffer[1024];
+
+	while (true) {
 		cout << "전송할 문자열 : ";
 		cin >> buffer;
+
+		cout << "채팅채팅 " << buffer << endl;
+
+		server_mgr.SendPacket(CS_PLAYER_CHAT, buffer);
+	}
+//	while (true) {
+//		cout << "전송할 문자열 : ";
+//		cin >> buffer;
 
 		//	if (strcmp(buffer, "/w") == 0)  // 입력 문자열이 "/w"라면 귓속말
 		//		SendWisper(toServer);

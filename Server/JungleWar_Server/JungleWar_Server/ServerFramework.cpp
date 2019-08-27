@@ -432,7 +432,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 				SendPacket(k, &die_packet);
 			}
 		}
-		break; 
+		break;
 	}
 	case CS_KEY_PRESS_UP:
 		clients[cl_id].is_move_foward = true;
@@ -448,7 +448,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		break;
 	case CS_KEY_PRESS_CROUCH:
 		clients[cl_id].is_crouch = true;
-//		printf("clients[cl_id].is_crouch %d\n", clients[cl_id].is_crouch);
+		//		printf("clients[cl_id].is_crouch %d\n", clients[cl_id].is_crouch);
 		break;
 
 	case CS_KEY_PRESS_1:
@@ -463,7 +463,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		clients[cl_id].is_running = true;
 		break;
 	case CS_KEY_PRESS_SPACE:
-	//	clients[cl_id].is_jump = true;
+		//	clients[cl_id].is_jump = true;
 		break;
 
 
@@ -553,7 +553,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 			packets.player_status = 2;
 		}
 		else if (clients[cl_id].is_move_backward == false && clients[cl_id].is_move_foward == false &&
-			clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false ) {
+			clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false) {
 			//clients[cl_id].is_move_left == false && clients[cl_id].is_move_right == false && clients[cl_id].is_jump == false) {
 			packets.player_status = 0;
 		}
@@ -601,9 +601,9 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		{
 			packets.player_ready[k] = player_ready[k];
 			if (player_ready[k])
-				printf("%d 레디 완료\n",k);
+				printf("%d 레디 완료\n", k);
 		}
-		
+
 		if (ready_count == MAX_PLAYER_SIZE) {
 			//GameStart();
 			game_start = true;
@@ -616,12 +616,10 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 
 		break;
 	}
-<<<<<<< HEAD
 
-	case CS_PLAYER_READY_CANCLE:
-=======
+
 	case CS_PLAYER_READY_CANCLE: {
->>>>>>> 86a54b30edc44a1dadec9f5e22c6e2816a8d7cbb
+
 		printf("%d 플레이어 레디취소\n", cl_id);
 		player_ready[cl_id] = false;
 		ready_count--;
@@ -637,24 +635,22 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 			if (clients[k].in_use)
 				SendPacket(k, &packets);
 
-		break; 
+		break;
 	}
 	case CS_PLAYER_TEAM_SELECT:
 		break;
 
-	case CS_PLAYER_LOGIN:
-		printf("로그인!!\n");
-	//	clients[cl_id].id = packet_buffer->userID;
+	case CS_PLAYER_LOGIN: {
+		cout << "로그인!!" << endl;
 		strncpy_s((char *)clients[cl_id].userid, maxUserIDLen, packet_buffer->userID, maxUserIDLen);
-	
+
 		SC_PACKET_LOGIN_PLAYER packets;
 		packets.id = cl_id;
 		strncpy_s((char *)packets.userid, maxUserIDLen, clients[cl_id].userid, maxUserIDLen);
 
-//		packets.userid = clients[cl_id].id;
 		packets.size = sizeof(SC_PACKET_LOGIN_PLAYER);
 		packets.type = SC_PLAYER_LOGIN;
-	
+
 		cout << clients[cl_id].userid << "로그인" << endl;
 
 		for (int k = 0; k < MAX_PACKET_SIZE; ++k) {
@@ -664,6 +660,12 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		}
 		cout << packets.userid << "로그인" << endl;
 		break;
+	}
+	case CS_PLAYER_CHAT: {
+		cout << "채팅!!" << endl;
+		break;
+	}
+
 	}
 
 }
