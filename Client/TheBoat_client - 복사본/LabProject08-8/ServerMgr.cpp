@@ -123,7 +123,10 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		SC_PACKET_LOGIN_PLAYER* packets = reinterpret_cast<SC_PACKET_LOGIN_PLAYER*>(ptr);
 		clients_id = packets->id;
 		strncpy_s((char*)sc_vec_buff[packets->id].playerID, maxUserIDLen, packets->userid, maxUserIDLen);
-
+		strncpy_s((char*)loginID[packets->id], maxUserIDLen, packets->userid, maxUserIDLen);
+		
+		for (int i = 0; i < 4; ++i)
+			cout << loginID[i] << endl;
 		cout << sc_vec_buff[packets->id].playerID << "로그인했당" << endl;
 
 		break;

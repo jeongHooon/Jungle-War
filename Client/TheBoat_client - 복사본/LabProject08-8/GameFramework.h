@@ -66,7 +66,7 @@ public:
     void ReleaseObjects();
 
 	// 로긴용
-	void SendLoginREQ();
+	void SendLoginREQ(char inputID[]);
 	// 채팅용
 	void SendChatREQ();
 	void SwapText(int clientID, wchar_t inputChat[100]);
@@ -96,7 +96,7 @@ public:
 	static CCamera				*m_pCamera;
 	static int					boxBound;
 	float						playerHp = 100;
-	int							gameMode = 1;
+	int							gameMode = 0;
 	bool						damageCheck = false;
 	bool						writeMode = true;
 	bool						writeStart = false;

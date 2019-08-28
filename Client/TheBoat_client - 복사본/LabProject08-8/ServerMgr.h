@@ -63,7 +63,7 @@ class ServerMgr
 	int myBoxCount = 10;
 
 	// 로그인
-	char loginID[maxUserIDLen];
+	char loginID[maxUserIDLen][10];
 	bool newMessage;
 
 	// 아이템 생성 부분
@@ -86,6 +86,8 @@ public:
 	void SendPacket(int type, XMFLOAT3& xmvector);
 	void SendPacket(int type, char* id);
 	void SendDeadPacket();
+
+	char* GetPlayerID(int index) { return loginID[index]; }
 
 
 

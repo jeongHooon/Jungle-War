@@ -1025,7 +1025,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 
 		case '9':
-			SendLoginREQ();
+			//SendLoginREQ();
 			break;
 		case 'Q':
 			if (is_pushed[CS_KEY_PRESS_Q] == true) {
@@ -1049,7 +1049,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				gameMode = 3;
 			else if (gameMode == 3) {
 				gameMode = 4;
-				//SendLoginREQ(ConvertWCtoC(inputtext));
+				SendLoginREQ(ConvertWCtoC(inputtext));
 				wcscpy(playerName[my_client_id], inputtext);
 				cout << ConvertWCtoC(inputtext) << endl;
 				for (int i = 0; i < 100; ++i)
@@ -1227,19 +1227,19 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 	return(0);
 }
 
-void CGameFramework::SendLoginREQ() {
+void CGameFramework::SendLoginREQ(char inputID[]) {
 	char userid[10];
 
-	cout << "id를 입력해 주세요 ";
-	cin >> userid;
+	//cout << "id를 입력해 주세요 ";
+	//cin >> userid;
 	 
-
+	strncpy_s((char *)userid, maxUserIDLen, inputID, maxUserIDLen);
 	char protoBuffer[10];
 	ProtoCommand *cmd = (ProtoCommand *)protoBuffer;
 	StrLoginREQ *login = (StrLoginREQ *)cmd->data;
-
+	
 	cmd->command = ComLoginREQ;
-
+	
 	strncpy_s((char *)login->userid, maxUserIDLen, userid, maxUserIDLen);
 	// strcpy는 문제가 생기면 한없이 복사하므로 제한된 길이만큼만 복사하는 strncpy가 안전
 
@@ -2024,6 +2024,9 @@ void CGameFramework::FrameAdvance()
 			m_pd2dDeviceContext->DrawTextW(outputtext, (UINT32)wcslen(outputtext), m_pdwFont, &rcLowerText, m_pd2dbrText);
 		}
 		else {
+			for (int i = 0; i < 4; ++i) {
+				wcscpy(playerName[i], ConverCtoWC(server_mgr.GetPlayerID(i)));
+			}
 			D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * 0.83f, szRenderTarget.width, szRenderTarget.height);
 			m_pd2dDeviceContext->DrawTextW(outputtext, (UINT32)wcslen(outputtext), m_pdwFont, &rcLowerText, m_pd2dbrText);
 
