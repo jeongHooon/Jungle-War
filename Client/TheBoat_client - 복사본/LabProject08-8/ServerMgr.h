@@ -7,6 +7,8 @@ struct SPlayer {
 	int elecCount;
 	int player_status;
 	bool is_die;
+	char playerID[10];
+	char chat[20];
 };
 /////
 
@@ -61,8 +63,7 @@ class ServerMgr
 	int myBoxCount = 10;
 
 	// 로그인
-	char loginID[MAX_PLAYER_SIZE];
-	char userpw[maxUserIDLen];
+	char loginID[maxUserIDLen];
 	bool newMessage;
 
 	// 아이템 생성 부분

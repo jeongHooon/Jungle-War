@@ -412,6 +412,53 @@ void ServerFramework::AcceptPlayer() {
 
 void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(packet);
+	CS_PACKET_LOBBY* packet_lobby_buffer = reinterpret_cast<CS_PACKET_LOBBY*>(packet);
+
+	switch (packet_lobby_buffer->type) {
+	case CS_PLAYER_LOGIN: {
+		cout << "로그인!!" << endl;
+		cout << packet_lobby_buffer->userID << endl;
+		cout << clients[cl_id].userid << endl;
+		strncpy_s((char *)clients[cl_id].userid, maxUserIDLen, packet_lobby_buffer->userID, maxUserIDLen);
+
+		SC_PACKET_LOGIN_PLAYER packets;
+
+		packets.size = sizeof(SC_PACKET_LOGIN_PLAYER);
+		packets.type = SC_PLAYER_LOGIN;
+		packets.id = cl_id;
+		strncpy_s((char *)packets.userid, maxUserIDLen, clients[cl_id].userid, maxUserIDLen);
+
+		cout << clients[cl_id].userid << "로그인" << endl;
+		cout << packets.userid << "로그인" << endl;
+
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k) {
+			if (clients[k].in_use) {
+				SendPacket(k, &packets);
+			}
+		}
+		break;
+	}
+	case CS_PLAYER_CHAT: {
+		cout << "채팅!!" << endl;
+		strncpy_s((char *)clients[cl_id].chat, maxChatSize, packet_lobby_buffer->chatbuffer, maxChatSize);
+
+		SC_PACKET_CHAT packets;
+		packets.id = cl_id;
+
+		strncpy_s((char *)packets.chat, maxChatSize, clients[cl_id].chat, maxChatSize);
+
+		packets.size = sizeof(SC_PACKET_CHAT);
+		packets.type = SC_PLAYER_CHAT;
+
+		for (int k = 0; k < MAX_PLAYER_SIZE; ++k) {
+			if (clients[k].in_use) {
+				SendPacket(k, &packets);
+			}
+		}
+		break;
+	}
+
+	}
 
 	switch (packet_buffer->type) {
 
@@ -641,32 +688,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	case CS_PLAYER_TEAM_SELECT:
 		break;
 
-	case CS_PLAYER_LOGIN: {
-		cout << "로그인!!" << endl;
-		strncpy_s((char *)clients[cl_id].userid, maxUserIDLen, packet_buffer->userID, maxUserIDLen);
-
-		SC_PACKET_LOGIN_PLAYER packets;
-		packets.id = cl_id;
-		strncpy_s((char *)packets.userid, maxUserIDLen, clients[cl_id].userid, maxUserIDLen);
-
-		packets.size = sizeof(SC_PACKET_LOGIN_PLAYER);
-		packets.type = SC_PLAYER_LOGIN;
-
-		cout << clients[cl_id].userid << "로그인" << endl;
-
-		for (int k = 0; k < MAX_PACKET_SIZE; ++k) {
-			if (clients[k].in_use) {
-				SendPacket(k, &packets);
-			}
-		}
-		cout << packets.userid << "로그인" << endl;
-		break;
-	}
-	case CS_PLAYER_CHAT: {
-		cout << "채팅!!" << endl;
-		break;
-	}
-
+	
 	}
 
 }

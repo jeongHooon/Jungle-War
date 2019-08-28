@@ -1225,30 +1225,32 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 }
 
 void CGameFramework::SendLoginREQ() {
-	char userid[256];
+	char userid[10];
 
 	cout << "id를 입력해 주세요 ";
 	cin >> userid;
 	 
 
-	char protoBuffer[1024];
+	char protoBuffer[10];
 	ProtoCommand *cmd = (ProtoCommand *)protoBuffer;
 	StrLoginREQ *login = (StrLoginREQ *)cmd->data;
 
 	cmd->command = ComLoginREQ;
 
 	strncpy_s((char *)login->userid, maxUserIDLen, userid, maxUserIDLen);
+	// strcpy는 문제가 생기면 한없이 복사하므로 제한된 길이만큼만 복사하는 strncpy가 안전
+
 	login->userid[maxUserIDLen - 1] = '\0';  // 제한된 길이만큼만 복사
 
 	cout << "로그인한 아이디는" << userid << endl;
 
 	server_mgr.SendPacket(CS_PLAYER_LOGIN,userid);
 
-	SendChatREQ();
+//	SendChatREQ();
 
 }
 void CGameFramework::SendChatREQ() {
-	char buffer[1024];
+	char buffer[20];
 
 	while (true) {
 		cout << "전송할 문자열 : ";
@@ -1258,13 +1260,7 @@ void CGameFramework::SendChatREQ() {
 
 		server_mgr.SendPacket(CS_PLAYER_CHAT, buffer);
 	}
-//	while (true) {
-//		cout << "전송할 문자열 : ";
-//		cin >> buffer;
 
-		//	if (strcmp(buffer, "/w") == 0)  // 입력 문자열이 "/w"라면 귓속말
-		//		SendWisper(toServer);
-//	}
 }
 
 
