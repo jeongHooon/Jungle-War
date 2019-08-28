@@ -38,7 +38,7 @@ void ServerMgr::Initialize(HWND& hwnd) {
 	// 아이피
 	ServerAddr.sin_addr.s_addr = inet_addr(server_ip.c_str());
 	
-	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	
 	int retval = WSAConnect(sock, (sockaddr *)&ServerAddr, sizeof(ServerAddr), NULL, NULL, NULL, NULL);
 	if (retval == SOCKET_ERROR) {
@@ -228,8 +228,8 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		boxes[recvd_box_id].z = packets->z;
 		boxes[recvd_box_id].hp = packets->hp;
 		boxes[recvd_box_id].in_use = packets->in_use;
-		myBoxCount = packets->boxCount;
-		printf("내 남은 박스는 %d개\n", myBoxCount);
+		myBoxCount = packets->boxCount[camera_id];
+		printf("난 %d번 클라 남은 박스는 %d개\n", camera_id, myBoxCount);
 
 
 		//printf("[Bullet] %d 플레이어 총알 ID[%d] \n", clients_id, packets->bullet_id);

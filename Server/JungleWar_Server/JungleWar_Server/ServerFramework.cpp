@@ -1221,13 +1221,19 @@ void ServerFramework::WorkerThread() {
 							packets.x = boxes[i * MAX_BOX_SIZE + j].x;
 							packets.y = boxes[i * MAX_BOX_SIZE + j].y;
 							packets.z = boxes[i * MAX_BOX_SIZE + j].z;
-							packets.boxCount = clients[i].boxCount;
-							printf("%d의 남은 박스는 %d개\n", i, packets.boxCount);
+							//packets.boxCount[i] = clients[i].boxCount;
+							//printf("%d의 남은 박스는 %d개\n", i, packets.boxCount[i]);
 
 
-							for (int k = 0; k < MAX_PLAYER_SIZE; ++k)
-								if (clients[k].in_use)
+							for (int k = 0; k < MAX_PLAYER_SIZE; ++k) 
+							{
+								if (clients[k].in_use) 
+								{
+									packets.boxCount[k] = clients[k].boxCount;
 									SendPacket(k, &packets);
+								}
+							}
+							//printf("%d의 남은 박스는 %d개\n", i, packets.boxCount[i]);
 						}
 					}
 				}

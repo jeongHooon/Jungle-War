@@ -347,7 +347,7 @@ struct SC_PACKET_BOX {
 	WORD id;
 	WORD box_id;
 
-	int boxCount;
+	int boxCount[MAX_PLAYER_SIZE];
 	bool in_use;
 	float hp;
 	DirectX::XMFLOAT3 pos;
