@@ -446,6 +446,10 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	BuildLightsAndMaterials();
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	///////초기화
+	for (int i = 0; i<MAX_SKILLS; ++i)	//스킬.
+		m_ppShaders[7]->SetPosition(i, XMFLOAT3(739 + 5 * i, m_pTerrain->GetHeight(739 + 5 * i, 669) + 2, 669));
 }
 
 void CScene::ReleaseObjects()
@@ -763,7 +767,6 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 	}
 	//for (int i = 0; i < m_nObjects; i++) m_ppUIShaders[i]->AnimateObjects(fTimeElapsed, pCamera);
 	m_ppShaders[5]->SetPosition(0, XMFLOAT3(CGameFramework::m_pPlayer[myTeamNum]->GetPosition().x, CGameFramework::m_pPlayer[myTeamNum]->GetPosition().y + 13, CGameFramework::m_pPlayer[myTeamNum]->GetPosition().z));
-	m_ppShaders[7]->SetPosition(0, XMFLOAT3(CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x, CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().y + 13, CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z));
 	m_ppUIShaders[0]->AnimateObjects(fTimeElapsed, pCamera);
 }
 
@@ -788,11 +791,10 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	
 	if (m_pBuildings) m_pBuildings->Render(pd3dCommandList, pCamera);
 	
-	for (int i = 1; i < m_nShaders; i++) {
+	for (int i = 1; i < m_nShaders-4; i++) {
 		if(i!=2)
 			m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 	}
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->UpdateTransform(NULL);
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->Render(pd3dCommandList, pCamera);
 }
-

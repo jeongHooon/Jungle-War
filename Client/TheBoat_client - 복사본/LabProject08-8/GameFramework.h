@@ -96,7 +96,7 @@ public:
 	static CCamera				*m_pCamera;
 	static int					boxBound;
 	float						playerHp = 100;
-	int							gameMode = 0;
+	int							gameMode = 1;
 	bool						damageCheck = false;
 	bool						writeMode = true;
 	bool						writeStart = false;
@@ -138,6 +138,9 @@ private:
 	ID3D12Fence					*m_pd3dFence = NULL;
 	UINT64						m_nFenceValues[m_nSwapChainBuffers];
 	HANDLE						m_hFenceEvent;
+	//아이템 드롭
+	int							itemDropCount = 0;
+	bool						itemDropCheck = false;
 
 	//채팅
 	wchar_t						inputtext[100] = L"";

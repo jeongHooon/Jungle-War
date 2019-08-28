@@ -16,6 +16,7 @@ XMFLOAT3 CGameFramework::buildingPos[];
 XMFLOAT3 CGameFramework::sendLook;
 int CGameFramework::boxBound;
 
+
 CShader::CShader()
 {
 	m_d3dSrvCPUDescriptorStartHandle.ptr = NULL;
@@ -1728,10 +1729,10 @@ void CSkillShader_1::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	float fTerrainWidth = pTerrain->GetWidth();
 	float fTerrainLength = pTerrain->GetLength();
 
-	int xObjects = 1;
+	int xObjects = MAX_SKILLS;
 	int yObjects = 1;
 	int zObjects = 1;
-	m_nBullet = 1;
+	m_nBullet = MAX_SKILLS;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
 	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Armor.dds", 0);
@@ -1751,7 +1752,7 @@ void CSkillShader_1::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	pCubeMaterial->SetTexture(pTexture);
 #endif
 
-	CBillboardMesh *pCubeMesh = new CBillboardMesh(pd3dDevice, pd3dCommandList, 1.f, 1.f, 1.f);
+	CBillboardMesh *pCubeMesh = new CBillboardMesh(pd3dDevice, pd3dCommandList, 3.f, 3.f, 3.f);
 
 	m_ppBullet = new CBillboard*[m_nBullet];
 
@@ -1891,6 +1892,18 @@ D3D12_BLEND_DESC CSkillShader_1::CreateBlendState()
 
 	return(d3dBlendDesc);
 }
+
+void CSkillShader_1::ItemDrop(int id, int count, bool check) {
+	if(count < 7)
+		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y + 0.2, m_ppBullet[id]->GetPosition().z));
+	else if (count < 15)
+		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y + 0.1, m_ppBullet[id]->GetPosition().z));
+	else if (count < 22)
+		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y - 0.1, m_ppBullet[id]->GetPosition().z));
+	else if (count < 30)
+		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y - 0.2, m_ppBullet[id]->GetPosition().z));
+
+}
 ///////////////////////////////
 CSkillShader_2::CSkillShader_2() {
 
@@ -1909,10 +1922,10 @@ void CSkillShader_2::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	float fTerrainWidth = pTerrain->GetWidth();
 	float fTerrainLength = pTerrain->GetLength();
 
-	int xObjects = 1;
+	int xObjects = MAX_SKILLS;
 	int yObjects = 1;
 	int zObjects = 1;
-	m_nBullet = 1;
+	m_nBullet = MAX_SKILLS;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
 	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/TeamTri.dds", 0);
@@ -2091,10 +2104,10 @@ void CSkillShader_3::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	float fTerrainWidth = pTerrain->GetWidth();
 	float fTerrainLength = pTerrain->GetLength();
 
-	int xObjects = 1;
+	int xObjects = MAX_SKILLS;
 	int yObjects = 1;
 	int zObjects = 1;
-	m_nBullet = 1;
+	m_nBullet = MAX_SKILLS;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
 	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/TeamTri.dds", 0);
@@ -2274,10 +2287,10 @@ void CSkillShader_4::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	float fTerrainWidth = pTerrain->GetWidth();
 	float fTerrainLength = pTerrain->GetLength();
 
-	int xObjects = 1;
+	int xObjects = MAX_SKILLS;
 	int yObjects = 1;
 	int zObjects = 1;
-	m_nBullet = 1;
+	m_nBullet = MAX_SKILLS;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
 	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/TeamTri.dds", 0);
@@ -3283,7 +3296,7 @@ void CAlphaMapShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	m_nTree = (xObjects * yObjects * zObjects);
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Terrain/Map.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Terrain/MapFinal.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -3300,7 +3313,7 @@ void CAlphaMapShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	pCubeMaterial->SetTexture(pTexture);
 #endif
 
-	CAlphaMapMesh *pCubeMesh = new CAlphaMapMesh(pd3dDevice, pd3dCommandList, 30.0f, 30.0f, 1.0f);
+	CMainScreenMesh *pCubeMesh = new CMainScreenMesh(pd3dDevice, pd3dCommandList, 30.0f, 30.0f, 1.0f);
 
 	m_ppTree = new CRotatingObject*[m_nTree];
 
@@ -4106,7 +4119,7 @@ void CItemUIShader_1::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	CItemUIMesh *pCubeMesh[1];
 
 	for (int i = 0; i<m_nTree; ++i)
-		pCubeMesh[i] = new CItemUIMesh(pd3dDevice, pd3dCommandList, 0, 30.0f, 1.0f);
+		pCubeMesh[i] = new CItemUIMesh(pd3dDevice, pd3dCommandList, 1, 30.0f, 1.0f);
 
 	m_ppTree = new CRotatingObject*;
 
@@ -4287,7 +4300,7 @@ void CItemUIShader_2::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	//m_nTree = 4;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Item_Bolt.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Armor.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -4508,7 +4521,7 @@ void CItemUIShader_3::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	CItemUIMesh *pCubeMesh[1];
 
 	for (int i = 0; i<m_nTree; ++i)
-		pCubeMesh[i] = new CItemUIMesh(pd3dDevice, pd3dCommandList, 2, 30.0f, 1.0f);
+		pCubeMesh[i] = new CItemUIMesh(pd3dDevice, pd3dCommandList, 1, 30.0f, 1.0f);
 
 	m_ppTree = new CRotatingObject*;
 
@@ -4709,7 +4722,7 @@ void CItemUIShader_4::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	CItemUIMesh *pCubeMesh[1];
 
 	for (int i = 0; i<m_nTree; ++i)
-		pCubeMesh[i] = new CItemUIMesh(pd3dDevice, pd3dCommandList, 3, 30.0f, 1.0f);
+		pCubeMesh[i] = new CItemUIMesh(pd3dDevice, pd3dCommandList, 1, 30.0f, 1.0f);
 
 	m_ppTree = new CRotatingObject*;
 

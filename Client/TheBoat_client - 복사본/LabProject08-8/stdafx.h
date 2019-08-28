@@ -90,6 +90,8 @@ using Microsoft::WRL::ComPtr;
 #define _WITH_DIRECT2D_IMAGE_EFFECT
 #endif
 
+#define MAX_SKILLS					5
+
 
 
 

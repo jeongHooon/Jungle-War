@@ -815,6 +815,9 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			case '4':
 				itemUI[3] = !itemUI[3];
 				break;
+			case '5':
+				itemDropCheck = true;
+				break;
 			case 'm':
 			case 'M':
 				alphaMapOn = !alphaMapOn;
@@ -1739,6 +1742,15 @@ void CGameFramework::FrameAdvance()
 	m_pBlueBox[0]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 	m_pBlueBox[0]->Render(m_pd3dCommandList, m_pCamera);
 	
+	if (itemDropCheck) {
+		m_pScene->m_ppShaders[7]->ItemDrop(0, itemDropCount, itemDropCheck);
+		++itemDropCount;
+		if (itemDropCount > 30) {
+			itemDropCheck = false;
+			itemDropCount = 0;
+		}
+	}
+
 	switch (gameMode) {
 	case 0:	//메인화면
 		m_pScene->m_ppMainUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 메인화면
@@ -1755,6 +1767,8 @@ void CGameFramework::FrameAdvance()
 
 	case 1:	//게임시작
 	case 2:	//게임오버
+
+		m_pScene->m_ppShaders[7]->Render(m_pd3dCommandList, m_pCamera); //특성
 		m_pScene->m_ppUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 미니맵
 
 																		  //printf("%f", playerHp);
