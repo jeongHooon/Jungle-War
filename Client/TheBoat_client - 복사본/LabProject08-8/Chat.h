@@ -30,7 +30,6 @@ const WORD ComLoginREQ = 1; // id와 패스워드로 로긴 요청
 struct StrLoginREQ    //프로토콜에 REQ가 붙으면
 {						//  뭔가 요청을 하는 패킷
 	BYTE userid[maxUserIDLen];
-	BYTE passwd[maxPasswdLen];
 };
 
 const WORD ComLoginACK = 2; // 서버에서 로긴결과 응답

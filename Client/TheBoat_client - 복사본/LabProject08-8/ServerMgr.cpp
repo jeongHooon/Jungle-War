@@ -119,12 +119,26 @@ void ServerMgr::ProcessPacket(char* ptr) {
 	}
 
 	case SC_PLAYER_LOGIN: {
+		cout << "서버로긴패킷" << endl;
 		SC_PACKET_LOGIN_PLAYER* packets = reinterpret_cast<SC_PACKET_LOGIN_PLAYER*>(ptr);
-//strncpy_s((char*)loginID[packets->userid], maxUserIDLen, packets->userid, maxUserIDLen);
+		clients_id = packets->id;
+		strncpy_s((char*)sc_vec_buff[packets->id].playerID, maxUserIDLen, packets->userid, maxUserIDLen);
 
-//cout << loginID[packets->userid] << "로그인했당" << endl;
+		cout << sc_vec_buff[packets->id].playerID << "로그인했당" << endl;
+
 		break;
 	}
+
+	case SC_PLAYER_CHAT: {
+		SC_PACKET_CHAT* packets = reinterpret_cast<SC_PACKET_CHAT*>(ptr);
+		clients_id = packets->id;
+		strncpy_s((char*)sc_vec_buff[packets->id].chat, maxChatSize, packets->chat, maxChatSize);
+
+		cout << sc_vec_buff[packets->id].chat << "채팅 " << endl;
+		break;
+
+	}
+
 
 	case SC_BUILDING_GEN: {
 		SC_PACKET_ENTER_PLAYER* packets = reinterpret_cast<SC_PACKET_ENTER_PLAYER*>(ptr);
@@ -228,8 +242,8 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		boxes[recvd_box_id].z = packets->z;
 		boxes[recvd_box_id].hp = packets->hp;
 		boxes[recvd_box_id].in_use = packets->in_use;
-		myBoxCount = packets->boxCount;
-		printf("내 남은 박스는 %d개\n", myBoxCount);
+		myBoxCount = packets->boxCount[camera_id];
+		printf("난 %d번 클라 남은 박스는 %d개\n", camera_id, myBoxCount);
 
 
 		//printf("[Bullet] %d 플레이어 총알 ID[%d] \n", clients_id, packets->bullet_id);
@@ -501,9 +515,9 @@ void ServerMgr::SendPacket(int type) {
 
 
 void ServerMgr::SendPacket(int type, char* id) {
-	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(send_buffer);
-	packet_buffer->size = sizeof(CS_PACKET_KEYUP);
-	send_wsabuf.len = sizeof(CS_PACKET_KEYUP);
+	CS_PACKET_LOBBY* packet_buffer = reinterpret_cast<CS_PACKET_LOBBY*>(send_buffer);
+	packet_buffer->size = sizeof(CS_PACKET_LOBBY);
+	send_wsabuf.len = sizeof(CS_PACKET_LOBBY);
 	int retval = 0;
 	DWORD iobytes;
 	switch (type) {
