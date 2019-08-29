@@ -23,6 +23,7 @@ private:
 
 	bool player_ready = false;
 
+	bool is_chat = false;
 	// 아이템 생성
 	bool is_item_gen = false;
 	XMFLOAT3 item_pos;
@@ -96,7 +97,7 @@ public:
 	static CCamera				*m_pCamera;
 	static int					boxBound;
 	float						playerHp = 100;
-	int							gameMode = 1;
+	int							gameMode = 0;
 	bool						damageCheck = false;
 	bool						writeMode = true;
 	bool						writeStart = false;

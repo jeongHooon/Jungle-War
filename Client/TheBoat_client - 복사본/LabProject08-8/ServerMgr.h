@@ -110,7 +110,7 @@ public:
 	bool GetMessageCheck() { return newMessage;	}
 	void SetMessageCheck() { !newMessage; }
 	bool GetChatCheck() { return newChat; }
-	void SetChatCheck() { !newChat; }
+	void SetChatCheck() { newChat = false; }
 	char* GetChatChar() { return chatchar; }
 	int GetChatPlayerIndex() { return chatPlayerIndex; }
 	int GetBoxCount() { return myBoxCount; }

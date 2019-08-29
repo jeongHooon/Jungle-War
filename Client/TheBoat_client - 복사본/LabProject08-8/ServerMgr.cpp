@@ -18,7 +18,7 @@ void ServerMgr::ErrorDisplay(const char* msg, int err_no) {
 void ServerMgr::IPInput() {
 	while (true) {
 		cout << "서버 아이피 입력 : ";
-		//cin >> server_ip;
+		cin >> server_ip;
 		break;
 	}
 }
@@ -38,7 +38,7 @@ void ServerMgr::Initialize(HWND& hwnd) {
 	// 아이피
 	ServerAddr.sin_addr.s_addr = inet_addr(server_ip.c_str());
 	
-	ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	//ServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	
 	int retval = WSAConnect(sock, (sockaddr *)&ServerAddr, sizeof(ServerAddr), NULL, NULL, NULL, NULL);
 	if (retval == SOCKET_ERROR) {

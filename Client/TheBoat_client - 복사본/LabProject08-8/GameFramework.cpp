@@ -1028,7 +1028,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 
 		case '9':
-			//SendLoginREQ();
 			break;
 		case 'Q':
 			if (is_pushed[CS_KEY_PRESS_Q] == true) {
@@ -1061,7 +1060,11 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			}
 			else {
 				SendChatREQ(ConvertWCtoC(inputtext));
-				SwapText();
+				cout << "send" << endl;
+				//SwapText();
+
+			//	is_chat = false;
+				
 			}
 			break;
 		}
@@ -1254,7 +1257,6 @@ void CGameFramework::SendLoginREQ(char inputID[]) {
 
 	server_mgr.SendPacket(CS_PLAYER_LOGIN,userid);
 
-//	SendChatREQ();
 
 }
 void CGameFramework::SendChatREQ(char inputChat[]) {
@@ -1264,6 +1266,8 @@ void CGameFramework::SendChatREQ(char inputChat[]) {
 	cout << "채팅채팅 " << buffer << endl;
 
 	server_mgr.SendPacket(CS_PLAYER_CHAT, buffer);
+
+	is_chat = false;
 
 }
 
@@ -1318,7 +1322,7 @@ void CGameFramework::OnDestroy()
 
 	if (m_pd3dFence) m_pd3dFence->Release();
 
-	m_pdxgiSwapChain->SetFullscreenState(TRUE, NULL);
+	if (m_pdxgiSwapChain->SetFullscreenState(TRUE, NULL));
 	if (m_pdxgiSwapChain) m_pdxgiSwapChain->Release();
 	if (m_pd3dDevice) m_pd3dDevice->Release();
 	if (m_pdxgiFactory) m_pdxgiFactory->Release();
@@ -2128,6 +2132,8 @@ void CGameFramework::SwapText(int clientID, wchar_t inputChat[20]) {
 	}
 	wcscpy(outputtexts[0], inputChat);
 	playerChat[0] = clientID;
+	for (int i = 0; i < 100; ++i)
+		inputtext[i] = {};
 }
 
 char *CGameFramework::ConvertWCtoC(wchar_t* str)

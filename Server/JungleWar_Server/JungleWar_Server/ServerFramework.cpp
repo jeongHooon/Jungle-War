@@ -460,14 +460,19 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		cout << clients[cl_id].userid << "로그인" << endl;
 		cout << packets.userid << "로그인" << endl;
 
+
+
 		for (int k = 0; k < MAX_PLAYER_SIZE; ++k) {
 			if (clients[k].in_use) {
 				SendPacket(k, &packets);
 			}
 		}
+			
+		
 		break;
 	}
 	case CS_PLAYER_CHAT: {
+		is_chat = true;
 		cout << "채팅!!" << endl;
 		strncpy_s((char *)clients[cl_id].chat, maxChatSize, packet_lobby_buffer->chatbuffer, maxChatSize);
 
@@ -479,11 +484,19 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		packets.size = sizeof(SC_PACKET_CHAT);
 		packets.type = SC_PLAYER_CHAT;
 
-		for (int k = 0; k < MAX_PLAYER_SIZE; ++k) {
-			if (clients[k].in_use) {
-				SendPacket(k, &packets);
+		if (is_chat == true) {
+
+			for (int k = 0; k < MAX_PLAYER_SIZE; ++k) {
+				if (clients[k].in_use) {
+					SendPacket(k, &packets);
+					is_chat = false;
+				}
 			}
+
+			
 		}
+
+
 		break;
 	}
 
