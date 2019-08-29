@@ -43,6 +43,9 @@ class ServerFramework
 	bool is_item_gen = false;
 	mutex client_lock;
 
+	/////////////////
+	bool is_chat = false;
+
 	// Timer전용 OverlappedExtensionSetd
 	// MAX_PLAYER_SIZE  플레이어 위치 업데이트 전용
 	// MAX_PLAYER_SIZE + 1 플레이어 총알 충돌체크전용
