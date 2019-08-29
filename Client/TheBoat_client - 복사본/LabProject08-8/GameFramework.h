@@ -96,12 +96,12 @@ public:
 	static CCamera				*m_pCamera;
 	static int					boxBound;
 	float						playerHp = 100;
-	int							gameMode = 0;
+	int							gameMode = 1;
 	bool						damageCheck = false;
 	bool						writeMode = true;
 	bool						writeStart = false;
 	int							writeNum = 0;
-
+	int r = 42;
 private:
 	int							mainScreenSelect = 0;
 	bool						itemUI[4] = {};
