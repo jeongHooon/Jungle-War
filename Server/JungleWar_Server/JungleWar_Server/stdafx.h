@@ -120,7 +120,7 @@ struct Client {
 	float elecY;
 	float elecZ;
 
-	CharacterType CType = None;
+	int CType;
 	Team team;
 	ARWeapons ar_weapons;
 	char ar_mag = 0;		// źâ
@@ -158,6 +158,8 @@ struct Bullet {
 	int type;
 	bool is_bound = false;
 	BoundingOrientedBox bounding_box;
+
+	int shooter_id;
 
 	void SetOOBB(XMFLOAT3 xmCenter, XMFLOAT3 xmExtents, XMFLOAT4 xmOrientation) {
 		bounding_box = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation);

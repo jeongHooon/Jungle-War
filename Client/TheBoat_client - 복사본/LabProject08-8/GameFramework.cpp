@@ -1455,6 +1455,26 @@ void CGameFramework::BuildObjects()
 		else if (i == 67) xPosition = 718, zPosition = 470;
 		else if (i == 68) xPosition = 723, zPosition = 417;
 		else if (i == 69) xPosition = 714, zPosition = 344;
+		else if (i == 70) xPosition = 560, zPosition = 613;
+		else if (i == 71) xPosition = 604, zPosition = 647;
+		else if (i == 72) xPosition = 612, zPosition = 564;
+		else if (i == 73) xPosition = 593, zPosition = 481;
+		else if (i == 74) xPosition = 489, zPosition = 482;
+		else if (i == 75) xPosition = 397, zPosition = 409;
+		else if (i == 76) xPosition = 298, zPosition = 393;
+		else if (i == 77) xPosition = 325, zPosition = 313;
+		else if (i == 78) xPosition = 371, zPosition = 249;
+		else if (i == 79) xPosition = 453, zPosition = 259;
+		else if (i == 80) xPosition = 490, zPosition = 201;
+		else if (i == 81) xPosition = 565, zPosition = 231;
+		else if (i == 82) xPosition = 620, zPosition = 258;
+		else if (i == 83) xPosition = 678, zPosition = 259;
+		else if (i == 84) xPosition = 676, zPosition = 220;
+		else if (i == 85) xPosition = 647, zPosition = 158;
+		else if (i == 86) xPosition = 768, zPosition = 358;
+		else if (i == 87) xPosition = 774, zPosition = 483;
+		else if (i == 88) xPosition = 804, zPosition = 550;
+		else if (i == 89) xPosition = 794, zPosition = 666;
 		//else if (i == 70) xPosition = 666, zPosition = 281;
 		/*else if (i == 28) xPosition = 602, zPosition = 1122;
 		else if (i == 29) xPosition = 3000, zPosition = 3000;*/
@@ -2019,6 +2039,10 @@ void CGameFramework::FrameAdvance()
 	if (check2 == true)
 		CGameFramework::boxBound = 1;
 	/////////
+	//if(아이템 먹음)
+	
+	//case INTERSECTS:
+	//server_mgr.SendRootPacket(type);
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
