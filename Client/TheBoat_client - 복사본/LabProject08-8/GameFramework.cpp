@@ -1029,7 +1029,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 
 		case '9':
-			//SendLoginREQ();
 			break;
 		case 'Q':
 			if (is_pushed[CS_KEY_PRESS_Q] == true) {
@@ -1060,8 +1059,14 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					inputtext[i] = {};
 				cout << ConvertWCtoC(inputtext) << endl;
 			}
-			else
-				SwapText();
+			else {
+				SendChatREQ(ConvertWCtoC(inputtext));
+				cout << "send" << endl;
+				//SwapText();
+
+			//	is_chat = false;
+				
+			}
 			break;
 		}
 		switch (wParam)
@@ -1253,20 +1258,17 @@ void CGameFramework::SendLoginREQ(char inputID[]) {
 
 	server_mgr.SendPacket(CS_PLAYER_LOGIN,userid);
 
-//	SendChatREQ();
 
 }
-void CGameFramework::SendChatREQ() {
+void CGameFramework::SendChatREQ(char inputChat[]) {
 	char buffer[20];
+	
+	strncpy_s((char *)buffer, maxChatSize, inputChat, maxChatSize);
+	cout << "채팅채팅 " << buffer << endl;
 
-	while (true) {
-		cout << "전송할 문자열 : ";
-		cin >> buffer;
+	server_mgr.SendPacket(CS_PLAYER_CHAT, buffer);
 
-		cout << "채팅채팅 " << buffer << endl;
-
-		server_mgr.SendPacket(CS_PLAYER_CHAT, buffer);
-	}
+	is_chat = false;
 
 }
 
@@ -1321,7 +1323,7 @@ void CGameFramework::OnDestroy()
 
 	if (m_pd3dFence) m_pd3dFence->Release();
 
-	m_pdxgiSwapChain->SetFullscreenState(TRUE, NULL);
+	if (m_pdxgiSwapChain->SetFullscreenState(TRUE, NULL));
 	if (m_pdxgiSwapChain) m_pdxgiSwapChain->Release();
 	if (m_pd3dDevice) m_pd3dDevice->Release();
 	if (m_pdxgiFactory) m_pdxgiFactory->Release();
@@ -2088,7 +2090,11 @@ void CGameFramework::FrameAdvance()
 				m_pd2dDeviceContext->DrawTextW(playerName[playerChat[i]], (UINT32)wcslen(playerName[playerChat[i]]), m_pdwFont, &rcChatText, m_pd2dbrText);
 			}
 		}
-
+		if (server_mgr.GetChatCheck()) {
+			SwapText(server_mgr.GetChatPlayerIndex(), ConverCtoWC(server_mgr.GetChatChar()));
+			cout << "채팅 시작 " << ConverCtoWC(server_mgr.GetChatChar()) << endl;
+			server_mgr.SetChatCheck();
+		}
 		m_pd2dDeviceContext->EndDraw();
 
 		m_pd3d11On12Device->ReleaseWrappedResources(&m_ppd3d11WrappedBackBuffers[m_nSwapChainBufferIndex], 1);
@@ -2128,13 +2134,15 @@ void CGameFramework::SwapText() {
 	outputtext = L"";
 }
 
-void CGameFramework::SwapText(int clientID, wchar_t inputChat[100]) {
+void CGameFramework::SwapText(int clientID, wchar_t inputChat[20]) {
 	for (int i = 0; i < 16; ++i) {
 		wcscpy(outputtexts[14 - i], outputtexts[13 - i]);
 		playerChat[14 - i] = playerChat[13 - i];
 	}
 	wcscpy(outputtexts[0], inputChat);
 	playerChat[0] = clientID;
+	for (int i = 0; i < 100; ++i)
+		inputtext[i] = {};
 }
 
 char *CGameFramework::ConvertWCtoC(wchar_t* str)

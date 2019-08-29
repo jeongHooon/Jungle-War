@@ -64,7 +64,11 @@ class ServerMgr
 
 	// 로그인
 	char loginID[maxUserIDLen][10];
+	char chatchar[maxChatSize];
+	int	 chatPlayerIndex;
 	bool newMessage;
+	bool newChat = false;
+	
 
 	// 아이템 생성 부분
 	XMFLOAT3 item_pos;
@@ -105,6 +109,10 @@ public:
 	bool GetTreeInuse(int index) { return obj[index].in_use; }
 	bool GetMessageCheck() { return newMessage;	}
 	void SetMessageCheck() { !newMessage; }
+	bool GetChatCheck() { return newChat; }
+	void SetChatCheck() { newChat = false; }
+	char* GetChatChar() { return chatchar; }
+	int GetChatPlayerIndex() { return chatPlayerIndex; }
 	int GetBoxCount() { return myBoxCount; }
 	Bullet GetBullet();
 	Box GetBox(int index);
