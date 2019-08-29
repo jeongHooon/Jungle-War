@@ -68,8 +68,8 @@ public:
 	// 로긴용
 	void SendLoginREQ(char inputID[]);
 	// 채팅용
-	void SendChatREQ();
-	void SwapText(int clientID, wchar_t inputChat[100]);
+	void SendChatREQ(char inputChat[]);
+	void SwapText(int clientID, wchar_t inputChat[20]);
 	void SwapText();
 
 

@@ -1056,8 +1056,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					inputtext[i] = {};
 				cout << ConvertWCtoC(inputtext) << endl;
 			}
-			else
+			else {
+				SendChatREQ(ConvertWCtoC(inputtext));
 				SwapText();
+			}
 			break;
 		}
 		switch (wParam)
@@ -1252,17 +1254,13 @@ void CGameFramework::SendLoginREQ(char inputID[]) {
 //	SendChatREQ();
 
 }
-void CGameFramework::SendChatREQ() {
+void CGameFramework::SendChatREQ(char inputChat[]) {
 	char buffer[20];
+	
+	strncpy_s((char *)buffer, maxChatSize, inputChat, maxChatSize);
+	cout << "채팅채팅 " << buffer << endl;
 
-	while (true) {
-		cout << "전송할 문자열 : ";
-		cin >> buffer;
-
-		cout << "채팅채팅 " << buffer << endl;
-
-		server_mgr.SendPacket(CS_PLAYER_CHAT, buffer);
-	}
+	server_mgr.SendPacket(CS_PLAYER_CHAT, buffer);
 
 }
 
@@ -2047,7 +2045,11 @@ void CGameFramework::FrameAdvance()
 				m_pd2dDeviceContext->DrawTextW(playerName[playerChat[i]], (UINT32)wcslen(playerName[playerChat[i]]), m_pdwFont, &rcChatText, m_pd2dbrText);
 			}
 		}
-
+		if (server_mgr.GetChatCheck()) {
+			SwapText(server_mgr.GetChatPlayerIndex(), ConverCtoWC(server_mgr.GetChatChar()));
+			cout << "채팅 시작 " << ConverCtoWC(server_mgr.GetChatChar()) << endl;
+			server_mgr.SetChatCheck();
+		}
 		m_pd2dDeviceContext->EndDraw();
 
 		m_pd3d11On12Device->ReleaseWrappedResources(&m_ppd3d11WrappedBackBuffers[m_nSwapChainBufferIndex], 1);
@@ -2087,7 +2089,7 @@ void CGameFramework::SwapText() {
 	outputtext = L"";
 }
 
-void CGameFramework::SwapText(int clientID, wchar_t inputChat[100]) {
+void CGameFramework::SwapText(int clientID, wchar_t inputChat[20]) {
 	for (int i = 0; i < 16; ++i) {
 		wcscpy(outputtexts[14 - i], outputtexts[13 - i]);
 		playerChat[14 - i] = playerChat[13 - i];

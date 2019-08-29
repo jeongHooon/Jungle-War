@@ -138,6 +138,9 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		strncpy_s((char*)sc_vec_buff[packets->id].chat, maxChatSize, packets->chat, maxChatSize);
 
 		cout << sc_vec_buff[packets->id].chat << "Ã¤ÆÃ " << endl;
+		strncpy_s(chatchar,maxChatSize, sc_vec_buff[packets->id].chat, maxChatSize);
+		chatPlayerIndex = packets->id;
+		newChat = true;
 		break;
 
 	}
