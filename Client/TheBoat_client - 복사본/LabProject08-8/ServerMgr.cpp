@@ -173,7 +173,7 @@ void ServerMgr::ProcessPacket(char* ptr) {
 
 		for (int i = 0; i < 4; ++i)
 			if (sc_vec_buff[i].is_die)
-				printf("%d Å¬¶ó Á×À½\n");
+				printf("%d Å¬¶ó Á×À½\n",i);
 		// 0 ¼û½¬±â, 1: °È±â, 2: ¶Ù±â
 		sc_vec_buff[packets->id].player_status = packets->player_status;
 		if (packets->is_die) {
@@ -384,12 +384,29 @@ void ServerMgr::SendDeadPacket() {
 	}
 }
 
+void ServerMgr::SendRootPacket(int type) {
+	CS_PACKET_ROOT_ITEM* packet_buffer = reinterpret_cast<CS_PACKET_ROOT_ITEM*>(send_buffer);
+	packet_buffer->size = sizeof(CS_PACKET_ROOT_ITEM);
+	send_wsabuf.len = sizeof(CS_PACKET_ROOT_ITEM);
+	int retval = 0;
+	DWORD iobytes;
+	packet_buffer->type = CS_ROOT_ITEM;
+	packet_buffer->skill = type;
+	retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
+
+	if (retval == 1) {
+		int error_code = WSAGetLastError();
+		ErrorDisplay("[WSASend] ¿¡·¯ : ", error_code);
+	}
+}
+
 void ServerMgr::SendPacket(int type) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(send_buffer);
 	packet_buffer->size = sizeof(CS_PACKET_KEYUP);
 	send_wsabuf.len = sizeof(CS_PACKET_KEYUP);
 	int retval = 0;
 	DWORD iobytes;
+
 	switch (type) {
 	case CS_KEY_PRESS_UP:
 		packet_buffer->type = CS_KEY_PRESS_UP;

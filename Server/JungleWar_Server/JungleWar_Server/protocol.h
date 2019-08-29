@@ -5,7 +5,7 @@
 #define MAX_BUFFER_SIZE		4000
 #define MAX_PACKET_SIZE		256
 #define MAX_PLAYER_SIZE		4
-#define MAX_OBJECT_SIZE		70
+#define MAX_OBJECT_SIZE		90
 #define MAX_OBJECT2_SIZE	20
 #define	WM_SOCKET			WM_USER + 1
 #define CLIENT_BUF_SIZE		1024
@@ -102,7 +102,7 @@
 #define CS_KEY_RELEASE_CROUCH		23
 #define PlayerDie					26
 #define CS_PLAYER_DIE				27
-
+#define CS_ROOT_ITEM				28			
 //=============================
 #define CS_KEY_PRESS_Q 24
 #define CS_KEY_RELEASE_Q 25
@@ -119,6 +119,11 @@
 #define OBJECT_ALIVE		0
 #define OBJECT_DEAD			1
 
+#define TYPE_NONE		0
+#define TYPE_SPEED		1
+#define TYPE_DEFENCE	2
+#define TYPE_POWER		3
+
 enum GameMode {
 	TEAM_MODE, MELEE
 };
@@ -131,9 +136,7 @@ enum ARWeapons {
 enum SubWeapons {
 	NON_SUB = 0
 };
-enum CharacterType {
-	None, Speed, Defence, Power, QQQQ
-};
+
 // 서버->클라
 struct SC_PACKET_ENTER_PLAYER {
 	BYTE size;
@@ -326,6 +329,12 @@ struct CS_PACKET_LOOK_VECTOR {
 	BYTE size;
 	BYTE type;
 	DirectX::XMVECTOR look_vector;
+};
+
+struct CS_PACKET_ROOT_ITEM {
+	BYTE size;
+	BYTE type;
+	int skill;
 };
 
 //===============================================

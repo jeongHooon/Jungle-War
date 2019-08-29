@@ -6,7 +6,7 @@
 
 #include "Shader.h"
 #include "Player.h"
-#define NUM_OBJECT 42
+#define NUM_OBJECT 90
 #define NUM_OBJECT2 20
 struct LIGHT
 {

@@ -65,11 +65,11 @@ void ServerFramework::InitServer() {
 	height_map = new CHeightMapImage(file_name, 513, 513, xmf3Scale);
 
 	client_lock.lock();
-	clients[0].x = 731.f;
-	clients[0].z = 669.f;
+	clients[0].x = 127.f;
+	clients[0].z = 213.f;
 
-	clients[1].x = 600.f;
-	clients[1].z = 500.f;
+	clients[1].x = 118.f;
+	clients[1].z = 325.f;
 
 	clients[2].x = 600.f;
 	clients[2].z = 950.f;
@@ -195,6 +195,26 @@ void ServerFramework::InitServer() {
 		else if (i == 67) xPosition = 718, zPosition = 470, obj_state = OBJECT_ALIVE;
 		else if (i == 68) xPosition = 723, zPosition = 417, obj_state = OBJECT_ALIVE;
 		else if (i == 69) xPosition = 714, zPosition = 344, obj_state = OBJECT_ALIVE;
+		else if (i == 70) xPosition = 560, zPosition = 613, obj_state = OBJECT_ALIVE;
+		else if (i == 71) xPosition = 604, zPosition = 647, obj_state = OBJECT_ALIVE;
+		else if (i == 72) xPosition = 612, zPosition = 564, obj_state = OBJECT_ALIVE;
+		else if (i == 73) xPosition = 593, zPosition = 481, obj_state = OBJECT_ALIVE;
+		else if (i == 74) xPosition = 489, zPosition = 482, obj_state = OBJECT_ALIVE;
+		else if (i == 75) xPosition = 397, zPosition = 409, obj_state = OBJECT_ALIVE;
+		else if (i == 76) xPosition = 298, zPosition = 393, obj_state = OBJECT_ALIVE;
+		else if (i == 77) xPosition = 325, zPosition = 313, obj_state = OBJECT_ALIVE;
+		else if (i == 78) xPosition = 371, zPosition = 249, obj_state = OBJECT_ALIVE;
+		else if (i == 79) xPosition = 453, zPosition = 259, obj_state = OBJECT_ALIVE;
+		else if (i == 80) xPosition = 490, zPosition = 201, obj_state = OBJECT_ALIVE;
+		else if (i == 81) xPosition = 565, zPosition = 231, obj_state = OBJECT_ALIVE;
+		else if (i == 82) xPosition = 620, zPosition = 258, obj_state = OBJECT_ALIVE;
+		else if (i == 83) xPosition = 678, zPosition = 259, obj_state = OBJECT_ALIVE;
+		else if (i == 84) xPosition = 676, zPosition = 220, obj_state = OBJECT_ALIVE;
+		else if (i == 85) xPosition = 647, zPosition = 158, obj_state = OBJECT_ALIVE;
+		else if (i == 86) xPosition = 768, zPosition = 358, obj_state = OBJECT_ALIVE;
+		else if (i == 87) xPosition = 774, zPosition = 483, obj_state = OBJECT_ALIVE;
+		else if (i == 88) xPosition = 804, zPosition = 550, obj_state = OBJECT_ALIVE;
+		else if (i == 89) xPosition = 794, zPosition = 666, obj_state = OBJECT_ALIVE;
 		/*else if (i == 28) xPosition = 602, zPosition = 1122;
 		else if (i == 29) xPosition = 3000, zPosition = 3000;*/
 
@@ -354,6 +374,7 @@ void ServerFramework::AcceptPlayer() {
 	clients[client_id].packet_size = 0;
 	clients[client_id].prev_packet_size = 0;
 	clients[client_id].team = Team::NON_TEAM;
+	clients[client_id].CType = TYPE_POWER;
 
 	clients[client_id].boxCount = 10;
 
@@ -442,6 +463,14 @@ void ServerFramework::AcceptPlayer() {
 void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(packet);
 	CS_PACKET_LOBBY* packet_lobby_buffer = reinterpret_cast<CS_PACKET_LOBBY*>(packet);
+	CS_PACKET_ROOT_ITEM* packet_root_buffer = reinterpret_cast<CS_PACKET_ROOT_ITEM*>(packet);
+
+	switch (packet_root_buffer->type) {
+	case CS_ROOT_ITEM: {
+		clients[cl_id].CType = packet_root_buffer->skill;
+		break;
+	}
+	}
 
 	switch (packet_lobby_buffer->type) {
 	case CS_PLAYER_LOGIN: {
@@ -924,8 +953,13 @@ void ServerFramework::WorkerThread() {
 							//clients[j].hp -= MAX_BULLET_DAMAGE;
 							//
 							//packets.hp = clients[j].hp;
-							if(clients[j].CType == Defence)
-								packets.hp = (-1) * MAX_BULLET_DAMAGE * 0.6f;
+							
+							if(clients[j].CType == TYPE_DEFENCE && clients[bullets[i].shooter_id].CType == TYPE_POWER)
+								packets.hp = (-1) * MAX_BULLET_DAMAGE;
+							else if (clients[j].CType == TYPE_DEFENCE)
+								packets.hp = (-1) * MAX_BULLET_DAMAGE * 0.6f; 
+							else if (clients[bullets[i].shooter_id].CType == TYPE_POWER)
+								packets.hp = (-1) * MAX_BULLET_DAMAGE * 1.4f;
 							else
 								packets.hp = (-1) * MAX_BULLET_DAMAGE;
 							/*printf("%d번 플레이어 체력 %f\n", j, clients[j].hp);
@@ -1157,7 +1191,7 @@ void ServerFramework::WorkerThread() {
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].z = clients[shooter_id].z + 10 * clients[shooter_id].look_vec.z;
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].look_vec = clients[shooter_id].look_vec;
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].in_use = true;
-
+			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].shooter_id = shooter_id;
 			/*printf("%f         %f            %f\n", bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].x,
 				bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].y,
 				bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].z);*/
