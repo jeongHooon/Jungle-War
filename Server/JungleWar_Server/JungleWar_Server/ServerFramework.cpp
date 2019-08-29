@@ -166,6 +166,35 @@ void ServerFramework::InitServer() {
 		else if (i == 39) xPosition = 530, zPosition = 410, obj_state = OBJECT_ALIVE;
 		else if (i == 40) xPosition = 500, zPosition = 340, obj_state = OBJECT_ALIVE;
 		else if (i == 41) xPosition = 540, zPosition = 450, obj_state = OBJECT_ALIVE;
+
+		else if (i == 42) xPosition = 277, zPosition = 523, obj_state = OBJECT_ALIVE;
+		else if (i == 43) xPosition = 287, zPosition = 493, obj_state = OBJECT_ALIVE;
+		else if (i == 44) xPosition = 297, zPosition = 455, obj_state = OBJECT_ALIVE;
+		else if (i == 45) xPosition = 327, zPosition = 470, obj_state = OBJECT_ALIVE;
+		else if (i == 46) xPosition = 354, zPosition = 446, obj_state = OBJECT_ALIVE;
+		else if (i == 47) xPosition = 390, zPosition = 472, obj_state = OBJECT_ALIVE;
+		else if (i == 48) xPosition = 415, zPosition = 445, obj_state = OBJECT_ALIVE;
+		else if (i == 49) xPosition = 449, zPosition = 489, obj_state = OBJECT_ALIVE;
+		else if (i == 50) xPosition = 420, zPosition = 539, obj_state = OBJECT_ALIVE;
+		else if (i == 51) xPosition = 396, zPosition = 590, obj_state = OBJECT_ALIVE;
+		else if (i == 52) xPosition = 438, zPosition = 602, obj_state = OBJECT_ALIVE;
+		else if (i == 53) xPosition = 479, zPosition = 590, obj_state = OBJECT_ALIVE;
+		else if (i == 54) xPosition = 493, zPosition = 624, obj_state = OBJECT_ALIVE;
+		else if (i == 55) xPosition = 533, zPosition = 635, obj_state = OBJECT_ALIVE;
+		else if (i == 56) xPosition = 536, zPosition = 670, obj_state = OBJECT_ALIVE;
+		else if (i == 57) xPosition = 507, zPosition = 692, obj_state = OBJECT_ALIVE;
+		else if (i == 58) xPosition = 531, zPosition = 725, obj_state = OBJECT_ALIVE;
+		else if (i == 59) xPosition = 586, zPosition = 748, obj_state = OBJECT_ALIVE;
+		else if (i == 60) xPosition = 631, zPosition = 746, obj_state = OBJECT_ALIVE;
+		else if (i == 61) xPosition = 669, zPosition = 703, obj_state = OBJECT_ALIVE;
+		else if (i == 62) xPosition = 666, zPosition = 659, obj_state = OBJECT_ALIVE;
+		else if (i == 63) xPosition = 711, zPosition = 655, obj_state = OBJECT_ALIVE;
+		else if (i == 64) xPosition = 715, zPosition = 575, obj_state = OBJECT_ALIVE;
+		else if (i == 65) xPosition = 752, zPosition = 550, obj_state = OBJECT_ALIVE;
+		else if (i == 66) xPosition = 752, zPosition = 509, obj_state = OBJECT_ALIVE;
+		else if (i == 67) xPosition = 718, zPosition = 470, obj_state = OBJECT_ALIVE;
+		else if (i == 68) xPosition = 723, zPosition = 417, obj_state = OBJECT_ALIVE;
+		else if (i == 69) xPosition = 714, zPosition = 344, obj_state = OBJECT_ALIVE;
 		/*else if (i == 28) xPosition = 602, zPosition = 1122;
 		else if (i == 29) xPosition = 3000, zPosition = 3000;*/
 
@@ -895,7 +924,10 @@ void ServerFramework::WorkerThread() {
 							//clients[j].hp -= MAX_BULLET_DAMAGE;
 							//
 							//packets.hp = clients[j].hp;
-							packets.hp = (-1) * MAX_BULLET_DAMAGE;
+							if(clients[j].CType == Defence)
+								packets.hp = (-1) * MAX_BULLET_DAMAGE * 0.6f;
+							else
+								packets.hp = (-1) * MAX_BULLET_DAMAGE;
 							/*printf("%d번 플레이어 체력 %f\n", j, clients[j].hp);
 							if (!(clients[j].is_die))
 							{

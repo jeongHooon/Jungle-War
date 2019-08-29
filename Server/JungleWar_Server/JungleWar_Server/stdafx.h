@@ -120,7 +120,7 @@ struct Client {
 	float elecY;
 	float elecZ;
 
-
+	CharacterType CType = None;
 	Team team;
 	ARWeapons ar_weapons;
 	char ar_mag = 0;		// źâ
