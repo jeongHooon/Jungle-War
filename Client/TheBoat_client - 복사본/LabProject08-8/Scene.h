@@ -6,7 +6,7 @@
 
 #include "Shader.h"
 #include "Player.h"
-#define NUM_OBJECT 42
+#define NUM_OBJECT 70
 #define NUM_OBJECT2 20
 struct LIGHT
 {
@@ -80,7 +80,7 @@ public:
 	CShadow						*m_pShadow[4];
 	CPlayer						*m_pObject[NUM_OBJECT]; //오브젝트 갯수
 	CPlayer						*m_pObject2[NUM_OBJECT2]; //오브젝트 갯수
-	CPlayer						*m_pBlueBox[1];
+	CPlayer						*m_pBlueBox[2];
 
 	static int					makeParticleIndex;
 	static bool					particleOn;

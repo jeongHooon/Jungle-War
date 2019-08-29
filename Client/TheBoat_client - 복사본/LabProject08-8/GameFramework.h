@@ -91,7 +91,7 @@ public:
 	static CShadow				*m_pShadow[4];
 	static CPlayer				*m_pObject[NUM_OBJECT];
 	static CPlayer				*m_pObject2[NUM_OBJECT2];
-	CPlayer						*m_pBlueBox[1];
+	CPlayer						*m_pBlueBox[2];
 
 	static CCamera				*m_pCamera;
 	static int					boxBound;
