@@ -1669,8 +1669,11 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 
 	bool dummy_bool;
 	server_mgr.ReturnCollsionPosition(&is_collide);
-	if (is_collide)
+	//총알 충돌
+	if (is_collide) {
 		collide_frame = 0;
+		collideLookVector = pCamera->GetLookVector();
+	}
 	if (collide_frame < 15) {
 		m_pScene->m_ppShaders[3]->SetPosition(0, XMFLOAT3(server_mgr.ReturnCollsionPosition(&dummy_bool).x,
 			server_mgr.ReturnCollsionPosition(&dummy_bool).y + 70.f, server_mgr.ReturnCollsionPosition(&dummy_bool).z));
@@ -1680,6 +1683,13 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 	else {
 		m_pScene->m_ppShaders[3]->SetPosition(0, XMFLOAT3(-1000.f,
 			-1000.f, -1000.f));
+	}
+
+	if (collide_frame < 10) {
+		pCamera->SetLook(XMFLOAT3(collideLookVector.x + 0.1, collideLookVector.y, collideLookVector.z));
+	}
+	else if(collide_frame == 10){
+		pCamera->SetLook(XMFLOAT3(collideLookVector.x, collideLookVector.y, collideLookVector.z));
 	}
 
 	//if ((server_mgr.ReturnCollsionPosition(&is_collide).x != 0.0)) {
@@ -1866,6 +1876,9 @@ void CGameFramework::FrameAdvance()
 			m_pScene->m_ppUIShaders[9]->Render(m_pd3dCommandList, m_pCamera); // 맵
 			m_pScene->m_ppShaders[2]->Render(m_pd3dCommandList, m_pCamera); // 맵에 현재 위치
 		}
+
+		if(is_collide)
+			m_pScene->m_ppUIShaders[42]->Render(m_pd3dCommandList, m_pCamera); // 피 효과
 
 		if (blueScreenMode)
 			m_pScene->m_ppUIShaders[26]->Render(m_pd3dCommandList, m_pCamera);
