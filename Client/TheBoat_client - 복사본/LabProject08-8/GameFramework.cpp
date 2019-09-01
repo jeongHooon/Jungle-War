@@ -2152,6 +2152,7 @@ void CGameFramework::FrameAdvance()
 		{
 			printf("오브젝트충돌예에\n");
 			itemUI[0] = true;
+			m_pScene->m_ppShaders[7]->SetPosition(i, XMFLOAT3(0, 0, 0));
 			server_mgr.SendRootPacket(TYPE_DEFENCE);
 			check2 = true;
 			break;
