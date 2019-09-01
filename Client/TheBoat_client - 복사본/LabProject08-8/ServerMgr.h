@@ -28,9 +28,7 @@ class ServerMgr
 	Box boxes[MAX_BOX_SIZE*MAX_PLAYER_SIZE] = { 0 };
 	int recvd_box_id = 0;
 
-	Map_Object obj[MAX_OBJECT_SIZE] = { 0 };
-	Map_Object obj2[MAX_OBJECT2_SIZE] = { 0 };
-	int recvd_obj_id = 0;
+	
 
 	bool first_set_id = true;
 
@@ -131,6 +129,9 @@ public:
 	static XMFLOAT3 elecPos;
 	static bool damageCheck;
 
+	Map_Object obj[MAX_OBJECT_SIZE] = { 0 };
+	Map_Object obj2[MAX_OBJECT2_SIZE] = { 0 };
+	int recvd_obj_id = 0;
 	// 
 	void ReturnBuildingPosition(XMFLOAT3* building_pos);
 	void ReturnBuildingExtents(XMFLOAT3* building_pos);

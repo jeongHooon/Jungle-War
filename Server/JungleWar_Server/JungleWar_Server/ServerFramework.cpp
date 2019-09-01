@@ -1375,6 +1375,8 @@ void ServerFramework::WorkerThread() {
 						}
 						case INTERSECTS:
 						{
+							SC_PACKET_ITEM_GEN packets2;
+							packets2.size = sizeof(SC_PACKET_ITEM_GEN);
 							SC_PACKET_COLLISION_OB packets;
 							packets.size = sizeof(SC_PACKET_COLLISION_OB);
 							packets.type = SC_COLLSION_OB;
@@ -1391,7 +1393,7 @@ void ServerFramework::WorkerThread() {
 							packets.obj_id = j;
 
 							printf("맞은 나무는 %d야\n", j);
-
+	
 							if (obj[j].hp < 1) {
 								//packets.box_id = boxes[j].boxindex;
 								obj[j].in_use = false;

@@ -1928,7 +1928,7 @@ void CSkillShader_2::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	m_nBullet = MAX_SKILLS;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/TeamTri.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Item_Battery.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -4138,7 +4138,7 @@ void CItemUIShader_1::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 				pRotatingObject->SetMaterial(pCubeMaterial);
 #endif
 				float xPosition = 800;
-				float zPosition = 800;
+				float zPosition = 900;
 				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
 				//pRotatingObject->SetPosition(800, 0, 1000);
 				if (y == 0)
@@ -4488,10 +4488,6 @@ D3D12_SHADER_BYTECODE CItemUIShader_3::CreatePixelShader(ID3DBlob **ppd3dShaderB
 void CItemUIShader_3::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
 {
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
-
-	float fxPitch = 12.0f * 3.5f;
-	float fyPitch = 12.0f * 3.5f;
-	float fzPitch = 12.0f * 3.5f;
 
 	float fTerrainWidth = pTerrain->GetWidth();
 	float fTerrainLength = pTerrain->GetLength();

@@ -58,6 +58,8 @@ CGameFramework::CGameFramework()
 	_tcscpy_s(m_pszFrameRate, _T("Jungle War ("));
 
 	for (int i = 0; i < 4; ++i) itemUI[i] = false;
+	
+	
 }
 
 CGameFramework::~CGameFramework()
@@ -1824,6 +1826,12 @@ void CGameFramework::FrameAdvance()
 		m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 		if(server_mgr.GetTreeInuse(i) == true)
 			m_pObject[i]->Render(m_pd3dCommandList, 1, m_pCamera);
+		if (server_mgr.obj[i].item_tree && !server_mgr.obj[i].item_gen) {
+			float fHeight = m_pScene->GetTerrain()->GetHeight(server_mgr.obj[i].x, server_mgr.obj[i].z);
+			m_pScene->m_ppShaders[7]->SetPosition(0, XMFLOAT3(server_mgr.obj[i].x, fHeight, server_mgr.obj[i].z));
+			server_mgr.obj[i].item_gen = true;
+			cout << "sg";
+		}
 	}
 	for (int i = 0; i < NUM_OBJECT2; ++i) {
 		m_pObject2[i]->UpdateTransform(NULL);
@@ -1874,8 +1882,8 @@ void CGameFramework::FrameAdvance()
 				m_pScene->m_ppUIShaders[i + 4]->Render(m_pd3dCommandList, m_pCamera);
 		}
 
-		if (itemUI[3] == true)
-			m_pScene->m_ppUIShaders[8]->Render(m_pd3dCommandList, m_pCamera);
+		/*if (itemUI[3] == true)
+			m_pScene->m_ppUIShaders[8]->Render(m_pd3dCommandList, m_pCamera);*/
 
 		m_pScene->m_ppUIShaders[10]->Render(m_pd3dCommandList, m_pCamera); // 총
 																		   //m_pScene->m_ppUIShaders[11]->Render(m_pd3dCommandList, m_pCamera); // 총

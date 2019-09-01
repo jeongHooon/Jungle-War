@@ -56,7 +56,7 @@ using namespace std;
 #include <algorithm>
 #include <memory.h>
 #include <atomic>
-
+#include<random>
 #include "d3dx12.h"
 #include "..\..\..\Server\JungleWar_Server\JungleWar_Server\protocol.h"
 
@@ -381,6 +381,8 @@ struct Box {
 struct Map_Object {
 	bool in_use = true;
 	bool state;
+	bool item_tree = false;
+	bool item_gen = false;
 	int id;
 	float hp;
 	float x, y, z;

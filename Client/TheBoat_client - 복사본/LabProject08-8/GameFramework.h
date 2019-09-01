@@ -26,6 +26,7 @@ private:
 	bool is_chat = false;
 	// 아이템 생성
 	bool is_item_gen = false;
+	
 	XMFLOAT3 item_pos;
 	//빌딩
 	XMFLOAT3 building_pos[OBJECT_BUILDING];

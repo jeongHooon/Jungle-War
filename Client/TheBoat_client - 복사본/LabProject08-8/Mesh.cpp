@@ -1113,14 +1113,14 @@ CItemUIMesh::CItemUIMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd
 	float startXposition = -0.2 + 0.1 * index;
 
 
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition, -0.5, 0), XMFLOAT2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition + 0.2, -0.5, 0), XMFLOAT2(1.0f, 0.0f));
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition + 0.2, -0.7, 0), XMFLOAT2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition, -0.6, 0), XMFLOAT2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition + 0.2, -0.6, 0), XMFLOAT2(1.0f, 0.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition + 0.2, -0.8, 0), XMFLOAT2(1.0f, 1.0f));
 
 
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition, -0.5, 0), XMFLOAT2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition + 0.2, -0.7, 0), XMFLOAT2(1.0f, 1.0f));
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition, -0.7, 0), XMFLOAT2(0.0f, 1.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition, -0.6, 0), XMFLOAT2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition + 0.2, -0.8, 0), XMFLOAT2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(startXposition, -0.8, 0), XMFLOAT2(0.0f, 1.0f));
 
 
 	m_pd3dVertexBuffer = CreateBufferResource(pd3dDevice, pd3dCommandList, pVertices, m_nStride * m_nVertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dVertexUploadBuffer);
