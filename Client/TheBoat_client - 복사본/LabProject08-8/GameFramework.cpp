@@ -36,10 +36,12 @@ CGameFramework::CGameFramework()
 	m_pd3dFence = NULL;
 	for (int i = 0; i < m_nSwapChainBuffers; i++) {
 		m_nFenceValues[i] = 0;
+		if (gameMode > 2 || gameMode == 0) {
 #ifdef _WITH_DIRECT2D
-		m_ppd3d11WrappedBackBuffers[i] = NULL;
-		m_ppd2dRenderTargets[i] = NULL;
+			m_ppd3d11WrappedBackBuffers[i] = NULL;
+			m_ppd2dRenderTargets[i] = NULL;
 #endif
+		}
 	}
 	m_nWndClientWidth = FRAME_BUFFER_WIDTH;
 	m_nWndClientHeight = FRAME_BUFFER_HEIGHT;
@@ -73,9 +75,11 @@ bool CGameFramework::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 
 	CreateDirect3DDevice();
 	CreateCommandQueueAndList();
+	if (gameMode > 2 || gameMode == 0) {
 #ifdef _WITH_DIRECT2D
-	CreateDirect2DDevice();
+		CreateDirect2DDevice();
 #endif
+	}
 	CreateRtvAndDsvDescriptorHeaps();
 	CreateSwapChain();
 
@@ -314,23 +318,25 @@ void CGameFramework::CreateRenderTargetViews()
 		d3dRtvCPUDescriptorHandle.ptr += m_nRtvDescriptorIncrementSize;
 	}
 
+	if (gameMode > 2 || gameMode == 0) {
 #ifdef _WITH_DIRECT2D
-	float fxDPI, fyDPI;
-	m_pd2dFactory->GetDesktopDpi(&fxDPI, &fyDPI); //UINT GetDpiForWindow(HWND hwnd);
+		float fxDPI, fyDPI;
+		m_pd2dFactory->GetDesktopDpi(&fxDPI, &fyDPI); //UINT GetDpiForWindow(HWND hwnd);
 
-	D2D1_BITMAP_PROPERTIES1 d2dBitmapProperties = D2D1::BitmapProperties1(D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED), fxDPI, fyDPI);
+		D2D1_BITMAP_PROPERTIES1 d2dBitmapProperties = D2D1::BitmapProperties1(D2D1_BITMAP_OPTIONS_TARGET | D2D1_BITMAP_OPTIONS_CANNOT_DRAW, D2D1::PixelFormat(DXGI_FORMAT_UNKNOWN, D2D1_ALPHA_MODE_PREMULTIPLIED), fxDPI, fyDPI);
 
-	for (UINT i = 0; i < m_nSwapChainBuffers; i++)
-	{
-		D3D11_RESOURCE_FLAGS d3d11Flags = { D3D11_BIND_RENDER_TARGET };
-		m_pd3d11On12Device->CreateWrappedResource(m_ppd3dSwapChainBackBuffers[i], &d3d11Flags, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT, __uuidof(ID3D11Resource), (void **)&m_ppd3d11WrappedBackBuffers[i]);
+		for (UINT i = 0; i < m_nSwapChainBuffers; i++)
+		{
+			D3D11_RESOURCE_FLAGS d3d11Flags = { D3D11_BIND_RENDER_TARGET };
+			m_pd3d11On12Device->CreateWrappedResource(m_ppd3dSwapChainBackBuffers[i], &d3d11Flags, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT, __uuidof(ID3D11Resource), (void **)&m_ppd3d11WrappedBackBuffers[i]);
 
-		IDXGISurface *pdxgiSurface = NULL;
-		m_ppd3d11WrappedBackBuffers[i]->QueryInterface(__uuidof(IDXGISurface), (void **)&pdxgiSurface);
-		m_pd2dDeviceContext->CreateBitmapFromDxgiSurface(pdxgiSurface, &d2dBitmapProperties, &m_ppd2dRenderTargets[i]);
-		if (pdxgiSurface) pdxgiSurface->Release();
-	}
+			IDXGISurface *pdxgiSurface = NULL;
+			m_ppd3d11WrappedBackBuffers[i]->QueryInterface(__uuidof(IDXGISurface), (void **)&pdxgiSurface);
+			m_pd2dDeviceContext->CreateBitmapFromDxgiSurface(pdxgiSurface, &d2dBitmapProperties, &m_ppd2dRenderTargets[i]);
+			if (pdxgiSurface) pdxgiSurface->Release();
+		}
 #endif
+	}
 }
 
 void CGameFramework::CreateDepthStencilView()
@@ -829,6 +835,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			case '5':
 				itemDropCheck = true;
 				break;
+			case '6':
+				break;
+			case '7':
+				gameMode = 1;
 			case 'm':
 			case 'M':
 				alphaMapOn = !alphaMapOn;
@@ -1114,6 +1124,34 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		case VK_F9:
 		{
+#ifdef _WITH_DIRECT2D
+			if (m_pd2dbrBackground) m_pd2dbrBackground->Release();
+			if (m_pd2dbrBorder) m_pd2dbrBorder->Release();
+			if (m_pdwFont) m_pdwFont->Release();
+			if (m_pdwTextLayout) m_pdwTextLayout->Release();
+			if (m_pd2dbrText) m_pd2dbrText->Release();
+#ifdef _WITH_DIRECT2D_IMAGE_EFFECT
+			if (m_pd2dfxBitmapSource) m_pd2dfxBitmapSource->Release();
+			if (m_pd2dfxGaussianBlur) m_pd2dfxGaussianBlur->Release();
+			if (m_pd2dsbDrawingState) m_pd2dsbDrawingState->Release();
+			if (m_pwicFormatConverter) m_pwicFormatConverter->Release();
+			if (m_pwicImagingFactory) m_pwicImagingFactory->Release();
+#endif
+
+			if (m_pd2dDeviceContext) m_pd2dDeviceContext->Release();
+			if (m_pd2dDevice) m_pd2dDevice->Release();
+			if (m_pdWriteFactory) m_pdWriteFactory->Release();
+			if (m_pd3d11On12Device) m_pd3d11On12Device->Release();
+			if (m_pd3d11DeviceContext) m_pd3d11DeviceContext->Release();
+			if (m_pd2dFactory) m_pd2dFactory->Release();
+
+			for (int i = 0; i < m_nSwapChainBuffers; i++)
+			{
+				if (m_ppd3d11WrappedBackBuffers[i]) m_ppd3d11WrappedBackBuffers[i]->Release();
+				if (m_ppd2dRenderTargets[i]) m_ppd2dRenderTargets[i]->Release();
+			}
+#endif
+
 			BOOL bFullScreenState = FALSE;
 			m_pdxgiSwapChain->GetFullscreenState(&bFullScreenState, NULL);
 			m_pdxgiSwapChain->SetFullscreenState(!bFullScreenState, NULL);
@@ -1710,10 +1748,10 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 			-1000.f, -1000.f));
 	}
 
-	if (collide_frame < 10) {
-		pCamera->SetLook(XMFLOAT3(collideLookVector.x + 0.1, collideLookVector.y, collideLookVector.z));
+	if (collide_frame < 15) {
+		pCamera->SetLook(XMFLOAT3(collideLookVector.x + 0.1, collideLookVector.y + 0.05, collideLookVector.z));
 	}
-	else if(collide_frame == 10){
+	else if(collide_frame == 15){
 		pCamera->SetLook(XMFLOAT3(collideLookVector.x, collideLookVector.y, collideLookVector.z));
 	}
 
@@ -1725,16 +1763,18 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 	//	//printf("좌표변경!");
 	//}
 
+
+	if (gameMode > 2 || gameMode == 0) {
 #ifdef _WITH_DIRECT2D_IMAGE_EFFECT
-	static UINT64 i = 0;
-	if (++i % 15) return;
+		static UINT64 i = 0;
+		if (++i % 15) return;
 
-	static float fColors[4] = { 0.0f, 0.478f, 0.8f, 1.0f };
-	fColors[1] += 0.01f;
-	if (fColors[1] > 1.0f) fColors[1] = 0.0f;
-	m_pd2dfxGaussianBlur->SetValue(D2D1_GAUSSIANBLUR_PROP_STANDARD_DEVIATION, 0.3f + fColors[1] * 10.0f);
+		static float fColors[4] = { 0.0f, 0.478f, 0.8f, 1.0f };
+		fColors[1] += 0.01f;
+		if (fColors[1] > 1.0f) fColors[1] = 0.0f;
+		m_pd2dfxGaussianBlur->SetValue(D2D1_GAUSSIANBLUR_PROP_STANDARD_DEVIATION, 0.3f + fColors[1] * 10.0f);
 #endif
-
+	}
 }
 
 void CGameFramework::WaitForGpuComplete()
@@ -1819,11 +1859,22 @@ void CGameFramework::FrameAdvance()
 	/*for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pShadow[i]->SetPosition(XMFLOAT3(m_pPlayer[i]->GetPosition().x + 1, m_pPlayer[i]->GetPosition().y, m_pPlayer[i]->GetPosition().z+1));
 	}*/
+
+	//////아이템 드랍
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pObject[i]->UpdateTransform(NULL);
 		m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
-		if(server_mgr.GetTreeInuse(i) == true)
+		if (server_mgr.GetTreeInuse(i) == true) {
 			m_pObject[i]->Render(m_pd3dCommandList, 1, m_pCamera);
+		}
+		else if(server_mgr.GetTreeInuse(i) == false && itemDropCount == 0) {
+			m_pScene->m_ppShaders[7]->SetPosition(0, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+			dropStart = true;
+		}
+
+		if(dropStart == true) {
+			itemDropCheck = true;
+		}
 	}
 	for (int i = 0; i < NUM_OBJECT2; ++i) {
 		m_pObject2[i]->UpdateTransform(NULL);
@@ -1840,7 +1891,7 @@ void CGameFramework::FrameAdvance()
 	if (itemDropCheck) {
 		m_pScene->m_ppShaders[7]->ItemDrop(0, itemDropCount, itemDropCheck);
 		++itemDropCount;
-		if (itemDropCount > 30) {
+		if (itemDropCount > 60) {
 			itemDropCheck = false;
 			itemDropCount = 0;
 		}
@@ -1903,7 +1954,7 @@ void CGameFramework::FrameAdvance()
 			m_pScene->m_ppShaders[2]->Render(m_pd3dCommandList, m_pCamera); // 맵에 현재 위치
 		}
 
-		if(is_collide)
+		if(collide_frame)
 			m_pScene->m_ppUIShaders[42]->Render(m_pd3dCommandList, m_pCamera); // 피 효과
 
 		if (blueScreenMode)
@@ -2088,13 +2139,14 @@ void CGameFramework::FrameAdvance()
 	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 	m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
 
+	if (gameMode > 2 || gameMode == 0) {
 #ifndef _WITH_DIRECT2D
-	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
+		d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+		d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+		d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+		m_pd3dCommandList->ResourceBarrier(1, &d3dResourceBarrier);
 #endif
-
+	}
 	hResult = m_pd3dCommandList->Close();
 
 	ID3D12CommandList *ppd3dCommandLists[] = { m_pd3dCommandList };
@@ -2102,27 +2154,28 @@ void CGameFramework::FrameAdvance()
 
 	WaitForGpuComplete();
 
-	#ifdef _WITH_DIRECT2D
-	//Direct2D Drawing
-	m_pd3d11On12Device->AcquireWrappedResources(&m_ppd3d11WrappedBackBuffers[m_nSwapChainBufferIndex], 1);
-	m_pd2dDeviceContext->SetTarget(m_ppd2dRenderTargets[m_nSwapChainBufferIndex]);
-	
-	
-	m_pd2dDeviceContext->BeginDraw();
+	if (gameMode > 2 || gameMode == 0) {
+#ifdef _WITH_DIRECT2D
+		//Direct2D Drawing
+		m_pd3d11On12Device->AcquireWrappedResources(&m_ppd3d11WrappedBackBuffers[m_nSwapChainBufferIndex], 1);
+		m_pd2dDeviceContext->SetTarget(m_ppd2dRenderTargets[m_nSwapChainBufferIndex]);
 
-	m_pd2dDeviceContext->SetTransform(D2D1::Matrix3x2F::Identity());
+
+		m_pd2dDeviceContext->BeginDraw();
+
+		m_pd2dDeviceContext->SetTransform(D2D1::Matrix3x2F::Identity());
 
 
 #ifdef _WITH_DIRECT2D_IMAGE_EFFECT
-	//텍스트 그리는 부분
-	m_pd2dDeviceContext->DrawImage(m_pd2dfxBitmapSource);
-	//m_pd2dDeviceContext->DrawRectangle(rcText, m_pd2dbrBackground);
+		//텍스트 그리는 부분
+		m_pd2dDeviceContext->DrawImage(m_pd2dfxBitmapSource);
+		//m_pd2dDeviceContext->DrawRectangle(rcText, m_pd2dbrBackground);
 
-//	m_pd2dDeviceContext->DrawRectangle(&rcText, m_pd2dbrBorder);
-//	m_pd2dDeviceContext->FillRectangle(&rcText, m_pd2dbrBackground);
+	//	m_pd2dDeviceContext->DrawRectangle(&rcText, m_pd2dbrBorder);
+	//	m_pd2dDeviceContext->FillRectangle(&rcText, m_pd2dbrBackground);
 #endif
-
-	if (gameMode > 2) {
+	
+	if (gameMode > 2 || gameMode == 0) {
 		D2D1_SIZE_F szRenderTarget = m_ppd2dRenderTargets[m_nSwapChainBufferIndex]->GetSize();
 
 		if (gameMode == 3) {
@@ -2164,6 +2217,7 @@ void CGameFramework::FrameAdvance()
 	}
 	m_pd3d11DeviceContext->Flush();
 #endif
+	}
 
 #ifdef _WITH_PRESENT_PARAMETERS
 	DXGI_PRESENT_PARAMETERS dxgiPresentParameters;
