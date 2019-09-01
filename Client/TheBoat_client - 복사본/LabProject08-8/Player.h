@@ -80,6 +80,7 @@ public:
 	XMFLOAT3 GetRightVector() { return(m_xmf3Right); }
 	XMFLOAT3 GetCameraLook();
 	void GetKeyInput(int key);
+	int GetAnimationState() { return animation_status; }
 	void SetFriction(float fFriction) { m_fFriction = fFriction; }
 	void SetGravity(const XMFLOAT3& xmf3Gravity) { m_xmf3Gravity = xmf3Gravity; }
 	void SetMaxVelocityXZ(float fMaxVelocity) { m_fMaxVelocityXZ = fMaxVelocity; }

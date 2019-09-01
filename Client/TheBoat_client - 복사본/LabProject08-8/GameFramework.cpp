@@ -943,8 +943,15 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					charstate = 4;
 				}
 				else if (charstate == 13 ) {
-					m_pPlayer[my_client_id]->GetKeyInput(0);
-					charstate = 0;
+					if (is_pushed[CS_KEY_PRESS_UP])
+					{
+						m_pPlayer[my_client_id]->GetKeyInput(1);
+						charstate = 1;
+					}
+					else {
+						m_pPlayer[my_client_id]->GetKeyInput(0);
+						charstate = 0;
+					}
 				}
 				else if (charstate == 11) {
 					m_pPlayer[my_client_id]->GetKeyInput(10);
@@ -999,8 +1006,15 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					charstate = 4;
 				}
 				else if (charstate == 14) {
-					m_pPlayer[my_client_id]->GetKeyInput(0);
-					charstate = 0;
+					if (is_pushed[CS_KEY_PRESS_UP])
+					{
+						m_pPlayer[my_client_id]->GetKeyInput(1);
+						charstate = 1;
+					}
+					else {
+						m_pPlayer[my_client_id]->GetKeyInput(0);
+						charstate = 0;
+					}
 				}
 				else if (charstate == 12) {
 					m_pPlayer[my_client_id]->GetKeyInput(10);
@@ -1793,13 +1807,14 @@ void CGameFramework::FrameAdvance()
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pPlayer[i]->UpdateTransform(NULL);
 		m_pShadow[i]->UpdateTransform(NULL);
+		m_pShadow[i]->GetKeyInput(m_pPlayer[i]->GetAnimationState());
 		if (i == my_client_id && m_pCamera->GetMode() == SPACESHIP_CAMERA);
 		else {
 			/*if(i != my_client_id)
 				m_pPlayer[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));*/
 			m_pPlayer[i]->Render(m_pd3dCommandList, m_pCamera);
 		}
-			//m_pShadow[0]->Render(m_pd3dCommandList, m_pCamera);
+			m_pShadow[0]->Render(m_pd3dCommandList, m_pCamera);
 	}
 	/*for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pShadow[i]->SetPosition(XMFLOAT3(m_pPlayer[i]->GetPosition().x + 1, m_pPlayer[i]->GetPosition().y, m_pPlayer[i]->GetPosition().z+1));
