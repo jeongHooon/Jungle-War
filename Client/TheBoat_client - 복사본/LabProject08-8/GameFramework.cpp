@@ -1739,22 +1739,22 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 		collide_frame = 0;
 		collideLookVector = pCamera->GetLookVector();
 	}
-	if (collide_frame < 15) {
+	if (collide_frame < 30) {
 		m_pScene->m_ppShaders[3]->SetPosition(0, XMFLOAT3(server_mgr.ReturnCollsionPosition(&dummy_bool).x,
 			server_mgr.ReturnCollsionPosition(&dummy_bool).y + 70.f, server_mgr.ReturnCollsionPosition(&dummy_bool).z));
 		collide_frame++;
 		//printf("collide_frame : %d \n", collide_frame);
 	}
-	else {
-		m_pScene->m_ppShaders[3]->SetPosition(0, XMFLOAT3(-1000.f,
-			-1000.f, -1000.f));
-	}
 
 	if (collide_frame < 15) {
-		pCamera->SetLook(XMFLOAT3(collideLookVector.x + 0.1, collideLookVector.y + 0.05, collideLookVector.z));
+		pCamera->SetLook(XMFLOAT3(collideLookVector.x + 0.02, collideLookVector.y -0.04, pCamera->GetLookVector().z));
 	}
-	else if(collide_frame == 15){
-		pCamera->SetLook(XMFLOAT3(collideLookVector.x, collideLookVector.y, collideLookVector.z));
+	else if (collide_frame < 30) {
+		pCamera->SetLook(XMFLOAT3(collideLookVector.x, collideLookVector.y - 0.07, pCamera->GetLookVector().z + 0.02));
+	}
+	else if(collide_frame == 30){
+		pCamera->SetLook(collideLookVector);
+		++collide_frame;
 	}
 
 	//if ((server_mgr.ReturnCollsionPosition(&is_collide).x != 0.0)) {
@@ -1961,7 +1961,7 @@ void CGameFramework::FrameAdvance()
 			m_pScene->m_ppShaders[2]->Render(m_pd3dCommandList, m_pCamera); // 맵에 현재 위치
 		}
 
-		if(collide_frame)
+		if(collide_frame < 30)
 			m_pScene->m_ppUIShaders[42]->Render(m_pd3dCommandList, m_pCamera); // 피 효과
 
 		if (blueScreenMode)
