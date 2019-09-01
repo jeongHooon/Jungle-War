@@ -290,10 +290,17 @@ void CGameFramework::CreateRtvAndDsvDescriptorHeaps()
 	d3dDescriptorHeapDesc.NodeMask = 0;
 	HRESULT hResult = m_pd3dDevice->CreateDescriptorHeap(&d3dDescriptorHeapDesc, __uuidof(ID3D12DescriptorHeap), (void **)&m_pd3dRtvDescriptorHeap);
 	m_nRtvDescriptorIncrementSize = m_pd3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-
-	d3dDescriptorHeapDesc.NumDescriptors = 1;
+	
+	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc;
+	dsvHeapDesc.NumDescriptors = 2;
+	dsvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+	dsvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	dsvHeapDesc.NodeMask = 0;
+	hResult = m_pd3dDevice->CreateDescriptorHeap(&dsvHeapDesc, __uuidof(ID3D12DescriptorHeap), (void**)& m_pd3dDsvDescriptorHeap);
+	
+	/*d3dDescriptorHeapDesc.NumDescriptors = 1;
 	d3dDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-	hResult = m_pd3dDevice->CreateDescriptorHeap(&d3dDescriptorHeapDesc, __uuidof(ID3D12DescriptorHeap), (void **)&m_pd3dDsvDescriptorHeap);
+	hResult = m_pd3dDevice->CreateDescriptorHeap(&d3dDescriptorHeapDesc, __uuidof(ID3D12DescriptorHeap), (void **)&m_pd3dDsvDescriptorHeap);*/
 	m_nDsvDescriptorIncrementSize = m_pd3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
 }
 
@@ -656,11 +663,13 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 		}
 		
 		// char 형 key들 입력 처리 
-		if (!m_pPlayer[my_client_id]->isDie) {
+		if (!m_pPlayer[my_client_id]->isDie && charstate != 7) {
 			switch (key_buffer) {
 			case 'w':
 			case 'W':
 				if (is_pushed[CS_KEY_PRESS_UP] == false) {
+					if (charstate == 7)
+						cout << "215125" << endl;
 					//server_mgr.SendPacket(CS_KEY_PRESS_UP);
 					if (charstate == 6) {
 						m_pPlayer[my_client_id]->GetKeyInput(6);
@@ -790,8 +799,9 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 
 				//printf("캐릭터 Y %f  \n", m_pPlayer[my_client_id]->GetPosition().y);
 				//printf("터레인 높이 %f \n", m_pScene->GetTerrain()->GetHeight(m_pPlayer[my_client_id]->GetPosition().x, m_pPlayer[my_client_id]->GetPosition().z));
-				if (is_pushed[CS_KEY_PRESS_CROUCH] == false) {
+				if (is_pushed[CS_KEY_PRESS_CROUCH] == false && charstate == 0) {
 					m_pPlayer[my_client_id]->GetKeyInput(7);
+					charstate = 7;
 					server_mgr.SendPacket(CS_KEY_PRESS_CROUCH, m_pPlayer[my_client_id]->GetLook());
 					is_pushed[CS_KEY_PRESS_CROUCH] = true;
 				}
@@ -933,8 +943,8 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					charstate = 4;
 				}
 				else if (charstate == 13 ) {
-					m_pPlayer[my_client_id]->GetKeyInput(1);
-					charstate = 1;
+					m_pPlayer[my_client_id]->GetKeyInput(0);
+					charstate = 0;
 				}
 				else if (charstate == 11) {
 					m_pPlayer[my_client_id]->GetKeyInput(10);
@@ -989,8 +999,8 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					charstate = 4;
 				}
 				else if (charstate == 14) {
-					m_pPlayer[my_client_id]->GetKeyInput(1);
-					charstate = 1;
+					m_pPlayer[my_client_id]->GetKeyInput(0);
+					charstate = 0;
 				}
 				else if (charstate == 12) {
 					m_pPlayer[my_client_id]->GetKeyInput(10);
@@ -1009,6 +1019,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			if (is_pushed[CS_KEY_PRESS_CROUCH] == true) {
 				//printf("[WM_KEYDOWN] : c,C키 놓음 \n");
 				m_pPlayer[my_client_id]->GetKeyInput(0);
+				charstate = 0;
 				server_mgr.SendPacket(CS_KEY_RELEASE_CROUCH);
 				is_pushed[CS_KEY_PRESS_CROUCH] = false;
 			}

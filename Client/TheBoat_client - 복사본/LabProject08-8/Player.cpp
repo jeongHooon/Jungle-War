@@ -145,8 +145,8 @@ void CPlayer::Rotate(float x, float y, float z)
 			//XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), 90.f, 0.0f);
 			//m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
 			///캐릭터 회전XMMatrixRotationRollPitchYaw
-			//XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), XMConvertToRadians(y));
-			XMMATRIX xmmtxRotate = XMMatrixRotationRollPitchYaw(0.0f,XMConvertToRadians(y),0.0f);
+			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), XMConvertToRadians(y));
+			//XMMATRIX xmmtxRotate = XMMatrixRotationRollPitchYaw(0.0f,XMConvertToRadians(y),0.0f);
 			m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
 			m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
 		}
@@ -184,8 +184,6 @@ void CPlayer::Update(float fTimeElapsed)
 	m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Gravity, fTimeElapsed, false));
 	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
 	float fMaxVelocityXZ = m_fMaxVelocityXZ * fTimeElapsed;
-	//float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
-	//float fMaxVelocityXZ = m_fMaxVelocityXZ ;
 	if (fLength > m_fMaxVelocityXZ)
 	{
 		m_xmf3Velocity.x *= (fMaxVelocityXZ / fLength);
