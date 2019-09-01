@@ -1868,13 +1868,11 @@ void CGameFramework::FrameAdvance()
 		m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 		if (server_mgr.GetTreeInuse(i) == true) {
 			m_pObject[i]->Render(m_pd3dCommandList, 1, m_pCamera);
-<<<<<<< HEAD
-		if (server_mgr.obj[i].item_tree && !server_mgr.obj[i].item_gen) {
+		/*if (server_mgr.obj[i].item_tree && !server_mgr.obj[i].item_gen) {
 			float fHeight = m_pScene->GetTerrain()->GetHeight(server_mgr.obj[i].x, server_mgr.obj[i].z);
 			m_pScene->m_ppShaders[7]->SetPosition(0, XMFLOAT3(server_mgr.obj[i].x, fHeight, server_mgr.obj[i].z));
 			server_mgr.obj[i].item_gen = true;
-			cout << "sg";
-=======
+			cout << "sg";*/
 		}
 		else if(server_mgr.GetTreeInuse(i) == false && itemDropCount == 0) {
 			m_pScene->m_ppShaders[7]->SetPosition(0, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
@@ -1883,7 +1881,6 @@ void CGameFramework::FrameAdvance()
 
 		if(dropStart == true) {
 			itemDropCheck = true;
->>>>>>> 71d05d5340dfbf5558f4d2c9d3f3ed4b2c19a0c9
 		}
 	}
 	for (int i = 0; i < NUM_OBJECT2; ++i) {
