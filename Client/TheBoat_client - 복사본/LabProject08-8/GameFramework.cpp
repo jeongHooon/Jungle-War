@@ -1874,10 +1874,11 @@ void CGameFramework::FrameAdvance()
 			server_mgr.obj[i].item_gen = true;
 			cout << "sg";*/
 		}
-		else if(server_mgr.GetTreeInuse(i) == false && itemDropCount == 0) {
+		else if(server_mgr.GetTreeInuse(i) == false && itemDropCount == 0 && !server_mgr.obj[i].item_gen) {
 			m_pScene->m_ppShaders[7]->SetPosition(0, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
 			m_pScene->m_ppShaders[7]->SetOOBB(i, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
 			dropStart = true;
+			server_mgr.obj[i].item_gen = true;
 		}
 
 		if(dropStart == true) {
@@ -1899,9 +1900,11 @@ void CGameFramework::FrameAdvance()
 	if (itemDropCheck) {
 		m_pScene->m_ppShaders[7]->ItemDrop(0, itemDropCount, itemDropCheck);
 		++itemDropCount;
-		if (itemDropCount > 60) {
+		if (itemDropCount > 30) {
 			itemDropCheck = false;
 			itemDropCount = 0;
+			/*float fHeight = m_pScene->GetTerrain()->GetHeight(server_mgr.obj[i].x, server_mgr.obj[i].z);
+			m_pScene->m_ppShaders[7]->SetPosition(0, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));*/
 		}
 	}
 
@@ -1923,6 +1926,9 @@ void CGameFramework::FrameAdvance()
 	case 2:	//게임오버
 
 		m_pScene->m_ppShaders[7]->Render(m_pd3dCommandList, m_pCamera); //특성
+		m_pScene->m_ppShaders[8]->Render(m_pd3dCommandList, m_pCamera);
+		m_pScene->m_ppShaders[9]->Render(m_pd3dCommandList, m_pCamera);
+		m_pScene->m_ppShaders[10]->Render(m_pd3dCommandList, m_pCamera);
 		m_pScene->m_ppUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 미니맵
 
 																		  //printf("%f", playerHp);
@@ -2139,8 +2145,7 @@ void CGameFramework::FrameAdvance()
 	/////////
 	//if(아이템 먹음)
 	
-	for (int i = 0; i < 5; ++i) {
-		
+	for (int i = 0; i < 5; ++i) {//ARMOR
 		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pScene->m_ppShaders[7]->GetOOBB(i));
 		switch (containType)
 		{
@@ -2150,18 +2155,77 @@ void CGameFramework::FrameAdvance()
 		}
 		case INTERSECTS:
 		{
-			printf("오브젝트충돌예에\n");
 			itemUI[0] = true;
-			m_pScene->m_ppShaders[7]->SetPosition(i, XMFLOAT3(0, 0, 0));
+			m_pScene->m_ppShaders[7]->SetPosition(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
+			m_pScene->m_ppShaders[7]->SetOOBB(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
+			itemDropCheck = false;
 			server_mgr.SendRootPacket(TYPE_DEFENCE);
-			check2 = true;
 			break;
 		}
 		case CONTAINS:
-			printf("오브젝트충돌예에\n");
 			break;
 		}
+	}
+	for (int i = 0; i < 5; ++i) {//BOOST
+		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pScene->m_ppShaders[8]->GetOOBB(i));
+		switch (containType)
+		{
+		case DISJOINT:
+		{
+			break;
+		}
+		case INTERSECTS:
+		{
+			itemUI[1] = true;
+			m_pScene->m_ppShaders[8]->SetPosition(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
+			m_pScene->m_ppShaders[8]->SetOOBB(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
 
+			server_mgr.SendRootPacket(TYPE_SPEED);
+			break;
+		}
+		case CONTAINS:
+			break;
+		}
+	}
+	for (int i = 0; i < 5; ++i) {//BULLET
+		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pScene->m_ppShaders[9]->GetOOBB(i));
+		switch (containType)
+		{
+		case DISJOINT:
+		{
+			break;
+		}
+		case INTERSECTS:
+		{
+			itemUI[2] = true;
+			m_pScene->m_ppShaders[9]->SetPosition(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
+			m_pScene->m_ppShaders[9]->SetOOBB(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
+			server_mgr.SendRootPacket(TYPE_POWER);
+			break;
+		}
+		case CONTAINS:
+			break;
+		}
+	}
+	for (int i = 0; i < 5; ++i) {//DODGE
+		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pScene->m_ppShaders[10]->GetOOBB(i));
+		switch (containType)
+		{
+		case DISJOINT:
+		{
+			break;
+		}
+		case INTERSECTS:
+		{
+			itemUI[3] = true;
+			m_pScene->m_ppShaders[10]->SetPosition(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
+			m_pScene->m_ppShaders[10]->SetOOBB(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
+			server_mgr.SendRootPacket(TYPE_DODGE);
+			break;
+		}
+		case CONTAINS:
+			break;
+		}
 	}
 	//case INTERSECTS:
 	//

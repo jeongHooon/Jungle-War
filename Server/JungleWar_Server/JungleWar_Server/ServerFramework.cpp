@@ -374,7 +374,7 @@ void ServerFramework::AcceptPlayer() {
 	clients[client_id].packet_size = 0;
 	clients[client_id].prev_packet_size = 0;
 	clients[client_id].team = Team::NON_TEAM;
-	clients[client_id].CType = TYPE_POWER;
+	clients[client_id].CType = TYPE_NONE;
 
 	clients[client_id].boxCount = 10;
 
@@ -966,15 +966,30 @@ void ServerFramework::WorkerThread() {
 							//clients[j].hp -= MAX_BULLET_DAMAGE;
 							//
 							//packets.hp = clients[j].hp;
+							random_device rd;  //Will be used to obtain a seed for the random number engine
+							mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+							uniform_int_distribution<int> dis(1, 4);
 							
-							if(clients[j].CType == TYPE_DEFENCE && clients[bullets[i].shooter_id].CType == TYPE_POWER)
+
+							if (clients[j].CType == TYPE_DEFENCE && clients[bullets[i].shooter_id].CType == TYPE_POWER)
 								packets.hp = (-1) * MAX_BULLET_DAMAGE;
 							else if (clients[j].CType == TYPE_DEFENCE)
-								packets.hp = (-1) * MAX_BULLET_DAMAGE * 0.6f; 
+								packets.hp = (-1) * MAX_BULLET_DAMAGE * 0.6f;
+							else if (clients[j].CType == TYPE_DODGE && clients[bullets[i].shooter_id].CType == TYPE_POWER)
+								if (dis(gen) == 2 || dis(gen) == 3)
+									;
+								else
+									packets.hp = (-1) * MAX_BULLET_DAMAGE * 1.4f;
+							else if (clients[j].CType == TYPE_DODGE)
+								if (dis(gen) == 2 || dis(gen) == 3)
+									;
+								else
+									packets.hp = (-1) * MAX_BULLET_DAMAGE;
 							else if (clients[bullets[i].shooter_id].CType == TYPE_POWER)
 								packets.hp = (-1) * MAX_BULLET_DAMAGE * 1.4f;
 							else
 								packets.hp = (-1) * MAX_BULLET_DAMAGE;
+							
 							/*printf("%d번 플레이어 체력 %f\n", j, clients[j].hp);
 							if (!(clients[j].is_die))
 							{

@@ -399,7 +399,6 @@ void ServerMgr::SendRootPacket(int type) {
 	packet_buffer->type = CS_ROOT_ITEM;
 	packet_buffer->skill = type;
 	retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
-
 	if (retval == 1) {
 		int error_code = WSAGetLastError();
 		ErrorDisplay("[WSASend] ¿¡·¯ : ", error_code);

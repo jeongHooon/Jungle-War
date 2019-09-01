@@ -23,7 +23,7 @@
 #include <vector>
 #include <thread>
 #include <chrono>
-
+#include <random>
 #include <d3d12.h>
 #include <DirectXMath.h>
 #include <stdlib.h>
