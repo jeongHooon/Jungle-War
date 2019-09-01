@@ -98,7 +98,7 @@ public:
 	static CCamera				*m_pCamera;
 	static int					boxBound;
 	float						playerHp = 100;
-	int							gameMode = 1;
+	int							gameMode = 0;
 	bool						damageCheck = false;
 	bool						writeMode = true;
 	bool						writeStart = false;
@@ -143,6 +143,7 @@ private:
 	//아이템 드롭
 	int							itemDropCount = 0;
 	bool						itemDropCheck = false;
+	bool						dropStart = false;
 
 	//채팅
 	wchar_t						inputtext[100] = L"";

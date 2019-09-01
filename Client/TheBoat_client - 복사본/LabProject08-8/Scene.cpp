@@ -452,7 +452,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
-	///////초기화
+	///////초기화 스킬 위치
 	for (int i = 0; i<MAX_SKILLS; ++i)	//스킬.
 		m_ppShaders[7]->SetPosition(i, XMFLOAT3(739 + 5 * i, m_pTerrain->GetHeight(739 + 5 * i, 669) + 2, 669));
 }
