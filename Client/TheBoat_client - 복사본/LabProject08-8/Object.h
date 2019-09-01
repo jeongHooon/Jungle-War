@@ -174,7 +174,7 @@ public:
 	virtual void ReleaseUploadBuffers();
 
 	BoundingOrientedBox bounding_box;
-	virtual void SetOOBB(XMFLOAT3 xmCenter, XMFLOAT3 xmExtents, XMFLOAT4 xmOrientation) { }
+	virtual void SetOOBB(XMFLOAT3 xmCenter, XMFLOAT3 xmExtents, XMFLOAT4 xmOrientation) { bounding_box = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation); }
 
 	XMFLOAT4X4                      GetWMatrix()   const { return m_xmf4x4ToParentTransform; }
 	XMFLOAT3 GetPosition();

@@ -1876,6 +1876,7 @@ void CGameFramework::FrameAdvance()
 		}
 		else if(server_mgr.GetTreeInuse(i) == false && itemDropCount == 0) {
 			m_pScene->m_ppShaders[7]->SetPosition(0, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+			m_pScene->m_ppShaders[7]->SetOOBB(i, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
 			dropStart = true;
 		}
 
@@ -2138,8 +2139,31 @@ void CGameFramework::FrameAdvance()
 	/////////
 	//if(아이템 먹음)
 	
+	for (int i = 0; i < 5; ++i) {
+		
+		ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pScene->m_ppShaders[7]->GetOOBB(i));
+		switch (containType)
+		{
+		case DISJOINT:
+		{
+			break;
+		}
+		case INTERSECTS:
+		{
+			printf("오브젝트충돌예에\n");
+			itemUI[0] = true;
+			server_mgr.SendRootPacket(TYPE_DEFENCE);
+			check2 = true;
+			break;
+		}
+		case CONTAINS:
+			printf("오브젝트충돌예에\n");
+			break;
+		}
+
+	}
 	//case INTERSECTS:
-	//server_mgr.SendRootPacket(type);
+	//
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;

@@ -1782,6 +1782,7 @@ void CSkillShader_1::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 					pRotatingObject->Rotate(&xmf3RotateAxis, XMConvertToDegrees(fAngle));
 				}
 				pRotatingObject->SetCbvGPUDescriptorHandlePtr(m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * i));
+				pRotatingObject->SetOOBB(pRotatingObject->GetPosition(), XMFLOAT3(3, 3, 3), XMFLOAT4(0, 0, 0, 1));
 				m_ppBullet[i++] = pRotatingObject;
 			}
 		}
@@ -1904,6 +1905,14 @@ void CSkillShader_1::ItemDrop(int id, int count, bool check) {
 		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y - 0.2, m_ppBullet[id]->GetPosition().z));
 
 }
+void CSkillShader_1::SetOOBB(int id, XMFLOAT3 input)
+{
+	m_ppBullet[id]->SetOOBB(input, XMFLOAT3(3, 3, 3), XMFLOAT4(0, 0, 0, 1));
+}
+BoundingOrientedBox CSkillShader_1::GetOOBB(int id)
+{
+	return m_ppBullet[id]->bounding_box;
+}
 ///////////////////////////////
 CSkillShader_2::CSkillShader_2() {
 
@@ -1996,6 +2005,30 @@ void CSkillShader_2::ReleaseObjects()
 
 void CSkillShader_2::SetPosition(int id, XMFLOAT3 input) {
 	m_ppBullet[id]->SetPosition(input);
+}
+
+void CSkillShader_2::ItemDrop(int id, int count, bool check)
+{
+	if (count < 7)
+		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y + 0.2, m_ppBullet[id]->GetPosition().z));
+	else if (count < 15)
+		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y + 0.1, m_ppBullet[id]->GetPosition().z));
+	else if (count < 22)
+		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y - 0.1, m_ppBullet[id]->GetPosition().z));
+	else if (count < 30)
+		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y - 0.2, m_ppBullet[id]->GetPosition().z));
+}
+
+void CSkillShader_2::SetOOBB(int id, XMFLOAT3 input)
+{
+	m_ppBullet[id]->SetOOBB(input, XMFLOAT3(3, 3, 3), XMFLOAT4(0, 0, 0, 1));
+
+}
+
+BoundingOrientedBox CSkillShader_2::GetOOBB(int id)
+{
+	return m_ppBullet[id]->bounding_box;
+
 }
 
 void CSkillShader_2::SetLook(int input, float x, float y, float z) {
@@ -2180,6 +2213,18 @@ void CSkillShader_3::SetPosition(int id, XMFLOAT3 input) {
 	m_ppBullet[id]->SetPosition(input);
 }
 
+void CSkillShader_3::ItemDrop(int id, int count, bool check)
+{
+	if (count < 7)
+		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y + 0.2, m_ppBullet[id]->GetPosition().z));
+	else if (count < 15)
+		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y + 0.1, m_ppBullet[id]->GetPosition().z));
+	else if (count < 22)
+		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y - 0.1, m_ppBullet[id]->GetPosition().z));
+	else if (count < 30)
+		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y - 0.2, m_ppBullet[id]->GetPosition().z));
+}
+
 void CSkillShader_3::SetLook(int input, float x, float y, float z) {
 	m_ppBullet[input]->SetLookAt(XMFLOAT3(x, y, z));
 }
@@ -2246,6 +2291,16 @@ void CSkillShader_3::ReleaseShaderVariables()
 	}
 
 	CTexturedShader::ReleaseShaderVariables();
+}
+
+void CSkillShader_3::SetOOBB(int id, XMFLOAT3 input)
+{
+	m_ppBullet[id]->SetOOBB(input, XMFLOAT3(3, 3, 3), XMFLOAT4(0, 0, 0, 1));
+}
+
+BoundingOrientedBox CSkillShader_3::GetOOBB(int id)
+{
+	return m_ppBullet[id]->bounding_box;
 }
 
 D3D12_BLEND_DESC CSkillShader_3::CreateBlendState()
@@ -2361,6 +2416,29 @@ void CSkillShader_4::ReleaseObjects()
 
 void CSkillShader_4::SetPosition(int id, XMFLOAT3 input) {
 	m_ppBullet[id]->SetPosition(input);
+}
+
+void CSkillShader_4::ItemDrop(int id, int count, bool check)
+{
+	if (count < 7)
+		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y + 0.2, m_ppBullet[id]->GetPosition().z));
+	else if (count < 15)
+		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y + 0.1, m_ppBullet[id]->GetPosition().z));
+	else if (count < 22)
+		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y - 0.1, m_ppBullet[id]->GetPosition().z));
+	else if (count < 30)
+		m_ppBullet[id]->SetPosition(XMFLOAT3(m_ppBullet[id]->GetPosition().x, m_ppBullet[id]->GetPosition().y - 0.2, m_ppBullet[id]->GetPosition().z));
+}
+
+void CSkillShader_4::SetOOBB(int id, XMFLOAT3 input)
+{
+	m_ppBullet[id]->SetOOBB(input, XMFLOAT3(2, 2, 2), XMFLOAT4(0, 0, 0, 1));
+
+}
+
+BoundingOrientedBox CSkillShader_4::GetOOBB(int id)
+{
+	return m_ppBullet[id]->bounding_box;
 }
 
 void CSkillShader_4::SetLook(int input, float x, float y, float z) {
