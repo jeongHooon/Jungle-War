@@ -1505,6 +1505,7 @@ void ServerFramework::WorkerThread() {
 			}
 			else
 				;
+			printf("\n");
 		}
 	}
 }
