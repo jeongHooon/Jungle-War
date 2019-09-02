@@ -421,29 +421,32 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 	case WM_LBUTTONDOWN:
 		::SetCapture(hWnd);
 		::GetCursorPos(&m_ptOldCursorPos);
-		for (int i = 0; i < 4; ++i) {
-
-		}
+		
 		//printf("=======================\n");
-		if (CShader::shootBullet == 0) {
-			//CShader::shootBullet = 1;
-			sndPlaySound(L"../Assets/Sounds/RifleSound1.wav", SND_ASYNC);	// 사운드
-			m_pPlayer[my_client_id]->MinusPlayerBullet();
-			m_pPlayer[my_client_id]->ActiveShot();
-		}
-		else
-			CShader::shootBullet = 0;
+		if (!m_pPlayer[my_client_id]->isDie && gameMode == 1) {
 
-		//server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
-		server_mgr.SendPacket(CS_LEFT_BUTTON_DOWN, m_pPlayer[my_client_id]->GetLook());
+			if (CShader::shootBullet == 0) {
+				//CShader::shootBullet = 1;
+				sndPlaySound(L"../Assets/Sounds/RifleSound1.wav", SND_ASYNC);	// 사운드
+				m_pPlayer[my_client_id]->MinusPlayerBullet();
+				m_pPlayer[my_client_id]->ActiveShot();
+			}
+			else
+				CShader::shootBullet = 0;
+
+			//server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
+			server_mgr.SendPacket(CS_LEFT_BUTTON_DOWN, m_pPlayer[my_client_id]->GetLook());
+		}
 		break;
 	case WM_RBUTTONDOWN:
 		//::SetCapture(hWnd);
 		//::GetCursorPos(&m_ptOldCursorPos);
-		server_mgr.SendPacket(CS_RIGHT_BUTTON_DOWN, m_pPlayer[my_client_id]->GetLook());
-		if( !m_pPlayer[my_client_id]->isDie)
-			m_pCamera = m_pPlayer[my_client_id]->ChangeCamera(SPACESHIP_CAMERA, m_GameTimer.GetTimeElapsed());	// 마우스 우클시 카메라 변환
-		printf("마우스 우클릭\n");
+		if (!m_pPlayer[my_client_id]->isDie && gameMode == 1) {
+			server_mgr.SendPacket(CS_RIGHT_BUTTON_DOWN, m_pPlayer[my_client_id]->GetLook());
+			if (!m_pPlayer[my_client_id]->isDie)
+				m_pCamera = m_pPlayer[my_client_id]->ChangeCamera(SPACESHIP_CAMERA, m_GameTimer.GetTimeElapsed());	// 마우스 우클시 카메라 변환
+			printf("마우스 우클릭\n");
+		}
 		break;
 	
 	case WM_LBUTTONUP:
@@ -815,23 +818,19 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				}
 				break;
 			case '1':
-				if (is_pushed[CS_KEY_PRESS_1] == false) {
-					server_mgr.SendPacket(CS_KEY_PRESS_1);
-					is_pushed[CS_KEY_PRESS_1] = true;
-				}
+				server_mgr.SendRootPacket(TYPE_DEFENCE);
 				itemUI[0] = !itemUI[0];
 				break;
 			case '2':
-				if (is_pushed[CS_KEY_PRESS_2] == false) {
-					server_mgr.SendPacket(CS_KEY_PRESS_2);
-					is_pushed[CS_KEY_PRESS_2] = true;
-				}
+				server_mgr.SendRootPacket(TYPE_SPEED);
 				itemUI[1] = !itemUI[1];
 				break;
-			case '3':
+			case '3':			
+				server_mgr.SendRootPacket(TYPE_POWER);
 				itemUI[2] = !itemUI[2];
 				break;
 			case '4':
+				server_mgr.SendRootPacket(TYPE_DODGE);
 				itemUI[3] = !itemUI[3];
 				break;
 			case '5':
@@ -1051,18 +1050,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			}
 			break;
 		case '1':
-			if (is_pushed[CS_KEY_PRESS_1] == true) {
-				//printf("[WM_KEYDOWN] : 1키 놓음 \n");
-				server_mgr.SendPacket(CS_KEY_RELEASE_1);
-				is_pushed[CS_KEY_PRESS_1] = false;
-			}
+			
 			break;
 		case '2':
-			if (is_pushed[CS_KEY_PRESS_2] == true) {
-				//printf("[WM_KEYDOWN] : 2키 놓음 \n");
-				server_mgr.SendPacket(CS_KEY_RELEASE_2);
-				is_pushed[CS_KEY_PRESS_2] = false;
-			}
+			
 			break;
 
 		case '9':
@@ -1856,7 +1847,7 @@ void CGameFramework::FrameAdvance()
 				m_pPlayer[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));*/
 			m_pPlayer[i]->Render(m_pd3dCommandList, m_pCamera);
 		}
-			m_pShadow[0]->Render(m_pd3dCommandList, m_pCamera);
+			//m_pShadow[0]->Render(m_pd3dCommandList, m_pCamera);
 	}
 	/*for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pShadow[i]->SetPosition(XMFLOAT3(m_pPlayer[i]->GetPosition().x + 1, m_pPlayer[i]->GetPosition().y, m_pPlayer[i]->GetPosition().z+1));
@@ -1874,11 +1865,110 @@ void CGameFramework::FrameAdvance()
 			server_mgr.obj[i].item_gen = true;
 			cout << "sg";*/
 		}
-		else if(server_mgr.GetTreeInuse(i) == false && itemDropCount == 0 && !server_mgr.obj[i].item_gen) {
-			m_pScene->m_ppShaders[7]->SetPosition(0, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
-			m_pScene->m_ppShaders[7]->SetOOBB(i, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
-			dropStart = true;
-			server_mgr.obj[i].item_gen = true;
+		else if (server_mgr.GetTreeInuse(i) == false && !server_mgr.obj[i].item_gen) {
+			{
+				if (i == 3) {
+					m_pScene->m_ppShaders[7]->SetPosition(0, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[7]->SetOOBB(0, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 6) {
+					m_pScene->m_ppShaders[8]->SetPosition(0, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[8]->SetOOBB(0, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 9) {
+					m_pScene->m_ppShaders[9]->SetPosition(0, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[9]->SetOOBB(0, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 12) {
+					m_pScene->m_ppShaders[10]->SetPosition(0, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[10]->SetOOBB(0, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 15) {
+					m_pScene->m_ppShaders[7]->SetPosition(1, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[7]->SetOOBB(1, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 18) {
+					m_pScene->m_ppShaders[8]->SetPosition(1, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[8]->SetOOBB(1, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 21) {
+					m_pScene->m_ppShaders[9]->SetPosition(1, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[9]->SetOOBB(1, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 24) {
+					m_pScene->m_ppShaders[10]->SetPosition(1, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[10]->SetOOBB(1, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 27) {
+					m_pScene->m_ppShaders[7]->SetPosition(2, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[7]->SetOOBB(2, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 30) {
+					m_pScene->m_ppShaders[8]->SetPosition(2, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[8]->SetOOBB(2, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 33) {
+					m_pScene->m_ppShaders[9]->SetPosition(2, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[9]->SetOOBB(2, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 36) {
+					m_pScene->m_ppShaders[10]->SetPosition(2, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[10]->SetOOBB(2, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 39) {
+					m_pScene->m_ppShaders[7]->SetPosition(3, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[7]->SetOOBB(3, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 42) {
+					m_pScene->m_ppShaders[8]->SetPosition(3, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[8]->SetOOBB(3, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 45) {
+					m_pScene->m_ppShaders[9]->SetPosition(3, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[9]->SetOOBB(3, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 48) {
+					m_pScene->m_ppShaders[10]->SetPosition(3, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[10]->SetOOBB(3, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 51) {
+					m_pScene->m_ppShaders[7]->SetPosition(4, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[7]->SetOOBB(4, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 54) {
+					m_pScene->m_ppShaders[8]->SetPosition(4, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[8]->SetOOBB(4, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 56) {
+					m_pScene->m_ppShaders[9]->SetPosition(4, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[9]->SetOOBB(4, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+				else if (i == 60) {
+					m_pScene->m_ppShaders[10]->SetPosition(4, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					m_pScene->m_ppShaders[10]->SetOOBB(4, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+					server_mgr.obj[i].item_gen = true;
+				}
+			}
+			//dropStart = true;
 		}
 
 		if(dropStart == true) {

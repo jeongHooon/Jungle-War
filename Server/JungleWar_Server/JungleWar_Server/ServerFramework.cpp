@@ -883,6 +883,7 @@ void ServerFramework::WorkerThread() {
 				}
 			}
 		}
+		
 		else if (overlapped_buffer->command == SC_PLAYER_MOVE) {
 			if (clients[client_id].in_use) {
 				SC_PACKET_POS packets;
@@ -1490,6 +1491,20 @@ void ServerFramework::WorkerThread() {
 		// Send로 인해 할당된 영역 반납
 		else {
 			delete overlapped_buffer;
+		}
+		for (int i = 0; i < 4; ++i) {
+			if (clients[i].in_use) {
+				if (clients[i].CType == TYPE_DEFENCE)
+					printf("플레이어 %d 특성=ARMOR  ", i);
+				else if (clients[i].CType == TYPE_SPEED)
+					printf("플레이어 %d 특성=속도  ", i);
+				else if (clients[i].CType == TYPE_POWER)
+					printf("플레이어 %d 특성=강화  ", i);
+				else if (clients[i].CType == TYPE_DODGE)
+					printf("플레이어 %d 특성=회피  ", i);
+			}
+			else
+				;
 		}
 	}
 }

@@ -174,9 +174,6 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		//sc_vec_buff[packets->id].is_die = packets->is_die;
 		sc_look_vec = packets->look_vec;
 
-		for (int i = 0; i < 4; ++i)
-			if (sc_vec_buff[i].is_die)
-				printf("%d Å¬¶ó Á×À½\n",i);
 		// 0 ¼û½¬±â, 1: °È±â, 2: ¶Ù±â
 		sc_vec_buff[packets->id].player_status = packets->player_status;
 		if (packets->is_die) {
@@ -196,9 +193,6 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		sc_look_vec = packets->look_vec;
 		sc_vec_buff[packets->id].is_die = packets->is_die;
 
-		for (int i = 0; i < 4; ++i)
-			if (sc_vec_buff[i].is_die)
-				printf("%d Å¬¶ó Á×À½\n");
 		// 0 ¼û½¬±â, 1: °È±â, 2: ¶Ù±â
 		sc_vec_buff[packets->id].player_status = packets->player_status;
 		if (packets->is_die) {
