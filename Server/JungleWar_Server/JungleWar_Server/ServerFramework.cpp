@@ -374,7 +374,7 @@ void ServerFramework::AcceptPlayer() {
 	clients[client_id].packet_size = 0;
 	clients[client_id].prev_packet_size = 0;
 	clients[client_id].team = Team::NON_TEAM;
-	clients[client_id].CType = TYPE_POWER;
+	clients[client_id].CType = TYPE_NONE;
 
 	clients[client_id].boxCount = 10;
 
@@ -883,6 +883,7 @@ void ServerFramework::WorkerThread() {
 				}
 			}
 		}
+		
 		else if (overlapped_buffer->command == SC_PLAYER_MOVE) {
 			if (clients[client_id].in_use) {
 				SC_PACKET_POS packets;
@@ -966,15 +967,30 @@ void ServerFramework::WorkerThread() {
 							//clients[j].hp -= MAX_BULLET_DAMAGE;
 							//
 							//packets.hp = clients[j].hp;
+							random_device rd;  //Will be used to obtain a seed for the random number engine
+							mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
+							uniform_int_distribution<int> dis(1, 4);
 							
-							if(clients[j].CType == TYPE_DEFENCE && clients[bullets[i].shooter_id].CType == TYPE_POWER)
+
+							if (clients[j].CType == TYPE_DEFENCE && clients[bullets[i].shooter_id].CType == TYPE_POWER)
 								packets.hp = (-1) * MAX_BULLET_DAMAGE;
 							else if (clients[j].CType == TYPE_DEFENCE)
-								packets.hp = (-1) * MAX_BULLET_DAMAGE * 0.6f; 
+								packets.hp = (-1) * MAX_BULLET_DAMAGE * 0.6f;
+							else if (clients[j].CType == TYPE_DODGE && clients[bullets[i].shooter_id].CType == TYPE_POWER)
+								if (dis(gen) == 2 || dis(gen) == 3)
+									;
+								else
+									packets.hp = (-1) * MAX_BULLET_DAMAGE * 1.4f;
+							else if (clients[j].CType == TYPE_DODGE)
+								if (dis(gen) == 2 || dis(gen) == 3)
+									;
+								else
+									packets.hp = (-1) * MAX_BULLET_DAMAGE;
 							else if (clients[bullets[i].shooter_id].CType == TYPE_POWER)
 								packets.hp = (-1) * MAX_BULLET_DAMAGE * 1.4f;
 							else
 								packets.hp = (-1) * MAX_BULLET_DAMAGE;
+							
 							/*printf("%d번 플레이어 체력 %f\n", j, clients[j].hp);
 							if (!(clients[j].is_die))
 							{
@@ -1128,9 +1144,13 @@ void ServerFramework::WorkerThread() {
 				clients[i].client_lock.lock();
 
 				if (clients[i].is_move_foward) {
-					if (clients[i].is_running) {
+					if (clients[i].is_running && clients[i].CType != TYPE_SPEED) {
 						clients[i].z += clients[i].look_vec.z * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 						clients[i].x += clients[i].look_vec.x * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+					}
+					else if (clients[i].is_running && clients[i].CType == TYPE_SPEED) {
+						clients[i].z += clients[i].look_vec.z * (RUN_SPEED * BOOST_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+						clients[i].x += clients[i].look_vec.x * (RUN_SPEED * BOOST_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 					}
 					else {
 						clients[i].z += clients[i].look_vec.z * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
@@ -1138,9 +1158,13 @@ void ServerFramework::WorkerThread() {
 					}
 				}
 				if (clients[i].is_move_backward) {
-					if (clients[i].is_running) {
+					if (clients[i].is_running && clients[i].CType != TYPE_SPEED) {
 						clients[i].z += (-1) * clients[i].look_vec.z * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 						clients[i].x += (-1) * clients[i].look_vec.x * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+					}
+					else if (clients[i].is_running && clients[i].CType == TYPE_SPEED) {
+						clients[i].z += (-1) * clients[i].look_vec.z * (RUN_SPEED * BOOST_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+						clients[i].x += (-1) * clients[i].look_vec.x * (RUN_SPEED * BOOST_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 					}
 					else {
 						clients[i].z += (-1) * clients[i].look_vec.z * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
@@ -1148,9 +1172,13 @@ void ServerFramework::WorkerThread() {
 					}
 				}
 				if (clients[i].is_move_left) {
-					if (clients[i].is_running) {
+					if (clients[i].is_running && clients[i].CType != TYPE_SPEED) {
 						clients[i].z += clients[i].look_vec.x * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 						clients[i].x += (-1) * clients[i].look_vec.z * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+					}
+					else if (clients[i].is_running && clients[i].CType == TYPE_SPEED) {
+						clients[i].z += clients[i].look_vec.z * (RUN_SPEED * BOOST_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+						clients[i].x += (-1) * clients[i].look_vec.x * (RUN_SPEED * BOOST_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 					}
 					else {
 						clients[i].z += clients[i].look_vec.x * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
@@ -1158,9 +1186,13 @@ void ServerFramework::WorkerThread() {
 					}
 				}
 				if (clients[i].is_move_right) {
-					if (clients[i].is_running) {
+					if (clients[i].is_running && clients[i].CType != TYPE_SPEED) {
 						clients[i].z += (-1) * clients[i].look_vec.x * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 						clients[i].x += clients[i].look_vec.z * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+					}
+					else if (clients[i].is_running && clients[i].CType == TYPE_SPEED) {
+						clients[i].z += (-1) * clients[i].look_vec.z * (RUN_SPEED * BOOST_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+						clients[i].x += clients[i].look_vec.x * (RUN_SPEED * BOOST_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 					}
 					else {
 						clients[i].z += (-1) * clients[i].look_vec.x * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;

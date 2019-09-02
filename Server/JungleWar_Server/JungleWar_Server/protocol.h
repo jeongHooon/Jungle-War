@@ -123,6 +123,7 @@
 #define TYPE_SPEED		1
 #define TYPE_DEFENCE	2
 #define TYPE_POWER		3
+#define TYPE_DODGE		4
 
 enum GameMode {
 	TEAM_MODE, MELEE

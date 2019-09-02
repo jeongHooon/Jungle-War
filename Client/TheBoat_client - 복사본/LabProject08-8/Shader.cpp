@@ -1735,7 +1735,7 @@ void CSkillShader_1::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	m_nBullet = MAX_SKILLS;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Armor.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Armor_A.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -1937,7 +1937,7 @@ void CSkillShader_2::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	m_nBullet = MAX_SKILLS;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Item_Battery.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Boost_A.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -1954,7 +1954,7 @@ void CSkillShader_2::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	pCubeMaterial->SetTexture(pTexture);
 #endif
 
-	CBillboardMesh *pCubeMesh = new CBillboardMesh(pd3dDevice, pd3dCommandList, 1.f, 1.f, 1.f);
+	CBillboardMesh *pCubeMesh = new CBillboardMesh(pd3dDevice, pd3dCommandList, 3.f, 3.f, 3.f);
 
 	m_ppBullet = new CBillboard*[m_nBullet];
 
@@ -2143,7 +2143,7 @@ void CSkillShader_3::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	m_nBullet = MAX_SKILLS;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/TeamTri.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Bullet_A.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -2160,8 +2160,7 @@ void CSkillShader_3::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	pCubeMaterial->SetTexture(pTexture);
 #endif
 
-	CBillboardMesh *pCubeMesh = new CBillboardMesh(pd3dDevice, pd3dCommandList, 1.f, 1.f, 1.f);
-
+	CBillboardMesh *pCubeMesh = new CBillboardMesh(pd3dDevice, pd3dCommandList, 3.f, 3.f, 3.f);
 	m_ppBullet = new CBillboard*[m_nBullet];
 
 	XMFLOAT3 xmf3RotateAxis, xmf3SurfaceNormal;
@@ -2348,7 +2347,7 @@ void CSkillShader_4::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	m_nBullet = MAX_SKILLS;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/TeamTri.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Human_A.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -2365,8 +2364,7 @@ void CSkillShader_4::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComman
 	pCubeMaterial->SetTexture(pTexture);
 #endif
 
-	CBillboardMesh *pCubeMesh = new CBillboardMesh(pd3dDevice, pd3dCommandList, 1.f, 1.f, 1.f);
-
+	CBillboardMesh *pCubeMesh = new CBillboardMesh(pd3dDevice, pd3dCommandList, 3.f, 3.f, 3.f);
 	m_ppBullet = new CBillboard*[m_nBullet];
 
 	XMFLOAT3 xmf3RotateAxis, xmf3SurfaceNormal;
@@ -4178,7 +4176,7 @@ void CItemUIShader_1::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	//m_nTree = 4;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Item_Spanner.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Armor_B.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -4379,7 +4377,7 @@ void CItemUIShader_2::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	//m_nTree = 4;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Armor.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Boost_B.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -4576,7 +4574,7 @@ void CItemUIShader_3::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	//m_nTree = 4;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Item_Fuel.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Bullet_B.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -4777,7 +4775,7 @@ void CItemUIShader_4::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	//m_nTree = 4;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Item_Battery.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Items/Human_B.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
