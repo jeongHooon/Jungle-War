@@ -1144,9 +1144,13 @@ void ServerFramework::WorkerThread() {
 				clients[i].client_lock.lock();
 
 				if (clients[i].is_move_foward) {
-					if (clients[i].is_running) {
+					if (clients[i].is_running && clients[i].CType != TYPE_SPEED) {
 						clients[i].z += clients[i].look_vec.z * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 						clients[i].x += clients[i].look_vec.x * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+					}
+					else if (clients[i].is_running && clients[i].CType == TYPE_SPEED) {
+						clients[i].z += clients[i].look_vec.z * (RUN_SPEED * BOOST_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+						clients[i].x += clients[i].look_vec.x * (RUN_SPEED * BOOST_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 					}
 					else {
 						clients[i].z += clients[i].look_vec.z * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
@@ -1154,9 +1158,13 @@ void ServerFramework::WorkerThread() {
 					}
 				}
 				if (clients[i].is_move_backward) {
-					if (clients[i].is_running) {
+					if (clients[i].is_running && clients[i].CType != TYPE_SPEED) {
 						clients[i].z += (-1) * clients[i].look_vec.z * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 						clients[i].x += (-1) * clients[i].look_vec.x * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+					}
+					else if (clients[i].is_running && clients[i].CType == TYPE_SPEED) {
+						clients[i].z += (-1) * clients[i].look_vec.z * (RUN_SPEED * BOOST_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+						clients[i].x += (-1) * clients[i].look_vec.x * (RUN_SPEED * BOOST_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 					}
 					else {
 						clients[i].z += (-1) * clients[i].look_vec.z * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
@@ -1164,9 +1172,13 @@ void ServerFramework::WorkerThread() {
 					}
 				}
 				if (clients[i].is_move_left) {
-					if (clients[i].is_running) {
+					if (clients[i].is_running && clients[i].CType != TYPE_SPEED) {
 						clients[i].z += clients[i].look_vec.x * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 						clients[i].x += (-1) * clients[i].look_vec.z * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+					}
+					else if (clients[i].is_running && clients[i].CType == TYPE_SPEED) {
+						clients[i].z += clients[i].look_vec.z * (RUN_SPEED * BOOST_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+						clients[i].x += (-1) * clients[i].look_vec.x * (RUN_SPEED * BOOST_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 					}
 					else {
 						clients[i].z += clients[i].look_vec.x * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
@@ -1174,9 +1186,13 @@ void ServerFramework::WorkerThread() {
 					}
 				}
 				if (clients[i].is_move_right) {
-					if (clients[i].is_running) {
+					if (clients[i].is_running && clients[i].CType != TYPE_SPEED) {
 						clients[i].z += (-1) * clients[i].look_vec.x * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 						clients[i].x += clients[i].look_vec.z * (RUN_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+					}
+					else if (clients[i].is_running && clients[i].CType == TYPE_SPEED) {
+						clients[i].z += (-1) * clients[i].look_vec.z * (RUN_SPEED * BOOST_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
+						clients[i].x += clients[i].look_vec.x * (RUN_SPEED * BOOST_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
 					}
 					else {
 						clients[i].z += (-1) * clients[i].look_vec.x * (WALK_SPEED * overlapped_buffer->elapsed_time) / METER_PER_PIXEL;
