@@ -454,14 +454,23 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	///////초기화 스킬 위치
 	for (int i = 0; i < MAX_SKILLS; ++i) {	///////////스킬.
-		m_ppShaders[7]->SetPosition(i, XMFLOAT3(739 + 5 * i, m_pTerrain->GetHeight(739 + 5 * i, 669) + 2, 669));
+		/*m_ppShaders[7]->SetPosition(i, XMFLOAT3(739 + 5 * i, m_pTerrain->GetHeight(739 + 5 * i, 669) + 2, 669));
 		m_ppShaders[7]->SetOOBB(i, XMFLOAT3(739 + 5 * i, m_pTerrain->GetHeight(739 + 5 * i, 669) + 2, 669));
 		m_ppShaders[8]->SetPosition(i, XMFLOAT3(200 + 5 * i, m_pTerrain->GetHeight(200 + 5 * i, 100) + 2, 100));
 		m_ppShaders[8]->SetOOBB(i, XMFLOAT3(200 + 5 * i, m_pTerrain->GetHeight(200 + 5 * i, 100) + 2, 100));
 		m_ppShaders[9]->SetPosition(i, XMFLOAT3(120 + 5 * i, m_pTerrain->GetHeight(120 + 5 * i, 100) + 2, 100));
 		m_ppShaders[9]->SetOOBB(i, XMFLOAT3(120 + 5 * i, m_pTerrain->GetHeight(120 + 5 * i, 100) + 2, 100));
 		m_ppShaders[10]->SetPosition(i, XMFLOAT3(160 + 5 * i, m_pTerrain->GetHeight(160 + 5 * i, 100) + 2, 100));
-		m_ppShaders[10]->SetOOBB(i, XMFLOAT3(160 + 5 * i, m_pTerrain->GetHeight(160 + 5 * i, 100) + 2, 100));
+		m_ppShaders[10]->SetOOBB(i, XMFLOAT3(160 + 5 * i, m_pTerrain->GetHeight(160 + 5 * i, 100) + 2, 100));*/
+		m_ppShaders[7]->SetPosition(i, XMFLOAT3(1000,-1000,1000));
+		m_ppShaders[7]->SetOOBB(i, XMFLOAT3(1000, -1000, 1000));
+		m_ppShaders[8]->SetPosition(i, XMFLOAT3(1000, -1000, 1000));
+		m_ppShaders[8]->SetOOBB(i, XMFLOAT3(1000, -1000, 1000));
+		m_ppShaders[9]->SetPosition(i, XMFLOAT3(1000, -1000, 1000));
+		m_ppShaders[9]->SetOOBB(i, XMFLOAT3(1000, -1000, 1000));
+		m_ppShaders[10]->SetPosition(i, XMFLOAT3(1000, -1000, 1000));
+		m_ppShaders[10]->SetOOBB(i, XMFLOAT3(1000, -1000, 1000));
+
 	}
 }
 
