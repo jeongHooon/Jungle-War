@@ -11,7 +11,7 @@
 
 #define BluBoxSpeed 0.01
 
-int ServerMgr::elecCount;
+int ServerMgr::elecCount = 0;
 XMFLOAT3 ServerMgr::elecPos;
 
 CPlayer::CPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext, int nMeshes) : CGameObject(nMeshes)
