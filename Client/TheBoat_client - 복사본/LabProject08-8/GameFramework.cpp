@@ -1595,6 +1595,24 @@ void CGameFramework::BuildObjects()
 	if (m_pBlueBox[1]) m_pBlueBox[1]->ReleaseUploadBuffers();
 	if (m_pScene) m_pScene->ReleaseUploadBuffers();
 
+
+	switch (CGameFramework::my_client_id)
+	{
+	case 0:
+		myTeamNum = 1;
+		break;
+	case 1:
+		myTeamNum = 0;
+		break;
+	case 2:
+		myTeamNum = 3;
+		break;
+	case 3:
+		myTeamNum = 2;
+		break;
+	}
+
+
 	m_GameTimer.Reset();
 }
 
@@ -1855,6 +1873,22 @@ void CGameFramework::FrameAdvance()
 		m_pShadow[i]->SetPosition(XMFLOAT3(m_pPlayer[i]->GetPosition().x + 1, m_pPlayer[i]->GetPosition().y, m_pPlayer[i]->GetPosition().z+1));
 	}*/
 
+	/////////////////////////
+	m_pScene->m_ppShaders[11]->SetPosition(0, XMFLOAT3(0, 20, 0));
+	m_pScene->m_ppShaders[12]->SetPosition(0, XMFLOAT3(0, 15, 0));
+	
+	////승리 판별
+	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
+		int count;
+		if (i!=my_client_id && i!=myTeamNum)
+			if(m_pPlayer[i]->isDie)
+				++count;
+		if (count > 1) {
+			winCheck = true;
+		}
+	}
+
+
 	//////아이템 드랍
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pObject[i]->UpdateTransform(NULL);
@@ -2021,6 +2055,8 @@ void CGameFramework::FrameAdvance()
 		m_pScene->m_ppShaders[8]->Render(m_pd3dCommandList, m_pCamera);
 		m_pScene->m_ppShaders[9]->Render(m_pd3dCommandList, m_pCamera);
 		m_pScene->m_ppShaders[10]->Render(m_pd3dCommandList, m_pCamera);
+		m_pScene->m_ppShaders[11]->Render(m_pd3dCommandList, m_pCamera);
+		m_pScene->m_ppShaders[12]->Render(m_pd3dCommandList, m_pCamera);
 		m_pScene->m_ppUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 미니맵
 
 																		  //printf("%f", playerHp);
@@ -2086,9 +2122,12 @@ void CGameFramework::FrameAdvance()
 			server_mgr.SendPacket(PlayerDie, m_pPlayer[my_client_id]->GetLook());
 	}
 
-	if(gameMode == 2)
+	if(gameMode == 2 && winCheck == false)
 		m_pScene->m_ppMainUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//게임오버 화면
 
+	if (winCheck == true) {
+		m_pScene->m_ppMainUIShaders[5]->Render(m_pd3dCommandList, m_pCamera);
+	}
 	m_pScene->m_ppUIShaders[27]->Render(m_pd3dCommandList, m_pCamera);
 	// 렌더
 	//printf("%f %f %f \n", m_pPlayer[0]->GetPosition().x, m_pPlayer[0]->GetPosition().y, m_pPlayer[0]->GetPosition().z);

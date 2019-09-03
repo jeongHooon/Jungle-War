@@ -15,6 +15,7 @@ void ServerMgr::ErrorDisplay(const char* msg, int err_no) {
 	wprintf(L"%s\n", lpMsgBuf);
 	LocalFree(lpMsgBuf);
 }
+
 void ServerMgr::IPInput() {
 	while (true) {
 		cout << "서버 아이피 입력 : ";

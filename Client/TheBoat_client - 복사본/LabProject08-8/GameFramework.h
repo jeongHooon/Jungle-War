@@ -95,6 +95,9 @@ public:
 	static CPlayer				*m_pObject2[NUM_OBJECT2];
 	CPlayer						*m_pBlueBox[2];
 
+
+	int							myTeamNum;
+	bool						winCheck = false;
 	static CCamera				*m_pCamera;
 	static int					boxBound;
 	float						playerHp = 100;

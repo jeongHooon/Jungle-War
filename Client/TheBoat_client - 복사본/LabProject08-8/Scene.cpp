@@ -136,7 +136,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	m_pBuildings = pBuildingShader;
 
-	m_nShaders = 11;
+	m_nShaders = 13;
 	m_ppShaders = new CShader*[m_nShaders];
 
 	CRedDotShader *pTreeShader = new CRedDotShader();
@@ -187,6 +187,14 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pSkillShader_4->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pSkillShader_4->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
+	CTreeItemShader *pTreeItemShader = new CTreeItemShader();
+	pTreeItemShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pTreeItemShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CBulletItemShader *pBulletItemShader = new CBulletItemShader();
+	pBulletItemShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pBulletItemShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
 	m_ppShaders[0] = pTreeShader;
 	m_ppShaders[1] = pFlowerShader;
 	m_ppShaders[2] = pBulletShader;
@@ -198,6 +206,8 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppShaders[8] = pSkillShader_2;
 	m_ppShaders[9] = pSkillShader_3;
 	m_ppShaders[10] = pSkillShader_4;
+	m_ppShaders[11] = pTreeItemShader;
+	m_ppShaders[12] = pBulletItemShader;
 	// UI
 
 	m_nUIShaders = 43;
@@ -419,7 +429,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppUIShaders[41] = pChatReadyShader;
 	m_ppUIShaders[42] = pBloodScreenShader;
 	// 메인화면
-	m_nMainUIShaders = 5;
+	m_nMainUIShaders = 6;
 	m_ppMainUIShaders = new CShader*[m_nMainUIShaders];
 
 	CMainScreenShader *pMainScreenShader = new CMainScreenShader();
@@ -442,11 +452,16 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pPlayerNameShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pPlayerNameShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
+	CGameWinShader *pGameWinShader = new CGameWinShader();
+	pGameWinShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pGameWinShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
 	m_ppMainUIShaders[0] = pMainScreenShader;
 	m_ppMainUIShaders[1] = pMainScreenCheckShader;
 	m_ppMainUIShaders[2] = pMainScreenCheck_1Shader;
 	m_ppMainUIShaders[3] = pGameOverShader;
 	m_ppMainUIShaders[4] = pPlayerNameShader;
+	m_ppMainUIShaders[5] = pGameWinShader;
 
 	BuildLightsAndMaterials();
 
@@ -791,6 +806,7 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 	//for (int i = 0; i < m_nObjects; i++) m_ppUIShaders[i]->AnimateObjects(fTimeElapsed, pCamera);
 	m_ppShaders[5]->SetPosition(0, XMFLOAT3(CGameFramework::m_pPlayer[myTeamNum]->GetPosition().x, CGameFramework::m_pPlayer[myTeamNum]->GetPosition().y + 13, CGameFramework::m_pPlayer[myTeamNum]->GetPosition().z));
 	m_ppUIShaders[0]->AnimateObjects(fTimeElapsed, pCamera);
+
 }
 
 void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
@@ -814,7 +830,7 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	
 	if (m_pBuildings) m_pBuildings->Render(pd3dCommandList, pCamera);
 	
-	for (int i = 1; i < m_nShaders-4; i++) {
+	for (int i = 1; i < m_nShaders-6; i++) {
 		if(i!=2)
 			m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 	}
