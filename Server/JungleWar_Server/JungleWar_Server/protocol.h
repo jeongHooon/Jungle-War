@@ -106,6 +106,7 @@
 #define CS_ROOT_ITEM				28		
 #define CS_ROOT_BULLET				29
 #define CS_ROOT_BOX					30
+#define CS_CAMERA					31
 //=============================
 #define CS_KEY_PRESS_Q 24
 #define CS_KEY_RELEASE_Q 25
@@ -347,6 +348,15 @@ struct CS_PACKET_ROOT_ITEM {
 	BYTE size;
 	BYTE type;
 	int skill;
+};
+
+struct CS_PACKET_CAMERA {
+	BYTE size;
+	BYTE type;
+	float cameraX;
+	float cameraY;
+	float cameraZ;
+	DirectX::XMFLOAT3 camera_look_vec;
 };
 
 //===============================================

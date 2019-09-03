@@ -465,6 +465,17 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(packet);
 	CS_PACKET_LOBBY* packet_lobby_buffer = reinterpret_cast<CS_PACKET_LOBBY*>(packet);
 	CS_PACKET_ROOT_ITEM* packet_root_buffer = reinterpret_cast<CS_PACKET_ROOT_ITEM*>(packet);
+	CS_PACKET_CAMERA* packet_camera_buffer = reinterpret_cast<CS_PACKET_CAMERA*>(packet);
+
+	switch (packet_camera_buffer->type) {
+	case CS_CAMERA: {
+		clients[cl_id].cameraX = packet_camera_buffer->cameraX;
+		clients[cl_id].cameraY = packet_camera_buffer->cameraY;
+		clients[cl_id].cameraZ = packet_camera_buffer->cameraZ;
+		clients[cl_id].camera_look_vec = packet_camera_buffer->camera_look_vec;
+		break;
+	}
+	}
 
 	switch (packet_root_buffer->type) {
 	case CS_ROOT_ITEM: {
@@ -961,7 +972,11 @@ void ServerFramework::WorkerThread() {
 		else if (overlapped_buffer->command == SS_COLLISION) {
 			for (int j = 0; j < MAX_PLAYER_SIZE; ++j) {
 				for (int i = 0; i < MAX_PLAYER_SIZE * MAX_BULLET_SIZE; ++i) {
-					if (bullets[i].in_use && clients[j].in_use) {
+					if (bullets[i].in_use && (bullets[i].shooter_id == j))
+					{
+						continue;
+					}
+					else if (bullets[i].in_use && clients[j].in_use) {
 						ContainmentType containType = clients[j].bounding_box.Contains(bullets[i].bounding_box);
 						switch (containType)
 						{
@@ -1249,10 +1264,16 @@ void ServerFramework::WorkerThread() {
 				printf("총알 초기화\n");
 				//break;
 			}
-			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].x = clients[shooter_id].x + 10 * clients[shooter_id].look_vec.x;
-			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].y = clients[shooter_id].y + 10;
+			/*bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].x = clients[shooter_id].x + 10 * clients[shooter_id].look_vec.x;
+			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].y = clients[shooter_id].y;
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].z = clients[shooter_id].z + 10 * clients[shooter_id].look_vec.z;
-			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].look_vec = clients[shooter_id].look_vec;
+			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].look_vec = clients[shooter_id].look_vec;*/
+
+			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].x = clients[shooter_id].cameraX + 10 * clients[shooter_id].camera_look_vec.x;
+			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].y = clients[shooter_id].cameraY;
+			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].z = clients[shooter_id].cameraZ + 10 * clients[shooter_id].camera_look_vec.z;
+			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].look_vec = clients[shooter_id].camera_look_vec;
+
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].in_use = true;
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].shooter_id = shooter_id;
 			/*printf("%f         %f            %f\n", bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].x,
@@ -1271,6 +1292,7 @@ void ServerFramework::WorkerThread() {
 						bullets[i* MAX_BULLET_SIZE + j].x += METER_PER_PIXEL * bullets[i* MAX_BULLET_SIZE + j].look_vec.x * (AR_SPEED * overlapped_buffer->elapsed_time);
 						bullets[i* MAX_BULLET_SIZE + j].y += METER_PER_PIXEL * bullets[i* MAX_BULLET_SIZE + j].look_vec.y * (AR_SPEED * overlapped_buffer->elapsed_time);
 						bullets[i* MAX_BULLET_SIZE + j].z += METER_PER_PIXEL * bullets[i* MAX_BULLET_SIZE + j].look_vec.z * (AR_SPEED * overlapped_buffer->elapsed_time);
+
 						//printf("총알 진행중\n");
 
 						bullets[i* MAX_BULLET_SIZE + j].SetOOBB(
