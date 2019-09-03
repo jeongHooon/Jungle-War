@@ -1264,13 +1264,9 @@ void ServerFramework::WorkerThread() {
 				printf("√—æÀ √ ±‚»≠\n");
 				//break;
 			}
-<<<<<<< HEAD
-			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].x = clients[shooter_id].x + 10 * clients[shooter_id].look_vec.x;
-			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].y = clients[shooter_id].y + 5;
-=======
+			
 			/*bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].x = clients[shooter_id].x + 10 * clients[shooter_id].look_vec.x;
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].y = clients[shooter_id].y;
->>>>>>> b89fc1af7331d998d98f6f8b2e7aaa4d28fd2604
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].z = clients[shooter_id].z + 10 * clients[shooter_id].look_vec.z;
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].look_vec = clients[shooter_id].look_vec;*/
 
