@@ -1896,8 +1896,11 @@ void CGameFramework::FrameAdvance()
 
 	////////////////////////
 	////승리 판별
+
+	int count = 0;
+
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-		int count;
+		
 		if (i!=my_client_id && i!=myTeamNum)
 			if(m_pPlayer[i]->isDie)
 				++count;
@@ -2131,8 +2134,14 @@ void CGameFramework::FrameAdvance()
 		if(collide_frame < 30)
 			m_pScene->m_ppUIShaders[42]->Render(m_pd3dCommandList, m_pCamera); // 피 효과
 
-		if (blueScreenMode)
+		if (blueScreenMode) {
+			++blueScreenCount;
 			m_pScene->m_ppUIShaders[26]->Render(m_pd3dCommandList, m_pCamera);
+			if(blueScreenCount < 40)
+				m_pScene->m_ppUIShaders[42]->Render(m_pd3dCommandList, m_pCamera);
+			if (blueScreenCount > 80)
+				blueScreenCount = 0;
+		}
 		break;
 	case 3:
 		m_pScene->m_ppMainUIShaders[4]->Render(m_pd3dCommandList, m_pCamera);
@@ -2532,20 +2541,22 @@ void CGameFramework::FrameAdvance()
 				//D2D1_RECT_F rcPlayerText = D2D1::RectF(szRenderTarget.width * 0.9, szRenderTarget.height * (-0.83f + 0.1f * i), szRenderTarget.width, szRenderTarget.height);
 				m_pd2dDeviceContext->DrawTextW(playerName[i], (UINT32)wcslen(playerName[i]), m_pdwFont, &rcPlayerText, m_pd2dbrText);
 			}
-		}
-		for (int i = 0; i < 16; ++i) {
-			D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.2, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
-			//D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.2, szRenderTarget.height * (1.0f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
-			m_pd2dDeviceContext->DrawTextW(outputtexts[i], (UINT32)wcslen(outputtexts[i]), m_pdwFont, &rcChatText, m_pd2dbrText);
-		}
 
-		for (int i = 0; i < 16; ++i) {    //플레이어 이름
-			if (playerChat[i] < 4) {
-				D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
-				//D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * (1.0f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
-				m_pd2dDeviceContext->DrawTextW(playerName[playerChat[i]], (UINT32)wcslen(playerName[playerChat[i]]), m_pdwFont, &rcChatText, m_pd2dbrText);
+			for (int i = 0; i < 16; ++i) {
+				D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.2, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+				//D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.2, szRenderTarget.height * (1.0f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+				m_pd2dDeviceContext->DrawTextW(outputtexts[i], (UINT32)wcslen(outputtexts[i]), m_pdwFont, &rcChatText, m_pd2dbrText);
+			}
+
+			for (int i = 0; i < 16; ++i) {    //플레이어 이름
+				if (playerChat[i] < 4) {
+					D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+					//D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * (1.0f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+					m_pd2dDeviceContext->DrawTextW(playerName[playerChat[i]], (UINT32)wcslen(playerName[playerChat[i]]), m_pdwFont, &rcChatText, m_pd2dbrText);
+				}
 			}
 		}
+		
 
 		if (server_mgr.GetChatCheck()) {
 			SwapText(server_mgr.GetChatPlayerIndex(), ConverCtoWC(server_mgr.GetChatChar()));

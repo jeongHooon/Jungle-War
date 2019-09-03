@@ -44,7 +44,7 @@ protected:
 	LPVOID						m_pCameraUpdatedContext = NULL;
 
 	float						playerHp = 100.0;
-	int							playerBullet = 40;
+	int							playerBullet = 10;
 	int							treeNum = 10;
 
 	CCamera						*m_pCamera = NULL;
