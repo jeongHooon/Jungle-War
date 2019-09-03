@@ -2170,7 +2170,7 @@ void CGameFramework::FrameAdvance()
 	if(gameMode == 2 && winCheck == false)
 		m_pScene->m_ppMainUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//게임오버 화면
 
-	if (winCheck == true && server_mgr.GetGameStart()) {
+	if (winCheck == true) {
 		m_pScene->m_ppMainUIShaders[5]->Render(m_pd3dCommandList, m_pCamera);
 	}
 	m_pScene->m_ppUIShaders[27]->Render(m_pd3dCommandList, m_pCamera);
