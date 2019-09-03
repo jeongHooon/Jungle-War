@@ -39,17 +39,17 @@
 
 #define EPSILON 1.0e-8f
 #define UPDATE_TIME 0.009f
-#define OBB_SCALE_PLAYER_X		0.5f
+#define OBB_SCALE_PLAYER_X		1.f
 #define OBB_SCALE_PLAYER_Y		12.f
-#define OBB_SCALE_PLAYER_Z		0.5f
+#define OBB_SCALE_PLAYER_Z		1.f
 
 #define OBB_SCALE_BULLET_X		0.5f
 #define OBB_SCALE_BULLET_Y		0.5f
 #define OBB_SCALE_BULLET_Z		0.5f
 
-#define OBB_SCALE_BOX_X			7.f
-#define OBB_SCALE_BOX_Y			7.f
-#define OBB_SCALE_BOX_Z			7.f
+#define OBB_SCALE_BOX_X			4.f
+#define OBB_SCALE_BOX_Y			4.f
+#define OBB_SCALE_BOX_Z			4.f
 
 #define OBB_SCALE_TREE_X			1.f
 #define OBB_SCALE_TREE_Y			20.f
