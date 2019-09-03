@@ -14,8 +14,6 @@ using namespace std;
 const char serverIP[] = "127.0.0.1";
 const int serverPort = 12345;
 
-
-
 const int maxUserIDLen = 20;
 const int maxPasswdLen = 20;
 const int maxChatSize = 256;
@@ -25,8 +23,6 @@ struct ProtoCommand
 	WORD command;
 	BYTE data[0];
 };
-
-
 const WORD ComLoginREQ = 1; // id와 패스워드로 로긴 요청
 struct StrLoginREQ    //프로토콜에 REQ가 붙으면
 {						//  뭔가 요청을 하는 패킷
@@ -46,7 +42,6 @@ enum EnumLoginACK
 	LoginACKInvalidPasswd = 1,		// 패스워드 불일치
 	LoginACKDuplicateConnect = 2,	// 한 아이디로 중복접속
 };
-
 
 // 채팅용프로토콜
 const WORD ComChatREQ = 3;//서버로 문자열 보낸다. REQ
@@ -81,7 +76,6 @@ struct StrWisperREQ
 	//BYTE chat[maxChatSize];
 	BYTE chat[0];
 };
-
 
 const WORD ComWisperACK = 7;
 struct StrWisperACK
