@@ -987,12 +987,12 @@ void ServerFramework::WorkerThread() {
 								packets.hp = (-1) * MAX_BULLET_DAMAGE * 0.6f;
 							else if (clients[j].CType == TYPE_DODGE && clients[bullets[i].shooter_id].CType == TYPE_POWER)
 								if (dis(gen) == 2 || dis(gen) == 3)
-									;
+									continue;
 								else
 									packets.hp = (-1) * MAX_BULLET_DAMAGE * 1.4f;
 							else if (clients[j].CType == TYPE_DODGE)
 								if (dis(gen) == 2 || dis(gen) == 3)
-									;
+									continue;
 								else
 									packets.hp = (-1) * MAX_BULLET_DAMAGE;
 							else if (clients[bullets[i].shooter_id].CType == TYPE_POWER)
