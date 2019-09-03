@@ -1265,7 +1265,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 			
 			for (int i = 0; i < MAX_PLAYER_SIZE*MAX_BOX_SIZE; ++i) {
 				if (server_mgr.GetBoxInuse(i) == 0) {
-					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(0, 0, 0));	
+					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(500, -500, 500));	
 				}
 				else {
 					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(server_mgr.GetBox(i).x, server_mgr.GetBox(i).y, server_mgr.GetBox(i).z));
@@ -1414,6 +1414,7 @@ void CGameFramework::BuildObjects()
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pScene->m_pObject[i] = m_pObject[i] = new CTreeObject(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
 		m_pScene->m_pShadowObject[i] = m_pShadowObject[i] = new CShadowTree(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
+		m_pShadowObject[i]->SetPosition(XMFLOAT3(500, -500, 500));
 		/*if(i == 0)
 			m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 0.0f));
 		else if(i==1)
@@ -1439,7 +1440,7 @@ void CGameFramework::BuildObjects()
 #endif
 #ifdef _WITH_GUNSHIP_MODEL
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
-		m_pPlayer[i]->SetPosition(XMFLOAT3(30 * i, -100.0f, 0.0f));
+		m_pPlayer[i]->SetPosition(XMFLOAT3(3000, -1000.0f, 3000.0f));
 		if(i!=my_client_id)
 			m_pPlayer[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 		float fHeight = m_pScene->GetTerrain()->GetHeight(30 * i, 200.0f);

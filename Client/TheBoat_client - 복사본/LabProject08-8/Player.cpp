@@ -773,7 +773,7 @@ CShadow::CShadow(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComman
 
 	m_pMaterial->SetShader(pShader);
 	XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	XMVECTOR toMainLight = -XMLoadFloat3(new XMFLOAT3(-0.3f, -1.0f, 0.0f));
+	XMVECTOR toMainLight = -XMLoadFloat4(new XMFLOAT4(-1.0f, -1.0f, -0.3f, 0.0f));
 	XMMATRIX S = XMMatrixShadow(shadowPlane, toMainLight);
 	XMMATRIX shadowOffSetY = XMMatrixTranslation(0.0f, 0.001f, 0.0f);
 	MTShadow = S * shadowOffSetY;
@@ -1006,10 +1006,9 @@ CShadowTree::CShadowTree(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 
 	m_pMaterial->SetShader(pShader);
 	XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	XMVECTOR toMainLight = -XMLoadFloat3(new XMFLOAT3(-0.3f, -1.0f, 0.0f));
-	//XMVECTOR toMainLight = -XMLoadFloat3(new XMFLOAT3(-0.0f, -1.0f, 0.0f));
+	XMVECTOR toMainLight = -XMLoadFloat4(new XMFLOAT4(-0.2f, -1.0f, -0.3f, 0.0f));
 	XMMATRIX S = XMMatrixShadow(shadowPlane, toMainLight);
-	XMMATRIX shadowOffSetY = XMMatrixTranslation(0.0f, 0.003f, 0.0f);
+	XMMATRIX shadowOffSetY = XMMatrixTranslation(0.0f, 0.001f, 0.0f);
 	MTShadow = S * shadowOffSetY;
 
 	pTerrain = (CHeightMapTerrain*)pContext;
