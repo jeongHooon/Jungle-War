@@ -2242,7 +2242,6 @@ void CGameFramework::FrameAdvance()
 			}
 			case INTERSECTS:
 			{
-				printf("오브젝트충돌예에\n");
 				if ((m_pObject[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x) * (m_pObject[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x)
 					< (m_pObject[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z) * (m_pObject[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z)) {
 					if (m_pObject[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z > 0) { m_pObject[i]->look = XMFLOAT3(0, 0, -1); }
@@ -2321,7 +2320,6 @@ void CGameFramework::FrameAdvance()
 		}
 		case INTERSECTS:
 		{
-			printf("오브젝트충돌예에44\n");
 			if ((m_pObject2[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x) * (m_pObject2[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x)
 				< (m_pObject2[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z) * (m_pObject2[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z)) {
 				if (m_pObject2[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z > 0) { m_pObject2[i]->look = XMFLOAT3(0, 0, -1); }
@@ -2366,6 +2364,10 @@ void CGameFramework::FrameAdvance()
 		case INTERSECTS:
 		{
 			itemUI[0] = true;
+
+			itemUI[1] = false;
+			itemUI[2] = false;
+			itemUI[3] = false;
 			m_pScene->m_ppShaders[7]->SetPosition(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
 			m_pScene->m_ppShaders[7]->SetOOBB(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
 			itemDropCheck = false;
@@ -2387,6 +2389,10 @@ void CGameFramework::FrameAdvance()
 		case INTERSECTS:
 		{
 			itemUI[1] = true;
+
+			itemUI[0] = false;
+			itemUI[2] = false;
+			itemUI[3] = false;
 			m_pScene->m_ppShaders[8]->SetPosition(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
 			m_pScene->m_ppShaders[8]->SetOOBB(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
 
@@ -2408,6 +2414,10 @@ void CGameFramework::FrameAdvance()
 		case INTERSECTS:
 		{
 			itemUI[2] = true;
+
+			itemUI[0] = false;
+			itemUI[1] = false;
+			itemUI[3] = false;
 			m_pScene->m_ppShaders[9]->SetPosition(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
 			m_pScene->m_ppShaders[9]->SetOOBB(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
 			server_mgr.SendRootPacket(TYPE_POWER);
@@ -2428,6 +2438,9 @@ void CGameFramework::FrameAdvance()
 		case INTERSECTS:
 		{
 			itemUI[3] = true;
+			itemUI[1] = false;
+			itemUI[2] = false;
+			itemUI[0] = false;
 			m_pScene->m_ppShaders[10]->SetPosition(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
 			m_pScene->m_ppShaders[10]->SetOOBB(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
 			server_mgr.SendRootPacket(TYPE_DODGE);

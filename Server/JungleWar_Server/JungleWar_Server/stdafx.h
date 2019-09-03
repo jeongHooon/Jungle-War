@@ -40,7 +40,7 @@
 #define EPSILON 1.0e-8f
 #define UPDATE_TIME 0.009f
 #define OBB_SCALE_PLAYER_X		0.5f
-#define OBB_SCALE_PLAYER_Y		8.f
+#define OBB_SCALE_PLAYER_Y		12.f
 #define OBB_SCALE_PLAYER_Z		0.5f
 
 #define OBB_SCALE_BULLET_X		0.5f
