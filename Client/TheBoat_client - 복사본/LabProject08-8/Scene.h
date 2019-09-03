@@ -6,7 +6,7 @@
 
 #include "Shader.h"
 #include "Player.h"
-#define NUM_OBJECT 70
+#define NUM_OBJECT 90
 #define NUM_OBJECT2 20
 struct LIGHT
 {
@@ -79,6 +79,7 @@ public:
 	CPlayer						*m_pPlayer[4];
 	CShadow						*m_pShadow[4];
 	CPlayer						*m_pObject[NUM_OBJECT]; //오브젝트 갯수
+	CShadowTree					*m_pShadowObject[NUM_OBJECT];
 	CPlayer						*m_pObject2[NUM_OBJECT2]; //오브젝트 갯수
 	CPlayer						*m_pBlueBox[2];
 

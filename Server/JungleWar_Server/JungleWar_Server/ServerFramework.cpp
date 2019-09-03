@@ -61,7 +61,8 @@ void ServerFramework::InitServer() {
 		printf("listen ¿¡·¯\n");
 
 	XMFLOAT3 xmf3Scale(TERRAIN_SCALE * 4, TERRAIN_SCALE, TERRAIN_SCALE * 4);
-	LPCTSTR file_name = _T("TerrainNew1.raw");
+	//LPCTSTR file_name = _T("TerrainNew1.raw");
+	LPCTSTR file_name = _T("terrain222.raw");
 	height_map = new CHeightMapImage(file_name, 513, 513, xmf3Scale);
 
 	client_lock.lock();
@@ -221,12 +222,12 @@ void ServerFramework::InitServer() {
 		float yPosition = height_map->GetHeight(xPosition, zPosition);
 
 		obj[i].x = xPosition;
-		obj[i].y = yPosition;
+		obj[i].y = yPosition - 10;
 		obj[i].z = zPosition;
 		obj[i].state = obj_state;
-
+		cout << xPosition << " " << yPosition << " " << endl;
 		obj[i].SetOOBB(XMFLOAT3(obj[i].x, obj[i].y, obj[i].z),
-			XMFLOAT3(OBB_SCALE_TREE_X, OBB_SCALE_TREE_Y, OBB_SCALE_TREE_Z),
+			XMFLOAT3(OBB_SCALE_TREE_X, OBB_SCALE_TREE_Y * 2, OBB_SCALE_TREE_Z),
 			XMFLOAT4(0, 0, 0, 1));
 		obj[i].bounding_box.Center;
 		obj[i].hp = MAX_OBJECT_HP;

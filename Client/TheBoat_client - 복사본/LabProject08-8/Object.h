@@ -313,8 +313,8 @@ private:
 
 public:
 	float GetHeight(float x, float z, bool bReverseQuad = false) { 
-		//return(m_pHeightMapImage->GetHeight(x, z, bReverseQuad) * m_xmf3Scale.y); 
-		return 0.0f;
+		return(m_pHeightMapImage->GetHeight(x, z, bReverseQuad) * m_xmf3Scale.y); 
+		//return 0.0f;
 	} //World
 	XMFLOAT3 GetNormal(float x, float z) { return(m_pHeightMapImage->GetHeightMapNormal(int(x / m_xmf3Scale.x), int(z / m_xmf3Scale.z))); }
 
