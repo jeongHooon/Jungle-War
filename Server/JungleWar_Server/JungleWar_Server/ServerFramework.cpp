@@ -476,8 +476,15 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	//	break;
 	//}
 	case CS_ROOT_BOX: {
-		++clients[cl_id].boxCount;
-		//SendPacket(cl_id, );
+		if(clients[cl_id].boxCount < 10)
+			++clients[cl_id].boxCount;
+
+		SC_PACKET_BOX_COUNT packets;
+		packets.size = sizeof(SC_PACKET_BOX_COUNT);
+		packets.type = SC_BOX_COUNT;
+		packets.boxcount = clients[cl_id].boxCount;
+
+		SendPacket(cl_id, &packets);
 		break;
 	}
 	}
