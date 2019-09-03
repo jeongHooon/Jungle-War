@@ -26,17 +26,25 @@ class ServerFramework
 
 	BOOL mode_selector;	// 
 
+
 	Client clients[MAX_PLAYER_SIZE];
 	bool player_entered[MAX_PLAYER_SIZE] = { 0 };
 	bool player_ready[MAX_PLAYER_SIZE] = { 0 };		// Player_Ready 패킷 도착하면 해당 
 													// Client_ID에 맞는 배열 true
 													// 모두 true가 되면 게임 시작 함수 실행
+
+	int ready_count = 0;
+	bool game_start = false;
+
 	CHeightMapImage* height_map;
 	time_point<system_clock> prev_time = system_clock::now();
 	float sender_time = 0;
 	float item_gen_timer = 0;
 	bool is_item_gen = false;
 	mutex client_lock;
+
+	/////////////////
+	bool is_chat = false;
 
 	// Timer전용 OverlappedExtensionSetd
 	// MAX_PLAYER_SIZE  플레이어 위치 업데이트 전용
@@ -58,6 +66,7 @@ class ServerFramework
 	int box_counter[MAX_PLAYER_SIZE] = { 0 };
 
 	Map_Object obj[MAX_OBJECT_SIZE] = { 0 };
+	Map_Object obj2[MAX_OBJECT2_SIZE] = { 0 };
 
 	int box_count = 0;
 

@@ -23,7 +23,7 @@
 #include <vector>
 #include <thread>
 #include <chrono>
-
+#include <random>
 #include <d3d12.h>
 #include <DirectXMath.h>
 #include <stdlib.h>
@@ -51,9 +51,14 @@
 #define OBB_SCALE_BOX_Y			10.f
 #define OBB_SCALE_BOX_Z			10.f
 
-#define OBB_SCALE_OBJECT_X			1.f
-#define OBB_SCALE_OBJECT_Y			10.f
-#define OBB_SCALE_OBJECT_Z			1.f
+#define OBB_SCALE_TREE_X			1.f
+#define OBB_SCALE_TREE_Y			10.f
+#define OBB_SCALE_TREE_Z			1.f
+
+#define OBB_SCALE_STONE_X			13.f
+#define OBB_SCALE_STONE_Y			8.f
+#define OBB_SCALE_STONE_Z			13.f
+
 
 #define AR_SHOOTER				0.2f	// AR ¿¬»ç¼Óµµ
 #define AR_SPEED				1000.f	// AR Åº¼Ó
@@ -81,6 +86,11 @@ struct OverlappedExtensionSet {
 };
 
 struct Client {
+	///////////////////////////////
+	char userid[10];
+	char chat[20];
+	///////////////////////////////
+
 	SOCKET s;
 	bool in_use;
 
@@ -103,14 +113,13 @@ struct Client {
 	bool is_die;
 
 	bool is_crouch;
-	float hp = 100.f;
-	int box_count = 0;
+	float hp;
 
 	float elecX;
 	float elecY;
 	float elecZ;
 
-
+	int CType;
 	Team team;
 	ARWeapons ar_weapons;
 	char ar_mag = 0;		// ÅºÃ¢
@@ -123,6 +132,8 @@ struct Client {
 	int packet_size;
 	int prev_packet_size;
 	char prev_packet[MAX_PACKET_SIZE];
+
+	int boxCount;
 
 	XMFLOAT3 look_vec;
 	mutex client_lock;
@@ -146,6 +157,8 @@ struct Bullet {
 	int type;
 	bool is_bound = false;
 	BoundingOrientedBox bounding_box;
+
+	int shooter_id;
 
 	void SetOOBB(XMFLOAT3 xmCenter, XMFLOAT3 xmExtents, XMFLOAT4 xmOrientation) {
 		bounding_box = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation);
