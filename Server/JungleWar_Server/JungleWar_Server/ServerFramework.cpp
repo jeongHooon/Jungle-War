@@ -222,12 +222,12 @@ void ServerFramework::InitServer() {
 		float yPosition = height_map->GetHeight(xPosition, zPosition);
 
 		obj[i].x = xPosition;
-		obj[i].y = yPosition - 10;
+		obj[i].y = yPosition;
 		obj[i].z = zPosition;
 		obj[i].state = obj_state;
 		cout << xPosition << " " << yPosition << " " << endl;
 		obj[i].SetOOBB(XMFLOAT3(obj[i].x, obj[i].y, obj[i].z),
-			XMFLOAT3(OBB_SCALE_TREE_X, OBB_SCALE_TREE_Y * 2, OBB_SCALE_TREE_Z),
+			XMFLOAT3(OBB_SCALE_TREE_X, OBB_SCALE_TREE_Y, OBB_SCALE_TREE_Z),
 			XMFLOAT4(0, 0, 0, 1));
 		obj[i].bounding_box.Center;
 		obj[i].hp = MAX_OBJECT_HP;

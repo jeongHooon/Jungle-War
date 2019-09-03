@@ -74,8 +74,8 @@ public:
 	void SetLookTemp(XMFLOAT3 xmf3Look) { LookTemp = xmf3Look; }
 	virtual ~CPlayer();
 
-	//XMFLOAT3 GetPosition() { return(m_xmf3Position); }
-	XMFLOAT3 GetPosition() { return(XMFLOAT3(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43)); }
+	XMFLOAT3 GetPosition() { return(m_xmf3Position); }
+	XMFLOAT3 GetWPosition() { return(XMFLOAT3(m_xmf4x4World._41, m_xmf4x4World._42, m_xmf4x4World._43)); }
 	XMFLOAT3 GetLookVector() { return(m_xmf3Look); }
 	XMFLOAT3 GetUpVector() { return(m_xmf3Up); }
 	XMFLOAT3 GetRightVector() { return(m_xmf3Right); }

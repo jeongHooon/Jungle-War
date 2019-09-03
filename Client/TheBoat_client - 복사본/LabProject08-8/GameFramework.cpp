@@ -1549,7 +1549,6 @@ void CGameFramework::BuildObjects()
 		m_pObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
 		m_pObject[i]->SetOOBB(m_pObject[i]->GetPosition(), XMFLOAT3(1, 1, 1), XMFLOAT4(0, 0, 0, 1));
 		m_pShadowObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
-		m_pShadowObject[i]->SetOOBB(m_pShadowObject[i]->GetPosition(), XMFLOAT3(1, 1, 1), XMFLOAT4(0, 0, 0, 1));
 		
 	}
 	for (int i = 0; i < NUM_OBJECT2; ++i) {
@@ -2264,7 +2263,7 @@ void CGameFramework::FrameAdvance()
 		}
 		case INTERSECTS:
 		{
-			printf("오브젝트충돌예에\n");
+			printf("오브젝트충돌예에44\n");
 			if ((m_pObject2[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x) * (m_pObject2[i]->GetPosition().x - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x)
 				< (m_pObject2[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z) * (m_pObject2[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z)) {
 				if (m_pObject2[i]->GetPosition().z - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z > 0) { m_pObject2[i]->look = XMFLOAT3(0, 0, -1); }
