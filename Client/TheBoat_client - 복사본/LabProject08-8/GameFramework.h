@@ -96,6 +96,7 @@ public:
 	static CPlayer				*m_pObject2[NUM_OBJECT2];
 	CPlayer						*m_pBlueBox[2];
 
+	int							bulletDropCount = 0;
 	BoundingOrientedBox			mapoobb;
 
 	int							myTeamNum;
@@ -104,7 +105,7 @@ public:
 	static CCamera				*m_pCamera;
 	static int					boxBound;
 	float						playerHp = 100;
-	int							gameMode = 1;
+	int							gameMode = 0;
 	bool						damageCheck = false;
 	bool						writeMode = true;
 	bool						writeStart = false;
