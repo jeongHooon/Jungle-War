@@ -153,7 +153,8 @@ public:
 	void SetMesh(int nIndex, CMesh *pMesh);
 	void SetShader(CShader *pShader);
 	void SetMaterial(CMaterial *pMaterial);
-	void SetWMatrix(XMFLOAT4X4 float4x4) { m_xmf4x4ToParentTransform = float4x4; }
+	void SetWMatrix(XMFLOAT4X4 float4x4) { m_xmf4x4World = float4x4; }
+	void SetWPosition(XMFLOAT3 float3) { m_xmf4x4World._41 = float3.x; m_xmf4x4World._42 = float3.y; m_xmf4x4World._43 = float3.z; }
 	void ResizeMeshes(int nMeshes);
 
 	void SetCbvGPUDescriptorHandle(D3D12_GPU_DESCRIPTOR_HANDLE d3dCbvGPUDescriptorHandle) { m_d3dCbvGPUDescriptorHandle = d3dCbvGPUDescriptorHandle; }
@@ -176,7 +177,7 @@ public:
 	BoundingOrientedBox bounding_box;
 	virtual void SetOOBB(XMFLOAT3 xmCenter, XMFLOAT3 xmExtents, XMFLOAT4 xmOrientation) { bounding_box = BoundingOrientedBox(xmCenter, xmExtents, xmOrientation); }
 
-	XMFLOAT4X4                      GetWMatrix()   const { return m_xmf4x4ToParentTransform; }
+	XMFLOAT4X4                      GetWMatrix()   const { return m_xmf4x4World; }
 	XMFLOAT3 GetPosition();
 	XMFLOAT3 GetLook();
 	XMFLOAT3 GetUp();
@@ -311,7 +312,10 @@ private:
 	XMFLOAT3					m_xmf3Scale;
 
 public:
-	float GetHeight(float x, float z, bool bReverseQuad = false) { return(m_pHeightMapImage->GetHeight(x, z, bReverseQuad) * m_xmf3Scale.y); } //World
+	float GetHeight(float x, float z, bool bReverseQuad = false) { 
+		//return(m_pHeightMapImage->GetHeight(x, z, bReverseQuad) * m_xmf3Scale.y); 
+		return 0.0f;
+	} //World
 	XMFLOAT3 GetNormal(float x, float z) { return(m_pHeightMapImage->GetHeightMapNormal(int(x / m_xmf3Scale.x), int(z / m_xmf3Scale.z))); }
 
 	int GetHeightMapWidth() { return(m_pHeightMapImage->GetHeightMapWidth()); }
