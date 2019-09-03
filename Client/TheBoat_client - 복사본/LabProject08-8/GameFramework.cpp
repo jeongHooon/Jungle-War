@@ -434,7 +434,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		//printf("=======================\n");
 		if (!m_pPlayer[my_client_id]->isDie && gameMode == 1) {
 
-			if (CShader::shootBullet == 0) {
+			if (CShader::shootBullet == 0 && m_pPlayer[my_client_id]->GetPlayerBullet() > 1) {
 				//CShader::shootBullet = 1;
 				sndPlaySound(L"../Assets/Sounds/RifleSound1.wav", SND_ASYNC);	// 사운드
 				m_pPlayer[my_client_id]->MinusPlayerBullet();
@@ -2156,7 +2156,7 @@ void CGameFramework::FrameAdvance()
 	if(gameMode == 2 && winCheck == false)
 		m_pScene->m_ppMainUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//게임오버 화면
 
-	if (winCheck == true) {
+	if (winCheck == true && server_mgr.GetGameStart()) {
 		m_pScene->m_ppMainUIShaders[5]->Render(m_pd3dCommandList, m_pCamera);
 	}
 	m_pScene->m_ppUIShaders[27]->Render(m_pd3dCommandList, m_pCamera);
