@@ -1072,17 +1072,23 @@ CChatReadyMesh::CChatReadyMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	CTexturedVertex pVertices[6];
 	int i = 0;
 
-	float startYposition = -0.1 * index;
+	float startYposition = -0.08 * index;
 
+	//pVertices[i++] = CTexturedVertex(XMFLOAT3(0.7, 0.93 + startYposition, 0), XMFLOAT2(0.0f, 0.0f));
+	//pVertices[i++] = CTexturedVertex(XMFLOAT3(0.9, 0.93 + startYposition, 0), XMFLOAT2(1.0f, 0.0f));
+	//pVertices[i++] = CTexturedVertex(XMFLOAT3(0.9, 0.73 + startYposition, 0), XMFLOAT2(1.0f, 1.0f));
+	//												  
+	//pVertices[i++] = CTexturedVertex(XMFLOAT3(0.7, 0.93 + startYposition, 0), XMFLOAT2(0.0f, 0.0f));
+	//pVertices[i++] = CTexturedVertex(XMFLOAT3(0.9, 0.73 + startYposition, 0), XMFLOAT2(1.0f, 1.0f));
+	//pVertices[i++] = CTexturedVertex(XMFLOAT3(0.7, 0.73 + startYposition, 0), XMFLOAT2(0.0f, 1.0f));
 
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.7, 0.93 + startYposition, 0), XMFLOAT2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.9, 0.93 + startYposition, 0), XMFLOAT2(1.0f, 0.0f));
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.9, 0.73 + startYposition, 0), XMFLOAT2(1.0f, 1.0f));
-
-
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.7, 0.93 + startYposition, 0), XMFLOAT2(0.0f, 0.0f));
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.9, 0.73 + startYposition, 0), XMFLOAT2(1.0f, 1.0f));
-	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.7, 0.73 + startYposition, 0), XMFLOAT2(0.0f, 1.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.7, 0.95 + startYposition, 0), XMFLOAT2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.9, 0.95 + startYposition, 0), XMFLOAT2(1.0f, 0.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.9, 0.75 + startYposition, 0), XMFLOAT2(1.0f, 1.0f));
+													  
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.7, 0.95 + startYposition, 0), XMFLOAT2(0.0f, 0.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.9, 0.75 + startYposition, 0), XMFLOAT2(1.0f, 1.0f));
+	pVertices[i++] = CTexturedVertex(XMFLOAT3(0.7, 0.75 + startYposition, 0), XMFLOAT2(0.0f, 1.0f));
 
 
 	m_pd3dVertexBuffer = CreateBufferResource(pd3dDevice, pd3dCommandList, pVertices, m_nStride * m_nVertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dVertexUploadBuffer);
