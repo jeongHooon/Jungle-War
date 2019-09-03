@@ -52,6 +52,7 @@
 #define SC_IS_DIE				14
 
 #define SC_BOX_POS				21
+#define SC_BOX_COUNT			22
 
 ///////////////////////////////////////
 #define SC_PLAYER_LOGIN			51
@@ -250,6 +251,12 @@ struct SC_PACKET_READY {
 	BYTE type;
 	bool player_ready[MAX_PLAYER_SIZE];
 	bool game_start = false;
+};
+
+struct SC_PACKET_BOX_COUNT {
+	BYTE size;
+	BYTE type;
+	int boxcount;
 };
 
 

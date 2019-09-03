@@ -328,6 +328,12 @@ void ServerMgr::ProcessPacket(char* ptr) {
 			printf("게임시작 ㄱㄱㄱ\n");
 		break;
 	}
+
+	case SC_BOX_COUNT: {
+		SC_PACKET_BOX_COUNT* packets = reinterpret_cast<SC_PACKET_BOX_COUNT*>(ptr);
+		myBoxCount = packets->boxcount;
+		break;
+	}
 	}
 }
 int ServerMgr::GetElecCount() {

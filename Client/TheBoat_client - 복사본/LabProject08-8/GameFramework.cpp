@@ -2185,7 +2185,6 @@ void CGameFramework::FrameAdvance()
 		{
 			blueScreenMode = true;
 			break;
-			break;
 		}
 		}
 	}
