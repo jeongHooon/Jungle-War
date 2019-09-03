@@ -390,7 +390,14 @@ void ServerMgr::SendRootPacket(int type) {
 	send_wsabuf.len = sizeof(CS_PACKET_ROOT_ITEM);
 	int retval = 0;
 	DWORD iobytes;
-	packet_buffer->type = CS_ROOT_ITEM;
+	
+	if (type == TYPE_BOX)
+		packet_buffer->type = CS_ROOT_BOX;
+	/*else if (type == TYPE_BULLET)
+		packet_buffer->type = CS_ROOT_BULLET;*/
+	else 
+		packet_buffer->type = CS_ROOT_ITEM;
+
 	packet_buffer->skill = type;
 	retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
 	if (retval == 1) {

@@ -470,6 +470,14 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		clients[cl_id].CType = packet_root_buffer->skill;
 		break;
 	}
+	//case CS_ROOT_BULLET: {
+	//	//++clients[cl_id].bullet;
+	//	break;
+	//}
+	case CS_ROOT_BOX: {
+		++clients[cl_id].boxCount;
+		break;
+	}
 	}
 
 	switch (packet_lobby_buffer->type) {

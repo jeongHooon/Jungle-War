@@ -114,7 +114,6 @@ struct Client {
 
 	bool is_crouch;
 	float hp;
-	int box_count = 0;
 
 	float elecX;
 	float elecY;

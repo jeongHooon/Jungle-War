@@ -102,7 +102,9 @@
 #define CS_KEY_RELEASE_CROUCH		23
 #define PlayerDie					26
 #define CS_PLAYER_DIE				27
-#define CS_ROOT_ITEM				28			
+#define CS_ROOT_ITEM				28		
+#define CS_ROOT_BULLET				29
+#define CS_ROOT_BOX					30
 //=============================
 #define CS_KEY_PRESS_Q 24
 #define CS_KEY_RELEASE_Q 25
@@ -124,6 +126,8 @@
 #define TYPE_DEFENCE	2
 #define TYPE_POWER		3
 #define TYPE_DODGE		4
+#define TYPE_BULLET		5
+#define TYPE_BOX		6
 
 enum GameMode {
 	TEAM_MODE, MELEE
