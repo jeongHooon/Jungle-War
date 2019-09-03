@@ -116,6 +116,7 @@ private:
 	bool						itemUI[4] = {};
 	bool						alphaMapOn = false;
 	bool						blueScreenMode = false;
+	int							blueScreenCount = 0;
 	HINSTANCE					m_hInstance;
 	HWND						m_hWnd; 
 

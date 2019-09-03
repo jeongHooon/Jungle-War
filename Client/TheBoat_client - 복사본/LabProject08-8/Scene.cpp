@@ -211,7 +211,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppShaders[12] = pBulletItemShader;
 	// UI
 
-	m_nUIShaders = 43;
+	m_nUIShaders = 44;
 	m_ppUIShaders = new CShader*[m_nUIShaders];
 
 	CMiniMapShader *pMiniMapShader = new CMiniMapShader();
@@ -273,6 +273,10 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	CBloodScreenShader *pBloodScreenShader = new CBloodScreenShader();
 	pBloodScreenShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pBloodScreenShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
+	CBloodScreenShader_1 *pBloodScreenShader1 = new CBloodScreenShader_1();
+	pBloodScreenShader1->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pBloodScreenShader1->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
 	// 숫자 시작
 	// 앞자리
@@ -429,6 +433,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppUIShaders[40] = pTreeNumShader10;
 	m_ppUIShaders[41] = pChatReadyShader;
 	m_ppUIShaders[42] = pBloodScreenShader;
+	m_ppUIShaders[43] = pBloodScreenShader1;
 	// 메인화면
 	m_nMainUIShaders = 6;
 	m_ppMainUIShaders = new CShader*[m_nMainUIShaders];
