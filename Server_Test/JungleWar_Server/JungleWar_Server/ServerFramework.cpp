@@ -78,6 +78,19 @@ void ServerFramework::InitServer() {
 	clients[3].x = 650.f;
 	clients[3].z = 900.f;
 	
+	/////////////////////////////////////////////////
+	clients[4].x = 127.f;
+	clients[4].z = 213.f;
+
+	clients[5].x = 118.f;
+	clients[5].z = 325.f;
+
+	clients[6].x = 600.f;
+	clients[6].z = 950.f;
+
+	clients[7].x = 650.f;
+	clients[7].z = 900.f;
+	/////////////////////////////////////////////////
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		/*clients[i].x = 450.f;
 		clients[i].z = 800.f;*/
