@@ -621,10 +621,10 @@ float CHeightMapImage::GetHeight(float fx, float fz, bool bReverseQuad)
 	float fxPercent = fx - x;
 	float fzPercent = fz - z;
 
-	float fBottomLeft = (float)m_pHeightMapPixels[x + (z*m_nWidth)];
-	float fBottomRight = (float)m_pHeightMapPixels[(x + 1) + (z*m_nWidth)];
-	float fTopLeft = (float)m_pHeightMapPixels[x + ((z + 1)*m_nWidth)];
-	float fTopRight = (float)m_pHeightMapPixels[(x + 1) + ((z + 1)*m_nWidth)];
+	float fBottomLeft = (float)m_pHeightMapPixels[x + (z * m_nWidth)];
+	float fBottomRight = (float)m_pHeightMapPixels[(x + 1) + (z * m_nWidth)];
+	float fTopLeft = (float)m_pHeightMapPixels[x + ((z + 1) * m_nWidth)];
+	float fTopRight = (float)m_pHeightMapPixels[(x + 1) + ((z + 1) * m_nWidth)];
 #ifdef _WITH_APPROXIMATE_OPPOSITE_CORNER
 	if (bReverseQuad)
 	{
@@ -645,7 +645,7 @@ float CHeightMapImage::GetHeight(float fx, float fz, bool bReverseQuad)
 	float fBottomHeight = fBottomLeft * (1 - fxPercent) + fBottomRight * fxPercent;
 	float fHeight = fBottomHeight * (1 - fzPercent) + fTopHeight * fzPercent;
 
-	return(fHeight/*-32.f*/);
+	return(fHeight);
 }
 
 CHeightMapGridMesh::CHeightMapGridMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int xStart, int zStart, int nWidth, int nLength, XMFLOAT3 xmf3Scale, XMFLOAT4 xmf4Color, void *pContext) : CMesh(pd3dDevice, pd3dCommandList)
@@ -662,9 +662,9 @@ CHeightMapGridMesh::CHeightMapGridMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsC
 	m_xmf3Scale = xmf3Scale;
 
 	//	CTexturedVertex *pVertices = new CTexturedVertex[m_nVertices];
-	CDiffused2TexturedVertex *pVertices = new CDiffused2TexturedVertex[m_nVertices];
+	CDiffused2TexturedVertex* pVertices = new CDiffused2TexturedVertex[m_nVertices];
 
-	CHeightMapImage *pHeightMapImage = (CHeightMapImage *)pContext;
+	CHeightMapImage* pHeightMapImage = (CHeightMapImage*)pContext;
 	int cxHeightMap = pHeightMapImage->GetHeightMapWidth();
 	int czHeightMap = pHeightMapImage->GetHeightMapLength();
 
@@ -674,13 +674,13 @@ CHeightMapGridMesh::CHeightMapGridMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsC
 		for (int x = xStart; x < (xStart + nWidth); x++, i++)
 		{
 			fHeight = OnGetHeight(x, z, pContext);
-			pVertices[i].m_xmf3Position = XMFLOAT3((x*m_xmf3Scale.x), fHeight, (z*m_xmf3Scale.z));
+			pVertices[i].m_xmf3Position = XMFLOAT3((x * m_xmf3Scale.x), fHeight, (z * m_xmf3Scale.z));
 			pVertices[i].m_xmf4Diffuse = Vector4::Add(OnGetColor(x, z, pContext), xmf4Color);
 			pVertices[i].m_xmf2TexCoord0 = XMFLOAT2(float(x) / float(cxHeightMap - 1), float(czHeightMap - 1 - z) / float(czHeightMap - 1));
-			pVertices[i].m_xmf2TexCoord1 = XMFLOAT2(float(x) / float(m_xmf3Scale.x*0.5f), float(z) / float(m_xmf3Scale.z*0.5f));
+			pVertices[i].m_xmf2TexCoord1 = XMFLOAT2(float(x) / float(m_xmf3Scale.x * 0.5f), float(z) / float(m_xmf3Scale.z * 0.5f));
 			if (fHeight < fMinHeight) fMinHeight = fHeight;
 			if (fHeight > fMaxHeight) fMaxHeight = fHeight;
-			
+
 		}
 	}
 
@@ -692,8 +692,8 @@ CHeightMapGridMesh::CHeightMapGridMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsC
 
 	delete[] pVertices;
 
-	m_nIndices = ((nWidth * 2)*(nLength - 1)) + ((nLength - 1) - 1);
-	UINT *pnIndices = new UINT[m_nIndices];
+	m_nIndices = ((nWidth * 2) * (nLength - 1)) + ((nLength - 1) - 1);
+	UINT* pnIndices = new UINT[m_nIndices];
 
 	for (int j = 0, z = 0; z < nLength - 1; z++)
 	{

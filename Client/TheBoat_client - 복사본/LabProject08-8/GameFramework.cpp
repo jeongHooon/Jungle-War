@@ -867,8 +867,8 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				}
 				break;
 			case 'R':
-				printf("else if (i == %d) xPosition = %.0f, yPosition = %.0f, zPosition = %.0f;\n", r++, m_pPlayer[my_client_id]->GetPosition().x, m_pPlayer[my_client_id]->GetPosition().y, m_pPlayer[my_client_id]->GetPosition().z);
-				printf("else if (i == %d) xPosition = %.0f, yPosition = %.0f, zPosition = %.0f;shadow\n", r++, m_pShadow[my_client_id]->GetPosition().x, m_pShadow[my_client_id]->GetPosition().y, m_pShadow[my_client_id]->GetPosition().z);
+				printf("else if (i == %d) xPosition = %.f, yPosition = %.f, zPosition = %.f;\n", r++, m_pCamera->GetLookVector().x , m_pCamera->GetLookVector().y, m_pCamera->GetLookVector().z);
+				//printf("else if (i == %d) xPosition = %.0f, yPosition = %.0f, zPosition = %.0f;shadow\n", r++, m_pShadow[my_client_id]->GetPosition().x, m_pShadow[my_client_id]->GetPosition().y, m_pShadow[my_client_id]->GetPosition().z);
 				break;
 			}
 		}
@@ -1266,7 +1266,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 			
 			for (int i = 0; i < MAX_PLAYER_SIZE*MAX_BOX_SIZE; ++i) {
 				if (server_mgr.GetBoxInuse(i) == 0) {
-					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(500, -500, 500));	
+					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(3000, -500, 3000));	
 				}
 				else {
 					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(server_mgr.GetBox(i).x, server_mgr.GetBox(i).y, server_mgr.GetBox(i).z));
@@ -1414,9 +1414,7 @@ void CGameFramework::BuildObjects()
 
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pScene->m_pObject[i] = m_pObject[i] = new CTreeObject(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
-		m_pScene->m_pShadowObject[i] = m_pShadowObject[i] = new CShadowTree(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
-		m_pShadowObject[i]->SetPosition(XMFLOAT3(500, -500, 500));
-		/*if(i == 0)
+		m_pScene->m_pShadowObject[i] = m_pShadowObject[i] = new CShadowTree(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);		/*if(i == 0)
 			m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 0.0f));
 		else if(i==1)
 			m_pObject[i]->SetLook(XMFLOAT3(1.0f, 0.0f, 0.0f));
@@ -1553,7 +1551,7 @@ void CGameFramework::BuildObjects()
 		float fHeight = m_pScene->GetTerrain()->GetHeight(xPosition, zPosition);
 		m_pObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
 		m_pObject[i]->SetOOBB(m_pObject[i]->GetPosition(), XMFLOAT3(1, 1, 1), XMFLOAT4(0, 0, 0, 1));
-		//m_pShadowObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
+		m_pShadowObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
 		
 	}
 	for (int i = 0; i < NUM_OBJECT2; ++i) {

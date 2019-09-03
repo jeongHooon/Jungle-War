@@ -72,6 +72,7 @@ public:
 	
 	XMFLOAT3 LookTemp;
 	void SetLookTemp(XMFLOAT3 xmf3Look) { LookTemp = xmf3Look; }
+	XMFLOAT3 GetLookTempVector() { return(LookTemp); }
 	virtual ~CPlayer();
 
 	XMFLOAT3 GetPosition() { return(m_xmf3Position); }

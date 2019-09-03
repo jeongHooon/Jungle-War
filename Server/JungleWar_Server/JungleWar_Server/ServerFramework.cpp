@@ -1249,7 +1249,7 @@ void ServerFramework::WorkerThread() {
 				//break;
 			}
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].x = clients[shooter_id].x + 10 * clients[shooter_id].look_vec.x;
-			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].y = clients[shooter_id].y;
+			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].y = clients[shooter_id].y + 5;
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].z = clients[shooter_id].z + 10 * clients[shooter_id].look_vec.z;
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].look_vec = clients[shooter_id].look_vec;
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].in_use = true;
