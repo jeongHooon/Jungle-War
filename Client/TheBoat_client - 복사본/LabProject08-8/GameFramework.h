@@ -96,6 +96,7 @@ public:
 	static CPlayer				*m_pObject2[NUM_OBJECT2];
 	CPlayer						*m_pBlueBox[2];
 
+	int							bulletDropCount = 0;
 	BoundingOrientedBox			mapoobb;
 
 	int							myTeamNum;

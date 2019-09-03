@@ -477,6 +477,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	//}
 	case CS_ROOT_BOX: {
 		++clients[cl_id].boxCount;
+		//SendPacket(cl_id, );
 		break;
 	}
 	}

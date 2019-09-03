@@ -52,7 +52,11 @@ CGameFramework::CGameFramework()
 		m_pShadow[i] = NULL;
 	}
 	for (int i = 0; i < NUM_OBJECT; ++i)
+	{
 		m_pObject[i] = NULL;
+		m_pShadowObject[i] = NULL;
+	}
+
 	for (int i = 0; i < NUM_OBJECT2; ++i)
 		m_pObject2[i] = NULL;
 	m_pBlueBox[0] = NULL;
@@ -1542,7 +1546,7 @@ void CGameFramework::BuildObjects()
 		float fHeight = m_pScene->GetTerrain()->GetHeight(xPosition, zPosition);
 		m_pObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
 		m_pObject[i]->SetOOBB(m_pObject[i]->GetPosition(), XMFLOAT3(1, 1, 1), XMFLOAT4(0, 0, 0, 1));
-		m_pShadowObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
+		//m_pShadowObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
 		
 	}
 	for (int i = 0; i < NUM_OBJECT2; ++i) {
@@ -1877,10 +1881,7 @@ void CGameFramework::FrameAdvance()
 		m_pShadow[i]->SetPosition(XMFLOAT3(m_pPlayer[i]->GetPosition().x + 1, m_pPlayer[i]->GetPosition().y, m_pPlayer[i]->GetPosition().z+1));
 	}*/
 
-	/////////////////////////
-	m_pScene->m_ppShaders[11]->SetPosition(0, XMFLOAT3(0, 20, 0));
-	m_pScene->m_ppShaders[12]->SetPosition(0, XMFLOAT3(0, 15, 0));
-	
+	////////////////////////
 	////승리 판별
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		int count;
@@ -2007,6 +2008,15 @@ void CGameFramework::FrameAdvance()
 					m_pScene->m_ppShaders[10]->SetOOBB(4, XMFLOAT3(m_pObject[i]->GetPosition().x, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
 					server_mgr.obj[i].item_gen = true;
 				}
+				//나무
+				m_pScene->m_ppShaders[11]->SetPosition(bulletDropCount, XMFLOAT3(m_pObject[i]->GetPosition().x + 3, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+				m_pScene->m_ppShaders[11]->SetOOBB(bulletDropCount, XMFLOAT3(m_pObject[i]->GetPosition().x + 3, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+				m_pScene->m_ppShaders[12]->SetPosition(bulletDropCount, XMFLOAT3(m_pObject[i]->GetPosition().x - 3, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+				m_pScene->m_ppShaders[12]->SetOOBB(bulletDropCount, XMFLOAT3(m_pObject[i]->GetPosition().x - 3, m_pObject[i]->GetPosition().y + 2, m_pObject[i]->GetPosition().z));
+				++bulletDropCount;
+				if (bulletDropCount == 5)
+					bulletDropCount = 0;
+				server_mgr.obj[i].item_gen = true;
 			}
 			//dropStart = true;
 		}
@@ -2236,7 +2246,6 @@ void CGameFramework::FrameAdvance()
 	case DISJOINT:
 	{
 		XMFLOAT3 look;
-		printf("맵 충돌\n");
 		if ((500 - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x) * (500 - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x)
 			< (500 - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z) * (500 - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z)) {
 			if (500 - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z > 0) { look = XMFLOAT3(0, 0, -1); }
@@ -2396,6 +2405,48 @@ void CGameFramework::FrameAdvance()
 		}
 		case CONTAINS:
 			break;
+		}
+
+		for (int i = 0; i < 5; ++i) {//TreeItem
+			ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pScene->m_ppShaders[11]->GetOOBB(i));
+			switch (containType)
+			{
+			case DISJOINT:
+			{
+				break;
+			}
+			case INTERSECTS:
+			{
+				m_pScene->m_ppShaders[11]->SetPosition(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
+				m_pScene->m_ppShaders[11]->SetOOBB(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
+				itemDropCheck = false;
+				server_mgr.SendRootPacket(TYPE_BOX);
+				break;
+			}
+			case CONTAINS:
+				break;
+			}
+		}
+
+		for (int i = 0; i < 5; ++i) {//BulletItem
+			ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(m_pScene->m_ppShaders[12]->GetOOBB(i));
+			switch (containType)
+			{
+			case DISJOINT:
+			{
+				break;
+			}
+			case INTERSECTS:
+			{
+				m_pScene->m_ppShaders[12]->SetPosition(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
+				m_pScene->m_ppShaders[12]->SetOOBB(i, XMFLOAT3(1000.f, -1000.f, 1000.f));
+				itemDropCheck = false;
+				m_pPlayer[my_client_id]->PlusPlayerBullet();
+				break;
+			}
+			case CONTAINS:
+				break;
+			}
 		}
 	}
 	//case INTERSECTS:
