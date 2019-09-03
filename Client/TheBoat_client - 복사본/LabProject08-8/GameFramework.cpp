@@ -2365,33 +2365,39 @@ void CGameFramework::FrameAdvance()
 		D2D1_SIZE_F szRenderTarget = m_ppd2dRenderTargets[m_nSwapChainBufferIndex]->GetSize();
 
 		if (gameMode == 3) {
-			D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.55, szRenderTarget.height * 0.64f, szRenderTarget.width, szRenderTarget.height);
+			D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.42, szRenderTarget.height * 0.32f, szRenderTarget.width, szRenderTarget.height);
+			//D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.55, szRenderTarget.height * 0.64f, szRenderTarget.width, szRenderTarget.height);
 			m_pd2dDeviceContext->DrawTextW(outputtext, (UINT32)wcslen(outputtext), m_pdwFont, &rcLowerText, m_pd2dbrText);
 		}
 		else {
 			for (int i = 0; i < 4; ++i) {
 				wcscpy(playerName[i], ConverCtoWC(server_mgr.GetPlayerID(i)));
 			}
-			D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.1, szRenderTarget.height * 1.35f, szRenderTarget.width, szRenderTarget.height);
+			D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * 0.83f, szRenderTarget.width, szRenderTarget.height);
+			//D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.1, szRenderTarget.height * 1.35f, szRenderTarget.width, szRenderTarget.height);
 			m_pd2dDeviceContext->DrawTextW(outputtext, (UINT32)wcslen(outputtext), m_pdwFont, &rcLowerText, m_pd2dbrText);
 
 			//플레이어 이름 출력
 			for (int i = 0; i < 4; ++i) {
-				D2D1_RECT_F rcPlayerText = D2D1::RectF(szRenderTarget.width * 0.9, szRenderTarget.height * (-0.83f + 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+				D2D1_RECT_F rcPlayerText = D2D1::RectF(szRenderTarget.width * 0.7, szRenderTarget.height * (-0.83f + 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+				//D2D1_RECT_F rcPlayerText = D2D1::RectF(szRenderTarget.width * 0.9, szRenderTarget.height * (-0.83f + 0.1f * i), szRenderTarget.width, szRenderTarget.height);
 				m_pd2dDeviceContext->DrawTextW(playerName[i], (UINT32)wcslen(playerName[i]), m_pdwFont, &rcPlayerText, m_pd2dbrText);
 			}
 		}
 		for (int i = 0; i < 16; ++i) {
-			D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.2, szRenderTarget.height * (1.0f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+			D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.2, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+			//D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.2, szRenderTarget.height * (1.0f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
 			m_pd2dDeviceContext->DrawTextW(outputtexts[i], (UINT32)wcslen(outputtexts[i]), m_pdwFont, &rcChatText, m_pd2dbrText);
 		}
 
-		for (int i = 0; i < 16; ++i) {	//플레이어 이름
+		for (int i = 0; i < 16; ++i) {    //플레이어 이름
 			if (playerChat[i] < 4) {
-				D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * (1.0f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+				D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+				//D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * (1.0f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
 				m_pd2dDeviceContext->DrawTextW(playerName[playerChat[i]], (UINT32)wcslen(playerName[playerChat[i]]), m_pdwFont, &rcChatText, m_pd2dbrText);
 			}
 		}
+
 		if (server_mgr.GetChatCheck()) {
 			SwapText(server_mgr.GetChatPlayerIndex(), ConverCtoWC(server_mgr.GetChatChar()));
 			cout << "채팅 시작 " << ConverCtoWC(server_mgr.GetChatChar()) << endl;
