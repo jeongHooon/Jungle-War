@@ -581,6 +581,26 @@ void ServerMgr::SendPacket(int type, char* id) {
 
 }
 
+void ServerMgr::SendCameraPacket(float x, float y, float z, XMFLOAT3 look_vec) {
+	CS_PACKET_CAMERA* packet_buffer = reinterpret_cast<CS_PACKET_CAMERA*>(send_buffer);
+	packet_buffer->size = sizeof(CS_PACKET_CAMERA);
+	send_wsabuf.len = sizeof(CS_PACKET_CAMERA);
+	int retval = 0;
+	DWORD iobytes;
+	packet_buffer->type = CS_CAMERA;
+	packet_buffer->cameraX = x;
+	packet_buffer->cameraY = y;
+	packet_buffer->cameraZ = z;
+	packet_buffer->camera_look_vec = look_vec;
+
+	retval = WSASend(sock, &send_wsabuf, 1, &iobytes, 0, NULL, NULL);
+
+	if (retval == 1) {
+		int error_code = WSAGetLastError();
+		ErrorDisplay("[WSASend] ¿¡·¯ : ", error_code);
+	}
+}
+
 
 void ServerMgr::SendPacket(int type, XMFLOAT3& xmvector) {
 	CS_PACKET_KEYUP* packet_buffer = reinterpret_cast<CS_PACKET_KEYUP*>(send_buffer);

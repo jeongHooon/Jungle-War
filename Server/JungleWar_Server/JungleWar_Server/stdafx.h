@@ -39,20 +39,20 @@
 
 #define EPSILON 1.0e-8f
 #define UPDATE_TIME 0.009f
-#define OBB_SCALE_PLAYER_X		5.f
+#define OBB_SCALE_PLAYER_X		0.5f
 #define OBB_SCALE_PLAYER_Y		8.f
-#define OBB_SCALE_PLAYER_Z		5.f
+#define OBB_SCALE_PLAYER_Z		0.5f
 
-#define OBB_SCALE_BULLET_X		1.f
-#define OBB_SCALE_BULLET_Y		1.f
-#define OBB_SCALE_BULLET_Z		1.f
+#define OBB_SCALE_BULLET_X		0.5f
+#define OBB_SCALE_BULLET_Y		0.5f
+#define OBB_SCALE_BULLET_Z		0.5f
 
-#define OBB_SCALE_BOX_X			10.f
-#define OBB_SCALE_BOX_Y			10.f
-#define OBB_SCALE_BOX_Z			10.f
+#define OBB_SCALE_BOX_X			7.f
+#define OBB_SCALE_BOX_Y			7.f
+#define OBB_SCALE_BOX_Z			7.f
 
 #define OBB_SCALE_TREE_X			1.f
-#define OBB_SCALE_TREE_Y			10.f
+#define OBB_SCALE_TREE_Y			20.f
 #define OBB_SCALE_TREE_Z			1.f
 
 #define OBB_SCALE_STONE_X			13.f
@@ -134,6 +134,11 @@ struct Client {
 	char prev_packet[MAX_PACKET_SIZE];
 
 	int boxCount;
+
+	float cameraX;
+	float cameraY;
+	float cameraZ;
+	XMFLOAT3 camera_look_vec;
 
 	XMFLOAT3 look_vec;
 	mutex client_lock;

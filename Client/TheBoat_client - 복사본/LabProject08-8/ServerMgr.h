@@ -89,6 +89,7 @@ public:
 	void SendPacket(int type, XMFLOAT3& xmvector);
 	void SendPacket(int type, char* id);
 	void SendDeadPacket();
+	void SendCameraPacket(float x, float y, float z, XMFLOAT3 look_vec);
 
 	char* GetPlayerID(int index) { return loginID[index]; }
 

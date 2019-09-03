@@ -446,6 +446,12 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 
 			//server_mgr.SendPacket(CS_MOUSE_MOVE, m_pPlayer[my_client_id]->GetLook());
 			server_mgr.SendPacket(CS_LEFT_BUTTON_DOWN, m_pPlayer[my_client_id]->GetLook());
+			server_mgr.SendCameraPacket(
+				m_pCamera->GetPosition().x, 
+				m_pCamera->GetPosition().y,
+				m_pCamera->GetPosition().z,
+				m_pCamera->GetLookVector());
+			
 		}
 		break;
 	case WM_RBUTTONDOWN:
