@@ -52,10 +52,7 @@ CGameFramework::CGameFramework()
 		m_pShadow[i] = NULL;
 	}
 	for (int i = 0; i < NUM_OBJECT; ++i)
-	{
-		m_pObject[i] = NULL; 
-		m_pShadowObject[i] = NULL;
-	}
+		m_pObject[i] = NULL;
 	for (int i = 0; i < NUM_OBJECT2; ++i)
 		m_pObject2[i] = NULL;
 	m_pBlueBox[0] = NULL;
@@ -63,7 +60,10 @@ CGameFramework::CGameFramework()
 	_tcscpy_s(m_pszFrameRate, _T("Jungle War ("));
 
 	for (int i = 0; i < 4; ++i) itemUI[i] = false;
-	
+
+	mapoobb.Center = XMFLOAT3(512, 10, 512);
+	mapoobb.Extents = XMFLOAT3(500, 10, 500);
+	mapoobb.Orientation = XMFLOAT4(0, 0, 0, 1);
 	
 }
 
@@ -1062,10 +1062,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 
 		case '9':
-			if (TreeShadowON)
-				TreeShadowON = false;
-			else if (!TreeShadowON)
-				TreeShadowON = true;
 			break;
 		case 'Q':
 			if (is_pushed[CS_KEY_PRESS_Q] == true) {
@@ -1173,7 +1169,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			break;
 		}
 		case VK_F10:
-			
 			break;
 		default:
 			break;
@@ -1409,7 +1404,6 @@ void CGameFramework::BuildObjects()
 
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pScene->m_pObject[i] = m_pObject[i] = new CTreeObject(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
-		m_pScene->m_pShadowObject[i] = m_pShadowObject[i] = new CShadowTree(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
 		/*if(i == 0)
 			m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 0.0f));
 		else if(i==1)
@@ -1548,8 +1542,6 @@ void CGameFramework::BuildObjects()
 		float fHeight = m_pScene->GetTerrain()->GetHeight(xPosition, zPosition);
 		m_pObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
 		m_pObject[i]->SetOOBB(m_pObject[i]->GetPosition(), XMFLOAT3(1, 1, 1), XMFLOAT4(0, 0, 0, 1));
-		m_pShadowObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
-		m_pShadowObject[i]->SetOOBB(m_pShadowObject[i]->GetPosition(), XMFLOAT3(1, 1, 1), XMFLOAT4(0, 0, 0, 1));
 		
 	}
 	for (int i = 0; i < NUM_OBJECT2; ++i) {
@@ -1598,10 +1590,8 @@ void CGameFramework::BuildObjects()
 		if (m_pPlayer[i]) m_pPlayer[i]->ReleaseUploadBuffers();
 		if (m_pShadow[i]) m_pShadow[i]->ReleaseUploadBuffers();
 	}
-	for (int i = 0; i < NUM_OBJECT; ++i) {
+	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pObject[i]) m_pObject[i]->ReleaseUploadBuffers();
-		if (m_pShadowObject[i]) m_pShadowObject[i]->ReleaseUploadBuffers();
-	}
 	for (int i = 0; i < NUM_OBJECT2; ++i)
 		if (m_pObject2[i]) m_pObject2[i]->ReleaseUploadBuffers();
 	if (m_pBlueBox[0]) m_pBlueBox[0]->ReleaseUploadBuffers();
@@ -1635,10 +1625,8 @@ void CGameFramework::ReleaseObjects()
 		if (m_pPlayer[i]) delete m_pPlayer[i];
 		if (m_pShadow[i]) delete m_pShadow[i];
 	}
-	for (int i = 0; i < NUM_OBJECT; ++i) {
+	for (int i = 0; i < NUM_OBJECT; ++i)
 		if (m_pObject[i]) delete m_pObject[i];
-		if (m_pShadowObject[i]) delete m_pShadowObject[i];
-	}
 	for (int i = 0; i < NUM_OBJECT2; ++i)
 		 if (m_pObject2[i]) delete m_pObject2[i];
 	if (m_pBlueBox[0])delete m_pBlueBox[0];
@@ -1748,12 +1736,10 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 			m_pShadow[i]->rrrotate((atan2(m_pShadow[i]->LookTemp.z, m_pShadow[i]->LookTemp.x)));
 		}
 	}
-	
+
 	//애니메이트
-	for (int i = 0; i < NUM_OBJECT; ++i) {
-		if (m_pObject) m_pObject[i]->Animate(fTimeElapsed);		
-		if (m_pShadowObject) m_pShadowObject[i]->Animate(fTimeElapsed,1,m_pObject[i]->GetWMatrix());
-	}
+	for (int i = 0; i < NUM_OBJECT; ++i)
+		if (m_pObject) m_pObject[i]->Animate(fTimeElapsed);
 	for (int i = 0; i < NUM_OBJECT2; ++i)
 		if (m_pObject2) m_pObject2[i]->Animate(fTimeElapsed,i);
 	if (m_pBlueBox[0])m_pBlueBox[0]->Animate(fTimeElapsed);
@@ -1910,13 +1896,8 @@ void CGameFramework::FrameAdvance()
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pObject[i]->UpdateTransform(NULL);
 		m_pObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
-		m_pShadowObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 		if (server_mgr.GetTreeInuse(i) == true) {
 			m_pObject[i]->Render(m_pd3dCommandList, 1, m_pCamera);
-			if (TreeShadowON) {
-				m_pShadowObject[i]->Render(m_pd3dCommandList, m_pCamera, 1);
-
-			}
 		/*if (server_mgr.obj[i].item_tree && !server_mgr.obj[i].item_gen) {
 			float fHeight = m_pScene->GetTerrain()->GetHeight(server_mgr.obj[i].x, server_mgr.obj[i].z);
 			m_pScene->m_ppShaders[7]->SetPosition(0, XMFLOAT3(server_mgr.obj[i].x, fHeight, server_mgr.obj[i].z));
@@ -2245,6 +2226,42 @@ void CGameFramework::FrameAdvance()
 				break;
 			}
 		}
+	}
+	//맵 충돌체크
+
+	ContainmentType containType = CGameFramework::m_pPlayer[CGameFramework::my_client_id]->bounding_box.Contains(mapoobb);
+	switch (containType)
+	{
+	case DISJOINT:
+	{
+		XMFLOAT3 look;
+		printf("맵 충돌\n");
+		if ((500 - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x) * (500 - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x)
+			< (500 - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z) * (500 - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z)) {
+			if (500 - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().z > 0) { look = XMFLOAT3(0, 0, -1); }
+			else { look = XMFLOAT3(0, 0, 1); }
+		}
+		else {
+			if (500 - CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetPosition().x > 0) { look = XMFLOAT3(-1, 0, 0); }
+			else { look = XMFLOAT3(1, 0, 0); }
+		}
+		XMFLOAT3 xmf3Result;
+		XMFLOAT3 xmf3Result_1;
+		XMFLOAT3 xmf3Result_2;
+		XMStoreFloat3(&xmf3Result_1, XMVector3Dot(XMLoadFloat3(&CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook()), XMLoadFloat3(&look)));
+		XMStoreFloat3(&xmf3Result, XMVector3Dot(XMLoadFloat3(&look), XMLoadFloat3(&xmf3Result_1)));
+		xmf3Result_2 = XMFLOAT3(Vector3::Subtract(CGameFramework::m_pPlayer[CGameFramework::my_client_id]->GetLook(), xmf3Result));
+		CGameFramework::sendLook = XMFLOAT3(2 * xmf3Result_2.x / 3, 2 * xmf3Result_2.y / 3, 2 * xmf3Result_2.z / 3);
+		check = true;
+		break;
+	}
+	case INTERSECTS:
+	{
+		break;
+	}
+	case CONTAINS:
+
+		break;
 	}
 
 	/*for (int i = 0; i < 4; ++i) {
