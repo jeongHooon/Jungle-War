@@ -58,7 +58,7 @@ class ServerMgr
 	bool player_ready[MAX_PLAYER_SIZE] = { 0 };
 	bool game_start = false;
 
-	int myBoxCount = 10;
+	int myBoxCount = 0;
 
 	// ·Î±×ÀÎ
 	char loginID[maxUserIDLen][10];

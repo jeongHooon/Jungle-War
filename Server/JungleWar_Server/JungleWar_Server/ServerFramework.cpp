@@ -377,7 +377,7 @@ void ServerFramework::AcceptPlayer() {
 	clients[client_id].team = Team::NON_TEAM;
 	clients[client_id].CType = TYPE_NONE;
 
-	clients[client_id].boxCount = 10;
+	clients[client_id].boxCount = 0;
 
 	clients[client_id].hp = 100.f;
 	printf("%d번 플레이어 체력 %f\n",client_id, clients[client_id].hp);
@@ -1269,9 +1269,9 @@ void ServerFramework::WorkerThread() {
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].z = clients[shooter_id].z + 10 * clients[shooter_id].look_vec.z;
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].look_vec = clients[shooter_id].look_vec;*/
 
-			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].x = clients[shooter_id].cameraX + 10 * clients[shooter_id].camera_look_vec.x;
+			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].x = clients[shooter_id].cameraX;
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].y = clients[shooter_id].cameraY;
-			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].z = clients[shooter_id].cameraZ + 10 * clients[shooter_id].camera_look_vec.z;
+			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].z = clients[shooter_id].cameraZ;
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].look_vec = clients[shooter_id].camera_look_vec;
 
 			bullets[shooter_id * MAX_BULLET_SIZE + bullet_counter[shooter_id]].in_use = true;
