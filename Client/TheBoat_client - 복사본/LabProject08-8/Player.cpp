@@ -750,8 +750,8 @@ CShadow::CShadow(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComman
 
 	m_pMaterial = new CMaterial();
 	CTexture* pTexture = new CTexture(2, RESOURCE_TEXTURE2D, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Model/50.dds", 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Model/50.dds", 1);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Model/demo_soldier.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Model/warrior.dds", 1);
 
 
 	m_pMaterial->SetTexture(pTexture);
@@ -760,8 +760,8 @@ CShadow::CShadow(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComman
 	ID3D12Resource* pd3dcbResource = CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	//CIlluminatedTexturedShader* pShader = new CIlluminatedTexturedShader();
-	CTexturedShader* pShader = new CTexturedShader();
-	//pShader->isShadow = true;
+	CShadowTexturedShader* pShader = new CShadowTexturedShader();
+	pShader->isShadow = true;
 	pShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
 	pShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	pShader->CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 1, 2);
@@ -775,7 +775,7 @@ CShadow::CShadow(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComman
 	XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMVECTOR toMainLight = -XMLoadFloat3(new XMFLOAT3(-0.3f, -1.0f, 0.0f));
 	XMMATRIX S = XMMatrixShadow(shadowPlane, toMainLight);
-	XMMATRIX shadowOffSetY = XMMatrixTranslation(0.0f, 0.003f, 0.0f);
+	XMMATRIX shadowOffSetY = XMMatrixTranslation(0.0f, 0.001f, 0.0f);
 	MTShadow = S * shadowOffSetY;
 
 	pTerrain = (CHeightMapTerrain*)pContext;
@@ -984,6 +984,7 @@ CShadowTree::CShadowTree(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	SetMesh(0, pMesh);
 	
 	CTexture* pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	//pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Model/50.dds", 0);
 	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/oak5.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
@@ -993,6 +994,7 @@ CShadowTree::CShadowTree(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	pShader->isShadow = true;
 	pShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
 	pShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	pShader->CreateDepthStencilState();
 	pShader->CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 1, 1);
 	pShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, 1, pd3dcbResource, ncbElementBytes);
 	pShader->CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, true);
@@ -1005,6 +1007,7 @@ CShadowTree::CShadowTree(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	m_pMaterial->SetShader(pShader);
 	XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMVECTOR toMainLight = -XMLoadFloat3(new XMFLOAT3(-0.3f, -1.0f, 0.0f));
+	//XMVECTOR toMainLight = -XMLoadFloat3(new XMFLOAT3(-0.0f, -1.0f, 0.0f));
 	XMMATRIX S = XMMatrixShadow(shadowPlane, toMainLight);
 	XMMATRIX shadowOffSetY = XMMatrixTranslation(0.0f, 0.003f, 0.0f);
 	MTShadow = S * shadowOffSetY;

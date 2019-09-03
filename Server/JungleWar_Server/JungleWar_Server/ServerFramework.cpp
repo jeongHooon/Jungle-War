@@ -222,12 +222,12 @@ void ServerFramework::InitServer() {
 		float yPosition = height_map->GetHeight(xPosition, zPosition);
 
 		obj[i].x = xPosition;
-		obj[i].y = yPosition - 10;
+		obj[i].y = yPosition;
 		obj[i].z = zPosition;
 		obj[i].state = obj_state;
 		cout << xPosition << " " << yPosition << " " << endl;
 		obj[i].SetOOBB(XMFLOAT3(obj[i].x, obj[i].y, obj[i].z),
-			XMFLOAT3(OBB_SCALE_TREE_X, OBB_SCALE_TREE_Y * 2, OBB_SCALE_TREE_Z),
+			XMFLOAT3(OBB_SCALE_TREE_X, OBB_SCALE_TREE_Y, OBB_SCALE_TREE_Z),
 			XMFLOAT4(0, 0, 0, 1));
 		obj[i].bounding_box.Center;
 		obj[i].hp = MAX_OBJECT_HP;
@@ -469,6 +469,14 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 	switch (packet_root_buffer->type) {
 	case CS_ROOT_ITEM: {
 		clients[cl_id].CType = packet_root_buffer->skill;
+		break;
+	}
+	//case CS_ROOT_BULLET: {
+	//	//++clients[cl_id].bullet;
+	//	break;
+	//}
+	case CS_ROOT_BOX: {
+		++clients[cl_id].boxCount;
 		break;
 	}
 	}
@@ -979,12 +987,12 @@ void ServerFramework::WorkerThread() {
 								packets.hp = (-1) * MAX_BULLET_DAMAGE * 0.6f;
 							else if (clients[j].CType == TYPE_DODGE && clients[bullets[i].shooter_id].CType == TYPE_POWER)
 								if (dis(gen) == 2 || dis(gen) == 3)
-									;
+									continue;
 								else
 									packets.hp = (-1) * MAX_BULLET_DAMAGE * 1.4f;
 							else if (clients[j].CType == TYPE_DODGE)
 								if (dis(gen) == 2 || dis(gen) == 3)
-									;
+									continue;
 								else
 									packets.hp = (-1) * MAX_BULLET_DAMAGE;
 							else if (clients[bullets[i].shooter_id].CType == TYPE_POWER)

@@ -185,8 +185,12 @@ void CShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12RootSignature *pd3dGr
 	::ZeroMemory(&d3dPipelineStateDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 	d3dPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
 	d3dPipelineStateDesc.VS = CreateVertexShader(&pd3dVertexShaderBlob);
-	if (isShadow) 	
+	if (isShadow) {
+		d3dPipelineStateDesc.RasterizerState.DepthBias = 50000;
+		d3dPipelineStateDesc.RasterizerState.DepthBiasClamp = 0.0f;
+		d3dPipelineStateDesc.RasterizerState.SlopeScaledDepthBias = 1.0f;
 		d3dPipelineStateDesc.PS = CreateShadowMovePixelShader(&pd3dPixelShaderBlob);
+	}
 	else
 		d3dPipelineStateDesc.PS = CreatePixelShader(&pd3dPixelShaderBlob);
 	d3dPipelineStateDesc.RasterizerState = CreateRasterizerState();
@@ -202,16 +206,13 @@ void CShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12RootSignature *pd3dGr
 	d3dPipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 	HRESULT hResult = pd3dDevice->CreateGraphicsPipelineState(&d3dPipelineStateDesc, __uuidof(ID3D12PipelineState), (void **)&m_ppd3dPipelineStates[0]);
 	
-	/*if (isShadow) {
-		d3dPipelineStateDesc.RasterizerState.DepthBias = 50000;
-		d3dPipelineStateDesc.RasterizerState.DepthBiasClamp = 0.0f;
-		d3dPipelineStateDesc.RasterizerState.SlopeScaledDepthBias = 1.0f;
-		d3dPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
-		d3dPipelineStateDesc.NumRenderTargets = 0;
-		d3dPipelineStateDesc.VS = CreateVertexShader(&pd3dVertexShaderBlob);
-		d3dPipelineStateDesc.PS = CreateShadowMovePixelShader(&pd3dPixelShaderBlob);
-		hResult = pd3dDevice->CreateGraphicsPipelineState(&d3dPipelineStateDesc, __uuidof(ID3D12PipelineState), (void**)& m_ppd3dPipelineStates[0]);
-	}*/
+	//if (isShadow) {
+	//	
+	//	d3dPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_UNKNOWN;
+	//	d3dPipelineStateDesc.NumRenderTargets = 0;
+
+	//	hResult = pd3dDevice->CreateGraphicsPipelineState(&d3dPipelineStateDesc, __uuidof(ID3D12PipelineState), (void**)& m_ppd3dPipelineStates[0]);
+	//}
 	if (pd3dVertexShaderBlob) pd3dVertexShaderBlob->Release();
 	if (pd3dPixelShaderBlob) pd3dPixelShaderBlob->Release();
 
@@ -585,6 +586,28 @@ D3D12_SHADER_BYTECODE CShadowTexturedShader::CreatePixelShader(ID3DBlob** ppd3dS
 D3D12_SHADER_BYTECODE CShadowTexturedShader::CreateShadowVertexShader(ID3DBlob** ppd3dShaderBlob)
 {
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSShadow", "vs_5_1", ppd3dShaderBlob));
+}
+
+D3D12_DEPTH_STENCIL_DESC CShadowTexturedShader::CreateDepthStencilState()
+{
+	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
+	::ZeroMemory(&d3dDepthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));
+	d3dDepthStencilDesc.DepthEnable = TRUE;
+	d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	d3dDepthStencilDesc.StencilEnable = TRUE;
+	d3dDepthStencilDesc.StencilReadMask = 0xff;
+	d3dDepthStencilDesc.StencilWriteMask = 0xff;
+	d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_INCR;
+	d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
+	d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_INCR;
+	d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_EQUAL;
+
+	return(d3dDepthStencilDesc);
 }
 
 void CShadowTexturedShader::CreateShader(ID3D12Device* pd3dDevice, ID3D12RootSignature* pd3dGraphicsRootSignature)
