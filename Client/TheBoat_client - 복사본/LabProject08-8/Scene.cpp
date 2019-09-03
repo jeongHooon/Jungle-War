@@ -140,9 +140,9 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_nShaders = 13;
 	m_ppShaders = new CShader*[m_nShaders];
 
-	CRedDotShader *pTreeShader = new CRedDotShader();
-	pTreeShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
-	pTreeShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+	CRedDotShader *pScopeShader = new CRedDotShader();
+	pScopeShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pScopeShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
 	CTreeShader *pFlowerShader = new CTreeShader();
 	pFlowerShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
@@ -196,7 +196,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pBulletItemShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pBulletItemShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
-	m_ppShaders[0] = pTreeShader;
+	m_ppShaders[0] = pScopeShader;
 	m_ppShaders[1] = pFlowerShader;
 	m_ppShaders[2] = pBulletShader;
 	m_ppShaders[3] = pParticleShader;
@@ -387,7 +387,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pRedPointShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
 	m_ppUIShaders[0] = pMiniMapShader;
-	m_ppUIShaders[1] = pTreeShader;
+	m_ppUIShaders[1] = pScopeShader;
 	m_ppUIShaders[2] = pHpBarShader;
 	m_ppUIShaders[3] = pItemUIShader;
 	m_ppUIShaders[4] = pItemUIShader_1;
@@ -488,6 +488,20 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 		m_ppShaders[10]->SetOOBB(i, XMFLOAT3(1000, -1000, 1000));
 
 	}
+	//for (int i = 0; i < 10; ++i) {	///////////스킬.
+	//	/*m_ppShaders[7]->SetPosition(i, XMFLOAT3(739 + 5 * i, m_pTerrain->GetHeight(739 + 5 * i, 669) + 2, 669));
+	//	m_ppShaders[7]->SetOOBB(i, XMFLOAT3(739 + 5 * i, m_pTerrain->GetHeight(739 + 5 * i, 669) + 2, 669));
+	//	m_ppShaders[8]->SetPosition(i, XMFLOAT3(200 + 5 * i, m_pTerrain->GetHeight(200 + 5 * i, 100) + 2, 100));
+	//	m_ppShaders[8]->SetOOBB(i, XMFLOAT3(200 + 5 * i, m_pTerrain->GetHeight(200 + 5 * i, 100) + 2, 100));
+	//	m_ppShaders[9]->SetPosition(i, XMFLOAT3(120 + 5 * i, m_pTerrain->GetHeight(120 + 5 * i, 100) + 2, 100));
+	//	m_ppShaders[9]->SetOOBB(i, XMFLOAT3(120 + 5 * i, m_pTerrain->GetHeight(120 + 5 * i, 100) + 2, 100));
+	//	m_ppShaders[10]->SetPosition(i, XMFLOAT3(160 + 5 * i, m_pTerrain->GetHeight(160 + 5 * i, 100) + 2, 100));
+	//	m_ppShaders[10]->SetOOBB(i, XMFLOAT3(160 + 5 * i, m_pTerrain->GetHeight(160 + 5 * i, 100) + 2, 100));*/
+	//	m_ppShaders[7]->SetPosition(i, XMFLOAT3(1000, -1000, 1000));
+	//	m_ppShaders[7]->SetOOBB(i, XMFLOAT3(1000, -1000, 1000));
+	//	
+
+	//}
 }
 
 void CScene::ReleaseObjects()

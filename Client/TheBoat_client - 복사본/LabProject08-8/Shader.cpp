@@ -186,9 +186,9 @@ void CShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12RootSignature *pd3dGr
 	d3dPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
 	d3dPipelineStateDesc.VS = CreateVertexShader(&pd3dVertexShaderBlob);
 	if (isShadow) {
-		d3dPipelineStateDesc.RasterizerState.DepthBias = 50000;
-		d3dPipelineStateDesc.RasterizerState.DepthBiasClamp = 0.0f;
-		d3dPipelineStateDesc.RasterizerState.SlopeScaledDepthBias = 1.0f;
+		//d3dPipelineStateDesc.RasterizerState.DepthBias = 50000;
+		//d3dPipelineStateDesc.RasterizerState.DepthBiasClamp = 0.0f;
+		//d3dPipelineStateDesc.RasterizerState.SlopeScaledDepthBias = 1.0f;
 		d3dPipelineStateDesc.PS = CreateShadowMovePixelShader(&pd3dPixelShaderBlob);
 	}
 	else
@@ -13267,7 +13267,6 @@ void CTreeShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	std::vector<D3D12_SHADER_RESOURCE_VIEW_DESC*> meshSRV;
 	std::vector<std::wstring> textureNameArray1;
 	//
-	LoadMD5Model(pd3dDevice, pd3dCommandList, a, L"../Assets/Model/Soldier_Mesh.MD5MESH", SoldierModel, meshSRV, textureNameArray1, soldier);
 	//CGameObject *TreeObject = NULL;
 	m_pMaterial = new CMaterial();
 	CTexture *pTextures = new CTexture(6, RESOURCE_TEXTURE2DARRAY, 0);
