@@ -430,6 +430,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 				sndPlaySound(L"../Assets/Sounds/RifleSound1.wav", SND_ASYNC);	// 사운드
 				m_pPlayer[my_client_id]->MinusPlayerBullet();
 				m_pPlayer[my_client_id]->ActiveShot();
+				m_pShadow[my_client_id]->ActiveShot();
 			}
 			else
 				CShader::shootBullet = 0;
@@ -857,7 +858,8 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				}
 				break;
 			case 'R':
-				printf("else if (i == %d) xPosition = %.0f, zPosition = %.0f;\n", r++,m_pPlayer[my_client_id]->GetPosition().x, m_pPlayer[my_client_id]->GetPosition().z);
+				printf("else if (i == %d) xPosition = %.0f, yPosition = %.0f, zPosition = %.0f;\n", r++, m_pPlayer[my_client_id]->GetPosition().x, m_pPlayer[my_client_id]->GetPosition().y, m_pPlayer[my_client_id]->GetPosition().z);
+				printf("else if (i == %d) xPosition = %.0f, yPosition = %.0f, zPosition = %.0f;shadow\n", r++, m_pShadow[my_client_id]->GetPosition().x, m_pShadow[my_client_id]->GetPosition().y, m_pShadow[my_client_id]->GetPosition().z);
 				break;
 			}
 		}
@@ -1839,15 +1841,15 @@ void CGameFramework::FrameAdvance()
 #endif
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pPlayer[i]->UpdateTransform(NULL);
-		m_pShadow[i]->UpdateTransform(NULL);
+		//m_pShadow[i]->UpdateTransform(NULL);
 		m_pShadow[i]->GetKeyInput(m_pPlayer[i]->GetAnimationState());
 		if (i == my_client_id && m_pCamera->GetMode() == SPACESHIP_CAMERA);
 		else {
 			/*if(i != my_client_id)
 				m_pPlayer[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));*/
 			m_pPlayer[i]->Render(m_pd3dCommandList, m_pCamera);
+			m_pShadow[i]->Render(m_pd3dCommandList, m_pCamera);
 		}
-			//m_pShadow[0]->Render(m_pd3dCommandList, m_pCamera);
 	}
 	/*for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		m_pShadow[i]->SetPosition(XMFLOAT3(m_pPlayer[i]->GetPosition().x + 1, m_pPlayer[i]->GetPosition().y, m_pPlayer[i]->GetPosition().z+1));

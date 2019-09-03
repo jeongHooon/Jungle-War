@@ -778,9 +778,11 @@ CShadow::CShadow(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComman
 	XMMATRIX shadowOffSetY = XMMatrixTranslation(0.0f, 0.003f, 0.0f);
 	MTShadow = S * shadowOffSetY;
 
-	CHeightMapTerrain* pTerrain = (CHeightMapTerrain*)pContext;
+	pTerrain = (CHeightMapTerrain*)pContext;
 	SetPlayerUpdatedContext(pTerrain);
 	SetCameraUpdatedContext(pTerrain);
+	
+
 }
 
 CShadow::~CShadow()
@@ -790,18 +792,16 @@ CShadow::~CShadow()
 void CShadow::Animate(float fTimeElapsed, int num, XMFLOAT4X4 worldMt)
 {	
 	if (!m_bActive) return;
-	//SetWMatrix(Matrix4x4::Multiply(worldMt, MTShadow));
-	SetWMatrix(Matrix4x4::Multiply(worldMt, XMMatrixIdentity()));
+	SetWMatrix(Matrix4x4::Multiply(worldMt, MTShadow));
+	
+	float fHeight = pTerrain->GetHeight(GetWMatrix()._41, GetWMatrix()._43);
+	SetWPosition(XMFLOAT3(GetWMatrix()._41, fHeight+0.1, GetWMatrix()._43));
+	/*SetWMatrix(Matrix4x4::Multiply(worldMt, XMMatrixIdentity()));
 	m_xmf4x4ToParentTransform._11 = m_xmf3Right.x; m_xmf4x4ToParentTransform._12 = m_xmf3Right.y; m_xmf4x4ToParentTransform._13 = m_xmf3Right.z;
 	m_xmf4x4ToParentTransform._21 = m_xmf3Up.x; m_xmf4x4ToParentTransform._22 = m_xmf3Up.y; m_xmf4x4ToParentTransform._23 = m_xmf3Up.z;
-	m_xmf4x4ToParentTransform._31 = m_xmf3Look.x; m_xmf4x4ToParentTransform._32 = m_xmf3Look.y; m_xmf4x4ToParentTransform._33 = m_xmf3Look.z;
-	//m_xmf4x4ToParentTransform._43 -= 5;
-	/*if (m_nMeshes > 0)
-		for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
-			UpdateMD5Model(NewMD5Model, fTimeElapsed * 0.85, 0, m_ppMeshes[i], i);*/
-	/*else if (m_AnimState == ATTACKSTATE) {
-		if ((m_pModels[CurMeshNum].animations[ATTACKSTATE].currAnimTime == 0.f)) m_AnimState = IDLESTATE;
-	}*/
+	m_xmf4x4ToParentTransform._31 = m_xmf3Look.x; m_xmf4x4ToParentTransform._32 = m_xmf3Look.y; m_xmf4x4ToParentTransform._33 = m_xmf3Look.z;*/
+	
+
 	if (!gameend) {
 		if (isShot) {
 
