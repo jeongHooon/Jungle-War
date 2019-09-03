@@ -4,21 +4,18 @@
 #define SERVER_PORT			4000
 #define MAX_BUFFER_SIZE		4000
 #define MAX_PACKET_SIZE		256
-#define MAX_PLAYER_SIZE		4
-#define MAX_OBJECT_SIZE		42
+#define MAX_PLAYER_SIZE		8
+#define MAX_OBJECT_SIZE		90
+#define MAX_OBJECT2_SIZE	20
 #define	WM_SOCKET			WM_USER + 1
 #define CLIENT_BUF_SIZE		1024
 #define MAX_BULLET_SIZE		40
 #define MAX_BOX_SIZE		10
 #define OX_SIZE				30
 #define TERRAIN_SCALE		0.5f
-
-/////////채팅용 프로토콜/////////
-#define maxUserIDLen		20
-#define maxPasswdLen		20
-#define maxChatSize			256
-/////////////////////////////////
-
+////////////////////////////////
+#define maxUserIDLen		10
+#define maxChatSize			20
 
 // 본인 클라이언트 및 서버에서 사용
 //#define RUN_SPEED				2.78f
@@ -26,6 +23,7 @@
 #define RUN_SPEED				5.0f
 #define METER_PER_PIXEL			0.243f
 #define WALK_SPEED				2.78f
+#define BOOST_SPEED				1.3f
 #define JUMP_SPEED              40.0f
 #define G_S 9.8f
 #define MAX_BOX_HP				50.0f
@@ -49,9 +47,16 @@
 
 #define SC_ITEM_GEN				10	// Actually Item gen packet
 #define SC_BUILDING_GEN			11
-#define SC_COLLSION_BO			12
+#define SC_COLLSION_OB			12
+#define SC_COLLSION_OB2			13
+#define SC_IS_DIE				14
 
 #define SC_BOX_POS				21
+
+///////////////////////////////////////
+#define SC_PLAYER_LOGIN			51
+#define SC_READY				52
+#define SC_PLAYER_CHAT			53
 
 // Server To Server
 #define SS_COLLISION			12
@@ -65,7 +70,7 @@
 #define SS_BOX_UPDATE			20
 #define SS_COLLISION_BB			21
 #define SS_COLLISION_MP			22
-#define SS_COLLISION_BO			23
+#define SS_COLLISION_OB			23
 
 
 
@@ -95,7 +100,11 @@
 #define CS_MOUSE_MOVE				21
 #define CS_KEY_PRESS_CROUCH			22
 #define CS_KEY_RELEASE_CROUCH		23
-
+#define PlayerDie					26
+#define CS_PLAYER_DIE				27
+#define CS_ROOT_ITEM				28		
+#define CS_ROOT_BULLET				29
+#define CS_ROOT_BOX					30
 //=============================
 #define CS_KEY_PRESS_Q 24
 #define CS_KEY_RELEASE_Q 25
@@ -104,8 +113,21 @@
 #define CS_PLAYER_READY_CANCLE 101
 #define CS_PLAYER_TEAM_SELECT	102
 
+///////////////////////////////////////
+#define CS_PLAYER_LOGIN 50
+#define CS_PLAYER_CHAT	51
+///////////////////////////////////////
+
 #define OBJECT_ALIVE		0
 #define OBJECT_DEAD			1
+
+#define TYPE_NONE		0
+#define TYPE_SPEED		1
+#define TYPE_DEFENCE	2
+#define TYPE_POWER		3
+#define TYPE_DODGE		4
+#define TYPE_BULLET		5
+#define TYPE_BOX		6
 
 enum GameMode {
 	TEAM_MODE, MELEE
@@ -120,42 +142,11 @@ enum SubWeapons {
 	NON_SUB = 0
 };
 
-/////////채팅용 프로토콜/////////
-struct ProtoCommand
-{
-	WORD command;
-	BYTE data[0];
-};
-const WORD ComLoginREQ = 1; // 로그인 요청
-
-struct StrLoginREQ    {						
-	BYTE userid[maxUserIDLen];
-	BYTE passwd[maxPasswdLen];
-};
-
-const WORD ComLoginACK = 2; // 서버에서 로그인 요청 응답
-struct StrLoginACK	{					
-	BYTE result;	// 0이면 로긴 성공, 아니면 실패
-};
-
-enum EnumLoginACK
-{
-	LoginACKConnectAllow = 0,		// 접속 허용
-	LoginACKInvalidPasswd = 1,		// 패스워드 불일치
-	LoginACKDuplicateConnect = 2,	// 한 아이디로 중복접속
-};
-
-/////////////////////////////
-
-
-
 // 서버->클라
 struct SC_PACKET_ENTER_PLAYER {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	BYTE userid[maxUserIDLen];
-	BYTE passwd[maxPasswdLen];
 	float x, y, z;
 	// 건물 크기 보낼 때만 사용
 
@@ -165,12 +156,26 @@ struct SC_PACKET_ENTER_PLAYER {
 	float size_x, size_y, size_z;
 };
 
+////////////////////////////
+
+struct SC_PACKET_LOGIN_PLAYER {
+	BYTE size;
+	BYTE type;
+	WORD id;
+	char userid[10];
+};
+
+struct SC_PACKET_CHAT {
+	BYTE size;
+	BYTE type;
+	WORD id;
+	char chat[20];
+};
+
 struct SC_PACKET_LOOCVEC {
 	BYTE size;
 	BYTE type;
 	WORD id;
-	BYTE userid[maxUserIDLen];
-	BYTE passwd[maxPasswdLen];
 	DirectX::XMFLOAT3 look_vec;
 	int player_status;
 
@@ -181,9 +186,21 @@ struct SC_PACKET_POS {
 	BYTE size;
 	BYTE type;
 	WORD id;
+	DirectX::XMFLOAT3 look_vec;
 	int player_status;
 	float x, y, z;
+	bool is_die;
 
+	//int elecCount;
+};
+
+struct SC_PACKET_IS_DIE {
+	BYTE size;
+	BYTE type;
+	WORD id;
+	DirectX::XMFLOAT3 look_vec;
+	int player_status;
+	bool is_die;
 	//int elecCount;
 };
 
@@ -193,6 +210,8 @@ struct SC_PACKET_COLLISION {
 	WORD client_id;
 	float x, y, z;
 	float hp;
+
+	float hp_p1;
 };
 
 struct SC_PACKET_COLLISION_BB {
@@ -226,6 +245,12 @@ struct SC_PACKET_ITEM_GEN {
 	float x, y, z;
 };
 
+struct SC_PACKET_READY {
+	BYTE size;
+	BYTE type;
+	bool player_ready[MAX_PLAYER_SIZE];
+	bool game_start = false;
+};
 
 
 // 클라->서버
@@ -234,12 +259,22 @@ struct CS_PACKET_BIGGEST {
 	BYTE type;
 	WORD id;
 	bool player_in[4];
+
 };
 
 struct CS_PACKET_KEYUP {
 	BYTE size;
 	BYTE type;
 	DirectX::XMFLOAT3 look_vec;
+	bool isPlayerdead[MAX_PLAYER_SIZE] = { false };
+};
+
+struct CS_PACKET_LOBBY {
+	BYTE size;
+	BYTE type;
+	char userID[10];
+	char chatbuffer[20];
+
 };
 struct CS_PACKET_KEYDOWN {
 	BYTE size;
@@ -301,6 +336,12 @@ struct CS_PACKET_LOOK_VECTOR {
 	DirectX::XMVECTOR look_vector;
 };
 
+struct CS_PACKET_ROOT_ITEM {
+	BYTE size;
+	BYTE type;
+	int skill;
+};
+
 //===============================================
 struct CS_PACKET_Q_BUTTON {
 	BYTE size;
@@ -329,6 +370,8 @@ struct SC_PACKET_BOX {
 	BYTE type;
 	WORD id;
 	WORD box_id;
+
+	int boxCount[MAX_PLAYER_SIZE];
 	bool in_use;
 	float hp;
 	DirectX::XMFLOAT3 pos;
