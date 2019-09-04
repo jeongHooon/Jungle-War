@@ -645,7 +645,7 @@ void CBlueBox::Animate(float fTimeElapsed)
 	time = 0;*/
 	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), time, 0.0f);
 	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
-	if (0.05 * ServerMgr::elecCount < 1100)
+	if (0.05 * ServerMgr::elecCount < 4000)
 		elecCount_ = ServerMgr::elecCount;
 
 	SetScale(1200 - 0.02 * elecCount_, 5000, 1200 - 0.02 * elecCount_);

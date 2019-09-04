@@ -696,7 +696,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			case 'W':
 				if (is_pushed[CS_KEY_PRESS_UP] == false) {
 					if (charstate == 7)
-						cout << "215125" << endl;
+						//cout << "215125" << endl;
 					//server_mgr.SendPacket(CS_KEY_PRESS_UP);
 					if (charstate == 6) {
 						m_pPlayer[my_client_id]->GetKeyInput(6);
@@ -1103,14 +1103,14 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				gameMode = 4;
 				SendLoginREQ(ConvertWCtoC(inputtext));
 				wcscpy(playerName[my_client_id], inputtext);
-				cout << ConvertWCtoC(inputtext) << endl;
+				//cout << ConvertWCtoC(inputtext) << endl;
 				for (int i = 0; i < 100; ++i)
 					inputtext[i] = {};
-				cout << ConvertWCtoC(inputtext) << endl;
+				//cout << ConvertWCtoC(inputtext) << endl;
 			}
 			else {
 				SendChatREQ(ConvertWCtoC(inputtext));
-				cout << "send" << endl;
+				//cout << "send" << endl;
 				//SwapText();
 
 			//	is_chat = false;
@@ -1331,7 +1331,7 @@ void CGameFramework::SendLoginREQ(char inputID[]) {
 
 	login->userid[maxUserIDLen - 1] = '\0';  // 제한된 길이만큼만 복사
 
-	cout << "로그인한 아이디는" << userid << endl;
+	//cout << "로그인한 아이디는" << userid << endl;
 
 	server_mgr.SendPacket(CS_PLAYER_LOGIN,userid);
 
@@ -1341,7 +1341,7 @@ void CGameFramework::SendChatREQ(char inputChat[]) {
 	char buffer[20];
 	
 	strncpy_s((char *)buffer, maxChatSize, inputChat, maxChatSize);
-	cout << "채팅채팅 " << buffer << endl;
+	//cout << "채팅채팅 " << buffer << endl;
 
 	server_mgr.SendPacket(CS_PLAYER_CHAT, buffer);
 
@@ -1906,8 +1906,9 @@ void CGameFramework::FrameAdvance()
 	for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 		
 		if (i!=my_client_id && i!=myTeamNum)
-			if(m_pPlayer[i]->isDie)
+			if (m_pPlayer[i]->isDie) {
 				++count;
+			}
 		if (count > 1) {
 			winCheck = true;
 		}
@@ -2540,35 +2541,35 @@ void CGameFramework::FrameAdvance()
 		D2D1_SIZE_F szRenderTarget = m_ppd2dRenderTargets[m_nSwapChainBufferIndex]->GetSize();
 
 		if (gameMode == 3) {
-			//D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.42, szRenderTarget.height * 0.32f, szRenderTarget.width, szRenderTarget.height);
-			D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.55, szRenderTarget.height * 0.64f, szRenderTarget.width, szRenderTarget.height);
+			D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.42, szRenderTarget.height * 0.32f, szRenderTarget.width, szRenderTarget.height);
+			//D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.55, szRenderTarget.height * 0.64f, szRenderTarget.width, szRenderTarget.height);
 			m_pd2dDeviceContext->DrawTextW(outputtext, (UINT32)wcslen(outputtext), m_pdwFont, &rcLowerText, m_pd2dbrText);
 		}
 		else {
 			for (int i = 0; i < 4; ++i) {
 				wcscpy(playerName[i], ConverCtoWC(server_mgr.GetPlayerID(i)));
 			}
-			//D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * 0.83f, szRenderTarget.width, szRenderTarget.height);
-			D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.1, szRenderTarget.height * 1.35f, szRenderTarget.width, szRenderTarget.height);
+			D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * 0.83f, szRenderTarget.width, szRenderTarget.height);
+			//D2D1_RECT_F rcLowerText = D2D1::RectF(szRenderTarget.width * 0.1, szRenderTarget.height * 1.35f, szRenderTarget.width, szRenderTarget.height);
 			m_pd2dDeviceContext->DrawTextW(outputtext, (UINT32)wcslen(outputtext), m_pdwFont, &rcLowerText, m_pd2dbrText);
 
 			//플레이어 이름 출력
 			for (int i = 0; i < 4; ++i) {
-				//D2D1_RECT_F rcPlayerText = D2D1::RectF(szRenderTarget.width * 0.7, szRenderTarget.height * (-0.83f + 0.1f * i), szRenderTarget.width, szRenderTarget.height);
-				D2D1_RECT_F rcPlayerText = D2D1::RectF(szRenderTarget.width * 0.9, szRenderTarget.height * (-0.83f + 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+				D2D1_RECT_F rcPlayerText = D2D1::RectF(szRenderTarget.width * 0.7, szRenderTarget.height * (-0.83f + 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+				//D2D1_RECT_F rcPlayerText = D2D1::RectF(szRenderTarget.width * 0.9, szRenderTarget.height * (-0.83f + 0.1f * i), szRenderTarget.width, szRenderTarget.height);
 				m_pd2dDeviceContext->DrawTextW(playerName[i], (UINT32)wcslen(playerName[i]), m_pdwFont, &rcPlayerText, m_pd2dbrText);
 			}
 
 			for (int i = 0; i < 16; ++i) {
-				//D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.2, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
-				D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.2, szRenderTarget.height * (1.0f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+				D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.2, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+				//D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.2, szRenderTarget.height * (1.0f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
 				m_pd2dDeviceContext->DrawTextW(outputtexts[i], (UINT32)wcslen(outputtexts[i]), m_pdwFont, &rcChatText, m_pd2dbrText);
 			}
 
 			for (int i = 0; i < 16; ++i) {    //플레이어 이름
 				if (playerChat[i] < 4) {
-					//D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
-					D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * (1.0f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+					D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * (0.65f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
+					//D2D1_RECT_F rcChatText = D2D1::RectF(szRenderTarget.width * 0.05, szRenderTarget.height * (1.0f - 0.1f * i), szRenderTarget.width, szRenderTarget.height);
 					m_pd2dDeviceContext->DrawTextW(playerName[playerChat[i]], (UINT32)wcslen(playerName[playerChat[i]]), m_pdwFont, &rcChatText, m_pd2dbrText);
 				}
 			}
@@ -2577,7 +2578,7 @@ void CGameFramework::FrameAdvance()
 
 		if (server_mgr.GetChatCheck()) {
 			SwapText(server_mgr.GetChatPlayerIndex(), ConverCtoWC(server_mgr.GetChatChar()));
-			cout << "채팅 시작 " << ConverCtoWC(server_mgr.GetChatChar()) << endl;
+			//cout << "채팅 시작 " << ConverCtoWC(server_mgr.GetChatChar()) << endl;
 			server_mgr.SetChatCheck();
 		}
 		m_pd2dDeviceContext->EndDraw();
