@@ -695,7 +695,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			case 'w':
 			case 'W':
 				if (is_pushed[CS_KEY_PRESS_UP] == false) {
-					if (charstate == 7)
+					if (charstate == 7);
 						//cout << "215125" << endl;
 					//server_mgr.SendPacket(CS_KEY_PRESS_UP);
 					if (charstate == 6) {
@@ -1913,8 +1913,7 @@ void CGameFramework::FrameAdvance()
 			winCheck = true;
 		}
 	}
-
-
+	
 	//////아이템 드랍
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pObject[i]->UpdateTransform(NULL);
@@ -2090,15 +2089,15 @@ void CGameFramework::FrameAdvance()
 
 	case 1:	//게임시작
 	case 2:	//게임오버
-
 		m_pScene->m_ppShaders[7]->Render(m_pd3dCommandList, m_pCamera); //특성
 		m_pScene->m_ppShaders[8]->Render(m_pd3dCommandList, m_pCamera);
 		m_pScene->m_ppShaders[9]->Render(m_pd3dCommandList, m_pCamera);
 		m_pScene->m_ppShaders[10]->Render(m_pd3dCommandList, m_pCamera);
 		m_pScene->m_ppShaders[11]->Render(m_pd3dCommandList, m_pCamera);
 		m_pScene->m_ppShaders[12]->Render(m_pd3dCommandList, m_pCamera);
+		m_pScene->m_ppShaders[13]->Render(m_pd3dCommandList, m_pCamera);
 		m_pScene->m_ppUIShaders[0]->Render(m_pd3dCommandList, m_pCamera); // 미니맵
-
+		
 																		  //printf("%f", playerHp);
 		m_pScene->m_ppUIShaders[2]->Render(m_pd3dCommandList, m_pCamera, playerHp);
 		m_pScene->m_ppUIShaders[3]->Render(m_pd3dCommandList, m_pCamera);//아이템 검은색
@@ -2188,7 +2187,8 @@ void CGameFramework::FrameAdvance()
 		case DISJOINT:
 		{
 			blueScreenMode = true;
-			playerHp -= 0.01;
+			if(!winCheck)
+				playerHp -= 0.01;
 			break;
 		}
 		case INTERSECTS:
