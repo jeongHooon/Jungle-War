@@ -591,8 +591,7 @@ void CGameObject::LoadBox(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	ID3D12Resource *pd3dcbResource = CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 
-	CTexturedShader*pShader = new CTexturedShader();
-	pShader->CreateBlendState();
+	CIlluminatedTexturedShader* pShader = new CIlluminatedTexturedShader();	pShader->CreateBlendState();
 	pShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
 	pShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	pShader->CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 1, 1);
@@ -643,17 +642,18 @@ void CGameObject::LoadPrevBox(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	//m_pMaterial->SetShader(pShader);
 
 	CMesh* pMesh = NULL;
-	CCubeMesh* pCubeMesh = new CCubeMesh(pd3dDevice, pd3dCommandList, 5, 5, 5);
+	CCubeMeshIlluminatedTextured* pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 1, 1, 1);
+	//CCubeMesh* pCubeMesh = new CCubeMesh(pd3dDevice, pd3dCommandList, 5, 5, 5);
 	LoadObjectModel(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Image/Trees/15.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
 	//SetMesh(0, pMesh);
 	SetMesh(0, pCubeMesh);
 	CTexture* pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	//pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blueScreen.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/bluebox.dds", 0);
+	//pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blueScreen.dds", 0);
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	ID3D12Resource* pd3dcbResource = CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
-	CTexturedShader* pShader = new CTexturedShader();
+	CIlluminatedTexturedShader* pShader = new CIlluminatedTexturedShader();
 	pShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
 	pShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 	pShader->CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 1, 1);

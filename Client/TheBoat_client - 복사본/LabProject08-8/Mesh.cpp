@@ -1355,7 +1355,7 @@ CCubeMesh::CCubeMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 
 	float fx = fWidth * 0.5f, fy = fHeight * 0.5f, fz = fDepth * 0.5f;
 
-	XMFLOAT3 pxmf3Positions[36];
+	XMFLOAT3 pxmf3Positions[36] = {};
 	int i = 0;
 	pxmf3Positions[i++] = XMFLOAT3(-fx, +fy, -fz);
 	pxmf3Positions[i++] = XMFLOAT3(+fx, +fy, -fz);
@@ -1405,7 +1405,7 @@ CCubeMesh::CCubeMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 	pxmf3Positions[i++] = XMFLOAT3(+fx, -fy, +fz);
 	pxmf3Positions[i++] = XMFLOAT3(+fx, -fy, -fz);
 
-	XMFLOAT2 pxmf2TexCoords[36];
+	XMFLOAT2 pxmf2TexCoords[36] = {};
 	i = 0;
 	pxmf2TexCoords[i++] = XMFLOAT2(0.0f, 0.0f);
 	pxmf2TexCoords[i++] = XMFLOAT2(1.0f, 0.0f);

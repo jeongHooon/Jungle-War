@@ -722,21 +722,15 @@ CPrevBox::~CPrevBox()
 
 void CPrevBox::Animate(float fTimeElapsed)
 {
-	/*for (int i = 0; i < NewMD5Model.subsets.size(); ++i)
-	UpdateMD5Model(NewMD5Model, fTimeElapsed *0.4, 0, m_ppMeshes[i], i);
-*/
-
 	m_xmf4x4ToParentTransform._11 = m_xmf3Right.x; m_xmf4x4ToParentTransform._12 = m_xmf3Right.y; m_xmf4x4ToParentTransform._13 = m_xmf3Right.z;
 	m_xmf4x4ToParentTransform._21 = m_xmf3Up.x; m_xmf4x4ToParentTransform._22 = m_xmf3Up.y; m_xmf4x4ToParentTransform._23 = m_xmf3Up.z;
 	m_xmf4x4ToParentTransform._31 = m_xmf3Look.x; m_xmf4x4ToParentTransform._32 = m_xmf3Look.y; m_xmf4x4ToParentTransform._33 = m_xmf3Look.z;
 	m_xmf4x4ToParentTransform._41 = m_xmf3Position.x; m_xmf4x4ToParentTransform._42 = m_xmf3Position.y; m_xmf4x4ToParentTransform._43 = m_xmf3Position.z;
 
-	//SetOOBB(GetPosition(), XMFLOAT3(5, 10, 5), XMFLOAT4(0, 0, 0, 1));
-	/*time += fTimeElapsed;
-	if (time > 360.f)
-		time = 0;*/
+	
 	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), time, 0.0f);
 	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
+	
 }
 
 void CPrevBox::SetBoxScale(int input) {
