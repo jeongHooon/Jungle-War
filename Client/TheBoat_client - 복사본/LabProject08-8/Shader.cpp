@@ -12,6 +12,7 @@ CShadow* CGameFramework::m_pShadow[];
 CPlayer* CGameFramework::m_pObject[];
 CShadowTree* CGameFramework::m_pShadowObject[];
 CPlayer* CGameFramework::m_pObject2[];
+
 int CGameFramework::my_client_id;
 XMFLOAT3 CGameFramework::buildingPos[];
 XMFLOAT3 CGameFramework::sendLook;

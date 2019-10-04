@@ -94,6 +94,7 @@ public:
 	static CPlayer				*m_pObject[NUM_OBJECT];
 	static CShadowTree			*m_pShadowObject[NUM_OBJECT];
 	static CPlayer				*m_pObject2[NUM_OBJECT2];
+	CPlayer				*m_pPrevBox[1];
 	CPlayer						*m_pBlueBox[2];
 
 	int							bulletDropCount = 0;
@@ -105,7 +106,7 @@ public:
 	static CCamera				*m_pCamera;
 	static int					boxBound;
 	float						playerHp = 100;
-	int							gameMode = 0;
+	int							gameMode = 1;
 	bool						damageCheck = false;
 	bool						writeMode = true;
 	bool						writeStart = false;

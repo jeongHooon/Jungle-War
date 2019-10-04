@@ -62,7 +62,7 @@ CGameFramework::CGameFramework()
 		
 	
 	m_pBlueBox[0] = NULL;
-	m_pBlueBox[1] = NULL;
+	m_pPrevBox[0] = NULL;
 	_tcscpy_s(m_pszFrameRate, _T("Jungle War ("));
 
 	for (int i = 0; i < 4; ++i) itemUI[i] = false;
@@ -695,7 +695,12 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			case 'w':
 			case 'W':
 				if (is_pushed[CS_KEY_PRESS_UP] == false) {
+<<<<<<< HEAD
 					if (charstate == 7);
+=======
+					if (charstate == 7)
+						;
+>>>>>>> 39597cda81a20d123a5fda8351bcc2202248010f
 						//cout << "215125" << endl;
 					//server_mgr.SendPacket(CS_KEY_PRESS_UP);
 					if (charstate == 6) {
@@ -1086,6 +1091,11 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				is_pushed[CS_KEY_PRESS_Q] = false;
 			}
 			break;
+		case 'T':
+			m_pPrevBox[0]->SetPosition(m_pPlayer[my_client_id]->GetPosition());
+			m_pPrevBox[0]->SetOOBB(m_pPrevBox[0]->GetPosition(), XMFLOAT3(13, 8, 13), XMFLOAT4(0, 0, 0, 1));
+			printf("x : %f y : %f z : %f  \n", m_pPrevBox[0]->GetPosition().x, m_pPrevBox[0]->GetPosition().y, m_pPrevBox[0]->GetPosition().z);
+			break;
 		case VK_UP:
 			--mainScreenSelect;
 			if (mainScreenSelect < 0)
@@ -1436,7 +1446,7 @@ void CGameFramework::BuildObjects()
 		m_pScene->m_pObject2[i] = m_pObject2[i] = new CRockObject(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
 	}
 	m_pScene->m_pBlueBox[0] = m_pBlueBox[0] = new CBlueBox(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
-	m_pScene->m_pBlueBox[1] = m_pBlueBox[1] = new CBlueBox(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
+	m_pScene->m_pPrevBox[0] = m_pPrevBox[0] = new CPrevBox(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
 	//m_pCamera = m_pPlayer[my_client_id]->GetCamera();
 
 #ifdef _WITH_APACHE_MODEL
@@ -1594,8 +1604,8 @@ void CGameFramework::BuildObjects()
 	}
 #endif
 	float fHeight = m_pScene->GetTerrain()->GetHeight(627, 700);
-	m_pBlueBox[1]->SetPosition(XMFLOAT3(627, fHeight, 700));
-	m_pBlueBox[1]->SetOOBB(m_pBlueBox[1]->GetPosition(), XMFLOAT3(13, 8, 13), XMFLOAT4(0, 0, 0, 1));
+	m_pPrevBox[0]->SetPosition(XMFLOAT3(0, 0, 0));
+	m_pPrevBox[0]->SetOOBB(m_pPrevBox[0]->GetPosition(), XMFLOAT3(13, 8, 13), XMFLOAT4(0, 0, 0, 1));
 	m_pd3dCommandList->Close();
 	ID3D12CommandList *ppd3dCommandLists[] = { m_pd3dCommandList };
 	m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
@@ -1613,7 +1623,7 @@ void CGameFramework::BuildObjects()
 	for (int i = 0; i < NUM_OBJECT2; ++i)
 		if (m_pObject2[i]) m_pObject2[i]->ReleaseUploadBuffers();
 	if (m_pBlueBox[0]) m_pBlueBox[0]->ReleaseUploadBuffers();
-	if (m_pBlueBox[1]) m_pBlueBox[1]->ReleaseUploadBuffers();
+	if (m_pPrevBox[0]) m_pPrevBox[0]->ReleaseUploadBuffers();
 	if (m_pScene) m_pScene->ReleaseUploadBuffers();
 
 
@@ -1650,7 +1660,7 @@ void CGameFramework::ReleaseObjects()
 	for (int i = 0; i < NUM_OBJECT2; ++i)
 		 if (m_pObject2[i]) delete m_pObject2[i];
 	if (m_pBlueBox[0])delete m_pBlueBox[0];
-	if (m_pBlueBox[1])delete m_pBlueBox[1];
+	if (m_pPrevBox[0])delete m_pPrevBox[0];
 	if (m_pScene) m_pScene->ReleaseObjects();
 	if (m_pScene) delete m_pScene;
 }
@@ -1765,7 +1775,7 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 	for (int i = 0; i < NUM_OBJECT2; ++i)
 		if (m_pObject2) m_pObject2[i]->Animate(fTimeElapsed,i);
 	if (m_pBlueBox[0])m_pBlueBox[0]->Animate(fTimeElapsed);
-	if (m_pBlueBox[1])m_pBlueBox[1]->Animate(fTimeElapsed);
+	if (m_pPrevBox[0])m_pPrevBox[0]->Animate(fTimeElapsed);
 	if (m_pScene) m_pScene->AnimateObjects(fTimeElapsed, pCamera);
 
 	bool dummy_bool;
@@ -2058,9 +2068,9 @@ void CGameFramework::FrameAdvance()
 	m_pBlueBox[0]->UpdateTransform(NULL);
 	m_pBlueBox[0]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 	m_pBlueBox[0]->Render(m_pd3dCommandList, m_pCamera);
-	m_pBlueBox[1]->UpdateTransform(NULL);
-	m_pBlueBox[1]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
-	m_pBlueBox[1]->Render(m_pd3dCommandList, m_pCamera);
+	m_pPrevBox[0]->UpdateTransform(NULL);
+	m_pPrevBox[0]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
+	m_pPrevBox[0]->Render(m_pd3dCommandList, m_pCamera);
 	
 	if (itemDropCheck) {
 		m_pScene->m_ppShaders[7]->ItemDrop(0, itemDropCount, itemDropCheck);
