@@ -178,13 +178,26 @@ class CBlueBox : public CPlayer
 {
 private:
 	int count = 0;
-	int elecCount_;
+	int elecCount_ = 0;
 public:
 	CBlueBox(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, ID3D12RootSignature * pd3dGraphicsRootSignature, void * pContext = NULL, int nMeshes = 1);
 	virtual ~CBlueBox();
 	virtual void SetBoxScale(int input);
 	void Animate(float fTimeElapsed);
 	virtual CCamera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
+	/*virtual void OnPlayerUpdateCallback(float fTimeElapsed);
+	virtual void OnCameraUpdateCallback(float fTimeElapsed);*/
+};
+class CPrevBox : public CPlayer
+{
+private:
+	int count = 0;
+public:
+	CPrevBox(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, void* pContext = NULL, int nMeshes = 1);
+	virtual ~CPrevBox();
+	virtual void SetBoxScale(int input);
+	void Animate(float fTimeElapsed);
+	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
 	/*virtual void OnPlayerUpdateCallback(float fTimeElapsed);
 	virtual void OnCameraUpdateCallback(float fTimeElapsed);*/
 };

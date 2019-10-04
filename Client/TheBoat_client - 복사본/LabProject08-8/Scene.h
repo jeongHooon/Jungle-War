@@ -82,6 +82,7 @@ public:
 	CShadowTree					*m_pShadowObject[NUM_OBJECT];
 	CPlayer						*m_pObject2[NUM_OBJECT2]; //오브젝트 갯수
 	CPlayer						*m_pBlueBox[2];
+	CPlayer						*m_pPrevBox[1];
 
 	static int					makeParticleIndex;
 	static bool					particleOn;

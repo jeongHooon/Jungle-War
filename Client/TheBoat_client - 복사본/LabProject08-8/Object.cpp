@@ -549,26 +549,12 @@ void CGameObject::LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, ID3D12Gra
 void CGameObject::LoadFrameHierarchyFromFile2(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, UINT nFrame, ModelSubset ModelData)
 {
 	CMesh *pMesh = NULL;
-	CMesh *pMesh1 = NULL;
-	CTexturedRectMesh *pRectMesh = NULL;
-
-
-	//pRectMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 15.0f, 0.0f, 15.0f);
-	//SetMesh(0, pRectMesh);
-
-	//ResizeMeshes(2);
-	//LoadObjectModel(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Image/Trees/tree3.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
 
 	LoadObjectModel(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Image/Trees/15.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
 	SetMesh(0, pMesh);
-	//LoadMD5Model(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/Soldier_Rifle.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh1);
-	//SetMesh(1, pMesh1);
-
-	//CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/oak5.dds", 0);
-
-	//pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Trees/Tree.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 	ID3D12Resource *pd3dcbResource = CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -579,23 +565,13 @@ void CGameObject::LoadFrameHierarchyFromFile2(ID3D12Device *pd3dDevice, ID3D12Gr
 	pShader->CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 1, 1);
 	pShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, 1, pd3dcbResource, ncbElementBytes);
 	pShader->CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, true);
-	//ID3D12Resource *pd3dcbResource = CreateShaderVariables(pd3dDevice, pd3dCommandList);
-
-
 
 	m_pMaterial = new CMaterial();
 	m_pMaterial->SetTexture(pTexture);
 	
 	SetCbvGPUDescriptorHandle(pShader->GetGPUCbvDescriptorStartHandle());
-	//SetShader(pShader);
 	m_pMaterial->SetShader(pShader);
-
-	/*if (pMesh)
-	SetMesh(0, pMesh);
-	else
-	ResizeMeshes(0);*/
-
-	//SetMaterial(m_pMaterial);
+	
 }
 void CGameObject::LoadBox(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, UINT nFrame, ModelSubset ModelData)
 {
@@ -615,7 +591,7 @@ void CGameObject::LoadBox(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	ID3D12Resource *pd3dcbResource = CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 
-	CIlluminatedTexturedShader *pShader = new CIlluminatedTexturedShader();
+	CTexturedShader*pShader = new CTexturedShader();
 	pShader->CreateBlendState();
 	pShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
 	pShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -635,7 +611,61 @@ void CGameObject::LoadBox(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	//if (m_pMaterial) SetMaterial(m_pMaterial);
 }
+void CGameObject::LoadPrevBox(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, UINT nFrame, ModelSubset ModelData)
+{
+	//CMesh* pMesh = NULL;
+	//CCubeMeshIlluminatedTextured* pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 1, 1, 1);
+	//LoadObjectModel(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Image/Trees/15.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
+	////SetMesh(0, pCubeMesh);
+	//SetMesh(0, pMesh);
+	////AddRef();
 
+	//m_pMaterial = new CMaterial();
+	//CTexture* pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	//pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 0);
+
+	//m_pMaterial->SetTexture(pTexture);
+	//UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+
+	//ID3D12Resource* pd3dcbResource = CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+
+	//CIlluminatedTexturedShader* pShader = new CIlluminatedTexturedShader();
+	//pShader->CreateBlendState();
+	//pShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
+	//pShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	//pShader->CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 1, 1);
+	//pShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, 1, pd3dcbResource, ncbElementBytes);
+	//pShader->CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, true);
+
+	//SetCbvGPUDescriptorHandle(pShader->GetGPUCbvDescriptorStartHandle());
+
+	//m_pMaterial->SetShader(pShader);
+
+	CMesh* pMesh = NULL;
+	CCubeMesh* pCubeMesh = new CCubeMesh(pd3dDevice, pd3dCommandList, 5, 5, 5);
+	LoadObjectModel(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Image/Trees/15.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
+	//SetMesh(0, pMesh);
+	SetMesh(0, pCubeMesh);
+	CTexture* pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	//pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/blueScreen.dds", 0);
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
+	ID3D12Resource* pd3dcbResource = CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	CTexturedShader* pShader = new CTexturedShader();
+	pShader->CreateShader(pd3dDevice, pd3dGraphicsRootSignature);
+	pShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+	pShader->CreateCbvAndSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 1, 1);
+	pShader->CreateConstantBufferViews(pd3dDevice, pd3dCommandList, 1, pd3dcbResource, ncbElementBytes);
+	pShader->CreateShaderResourceViews(pd3dDevice, pd3dCommandList, pTexture, 5, true);
+
+	m_pMaterial = new CMaterial();
+	m_pMaterial->SetTexture(pTexture);
+
+	SetCbvGPUDescriptorHandle(pShader->GetGPUCbvDescriptorStartHandle());
+	m_pMaterial->SetShader(pShader);
+}
 void CGameObject::LoadRock(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, UINT nFrame, ModelSubset ModelData)
 {
 	CMesh *pMesh = NULL;
@@ -725,6 +755,20 @@ void CGameObject::LoadGeometryFromFile4(ID3D12Device *pd3dDevice, ID3D12Graphics
 {
 	ModelSubset data;
 	LoadRock(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0, data);
+
+
+
+#ifdef _WITH_DEBUG_FRAME_HIERARCHY
+	TCHAR pstrDebug[128] = { 0 };
+	_stprintf_s(pstrDebug, 128, _T("Frame Hierarchy\n"));
+	OutputDebugString(pstrDebug);
+
+#endif
+}
+void CGameObject::LoadGeometryFromFile5(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, TCHAR* pstrFileName)
+{
+	ModelSubset data;
+	LoadPrevBox(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0, data);
 
 
 
