@@ -642,7 +642,7 @@ void CGameObject::LoadPrevBox(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLis
 	//m_pMaterial->SetShader(pShader);
 
 	CMesh* pMesh = NULL;
-	CCubeMeshIlluminatedTextured* pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 1, 1, 1);
+	CCubeMeshIlluminatedTextured* pCubeMesh = new CCubeMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, 8, 8, 8);
 	//CCubeMesh* pCubeMesh = new CCubeMesh(pd3dDevice, pd3dCommandList, 5, 5, 5);
 	LoadObjectModel(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Image/Trees/15.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
 	//SetMesh(0, pMesh);

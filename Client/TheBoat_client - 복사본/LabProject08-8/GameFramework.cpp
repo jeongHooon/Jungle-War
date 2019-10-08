@@ -57,8 +57,10 @@ CGameFramework::CGameFramework()
 		m_pShadowObject[i] = NULL;
 	}
 
-	for (int i = 0; i < NUM_OBJECT2; ++i)
-		m_pObject2[i] = NULL;
+	for (int i = 0; i < NUM_OBJECT2; ++i) {
+		m_pObject2[i] = NULL;		
+		m_pShadowObject2[i] = NULL;
+	}
 		
 	
 	m_pBlueBox[0] = NULL;
@@ -1088,8 +1090,8 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			}
 			break;
 		case 'T':
-			m_pPrevBox[0]->SetPosition(m_pPlayer[my_client_id]->GetPosition());
-			m_pPrevBox[0]->SetOOBB(m_pPrevBox[0]->GetPosition(), XMFLOAT3(13, 8, 13), XMFLOAT4(0, 0, 0, 1));
+			m_pPrevBox[0]->SetPosition(XMFLOAT3(m_pPlayer[my_client_id]->GetPosition().x, m_pPlayer[my_client_id]->GetPosition().y + 4, m_pPlayer[my_client_id]->GetPosition().z +10));
+			m_pPrevBox[0]->SetOOBB(m_pPrevBox[0]->GetPosition(), XMFLOAT3(8, 8, 8), XMFLOAT4(0, 0, 0, 1));
 			printf("x : %f y : %f z : %f  \n", m_pPrevBox[0]->GetPosition().x, m_pPrevBox[0]->GetPosition().y, m_pPrevBox[0]->GetPosition().z);
 			break;
 		case VK_UP:
@@ -1440,7 +1442,10 @@ void CGameFramework::BuildObjects()
 	}
 	for (int i = 0; i < NUM_OBJECT2; ++i) {
 		m_pScene->m_pObject2[i] = m_pObject2[i] = new CRockObject(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
+		m_pScene->m_pShadowObject2[i] = m_pShadowObject2[i] = new CShadowRock(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
 	}
+	
+
 	m_pScene->m_pBlueBox[0] = m_pBlueBox[0] = new CBlueBox(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
 	m_pScene->m_pPrevBox[0] = m_pPrevBox[0] = new CPrevBox(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->GetTerrain(), 1);
 	//m_pCamera = m_pPlayer[my_client_id]->GetCamera();
@@ -1596,7 +1601,7 @@ void CGameFramework::BuildObjects()
 		float fHeight = m_pScene->GetTerrain()->GetHeight(xPosition, zPosition);
 		m_pObject2[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
 		m_pObject2[i]->SetOOBB(m_pObject2[i]->GetPosition(), XMFLOAT3(13, 8, 13), XMFLOAT4(0, 0, 0, 1));
-
+		m_pShadowObject2[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
 	}
 #endif
 	float fHeight = m_pScene->GetTerrain()->GetHeight(627, 700);
@@ -1616,8 +1621,10 @@ void CGameFramework::BuildObjects()
 		if (m_pObject[i]) m_pObject[i]->ReleaseUploadBuffers();
 		if (m_pShadowObject[i]) m_pShadowObject[i]->ReleaseUploadBuffers();
 	}
-	for (int i = 0; i < NUM_OBJECT2; ++i)
+	for (int i = 0; i < NUM_OBJECT2; ++i) {
 		if (m_pObject2[i]) m_pObject2[i]->ReleaseUploadBuffers();
+		if (m_pShadowObject2[i]) m_pShadowObject2[i]->ReleaseUploadBuffers();
+	}
 	if (m_pBlueBox[0]) m_pBlueBox[0]->ReleaseUploadBuffers();
 	if (m_pPrevBox[0]) m_pPrevBox[0]->ReleaseUploadBuffers();
 	if (m_pScene) m_pScene->ReleaseUploadBuffers();
@@ -1653,8 +1660,11 @@ void CGameFramework::ReleaseObjects()
 			if (m_pObject[i]) delete m_pObject[i];
 		if (m_pShadowObject[i]) delete m_pShadowObject[i];
 	}
-	for (int i = 0; i < NUM_OBJECT2; ++i)
+	for (int i = 0; i < NUM_OBJECT2; ++i) {
 		 if (m_pObject2[i]) delete m_pObject2[i];
+		 if (m_pShadowObject2[i]) delete m_pShadowObject2[i];
+
+	}
 	if (m_pBlueBox[0])delete m_pBlueBox[0];
 	if (m_pPrevBox[0])delete m_pPrevBox[0];
 	if (m_pScene) m_pScene->ReleaseObjects();
@@ -1768,8 +1778,11 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 		if (m_pObject) m_pObject[i]->Animate(fTimeElapsed);
 		if (m_pShadowObject) m_pShadowObject[i]->Animate(fTimeElapsed, 1, m_pObject[i]->GetWMatrix());
 	}
-	for (int i = 0; i < NUM_OBJECT2; ++i)
+	for (int i = 0; i < NUM_OBJECT2; ++i) {
 		if (m_pObject2) m_pObject2[i]->Animate(fTimeElapsed,i);
+		if (m_pShadowObject2) m_pShadowObject2[i]->Animate(fTimeElapsed, 1, m_pObject2[i]->GetWMatrix());
+
+	}
 	if (m_pBlueBox[0])m_pBlueBox[0]->Animate(fTimeElapsed);
 	if (m_pPrevBox[0])m_pPrevBox[0]->Animate(fTimeElapsed);
 	if (m_pScene) m_pScene->AnimateObjects(fTimeElapsed, pCamera);
@@ -1928,10 +1941,7 @@ void CGameFramework::FrameAdvance()
 		m_pShadowObject[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 		if (server_mgr.GetTreeInuse(i) == true) {
 			m_pObject[i]->Render(m_pd3dCommandList, 1, m_pCamera);
-			if (TreeShadowON) {
 				m_pShadowObject[i]->Render(m_pd3dCommandList, m_pCamera, 1);
-
-			}
 		/*if (server_mgr.obj[i].item_tree && !server_mgr.obj[i].item_gen) {
 			float fHeight = m_pScene->GetTerrain()->GetHeight(server_mgr.obj[i].x, server_mgr.obj[i].z);
 			m_pScene->m_ppShaders[7]->SetPosition(0, XMFLOAT3(server_mgr.obj[i].x, fHeight, server_mgr.obj[i].z));
@@ -2061,6 +2071,9 @@ void CGameFramework::FrameAdvance()
 		m_pObject2[i]->UpdateTransform(NULL);
 		m_pObject2[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 		m_pObject2[i]->Render(m_pd3dCommandList, m_pCamera);
+		m_pShadowObject2[i]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
+		m_pShadowObject2[i]->Render(m_pd3dCommandList, m_pCamera, 1);
+
 	}
 	m_pBlueBox[0]->UpdateTransform(NULL);
 	m_pBlueBox[0]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));

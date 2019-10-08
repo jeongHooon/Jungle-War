@@ -94,7 +94,8 @@ public:
 	static CPlayer				*m_pObject[NUM_OBJECT];
 	static CShadowTree			*m_pShadowObject[NUM_OBJECT];
 	static CPlayer				*m_pObject2[NUM_OBJECT2];
-	CPlayer				*m_pPrevBox[1];
+	static CShadowRock			*m_pShadowObject2[NUM_OBJECT2];
+	CPlayer						*m_pPrevBox[1];
 	CPlayer						*m_pBlueBox[2];
 
 	int							bulletDropCount = 0;

@@ -818,11 +818,12 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 	}
 	for (int i = 0; i < NUM_OBJECT; ++i) {
 		m_pObject[i]->SetScale(0.25f, 0.25f, 0.25f);
+		m_pShadowObject[i]->SetScale(0.25f, 0.25f, 0.25f);
 	}
 	for (int i = 0; i < NUM_OBJECT2; ++i) {
 		m_pObject2[i]->SetScale(0.25f, 0.25f, 0.25f);
 	}
-	m_pPrevBox[0]->SetScale(6.f, 6.f, 6.f);
+	//m_pPrevBox[0]->SetScale(6.f, 6.f, 6.f);
 	//for (int i = 0; i < m_nObjects; i++) m_ppUIShaders[i]->AnimateObjects(fTimeElapsed, pCamera);
 	m_ppShaders[5]->SetPosition(0, XMFLOAT3(CGameFramework::m_pPlayer[myTeamNum]->GetPosition().x, CGameFramework::m_pPlayer[myTeamNum]->GetPosition().y + 13, CGameFramework::m_pPlayer[myTeamNum]->GetPosition().z));
 	m_ppUIShaders[0]->AnimateObjects(fTimeElapsed, pCamera);

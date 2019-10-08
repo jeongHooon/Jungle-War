@@ -81,6 +81,7 @@ public:
 	CPlayer						*m_pObject[NUM_OBJECT]; //오브젝트 갯수
 	CShadowTree					*m_pShadowObject[NUM_OBJECT];
 	CPlayer						*m_pObject2[NUM_OBJECT2]; //오브젝트 갯수
+	CShadowRock					*m_pShadowObject2[NUM_OBJECT2]; //오브젝트 갯수
 	CPlayer						*m_pBlueBox[2];
 	CPlayer						*m_pPrevBox[1];
 
