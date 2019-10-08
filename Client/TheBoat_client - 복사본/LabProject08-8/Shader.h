@@ -55,6 +55,7 @@ public:
 	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera) { }
 	virtual void ReleaseObjects() { }
 
+	virtual void SetDustPosition(XMFLOAT3 input) { }
 	virtual void ReleaseUploadBuffers();
 	virtual void SetBoxPosition(int index, XMFLOAT3 input) { }
 	virtual void SetBoxPosition(XMFLOAT3 input) { }
@@ -602,6 +603,44 @@ public:
 	virtual BoundingOrientedBox GetOOBB(int id);
 	virtual D3D12_BLEND_DESC CreateBlendState();
 };
+
+//////////////////////
+class CDustShader : public CTexturedShader
+{
+protected:
+	CBillboard * *m_ppBullet = 0;
+	int								m_nBullet = 0;
+	int								BulletCount = 0;
+	bool							death = 1;
+
+#ifdef _WITH_BATCH_MATERIAL
+	CMaterial						*m_pMaterial = NULL;
+#endif
+
+	ID3D12Resource					*m_pd3dcbGameObjects = NULL;
+	CB_GAMEOBJECT_INFO				*m_pcbMappedGameObjects = NULL;
+
+public:
+	CDustShader();
+	virtual ~CDustShader();
+
+	virtual void SetLook(int input, float x, float y, float z);
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void ReleaseObjects();
+	virtual void AnimateObjects(float fTimeElapsed, CCamera *pCamera);
+	virtual void ReleaseUploadBuffers();
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual void SetPosition(int id, XMFLOAT3 input);
+	virtual void ItemDrop(int id, int count, bool check);
+	virtual void SetOOBB(int id, XMFLOAT3 input);
+	virtual void SetDustPosition(XMFLOAT3 input);
+	virtual BoundingOrientedBox GetOOBB(int id);
+	virtual D3D12_BLEND_DESC CreateBlendState();
+};
+
 
 //////////////////////
 class CBulletItemShader : public CTexturedShader

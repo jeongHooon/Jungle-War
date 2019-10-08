@@ -137,7 +137,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	m_pBuildings = pBuildingShader;
 
-	m_nShaders = 13;
+	m_nShaders = 14;
 	m_ppShaders = new CShader*[m_nShaders];
 
 	CRedDotShader *pScopeShader = new CRedDotShader();
@@ -196,6 +196,10 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pBulletItemShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
 	pBulletItemShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
 
+	CDustShader *pDustShader = new CDustShader();
+	pDustShader->CreateShader(pd3dDevice, m_pd3dGraphicsRootSignature);
+	pDustShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pTerrain);
+
 	m_ppShaders[0] = pScopeShader;
 	m_ppShaders[1] = pFlowerShader;
 	m_ppShaders[2] = pBulletShader;
@@ -209,6 +213,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppShaders[10] = pSkillShader_4;
 	m_ppShaders[11] = pTreeItemShader;
 	m_ppShaders[12] = pBulletItemShader;
+	m_ppShaders[13] = pDustShader;
 	// UI
 
 	m_nUIShaders = 44;
@@ -828,6 +833,9 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 	m_ppShaders[5]->SetPosition(0, XMFLOAT3(CGameFramework::m_pPlayer[myTeamNum]->GetPosition().x, CGameFramework::m_pPlayer[myTeamNum]->GetPosition().y + 13, CGameFramework::m_pPlayer[myTeamNum]->GetPosition().z));
 	m_ppUIShaders[0]->AnimateObjects(fTimeElapsed, pCamera);
 
+	//// 먼지
+		m_ppShaders[13]->SetDustPosition(XMFLOAT3(m_pPlayer[CGameFramework::my_client_id]->GetPosition().x + 10, m_pPlayer[CGameFramework::my_client_id]->GetPosition().y + 10, m_pPlayer[CGameFramework::my_client_id]->GetPosition().z + 10));
+
 }
 
 void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
@@ -851,7 +859,7 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	
 	if (m_pBuildings) m_pBuildings->Render(pd3dCommandList, pCamera);
 	
-	for (int i = 1; i < m_nShaders-6; i++) {
+	for (int i = 1; i < m_nShaders-7; i++) {
 		if(i!=2)
 			m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 	}
