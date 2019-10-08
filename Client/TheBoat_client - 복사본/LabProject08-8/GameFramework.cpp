@@ -697,12 +697,9 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			case 'w':
 			case 'W':
 				if (is_pushed[CS_KEY_PRESS_UP] == false) {
-<<<<<<< HEAD
 					if (charstate == 7);
-=======
 					if (charstate == 7)
 						;
->>>>>>> 39597cda81a20d123a5fda8351bcc2202248010f
 						//cout << "215125" << endl;
 					//server_mgr.SendPacket(CS_KEY_PRESS_UP);
 					if (charstate == 6) {
@@ -1094,8 +1091,10 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 			}
 			break;
 		case 'T':
-			m_pPrevBox[0]->SetPosition(XMFLOAT3(m_pPlayer[my_client_id]->GetPosition().x, m_pPlayer[my_client_id]->GetPosition().y + 4, m_pPlayer[my_client_id]->GetPosition().z +10));
+			printf("Look x : %f y : %f z : %f  \n", m_pPlayer[my_client_id]->LookTemp.x, m_pPlayer[my_client_id]->LookTemp.y, m_pPlayer[my_client_id]->LookTemp.z);
+			m_pPrevBox[0]->SetPosition(XMFLOAT3(m_pPlayer[my_client_id]->GetPosition().x + 10 * m_pPlayer[my_client_id]->LookTemp.x, m_pPlayer[my_client_id]->GetPosition().y + 4, m_pPlayer[my_client_id]->GetPosition().z + 10 * m_pPlayer[my_client_id]->LookTemp.z));
 			m_pPrevBox[0]->SetOOBB(m_pPrevBox[0]->GetPosition(), XMFLOAT3(8, 8, 8), XMFLOAT4(0, 0, 0, 1));
+			m_pPrevBox[0]->SetLook(m_pPlayer[my_client_id]->LookTemp);
 			printf("x : %f y : %f z : %f  \n", m_pPrevBox[0]->GetPosition().x, m_pPrevBox[0]->GetPosition().y, m_pPrevBox[0]->GetPosition().z);
 			break;
 		case VK_UP:
@@ -1263,11 +1262,11 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 				}
 
 			}
-			if (server_mgr.GetClientID() != my_client_id) {
+			//if (server_mgr.GetClientID() != my_client_id) {
 				m_pPlayer[server_mgr.GetClientID()]->SetLookTemp(server_mgr.ReturnLookVector());
 				//m_pShadow[server_mgr.GetClientID()]->SetLookTemp(server_mgr.ReturnLookVector());
 				//m_pPlayer[server_mgr.GetClientID()]->SetLook(XMFLOAT3(0.0f,0.0f,1.0f));
-			}
+			//}
 
 			m_pPlayer[server_mgr.GetClientID()]->SetPosition(server_mgr.ReturnPlayerPosStatus(server_mgr.GetClientID()).pos);
 			//m_pShadow[server_mgr.GetClientID()]->SetPosition(XMFLOAT3(m_pPlayer[server_mgr.GetClientID()]->GetPosition().x + 5, m_pPlayer[server_mgr.GetClientID()]->GetPosition().y, m_pPlayer[server_mgr.GetClientID()]->GetPosition().z + 5));
@@ -1610,7 +1609,7 @@ void CGameFramework::BuildObjects()
 #endif
 	float fHeight = m_pScene->GetTerrain()->GetHeight(627, 700);
 	m_pPrevBox[0]->SetPosition(XMFLOAT3(0, 0, 0));
-	m_pPrevBox[0]->SetOOBB(m_pPrevBox[0]->GetPosition(), XMFLOAT3(13, 8, 13), XMFLOAT4(0, 0, 0, 1));
+	m_pPrevBox[0]->SetOOBB(m_pPrevBox[0]->GetPosition(), XMFLOAT3(4, 4, 4), XMFLOAT4(0, 0, 0, 1));
 	m_pd3dCommandList->Close();
 	ID3D12CommandList *ppd3dCommandLists[] = { m_pd3dCommandList };
 	m_pd3dCommandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
@@ -2290,6 +2289,30 @@ void CGameFramework::FrameAdvance()
 				break;
 			}
 		}
+	}
+
+	for (int i = 0; i < 40; ++i) {
+		if (server_mgr.GetBoxInuse(i))
+		{
+			m_pScene->m_ppShaders[4]->SetOOBB(i, XMFLOAT3(server_mgr.GetBox(i).x, server_mgr.GetBox(i).y, server_mgr.GetBox(i).z));
+		}
+			ContainmentType containType = CGameFramework::m_pPrevBox[0]->bounding_box.Contains(m_pScene->m_ppShaders[4]->GetOOBB(i));
+			switch (containType)
+			{
+			case DISJOINT:
+			{
+				break;
+			}
+			case INTERSECTS:
+			{
+				printf("awtqwtawt\n");
+				break;
+			}
+			case CONTAINS:
+
+				break;
+			}
+		
 	}
 	//맵 충돌체크
 

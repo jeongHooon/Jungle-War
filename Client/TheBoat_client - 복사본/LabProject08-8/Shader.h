@@ -200,7 +200,8 @@ public:
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
 
 	virtual void SetBoxPosition(int index, XMFLOAT3 input);
-
+	virtual void SetOOBB(int index, XMFLOAT3 input);
+	virtual BoundingOrientedBox CObjectsShader::GetOOBB(int id);
 	virtual D3D12_BLEND_DESC CreateBlendState();
 
 	virtual void BoundCheck(XMFLOAT3 playerPosition, float playerSize);

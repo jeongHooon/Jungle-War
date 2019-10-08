@@ -202,9 +202,10 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	m_ppShaders[0] = pScopeShader;
 	m_ppShaders[1] = pFlowerShader;
+	//m_ppShaders[1] = NULL;
 	m_ppShaders[2] = pBulletShader;
 	m_ppShaders[3] = pParticleShader;
-	m_ppShaders[4] = pObjectsShader;
+	m_ppShaders[4] = pObjectsShader; // 설치 박스
 	m_ppShaders[5] = pTeamTriShader;
 	m_ppShaders[6] = pDropItemShader;
 	m_ppShaders[7] = pSkillShader_1;
@@ -860,7 +861,7 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	if (m_pBuildings) m_pBuildings->Render(pd3dCommandList, pCamera);
 	
 	for (int i = 1; i < m_nShaders-7; i++) {
-		if(i!=2)
+		if(i!=2 )
 			m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 	}
 	for (int i = 0; i < m_nObjects; i++) m_ppObjects[i]->UpdateTransform(NULL);

@@ -1120,7 +1120,14 @@ D3D12_BLEND_DESC CObjectsShader::CreateBlendState()
 
 	return(d3dBlendDesc);
 }
-
+void CObjectsShader::SetOOBB(int id, XMFLOAT3 input)
+{
+	m_ppObjects[id]->SetOOBB(input, XMFLOAT3(4, 4, 4), XMFLOAT4(0, 0, 0, 1));
+}
+BoundingOrientedBox CObjectsShader::GetOOBB(int id)
+{
+	return m_ppObjects[id]->bounding_box;
+}
 void CObjectsShader::BoundCheck(XMFLOAT3 playerPosition, float playerSize) {
 
 }
@@ -13483,12 +13490,12 @@ void CTreeShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	//CGameObject *TreeObject = NULL;
 	m_pMaterial = new CMaterial();
 	CTexture *pTextures = new CTexture(6, RESOURCE_TEXTURE2DARRAY, 0);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 0);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 1);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 4);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 3);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 2);
-	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/box.dds", 5);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/bluebox.dds", 0);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/bluebox.dds", 1);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/bluebox.dds", 4);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/bluebox.dds", 3);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/bluebox.dds", 2);
+	pTextures->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Building/bluebox.dds", 5);
 
 	m_pMaterial->SetTexture(pTextures);
 
