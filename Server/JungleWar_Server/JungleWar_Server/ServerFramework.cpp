@@ -377,7 +377,7 @@ void ServerFramework::AcceptPlayer() {
 	clients[client_id].team = Team::NON_TEAM;
 	clients[client_id].CType = TYPE_NONE;
 
-	clients[client_id].boxCount = 9;
+	clients[client_id].boxCount = 0;
 
 	clients[client_id].hp = 100.f;
 	printf("%d번 플레이어 체력 %f\n",client_id, clients[client_id].hp);
