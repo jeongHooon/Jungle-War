@@ -877,14 +877,16 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					else						
 						server_mgr.SendPacket(CS_KEY_PRESS_Q, colBuildPos);
 					is_pushed[CS_KEY_PRESS_Q] = true;
+					colBuild = false;
+					colBuildPos = XMFLOAT3(0, -5000, 0);
 				}
 				break;
 			case 'T':
 				if (!prevOn) {
 					prevOn = true;
-					m_pPrevBox[0]->SetPosition(XMFLOAT3(m_pPlayer[my_client_id]->GetPosition().x + 10 * m_pPlayer[my_client_id]->LookTemp.x, m_pPlayer[my_client_id]->GetPosition().y + 4, m_pPlayer[my_client_id]->GetPosition().z + 10 * m_pPlayer[my_client_id]->LookTemp.z));
-					m_pPrevBox[0]->SetOOBB(m_pPrevBox[0]->GetPosition(), XMFLOAT3(4, 4, 4), XMFLOAT4(0, 0, 0, 1));
-					m_pPrevBox[0]->SetLook(m_pPlayer[my_client_id]->LookTemp);
+					//m_pPrevBox[0]->SetPosition(XMFLOAT3(m_pPlayer[my_client_id]->GetPosition().x + 10 * m_pPlayer[my_client_id]->LookTemp.x, m_pPlayer[my_client_id]->GetPosition().y + 4, m_pPlayer[my_client_id]->GetPosition().z + 10 * m_pPlayer[my_client_id]->LookTemp.z));
+					//m_pPrevBox[0]->SetOOBB(m_pPrevBox[0]->GetPosition(), XMFLOAT3(4, 4, 4), XMFLOAT4(0, 0, 0, 1));
+					//m_pPrevBox[0]->SetLook(m_pPlayer[my_client_id]->LookTemp);
 					printf("prevPos  %f   %f    %f \n", m_pPrevBox[0]->GetPosition().x, m_pPrevBox[0]->GetPosition().y, m_pPrevBox[0]->GetPosition().z);
 				}
 				else {
@@ -2093,6 +2095,11 @@ void CGameFramework::FrameAdvance()
 	m_pBlueBox[0]->UpdateTransform(NULL);
 	m_pBlueBox[0]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 	m_pBlueBox[0]->Render(m_pd3dCommandList, m_pCamera);
+	if (prevOn)
+	{
+		m_pPrevBox[0]->SetPosition(XMFLOAT3(m_pPlayer[my_client_id]->GetPosition().x + 10 * m_pPlayer[my_client_id]->LookTemp.x, m_pPlayer[my_client_id]->GetPosition().y + 4, m_pPlayer[my_client_id]->GetPosition().z + 10 * m_pPlayer[my_client_id]->LookTemp.z));
+		m_pPrevBox[0]->SetOOBB(m_pPrevBox[0]->GetPosition(), XMFLOAT3(4, 4, 4), XMFLOAT4(0, 0, 0, 1));
+	}
 	m_pPrevBox[0]->UpdateTransform(NULL);
 	m_pPrevBox[0]->SetLook(XMFLOAT3(0.0f, 0.0f, 1.0f));
 	m_pPrevBox[0]->Render(m_pd3dCommandList, m_pCamera);
@@ -2303,7 +2310,7 @@ void CGameFramework::FrameAdvance()
 			}
 		}
 	}
-
+	colBuild = false;
 	for (int i = 0; i < 40; ++i) {
 		if (server_mgr.GetBoxInuse(i))
 		{
@@ -2315,12 +2322,12 @@ void CGameFramework::FrameAdvance()
 			{
 			case DISJOINT:
 			{
+			
 				break;
 			}
 			case INTERSECTS:
 			{
 				m_pPrevBox[0]->SetPosition(XMFLOAT3(server_mgr.GetBox(i).x, server_mgr.GetBox(i).y + 8, server_mgr.GetBox(i).z));
-				printf("prevPos1  %f   %f    %f \n", m_pPrevBox[0]->GetPosition().x, m_pPrevBox[0]->GetPosition().y, m_pPrevBox[0]->GetPosition().z);
 
 				colBuildPos = m_pPrevBox[0]->GetPosition();
 				colBuild = true;
