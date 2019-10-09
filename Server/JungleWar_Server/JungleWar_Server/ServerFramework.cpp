@@ -377,7 +377,7 @@ void ServerFramework::AcceptPlayer() {
 	clients[client_id].team = Team::NON_TEAM;
 	clients[client_id].CType = TYPE_NONE;
 
-	clients[client_id].boxCount = 0;
+	clients[client_id].boxCount = 9;
 
 	clients[client_id].hp = 100.f;
 	printf("%d번 플레이어 체력 %f\n",client_id, clients[client_id].hp);
@@ -1131,6 +1131,8 @@ void ServerFramework::WorkerThread() {
 							}
 							//printf("박스 - 총알 충돌 시작\n");
 							bullets[i].in_use = false;
+							
+							//sndPlaySound(L"../../../Client/TheBoat_client - 복사본/Assets/Sounds/BrokenBox.mp3", SND_ASYNC);
 							break;
 						}
 						case CONTAINS:

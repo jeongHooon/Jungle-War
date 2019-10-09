@@ -258,6 +258,8 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		s_is_collide = true;
 		damageCheck = true;
 		client_hp[packets->client_id] = packets->hp;
+		sndPlaySound(L"../Assets/Sounds/TakeDamage.wav", SND_ASYNC);
+
 		printf("%d 플레이어의 충돌지점 x : %f, y : %f, z : %f, 체력 : %f \n", packets->client_id, collision_pos.x,
 			collision_pos.y, collision_pos.z, client_hp[packets->client_id]);
 		break;
@@ -268,9 +270,12 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		collision_box_pos.y = packets->y;
 		collision_box_pos.z = packets->z;
 		boxes[packets->box_id].in_use = packets->in_use;
+		if(!packets->in_use)
+			sndPlaySound(L"../Assets/Sounds/BrokenBox.wav", SND_ASYNC);
 		printf("부딪 박스 %d\n", packets->box_id);
 		box_is_collide = true;
 		box_hp[packets->box_id] = packets->hp;
+
 		/*if(box_hp[packets->box_id] < 0){
 			boxes[packets->box_id].x = 0;
 			boxes[packets->box_id].z = 0;
@@ -288,7 +293,8 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		obj[packets->obj_id].in_use = packets->in_use;
 		if (packets->obj_id % 3 == 0 && !packets->in_use)
 			obj[packets->obj_id].item_tree = true;
-
+		if(!packets->in_use)
+			sndPlaySound(L"../Assets/Sounds/BrokenTree.wav", SND_ASYNC);
 		printf("부딪 나무 %d\n", packets->obj_id);
 		obj_is_collide = true;
 		obj_hp[packets->obj_id] = packets->hp;

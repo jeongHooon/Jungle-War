@@ -877,8 +877,12 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					else						
 						server_mgr.SendPacket(CS_KEY_PRESS_Q, colBuildPos);
 					is_pushed[CS_KEY_PRESS_Q] = true;
+					prevOn = false;
 					colBuild = false;
 					colBuildPos = XMFLOAT3(0, -5000, 0);
+					m_pPrevBox[0]->SetPosition(XMFLOAT3(0, -5000, 0));
+					m_pPrevBox[0]->SetOOBB(m_pPrevBox[0]->GetPosition(), XMFLOAT3(4, 4, 4), XMFLOAT4(0, 0, 0, 1));
+					m_pPrevBox[0]->SetLook(m_pPlayer[my_client_id]->LookTemp);
 				}
 				break;
 			case 'T':
