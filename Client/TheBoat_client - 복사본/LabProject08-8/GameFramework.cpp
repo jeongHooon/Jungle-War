@@ -460,7 +460,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		//::SetCapture(hWnd);
 		//::GetCursorPos(&m_ptOldCursorPos);
 		if (!m_pPlayer[my_client_id]->isDie && gameMode == 1) {
-			server_mgr.SendPacket(CS_RIGHT_BUTTON_DOWN, m_pPlayer[my_client_id]->GetLook());
+			//server_mgr.SendPacket(CS_RIGHT_BUTTON_DOWN, m_pPlayer[my_client_id]->GetLook());
 			if (!m_pPlayer[my_client_id]->isDie)
 				m_pCamera = m_pPlayer[my_client_id]->ChangeCamera(SPACESHIP_CAMERA, m_GameTimer.GetTimeElapsed());	// 마우스 우클시 카메라 변환
 			printf("마우스 우클릭\n");
@@ -473,7 +473,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 		server_mgr.SendPacket(CS_LEFT_BUTTON_UP, m_pPlayer[my_client_id]->GetLook());
 		break;
 	case WM_RBUTTONUP:
-		server_mgr.SendPacket(CS_RIGHT_BUTTON_UP, m_pPlayer[my_client_id]->GetLook());
+		//server_mgr.SendPacket(CS_RIGHT_BUTTON_UP, m_pPlayer[my_client_id]->GetLook());
 		m_pCamera = m_pPlayer[my_client_id]->ChangeCamera(FIRST_PERSON_CAMERA, m_GameTimer.GetTimeElapsed());	// 마우스 우클시 카메라 변환
 		break;
 	case WM_MOUSEMOVE:
