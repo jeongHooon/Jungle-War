@@ -58,6 +58,9 @@ class ServerMgr
 	bool player_ready[MAX_PLAYER_SIZE] = { 0 };
 	bool game_start = false;
 
+	bool treeparticle = false;
+	XMFLOAT3 particlepos;
+
 	int myBoxCount = 0;
 
 	// ·Î±×ÀÎ
@@ -93,7 +96,10 @@ public:
 
 	char* GetPlayerID(int index) { return loginID[index]; }
 
-
+	XMFLOAT3 GetParticlePos() { return particlepos; }
+	bool GetTreeParticle() { return treeparticle; }
+	void SetParticlePos(XMFLOAT3 input) { particlepos = input; }
+	void SetTreeParticle(bool input) { treeparticle = input; }
 
 	void SetIsPlayerdead(int index) { isplayerdead[index] = true; }
 

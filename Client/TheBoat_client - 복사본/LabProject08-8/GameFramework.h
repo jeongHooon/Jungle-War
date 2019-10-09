@@ -158,6 +158,9 @@ private:
 	bool						itemDropCheck = false;
 	bool						dropStart = false;
 
+	//파티클
+	int							particleCount = 0;
+
 	//채팅
 	wchar_t						inputtext[100] = L"";
 	wchar_t						*outputtext = L"";

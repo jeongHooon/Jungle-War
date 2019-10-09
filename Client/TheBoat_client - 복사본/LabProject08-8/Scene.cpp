@@ -834,9 +834,7 @@ void CScene::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 	m_ppShaders[5]->SetPosition(0, XMFLOAT3(CGameFramework::m_pPlayer[myTeamNum]->GetPosition().x, CGameFramework::m_pPlayer[myTeamNum]->GetPosition().y + 13, CGameFramework::m_pPlayer[myTeamNum]->GetPosition().z));
 	m_ppUIShaders[0]->AnimateObjects(fTimeElapsed, pCamera);
 
-	//// 먼지
-		m_ppShaders[13]->SetDustPosition(XMFLOAT3(m_pPlayer[CGameFramework::my_client_id]->GetPosition().x + 10, m_pPlayer[CGameFramework::my_client_id]->GetPosition().y + 10, m_pPlayer[CGameFramework::my_client_id]->GetPosition().z + 10));
-
+	
 }
 
 void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)

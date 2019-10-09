@@ -2852,7 +2852,7 @@ void CDustShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	m_nBullet = 20;
 
 	CTexture *pTexture = new CTexture(1, RESOURCE_TEXTURE2D_ARRAY, 0);
-	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/Trees/dust.dds", 0);
+	pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"../Assets/Image/UI/Wood.dds", 0);
 
 	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255);
 
@@ -2906,6 +2906,36 @@ void CDustShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	}
 }
 
+void CDustShader::Particle(XMFLOAT3 input, int count) {
+	for (int i = 0; i < m_nBullet; ++i) {
+		if (count == 1) {
+			particleadd[0] = XMFLOAT3(0.7, 0.17, 0.7);
+			particleadd[1] = XMFLOAT3(-0.7, 0.2, -0.7);
+			particleadd[2] = XMFLOAT3(0.7, 0.1, -0.5);
+			particleadd[3] = XMFLOAT3(-0.7, 0.17, 0.7);
+			particleadd[4] = XMFLOAT3(0.5, 0.2, 0.7);
+			particleadd[5] = XMFLOAT3(-0.7, 0.17, -0.5);
+			particleadd[6] = XMFLOAT3(0.5, 0.2, -0.7);
+			particleadd[7] = XMFLOAT3(-0.7, 0.17, 0.5);
+			particleadd[8] = XMFLOAT3(0.5, 0.1, 0.5);
+			particleadd[9] = XMFLOAT3(-0.3, 0.17, -0.3);
+			particleadd[10] = XMFLOAT3(0.3, 0.2, -0.3);
+			particleadd[11] = XMFLOAT3(-0.3, 0.2, 0.3);
+			particleadd[12] = XMFLOAT3(0.4, 0.05, 0.3);
+			particleadd[13] = XMFLOAT3(-0.3, 0.1, -0.4);
+			particleadd[14] = XMFLOAT3(0.3, 0.17, -0.4);
+			particleadd[15] = XMFLOAT3(-0.4, 0.2, 0.4);
+			particleadd[16] = XMFLOAT3(0.3, 0.17, 0.4);
+			particleadd[17] = XMFLOAT3(-0.4, 0.2, -0.3);
+			particleadd[18] = XMFLOAT3(0.4, 0.17, -0.4);
+			particleadd[19] = XMFLOAT3(-0.4, 0.1, 0.3);
+			m_ppBullet[i]->SetPosition(XMFLOAT3(input.x, input.y + rand()%5 + 5, input.z));
+		}
+		else
+			m_ppBullet[i]->SetPosition(XMFLOAT3(m_ppBullet[i]->GetPosition().x + particleadd[i].x, m_ppBullet[i]->GetPosition().y + particleadd[i].y, m_ppBullet[i]->GetPosition().z + particleadd[i].z));
+	}
+}
+
 void CDustShader::ReleaseObjects()
 {
 	if (m_ppBullet)
@@ -2940,7 +2970,6 @@ void CDustShader::AnimateObjects(float fTimeElapsed, CCamera *pCamera)
 	{
 		m_ppBullet[j]->Animate(fTimeElapsed, pCamera);
 	}
-
 }
 
 void CDustShader::ReleaseUploadBuffers()

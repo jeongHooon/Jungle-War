@@ -56,6 +56,7 @@ public:
 	virtual void ReleaseObjects() { }
 
 	virtual void SetDustPosition(XMFLOAT3 input) { }
+	virtual void Particle(XMFLOAT3 input, int count) { }
 	virtual void ReleaseUploadBuffers();
 	virtual void SetBoxPosition(int index, XMFLOAT3 input) { }
 	virtual void SetBoxPosition(XMFLOAT3 input) { }
@@ -613,6 +614,7 @@ protected:
 	int								m_nBullet = 0;
 	int								BulletCount = 0;
 	bool							death = 1;
+	XMFLOAT3						particleadd[20];
 
 #ifdef _WITH_BATCH_MATERIAL
 	CMaterial						*m_pMaterial = NULL;
@@ -638,6 +640,7 @@ public:
 	virtual void ItemDrop(int id, int count, bool check);
 	virtual void SetOOBB(int id, XMFLOAT3 input);
 	virtual void SetDustPosition(XMFLOAT3 input);
+	virtual void Particle(XMFLOAT3 input, int count);
 	virtual BoundingOrientedBox GetOOBB(int id);
 	virtual D3D12_BLEND_DESC CreateBlendState();
 };

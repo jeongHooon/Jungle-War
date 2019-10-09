@@ -1842,6 +1842,23 @@ void CGameFramework::AnimateObjects(CCamera *pCamera)
 	//	//printf("좌표변경!");
 	//}
 
+	//파티클
+	if (server_mgr.GetTreeParticle()) {
+		++particleCount;
+		server_mgr.SetTreeParticle(false);
+	}
+
+	if (particleCount) {
+		m_pScene->m_ppShaders[13]->Particle(server_mgr.GetParticlePos(), particleCount);
+		++particleCount;
+		if (particleCount > 10) {
+			particleCount = 0;
+			for (int i = 0; i < 20; ++i) {
+				m_pScene->m_ppShaders[13]->SetPosition(i, XMFLOAT3(0, -1000, 0));
+			}
+		}
+	}
+
 
 	if (gameMode > 2 || gameMode == 0) {
 #ifdef _WITH_DIRECT2D_IMAGE_EFFECT

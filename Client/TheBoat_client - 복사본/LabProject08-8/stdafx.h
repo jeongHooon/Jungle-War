@@ -24,7 +24,7 @@
 #include <malloc.h>
 #include <tchar.h>
 #include <math.h>
-
+#include <time.h>
 #include <string>
 #include <wrl.h>
 #include <shellapi.h>

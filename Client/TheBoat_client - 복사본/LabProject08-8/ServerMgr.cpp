@@ -291,13 +291,18 @@ void ServerMgr::ProcessPacket(char* ptr) {
 		collision_obj_pos.y = packets->y;
 		collision_obj_pos.z = packets->z;
 		obj[packets->obj_id].in_use = packets->in_use;
-		if (packets->obj_id % 3 == 0 && !packets->in_use)
+		if (packets->obj_id % 3 == 0 && !packets->in_use) {
 			obj[packets->obj_id].item_tree = true;
-		if(!packets->in_use)
+		}
+		if (!packets->in_use) {
 			sndPlaySound(L"../Assets/Sounds/BrokenTree.wav", SND_ASYNC);
+			particlepos = collision_obj_pos;
+			treeparticle = true;
+		}
 		printf("ºÎµú ³ª¹« %d\n", packets->obj_id);
 		obj_is_collide = true;
 		obj_hp[packets->obj_id] = packets->hp;
+		
 		break;
 	}
 	case SC_COLLSION_BDP: {	// building to player
