@@ -377,7 +377,7 @@ void ServerFramework::AcceptPlayer() {
 	clients[client_id].team = Team::NON_TEAM;
 	clients[client_id].CType = TYPE_NONE;
 
-	clients[client_id].boxCount = 0;
+	clients[client_id].boxCount = 9;
 
 	clients[client_id].hp = 100.f;
 	printf("%d번 플레이어 체력 %f\n",client_id, clients[client_id].hp);
@@ -664,6 +664,7 @@ void ServerFramework::ProcessPacket(int cl_id, char* packet) {
 		clients[cl_id].is_q = true;
 		ol_ex[7].command = SS_BOX_GENERATE;
 		ol_ex[7].box_player_id = cl_id;
+		ol_ex[7].box_pos = packet_buffer->look_vec;
 		//ol_ex[7].elapsed_time = elapsed_time.count();
 		PostQueuedCompletionStatus(iocp_handle, 0, 6, reinterpret_cast<WSAOVERLAPPED*>(&ol_ex[7]));
 
@@ -1350,18 +1351,32 @@ void ServerFramework::WorkerThread() {
 					box_counter[box_player_id] = 0;
 				}*/
 
-
 				//clients[client_id].y = height_map->GetHeight(clients[client_id].x, clients[client_id].z);
+				if (ol_ex[7].box_pos.y > -500) {
+					printf("box pox  %f   %f    %f   \n", ol_ex[7].box_pos.x, ol_ex[7].box_pos.y, ol_ex[7].box_pos.z);
+					boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].x =
+						ol_ex[7].box_pos.x;
 
-				boxes[box_player_id  * MAX_BOX_SIZE + box_counter[box_player_id]].x =
-					clients[box_player_id].x + 10 * clients[box_player_id].look_vec.x;
+					boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].z =
+						ol_ex[7].box_pos.z;
 
-				boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].z =
-					clients[box_player_id].z + 10 * clients[box_player_id].look_vec.z;
+					boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].y =
+						ol_ex[7].box_pos.y;
+				}
+				else
+				{
 
-				boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].y =
-					height_map->GetHeight(boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].x,
-						boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].z);
+					boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].x =
+						clients[box_player_id].x + 10 * clients[box_player_id].look_vec.x;
+
+					boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].z =
+						clients[box_player_id].z + 10 * clients[box_player_id].look_vec.z;
+
+					boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].y =
+						height_map->GetHeight(boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].x,
+							boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].z) + 4;
+					printf("box pox1  %f   %f    %f   \n", boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].x, boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].y, boxes[box_player_id * MAX_BOX_SIZE + box_counter[box_player_id]].z);
+				}
 
 				boxes[box_player_id  * MAX_BOX_SIZE + box_counter[box_player_id]].look_vec = clients[box_player_id].look_vec;
 				boxes[box_player_id  * MAX_BOX_SIZE + box_counter[box_player_id]].in_use = true;
@@ -1396,7 +1411,7 @@ void ServerFramework::WorkerThread() {
 							packets.z = boxes[i * MAX_BOX_SIZE + j].z;
 							//packets.boxCount[i] = clients[i].boxCount;
 							//printf("%d의 남은 박스는 %d개\n", i, packets.boxCount[i]);
-
+							//printf("box pox보냄 %d  %f   %f    %f   \n", packets.box_id, packets.x, packets.y, packets.z);
 
 							for (int k = 0; k < MAX_PLAYER_SIZE; ++k) 
 							{
@@ -1413,6 +1428,7 @@ void ServerFramework::WorkerThread() {
 
 			}
 		}
+		
 		else if (overlapped_buffer->command == SS_BOX_UPDATE) {
 			/*for (int i = 0; i < MAX_PLAYER_SIZE; ++i) {
 			for (int j = 0; j < MAX_BOX_SIZE; ++j) {

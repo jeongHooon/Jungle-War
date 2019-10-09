@@ -101,6 +101,9 @@ public:
 	int							bulletDropCount = 0;
 	BoundingOrientedBox			mapoobb;
 
+	bool						prevOn = false;
+	bool						colBuild = false;
+	XMFLOAT3					colBuildPos;
 	int							myTeamNum;
 	bool						winCheck = false;
 	bool						TreeShadowON = true;

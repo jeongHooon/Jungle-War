@@ -871,9 +871,28 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					gameMode = 0;
 				break;
 			case 'Q':
-				if (is_pushed[CS_KEY_PRESS_Q] == false) {
-					server_mgr.SendPacket(CS_KEY_PRESS_Q, m_pPlayer[my_client_id]->GetLook());
+				if (is_pushed[CS_KEY_PRESS_Q] == false && prevOn) {
+					if(!colBuild)
+						server_mgr.SendPacket(CS_KEY_PRESS_Q, XMFLOAT3(0,-1000,0));
+					else						
+						server_mgr.SendPacket(CS_KEY_PRESS_Q, colBuildPos);
 					is_pushed[CS_KEY_PRESS_Q] = true;
+				}
+				break;
+			case 'T':
+				if (!prevOn) {
+					prevOn = true;
+					m_pPrevBox[0]->SetPosition(XMFLOAT3(m_pPlayer[my_client_id]->GetPosition().x + 10 * m_pPlayer[my_client_id]->LookTemp.x, m_pPlayer[my_client_id]->GetPosition().y + 4, m_pPlayer[my_client_id]->GetPosition().z + 10 * m_pPlayer[my_client_id]->LookTemp.z));
+					m_pPrevBox[0]->SetOOBB(m_pPrevBox[0]->GetPosition(), XMFLOAT3(4, 4, 4), XMFLOAT4(0, 0, 0, 1));
+					m_pPrevBox[0]->SetLook(m_pPlayer[my_client_id]->LookTemp);
+					printf("prevPos  %f   %f    %f \n", m_pPrevBox[0]->GetPosition().x, m_pPrevBox[0]->GetPosition().y, m_pPrevBox[0]->GetPosition().z);
+				}
+				else {
+					prevOn = false;
+					colBuild = false;
+					m_pPrevBox[0]->SetPosition(XMFLOAT3(0, -5000, 0));
+					m_pPrevBox[0]->SetOOBB(m_pPrevBox[0]->GetPosition(), XMFLOAT3(4, 4, 4), XMFLOAT4(0, 0, 0, 1));
+					m_pPrevBox[0]->SetLook(m_pPlayer[my_client_id]->LookTemp);
 				}
 				break;
 			case 'R':
@@ -1090,13 +1109,7 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				is_pushed[CS_KEY_PRESS_Q] = false;
 			}
 			break;
-		case 'T':
-			printf("Look x : %f y : %f z : %f  \n", m_pPlayer[my_client_id]->LookTemp.x, m_pPlayer[my_client_id]->LookTemp.y, m_pPlayer[my_client_id]->LookTemp.z);
-			m_pPrevBox[0]->SetPosition(XMFLOAT3(m_pPlayer[my_client_id]->GetPosition().x + 10 * m_pPlayer[my_client_id]->LookTemp.x, m_pPlayer[my_client_id]->GetPosition().y + 4, m_pPlayer[my_client_id]->GetPosition().z + 10 * m_pPlayer[my_client_id]->LookTemp.z));
-			m_pPrevBox[0]->SetOOBB(m_pPrevBox[0]->GetPosition(), XMFLOAT3(8, 8, 8), XMFLOAT4(0, 0, 0, 1));
-			m_pPrevBox[0]->SetLook(m_pPlayer[my_client_id]->LookTemp);
-			printf("x : %f y : %f z : %f  \n", m_pPrevBox[0]->GetPosition().x, m_pPrevBox[0]->GetPosition().y, m_pPrevBox[0]->GetPosition().z);
-			break;
+		
 		case VK_UP:
 			--mainScreenSelect;
 			if (mainScreenSelect < 0)
@@ -1286,7 +1299,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(3000, -500, 3000));	
 				}
 				else {
-					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(server_mgr.GetBox(i).x, server_mgr.GetBox(i).y, server_mgr.GetBox(i).z));
+					m_pScene->m_pBuildings->SetBoxPosition(i, XMFLOAT3(server_mgr.GetBox(i).x, server_mgr.GetBox(i).y -4, server_mgr.GetBox(i).z));
 				}
 			}	//박스위치
 			// 아이템생성
@@ -1608,7 +1621,7 @@ void CGameFramework::BuildObjects()
 	}
 #endif
 	float fHeight = m_pScene->GetTerrain()->GetHeight(627, 700);
-	m_pPrevBox[0]->SetPosition(XMFLOAT3(0, 0, 0));
+	m_pPrevBox[0]->SetPosition(XMFLOAT3(0, -5000, 0));
 	m_pPrevBox[0]->SetOOBB(m_pPrevBox[0]->GetPosition(), XMFLOAT3(4, 4, 4), XMFLOAT4(0, 0, 0, 1));
 	m_pd3dCommandList->Close();
 	ID3D12CommandList *ppd3dCommandLists[] = { m_pd3dCommandList };
@@ -2294,9 +2307,10 @@ void CGameFramework::FrameAdvance()
 	for (int i = 0; i < 40; ++i) {
 		if (server_mgr.GetBoxInuse(i))
 		{
-			m_pScene->m_ppShaders[4]->SetOOBB(i, XMFLOAT3(server_mgr.GetBox(i).x, server_mgr.GetBox(i).y, server_mgr.GetBox(i).z));
+			m_pScene->m_pBuildings->SetOOBB(i, XMFLOAT3(server_mgr.GetBox(i).x, server_mgr.GetBox(i).y, server_mgr.GetBox(i).z));
+			//m_pScene->m_ppShaders[4]->SetBoxPosition();
 		}
-			ContainmentType containType = CGameFramework::m_pPrevBox[0]->bounding_box.Contains(m_pScene->m_ppShaders[4]->GetOOBB(i));
+			ContainmentType containType = CGameFramework::m_pPrevBox[0]->bounding_box.Contains(m_pScene->m_pBuildings->GetOOBB(i));
 			switch (containType)
 			{
 			case DISJOINT:
@@ -2305,7 +2319,12 @@ void CGameFramework::FrameAdvance()
 			}
 			case INTERSECTS:
 			{
-				printf("awtqwtawt\n");
+				m_pPrevBox[0]->SetPosition(XMFLOAT3(server_mgr.GetBox(i).x, server_mgr.GetBox(i).y + 8, server_mgr.GetBox(i).z));
+				printf("prevPos1  %f   %f    %f \n", m_pPrevBox[0]->GetPosition().x, m_pPrevBox[0]->GetPosition().y, m_pPrevBox[0]->GetPosition().z);
+
+				colBuildPos = m_pPrevBox[0]->GetPosition();
+				colBuild = true;
+				//printf("awtqwtawt\n");
 				break;
 			}
 			case CONTAINS:

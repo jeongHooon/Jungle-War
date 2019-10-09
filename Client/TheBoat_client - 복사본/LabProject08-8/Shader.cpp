@@ -1023,8 +1023,8 @@ void CObjectsShader::ReleaseObjects()
 }
 
 void CObjectsShader::SetBoxPosition(int index, XMFLOAT3 input) {
-	float fHeight = pTerrainCopy->GetHeight(input.x, input.z);
-	m_ppObjects[index]->SetPosition(input.x, fHeight + 4, input.z);
+	//float fHeight = pTerrainCopy->GetHeight(input.x, input.z);
+	m_ppObjects[index]->SetPosition(input.x, input.y + 4, input.z);
 	m_ppObjects[index]->SetOOBB(m_ppObjects[index]->GetPosition(), XMFLOAT3(4, 4, 4), XMFLOAT4(0, 0, 0, 1));
 }
 

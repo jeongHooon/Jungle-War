@@ -83,6 +83,7 @@ struct OverlappedExtensionSet {
 	char command = 0;
 	char io_buffer[MAX_BUFFER_SIZE];
 	float elapsed_time;
+	XMFLOAT3 box_pos;
 };
 
 struct Client {
