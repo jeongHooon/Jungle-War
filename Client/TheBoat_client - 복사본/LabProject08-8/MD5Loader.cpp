@@ -324,7 +324,7 @@ bool LoadMD5Model(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dComma
 	}
 	return true;
 }
-bool LoadObjectModel(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, std::wstring filename, Model3D& MD5Model, std::vector<D3D12_SHADER_RESOURCE_VIEW_DESC*>& shaderResourceViewArray, std::vector<std::wstring> texFileNameArray, CMesh*& pMesh)
+bool LoadObjectModel(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, std::wstring filename, Model3D& MD5Model, std::vector<D3D12_SHADER_RESOURCE_VIEW_DESC*>& shaderResourceViewArray, std::vector<std::wstring> texFileNameArray, CMesh*& pMesh)
 {
 	std::wifstream fileIn(filename.c_str());
 	std::wstring checkString;
@@ -584,19 +584,19 @@ bool LoadObjectModel(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCo
 				} // Create index buffer 
 
 
-				UINT *pnIndices = NULL;
+				UINT* pnIndices = NULL;
 				int nIndices = 0;
 				int nVertices = subset.vertices.size();
-				XMFLOAT3 *pxmf3Positions = NULL;
-				XMFLOAT3 *pxmf3Normals = NULL;
-				XMFLOAT2 *pxmf2texCoord = NULL;
+				XMFLOAT3* pxmf3Positions = NULL;
+				XMFLOAT3* pxmf3Normals = NULL;
+				XMFLOAT2* pxmf2texCoord = NULL;
 
 				pxmf3Positions = new XMFLOAT3[nVertices];
 				for (int i = 0; i < nVertices; i++)
 				{
 					pxmf3Positions[i].x = subset.vertices[i].pos.x;
 					pxmf3Positions[i].y = subset.vertices[i].pos.y;
-					pxmf3Positions[i].z = -1 * subset.vertices[i].pos.z;
+					pxmf3Positions[i].z = subset.vertices[i].pos.z;
 				}
 				pxmf3Normals = new XMFLOAT3[nVertices];
 				for (int i = 0; i < nVertices; i++)
@@ -619,7 +619,328 @@ bool LoadObjectModel(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCo
 
 					pnIndices[i] = subset.indices[i];
 				}
-				XMFLOAT3 *aaa = NULL;
+				XMFLOAT3* aaa = NULL;
+				aaa = new XMFLOAT3[subset.indices.size()];
+				for (int i = 0; i < subset.indices.size(); i++) {
+					aaa[i] = subset.vertices[subset.indices[i]].pos;
+				}
+				//pMesh = new CMeshTextured(pd3dDevice, pd3dCommandList, subset.indices.size(), aaa, pxmf2texCoord, subset.indices.size(), pnIndices);
+
+				//pMesh = new CMeshTextured(pd3dDevice, pd3dCommandList, numVerts, pxmf3Positions, pxmf2texCoord, subset.indices.size(), pnIndices);
+				pMesh = new CMeshIlluminatedTextured(pd3dDevice, pd3dCommandList, numVerts, pxmf3Positions, pxmf3Normals, pxmf2texCoord, subset.indices.size(), pnIndices);
+
+				//pMesh = new CMeshTextured(pd3dDevice, pd3dCommandList, numVerts, pxmf3Positions, pxmf2texCoord, subset.indices.size(), pnIndices);
+
+				MD5Model.subsets.push_back(subset);
+			}
+		}
+	}
+	else
+	{
+		//SwapChain->SetFullscreenState(false, NULL); // Make sure we are out of fullscreen // create message 
+		std::wstring message = L"Could not open: ";
+		message += filename;
+		MessageBox(0, message.c_str(), // display message 
+			L"Error", MB_OK);
+		return false;
+	}
+	return true;
+}bool LoadObjectModel2(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, std::wstring filename, Model3D& MD5Model, std::vector<D3D12_SHADER_RESOURCE_VIEW_DESC*>& shaderResourceViewArray, std::vector<std::wstring> texFileNameArray, CMesh*& pMesh)
+{
+	std::wifstream fileIn(filename.c_str());
+	std::wstring checkString;
+	if (fileIn) // Check if the file was opened 
+	{
+		while (fileIn) // Loop until the end of the file is reached *
+		{
+			fileIn >> checkString; // Get next string from file 
+			if (checkString == L"MD5Version") // Get MD5 version (this function supports version 10) 
+			{ /*
+			  fileIn >> checkString;
+			  MessageBox(0, checkString.c_str(), //display message L"MD5Version", MB_OK);*/
+			}
+			else if (checkString == L"commandline")
+			{
+				std::getline(fileIn, checkString); // Ignore the rest of this line 
+			}
+			else if (checkString == L"numJoints")
+			{
+				fileIn >> MD5Model.numJoints; // Store number of joints 
+			}
+			else if (checkString == L"numMeshes")
+			{
+				fileIn >> MD5Model.numSubsets; // Store number of meshes or subsets which we will call them 
+			}
+			else if (checkString == L"joints")
+			{
+				Joint tempJoint; fileIn >> checkString; // Skip the "{" 
+				for (int i = 0; i < MD5Model.numJoints; i++)
+				{
+					fileIn >> tempJoint.name; // Store joints name 
+											  // Sometimes the names might contain spaces. If that is the case, we need to continue
+											  // to read the name until we get to the closing " (quotation marks) 
+					if (tempJoint.name[tempJoint.name.size() - 1] != '"')
+					{
+						wchar_t checkChar;
+						bool jointNameFound = false;
+						while (!jointNameFound)
+						{
+							checkChar = fileIn.get();
+							if (checkChar == '"')
+								jointNameFound = true;
+							tempJoint.name += checkChar;
+						}
+					}
+					fileIn >> tempJoint.parentID; // Store Parent joint's ID 
+					fileIn >> checkString; // Skip the "(" // Store position of this joint (swap y and z axis if model was made in RH Coord Sys) 
+					fileIn >> tempJoint.pos.x >> tempJoint.pos.z >> tempJoint.pos.y;
+					fileIn >> checkString >> checkString; // Skip the ")" and "(" // Store orientation of this joint 
+					fileIn >> tempJoint.orientation.x >> tempJoint.orientation.z >> tempJoint.orientation.y; // Remove the quotation marks from joints name 
+					tempJoint.name.erase(0, 1);
+					tempJoint.name.erase(tempJoint.name.size() - 1, 1);
+					// Compute the w axis of the quaternion (The MD5 model uses a 3D vector to describe the
+					// direction the bone is facing. However, we need to turn this into a quaternion, and the way 
+					// quaternions work, is the xyz values describe the axis of rotation, while the w is a value 
+					// between 0 and 1 which describes the angle of rotation) 
+					float t = 1.0f - (tempJoint.orientation.x * tempJoint.orientation.x) - (tempJoint.orientation.y * tempJoint.orientation.y) - (tempJoint.orientation.z * tempJoint.orientation.z);
+					if (t < 0.0f)
+					{
+						tempJoint.orientation.w = 0.0f;
+					}
+					else {
+						tempJoint.orientation.w = -sqrtf(t);
+					}
+					std::getline(fileIn, checkString); // Skip rest of this line 
+					MD5Model.joints.push_back(tempJoint); // Store the joint into this models joint vector 
+				}
+				fileIn >> checkString; // Skip the "}" 
+			}
+			else if (checkString == L"mesh")
+			{
+				ModelSubset subset;
+				int numVerts, numTris, numWeights;
+				fileIn >> checkString; // Skip the "{" 
+				fileIn >> checkString;
+				while (checkString != L"}") // Read until '}'
+				{
+					// In this lesson, for the sake of simplicity, we will assume a textures filename is givin here. 
+					// Usually though, the name of a material (stored in a material library. Think back to the lesson on 
+					// loading .obj files, where the material library was contained in the file .mtl) is givin. Let this 
+					// be an exercise to load the material from a material library such as obj's .mtl file, instead of 
+					// just the texture like we will do here. 
+					if (checkString == L"shader") // Load the texture or material
+					{
+						std::wstring fileNamePath;
+						fileIn >> fileNamePath;	// Get texture's filename 
+												// Take spaces into account if filename or material name has a space in it 
+						if (fileNamePath[fileNamePath.size() - 1] != '"')
+						{
+							wchar_t checkChar;
+							bool fileNameFound = false;
+							while (!fileNameFound)
+							{
+								checkChar = fileIn.get();
+								if (checkChar == '"')
+									fileNameFound = true;
+								fileNamePath += checkChar;
+							}
+						} // Remove the quotation marks from texture path 
+						fileNamePath.erase(0, 1);
+						fileNamePath.erase(fileNamePath.size() - 1, 1); //check if this texture has already been loaded 
+						bool alreadyLoaded = false;
+						for (int i = 0; i < texFileNameArray.size(); ++i)
+						{
+							if (fileNamePath == texFileNameArray[i])
+							{
+								alreadyLoaded = true;
+								subset.texArrayIndex = i;
+							}
+						} //if the texture is not already loaded, load it now 
+						if (!alreadyLoaded)
+						{
+							//;
+							//
+							////hr = CreateShaderResourceView(md3dDevice, fileNamePath.c_str(), NULL, NULL, &tempMeshSRV, NULL);
+							//if (SUCCEEDED(hr))
+							//{
+							//	texFileNameArray.push_back(fileNamePath.c_str());
+							//	subset.texArrayIndex = shaderResourceViewArray.size();
+							//	shaderResourceViewArray.push_back(tempMeshSRV);
+							//}
+							//else
+							//{
+							//	MessageBox(0, fileNamePath.c_str(), //display message 
+							//		L"Could Not Open:",
+							//		MB_OK);
+							//	return false;
+							//}
+						}
+						std::getline(fileIn, checkString); // Skip rest of this line 
+					}
+					else if (checkString == L"numverts")
+					{
+						fileIn >> numVerts; // Store number of vertices 
+						std::getline(fileIn, checkString); // Skip rest of this line
+						for (int i = 0; i < numVerts; i++)
+						{
+							Vertex1 tempVert;
+							fileIn >> checkString // Skip "vert # (" 
+								>> checkString
+								>> checkString;
+							fileIn >> tempVert.texCoord.x // Store tex coords 
+								>> tempVert.texCoord.y; fileIn
+								>> checkString; // Skip ")" 
+							fileIn >> tempVert.StartWeight; // Index of first weight this vert will be weighted to 
+							fileIn >> tempVert.WeightCount; // Number of weights for this vertex 
+							std::getline(fileIn, checkString); // Skip rest of this line 
+							subset.vertices.push_back(tempVert); // Push back this vertex into subsets vertex vector 
+						}
+					}
+					else if (checkString == L"numtris")
+					{
+						fileIn >> numTris;
+						subset.numTriangles = numTris;
+						std::getline(fileIn, checkString); // Skip rest of this line
+						for (int i = 0; i < numTris; i++) // Loop through each triangle
+						{
+							DWORD tempIndex;
+							fileIn >> checkString; // Skip "tri" 
+							fileIn >> checkString; // Skip tri counter 
+							for (int k = 0; k < 3; k++) // Store the 3 indices 
+							{
+								fileIn >> tempIndex;
+								subset.indices.push_back(tempIndex);
+							}
+							std::getline(fileIn, checkString); // Skip rest of this line
+						}
+					}
+					else if (checkString == L"numweights")
+					{
+						fileIn >> numWeights;
+						std::getline(fileIn, checkString);
+						for (int i = 0; i < numWeights; i++)
+						{
+							Weight tempWeight;
+							fileIn >> checkString >> checkString;
+							fileIn >> tempWeight.jointID;
+							fileIn >> tempWeight.bias;
+							fileIn >> checkString;
+							fileIn >> tempWeight.pos.x
+								>> tempWeight.pos.z
+								>> tempWeight.pos.y;
+							std::getline(fileIn, checkString);
+							subset.weights.push_back(tempWeight);
+						}
+					}
+					else
+						std::getline(fileIn, checkString);
+					fileIn >> checkString;
+				}
+				for (int i = 0; i < subset.vertices.size(); ++i)
+				{
+					Vertex1 tempVert = subset.vertices[i];
+					tempVert.pos = XMFLOAT3(0, 0, 0);
+					for (int j = 0; j < tempVert.WeightCount; ++j)
+					{
+						Weight tempWeight = subset.weights[tempVert.StartWeight + j];
+						Joint tempJoint = MD5Model.joints[tempWeight.jointID];
+						XMVECTOR tempJointOrientation = XMVectorSet(tempJoint.orientation.x, tempJoint.orientation.y, tempJoint.orientation.z, tempJoint.orientation.w);
+						XMVECTOR tempWeightPos = XMVectorSet(tempWeight.pos.x, tempWeight.pos.y, tempWeight.pos.z, 0.0f);
+						XMVECTOR tempJointOrientationConjugate = XMVectorSet(-tempJoint.orientation.x, -tempJoint.orientation.y, -tempJoint.orientation.z, tempJoint.orientation.w);
+						XMFLOAT3 rotatedPoint;
+						XMStoreFloat3(&rotatedPoint, XMQuaternionMultiply(XMQuaternionMultiply(tempJointOrientation, tempWeightPos), tempJointOrientationConjugate));
+						tempVert.pos.x += (tempJoint.pos.x + rotatedPoint.x) * tempWeight.bias;
+						tempVert.pos.y += (tempJoint.pos.y + rotatedPoint.y) * tempWeight.bias;
+						tempVert.pos.z += (tempJoint.pos.z + rotatedPoint.z) * tempWeight.bias;
+					}
+					subset.positions.push_back(tempVert.pos);
+				}
+				for (int i = 0; i < subset.vertices.size(); i++)
+				{
+					subset.vertices[i].pos = subset.positions[i];
+				}
+
+
+				std::vector<XMFLOAT3> tempNormal;
+				XMFLOAT3 unnormalized = XMFLOAT3(0.0f, 0.0f, 0.0f);
+				float vecX, vecY, vecZ;
+				XMVECTOR edge1 = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+				XMVECTOR edge2 = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+				for (int i = 0; i < subset.numTriangles; ++i)
+				{
+					//Get the vector describing one edge of our triangle (edge 0,2) 
+					vecX = subset.vertices[subset.indices[(i * 3)]].pos.x - subset.vertices[subset.indices[(i * 3) + 2]].pos.x;
+					vecY = subset.vertices[subset.indices[(i * 3)]].pos.y - subset.vertices[subset.indices[(i * 3) + 2]].pos.y;
+					vecZ = subset.vertices[subset.indices[(i * 3)]].pos.z - subset.vertices[subset.indices[(i * 3) + 2]].pos.z;
+					edge1 = XMVectorSet(vecX, vecY, vecZ, 0.0f); //Create our first edge //Get the vector describing another edge of our triangle (edge 2,1) 
+					vecX = subset.vertices[subset.indices[(i * 3) + 2]].pos.x - subset.vertices[subset.indices[(i * 3) + 1]].pos.x;
+					vecY = subset.vertices[subset.indices[(i * 3) + 2]].pos.y - subset.vertices[subset.indices[(i * 3) + 1]].pos.y;
+					vecZ = subset.vertices[subset.indices[(i * 3) + 2]].pos.z - subset.vertices[subset.indices[(i * 3) + 1]].pos.z;
+					edge2 = XMVectorSet(vecX, vecY, vecZ, 0.0f); //Create our second edge //Cross multiply the two edge vectors to get the un-normalized face normal 
+					XMStoreFloat3(&unnormalized, XMVector3Cross(edge1, edge2)); tempNormal.push_back(unnormalized);
+				} //Compute vertex normals (normal Averaging)
+				XMVECTOR normalSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+				int facesUsing = 0;
+				float tX, tY, tZ; //temp axis variables //Go through each vertex 
+				for (int i = 0; i < subset.vertices.size(); ++i)
+				{
+					//Check which triangles use this vertex 
+					for (int j = 0; j < subset.numTriangles; ++j)
+					{
+						if (subset.indices[j * 3] == i || subset.indices[(j * 3) + 1] == i || subset.indices[(j * 3) + 2] == i)
+						{
+							tX = XMVectorGetX(normalSum) + tempNormal[j].x;
+							tY = XMVectorGetY(normalSum) + tempNormal[j].y;
+							tZ = XMVectorGetZ(normalSum) + tempNormal[j].z;
+							normalSum = XMVectorSet(tX, tY, tZ, 0.0f); //If a face is using the vertex, add the unormalized face normal to the normalSum 
+							facesUsing++;
+						}
+					} //Get the actual normal by dividing the normalSum by the number of faces sharing the vertex 
+					normalSum = normalSum / facesUsing; //Normalize the normalSum vector 
+					normalSum = XMVector3Normalize(normalSum); //Store the normal and tangent in our current vertex 
+					subset.vertices[i].normal.x = -XMVectorGetX(normalSum);
+					subset.vertices[i].normal.y = -XMVectorGetY(normalSum);
+					subset.vertices[i].normal.z = -XMVectorGetZ(normalSum); //Clear normalSum, facesUsing for next vertex 
+					normalSum = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f); facesUsing = 0;
+				} // Create index buffer 
+
+
+				UINT* pnIndices = NULL;
+				int nIndices = 0;
+				int nVertices = subset.vertices.size();
+				XMFLOAT3* pxmf3Positions = NULL;
+				XMFLOAT3* pxmf3Normals = NULL;
+				XMFLOAT2* pxmf2texCoord = NULL;
+
+				pxmf3Positions = new XMFLOAT3[nVertices];
+				for (int i = 0; i < nVertices; i++)
+				{
+					pxmf3Positions[i].x = subset.vertices[i].pos.x;
+					pxmf3Positions[i].y = subset.vertices[i].pos.y;
+					pxmf3Positions[i].z = -1*subset.vertices[i].pos.z;
+				}
+				pxmf3Normals = new XMFLOAT3[nVertices];
+				for (int i = 0; i < nVertices; i++)
+				{
+					pxmf3Normals[i].x = subset.vertices[i].normal.x;
+					pxmf3Normals[i].y = subset.vertices[i].normal.y;
+					pxmf3Normals[i].z = subset.vertices[i].normal.z;
+				}
+				pxmf2texCoord = new XMFLOAT2[nVertices];
+				for (int i = 0; i < nVertices; i++)
+				{
+
+					pxmf2texCoord[i].x = subset.vertices[i].texCoord.x;
+					pxmf2texCoord[i].y = subset.vertices[i].texCoord.y;
+
+				}
+				pnIndices = new UINT[subset.indices.size()];
+				for (int i = 0; i < subset.indices.size(); i++)
+				{
+
+					pnIndices[i] = subset.indices[i];
+				}
+				XMFLOAT3* aaa = NULL;
 				aaa = new XMFLOAT3[subset.indices.size()];
 				for (int i = 0; i < subset.indices.size(); i++) {
 					aaa[i] = subset.vertices[subset.indices[i]].pos;

@@ -562,7 +562,9 @@ void CRockObject::Animate(float fTimeElapsed, int num)
 	m_xmf4x4ToParentTransform._41 = m_xmf3Position.x; m_xmf4x4ToParentTransform._42 = m_xmf3Position.y; m_xmf4x4ToParentTransform._43 = m_xmf3Position.z;
 
 
-	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(num * 5, 90 - num*5, 0.0f);
+	//XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(num * 5, 90 - num*5, 0.0f);
+	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(0,0, 0.0f);
+
 	m_xmf4x4ToParentTransform = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParentTransform);
 }
 
@@ -853,7 +855,7 @@ CShadow::CShadow(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComman
 	m_pMaterial->SetShader(pShader);
 	XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	//XMVECTOR toMainLight = -XMLoadFloat4(new XMFLOAT4(-1.0f, -1.0f, -0.3f, 0.0f));
-	XMVECTOR toMainLight = -XMLoadFloat4(new XMFLOAT4(-0.2f, -1.0f, -0.3f, 0.0f));
+	XMVECTOR toMainLight = XMLoadFloat4(new XMFLOAT4(0.6f, 0.5f, 0.3f, 0.0f));
 
 	XMMATRIX S = XMMatrixShadow(shadowPlane, toMainLight);
 	XMMATRIX shadowOffSetY = XMMatrixTranslation(0.0f, 0.001f, 0.0f);
@@ -1087,7 +1089,7 @@ CShadowTree::CShadowTree(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 
 	m_pMaterial->SetShader(pShader);
 	XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	XMVECTOR toMainLight = -XMLoadFloat4(new XMFLOAT4(-0.2f, -1.0f, -0.3f, 0.0f));
+	XMVECTOR toMainLight = XMLoadFloat4(new XMFLOAT4(0.6f, 0.5f, 0.3f, 0.0f));
 	XMMATRIX S = XMMatrixShadow(shadowPlane, toMainLight);
 	XMMATRIX shadowOffSetY = XMMatrixTranslation(0.0f, 0.001f, 0.0f);
 	MTShadow = S * shadowOffSetY;
@@ -1109,7 +1111,7 @@ void CShadowTree::Animate(float fTimeElapsed, int num, XMFLOAT4X4 worldMt)
 	SetWMatrix(Matrix4x4::Multiply(worldMt, MTShadow));
 
 	float fHeight = pTerrain->GetHeight(GetWMatrix()._41, GetWMatrix()._43);
-	SetWPosition(XMFLOAT3(GetWMatrix()._41, fHeight + 0.1, GetWMatrix()._43));
+	SetWPosition(XMFLOAT3(GetWMatrix()._41 - 6.3, fHeight + 0.1, GetWMatrix()._43 - 3.2));
 
 }
 
@@ -1258,7 +1260,7 @@ CShadowRock::CShadowRock(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	CMesh* pMesh = NULL;
 
 
-	LoadObjectModel(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/rock.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
+	LoadObjectModel2(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, L"../Assets/Model/rock.MD5MESH", NewMD5Model, meshSRV, textureNameArray, pMesh);
 	SetMesh(0, pMesh);
 
 	CTexture* pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
@@ -1283,7 +1285,7 @@ CShadowRock::CShadowRock(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 
 	m_pMaterial->SetShader(pShader);
 	XMVECTOR shadowPlane = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	XMVECTOR toMainLight = -XMLoadFloat4(new XMFLOAT4(-0.2f, -1.0f, -0.3f, 0.0f));
+	XMVECTOR toMainLight = XMLoadFloat4(new XMFLOAT4(0.6f, 0.5f, 0.3f, 0.0f));
 	XMMATRIX S = XMMatrixShadow(shadowPlane, toMainLight);
 	XMMATRIX shadowOffSetY = XMMatrixTranslation(0.0f, 0.001f, 0.0f);
 	MTShadow = S * shadowOffSetY;
@@ -1305,7 +1307,7 @@ void CShadowRock::Animate(float fTimeElapsed, int num, XMFLOAT4X4 worldMt)
 	SetWMatrix(Matrix4x4::Multiply(worldMt, MTShadow));
 
 	float fHeight = pTerrain->GetHeight(GetWMatrix()._41, GetWMatrix()._43);
-	SetWPosition(XMFLOAT3(GetWMatrix()._41, fHeight + 0.1, GetWMatrix()._43));
+	SetWPosition(XMFLOAT3(GetWMatrix()._41 -6.2, fHeight + 0.1, GetWMatrix()._43 -2.5));
 
 }
 

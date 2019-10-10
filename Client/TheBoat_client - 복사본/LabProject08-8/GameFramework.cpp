@@ -1590,7 +1590,7 @@ void CGameFramework::BuildObjects()
 		float fHeight = m_pScene->GetTerrain()->GetHeight(xPosition, zPosition);
 		m_pObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
 		m_pObject[i]->SetOOBB(m_pObject[i]->GetPosition(), XMFLOAT3(1, 1, 1), XMFLOAT4(0, 0, 0, 1));
-		m_pShadowObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight, zPosition));
+		m_pShadowObject[i]->SetPosition(XMFLOAT3(xPosition, fHeight+10, zPosition));
 		
 	}
 	for (int i = 0; i < NUM_OBJECT2; ++i) {
